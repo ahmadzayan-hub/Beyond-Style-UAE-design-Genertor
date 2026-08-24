@@ -34,6 +34,22 @@ authorized SVG/DXF download; true RTL Arabic default with LTR English
 toggle; MAKE IT FOR ME shown disabled (not faked). Domain logic stays
 in the backend; the UI only orchestrates the API.
 
+## Quality gate (slice 4)
+
+`engines/similarity.py`: 32×32 occupancy-grid IoU (deterministic,
+comparison-only) gates Top-10 selection — no two selections above 0.86.
+`engines/quality.py`: 7-dimension quality report, heuristic dimensions
+explicitly labelled. `exporters/svg_exporter.export_proof_svg`: relief
+compositions render base + differentiated text layer, faithful to the
+canonical mm geometry; production exports stay single-silhouette.
+`data/design_recipes.json` v0.2: 32 curated archetypes with Design DNA
+(family, purpose, products, text-length fit, constraints, rights).
+Long-text (>8 letters) gets a deterministic stroke/size adaptation.
+Golden visual regression fixture: `tests/golden/golden_visual.json`.
+Copilot: frontend panel (sliders/selects, undo/redo over immutable
+versions) driving the existing `/edit` endpoint — every accepted edit is
+a new DesignVersion.
+
 ## Persistence layer (see ADR-0001)
 
 PostgreSQL (SQLAlchemy 2 + Alembic) is the source of truth. Entities:

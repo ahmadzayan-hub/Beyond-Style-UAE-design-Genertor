@@ -114,6 +114,16 @@ export async function versionSvg(versionId: string): Promise<string> {
   return res.text();
 }
 
+export async function editVersion(versionId: string, overrides: object, note: string | null) {
+  return jsonOrThrow(
+    await fetch(`/api/versions/${versionId}/edit`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...authHeaders() },
+      body: JSON.stringify({ recipe_overrides: overrides, note, created_by: "customer-copilot" }),
+    })
+  );
+}
+
 export async function repairOptions(versionId: string) {
   return jsonOrThrow(
     await fetch(`/api/versions/${versionId}/repair-options`, { headers: authHeaders() })

@@ -32,6 +32,8 @@ COMPOSITION_CLASSES = {
     "plate_oval": 3,
     "plate_rect": 4,
     "frame_circle": 5,
+    "frame_rect": 6,
+    "top_bar": 7,
 }
 LOOPS_CLASSES = {"none": 0, "top": 1, "left_right": 2}
 
@@ -41,36 +43,45 @@ def load_recipe_library() -> dict:
 
 
 def expand_recipes(min_count: int = 30) -> list[RecipeParams]:
-    """Deterministically expand base recipes along variation axes until at
-    least `min_count` structured parameter sets exist."""
+    """Curated bases first (each has a distinct visual purpose); a small
+    deterministic set of stroke/spacing variants adds parameter spread.
+    No filler generation."""
     lib = load_recipe_library()
     bases = [RecipeParams(**r) for r in lib["recipes"]]
     axes = lib["variation_axes"]
-    variants: list[RecipeParams] = []
-    for base in bases:
-        for i, ds in enumerate(axes["stroke_delta_mm"]):
-            for j, sp in enumerate(axes["letter_spacing_mm"]):
-                v = base.model_copy(
-                    update={
-                        "recipe_id": f"{base.recipe_id}.v{i}{j}",
-                        "stroke_delta_mm": round(base.stroke_delta_mm + ds, 3),
-                        "letter_spacing_mm": round(base.letter_spacing_mm + sp, 3),
-                    }
-                )
-                variants.append(v)
-                if len(variants) >= min_count * 2:
-                    return variants
-    k = 0
-    while len(variants) < min_count:
-        base = bases[k % len(bases)]
-        ys = axes["y_scale"][(k // len(bases)) % len(axes["y_scale"])]
+    variants: list[RecipeParams] = list(bases)
+    i = 0
+    while len(variants) < max(min_count, len(bases) + 8):
+        base = bases[i % len(bases)]
+        ds = axes["stroke_delta_mm"][1 + (i // len(bases)) % (len(axes["stroke_delta_mm"]) - 1)]
         variants.append(
             base.model_copy(
-                update={"recipe_id": f"{base.recipe_id}.y{k}", "y_scale": base.y_scale * ys}
+                update={
+                    "recipe_id": f"{base.recipe_id}.v{i}",
+                    "stroke_delta_mm": round(base.stroke_delta_mm + ds, 3),
+                }
             )
         )
-        k += 1
+        i += 1
     return variants
+
+
+def _adapt_for_text_length(recipes: list[RecipeParams], text: str) -> list[RecipeParams]:
+    """Deterministic long-text adaptation: phrases need a physically larger
+    piece and bolder strokes to keep letter joins manufacturable. Single-line
+    only — multi-line phrase composition is a later slice."""
+    n = sum(1 for c in text if not c.isspace())
+    if n <= 8:
+        return recipes
+    return [
+        r.model_copy(
+            update={
+                "stroke_delta_mm": round(r.stroke_delta_mm + 0.2, 3),
+                "target_height_mm": r.target_height_mm + 4.0,
+            }
+        )
+        for r in recipes
+    ]
 
 
 def _candidate_id(design_id: str, recipe: RecipeParams, source_sha: str) -> str:
@@ -108,6 +119,7 @@ def build_candidate(
     geom = built.geometry
     features = None
     if not geom.is_empty:
+        from .similarity import grid_to_hex, occupancy_grid
         w, h = built.width_mm, built.height_mm
         bbox_area = w * h if w and h else 1.0
         perimeter = geom.length
@@ -123,6 +135,7 @@ def build_candidate(
             composition_class=COMPOSITION_CLASSES[recipe.composition],
             font_index=sorted(f.font_id for f in registry.list()).index(recipe.font_id),
             loops_class=LOOPS_CLASSES[recipe.loops],
+            occupancy_hex=grid_to_hex(occupancy_grid(geom)),
         )
 
     # Scored later in generate_candidates() via the configurable ranking
@@ -138,6 +151,11 @@ def build_candidate(
         features=features,
         score=0.0,
         geometry_wkt=geom.wkt if not geom.is_empty else "",
+        text_geometry_wkt=(
+            built.text_geometry.wkt
+            if built.text_geometry is not None and not built.text_geometry.is_empty
+            else ""
+        ),
     )
 
 
@@ -170,22 +188,37 @@ def _dist(a: list[float], b: list[float]) -> float:
 
 
 def select_diverse(candidates: list[DesignCandidate], n: int = 10) -> list[DesignCandidate]:
-    """Greedy max-min diversity selection over valid candidates."""
+    """Greedy max-min diversity selection over valid candidates, with a
+    perceptual near-duplicate gate: no two selections may exceed the
+    occupancy-grid IoU threshold (visual comparison aid, never truth)."""
+    from .similarity import NEAR_DUP_IOU, hex_to_grid, iou
+
     valid = [c for c in candidates if c.validation and c.validation.passed and c.features]
     if not valid:
         return []
     vectors = _normalize_matrix([_feature_vector(c) for c in valid])
+    grids = [hex_to_grid(c.features.occupancy_hex) if c.features.occupancy_hex else None for c in valid]
+
+    def near_dup(i: int, chosen: list[int]) -> bool:
+        if grids[i] is None:
+            return False
+        return any(
+            grids[j] is not None and iou(grids[i], grids[j]) >= NEAR_DUP_IOU for j in chosen
+        )
+
     by_score = sorted(range(len(valid)), key=lambda i: (-valid[i].score, valid[i].candidate_id))
     selected = [by_score[0]]
+    # First pass: enforce the perceptual gate strictly.
     while len(selected) < min(n, len(valid)):
         best_i, best_d = None, -1.0
         for i in range(len(valid)):
-            if i in selected:
+            if i in selected or near_dup(i, selected):
                 continue
             d = min(_dist(vectors[i], vectors[j]) for j in selected)
-            # deterministic tie-break by candidate id
             if d > best_d or (d == best_d and valid[i].candidate_id < valid[best_i].candidate_id):
                 best_i, best_d = i, d
+        if best_i is None:
+            break  # pool exhausted under the gate — return fewer, honestly
         selected.append(best_i)
     result = []
     for rank, i in enumerate(selected):
@@ -219,13 +252,40 @@ def generate_candidates(
     deterministic reference intake; they add a transparent score bonus so
     reference-matching styles seed the diverse selection first — they never
     bypass validation or the schema."""
-    recipes = expand_recipes(min_internal)
+    recipes = _adapt_for_text_length(expand_recipes(min_internal), source.normalized_text)
     all_candidates = [build_candidate(design_id, source, r, rules) for r in recipes]
     _apply_ranking(all_candidates)
     if hints:
         _apply_hint_bonus(all_candidates, hints)
     top = select_diverse(all_candidates, top_n)
+    _attach_quality_reports(top)
     return all_candidates, top
+
+
+def _attach_quality_reports(top: list[DesignCandidate]) -> None:
+    from .quality import evaluate
+    from .similarity import hex_to_grid, iou
+
+    grids = {
+        c.candidate_id: hex_to_grid(c.features.occupancy_hex)
+        for c in top
+        if c.features and c.features.occupancy_hex
+    }
+    for c in top:
+        pool_max_iou = 0.0
+        g = grids.get(c.candidate_id)
+        if g is not None:
+            others = [v for k, v in grids.items() if k != c.candidate_id]
+            if others:
+                pool_max_iou = max(iou(g, o) for o in others)
+        c.quality_report = evaluate(
+            c.geometry_wkt,
+            c.text_geometry_wkt or None,
+            identity_verified=c.identity_proof.verified,
+            validation_passed=bool(c.validation and c.validation.passed),
+            occupancy_hex=c.features.occupancy_hex if c.features else None,
+            pool_min_iou=pool_max_iou,
+        )
 
 
 def _apply_hint_bonus(candidates: list[DesignCandidate], hints: dict) -> None:

@@ -18,7 +18,7 @@ from ..db import models as m
 from ..db.base import get_session
 from ..engines.generator import diversity_score
 from ..exporters.dxf_exporter import ProductionExportBlocked
-from ..exporters.svg_exporter import export_svg
+from ..exporters.svg_exporter import export_proof_svg, export_svg
 from ..fonts.registry import get_registry
 from ..schemas.jewellery_design import (
     DesignCandidate,
@@ -190,7 +190,7 @@ def get_candidate_svg(design_id: str, candidate_id: str, request: Request, sessi
     req = require_owned_request(session, design_id, request)
     row = _candidate_row(session, design_id, candidate_id)
     candidate, source = _row_to_candidate(row, req)
-    return Response(content=export_svg(candidate, source), media_type="image/svg+xml")
+    return Response(content=export_proof_svg(candidate, source), media_type="image/svg+xml")
 
 
 @router.post("/{design_id}/select", status_code=201)
@@ -262,6 +262,7 @@ def get_version(version_id: str, request: Request, session: Session = Depends(ge
         "font_version": v.font_version,
         "recipe_id": v.recipe_id,
         "recipe_version": v.recipe_version,
+        "recipe": v.recipe,
         "manufacturing_rules_version": v.manufacturing_rules_version,
         "validation_passed": v.validation_passed,
         "identity_verified": v.identity_verified,
@@ -386,7 +387,7 @@ def version_preview_svg(version_id: str, request: Request, session: Session = De
     export record, and the production DXF path stays lock-gated."""
     v = require_owned_version(session, version_id, request)
     candidate, source = svc._version_to_candidate(v)
-    return Response(content=export_svg(candidate, source), media_type="image/svg+xml")
+    return Response(content=export_proof_svg(candidate, source), media_type="image/svg+xml")
 
 
 class RepairRequest(BaseModel):
@@ -486,5 +487,6 @@ def _row_to_candidate(row: m.DesignCandidateRow, req: m.DesignRequest):
         ),
         validation=ValidationReport(**row.validation) if row.validation else None,
         geometry_wkt=row.geometry_wkt,
+        text_geometry_wkt=row.text_geometry_wkt or "",
     )
     return candidate, source

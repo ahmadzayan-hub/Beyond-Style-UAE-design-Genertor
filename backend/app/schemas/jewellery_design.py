@@ -138,7 +138,7 @@ class RecipeParams(BaseModel):
     recipe_id: str
     name: str
     font_id: str
-    composition: str  # bare | baseline_bar | underline_bar | plate_oval | plate_rect | frame_circle
+    composition: str  # bare | baseline_bar | underline_bar | plate_oval | plate_rect | frame_circle | frame_rect | top_bar
     letter_spacing_mm: float = 0.0
     x_scale: float = 1.0
     y_scale: float = 1.0
@@ -148,6 +148,9 @@ class RecipeParams(BaseModel):
     loops: str = "top"  # none | top | left_right
     frame_margin_mm: float = 2.0
     target_height_mm: float = 18.0
+    # Curated archetype metadata (Design DNA, products, text-length fit,
+    # rights provenance). Informational — geometry uses the fields above.
+    dna: Optional[dict] = None
 
 
 class CandidateFeatures(BaseModel):
@@ -163,6 +166,7 @@ class CandidateFeatures(BaseModel):
     composition_class: int
     font_index: int
     loops_class: int
+    occupancy_hex: Optional[str] = None  # perceptual grid (comparison only)
 
 
 class DesignCandidate(BaseModel):
@@ -180,6 +184,8 @@ class DesignCandidate(BaseModel):
     ranking_config_version: Optional[str] = None
     diversity_rank: Optional[int] = None
     geometry_wkt: str = ""  # canonical vector geometry (WKT MultiPolygon, mm)
+    text_geometry_wkt: str = ""  # text-only geometry for proof rendering
+    quality_report: Optional[dict] = None  # labelled heuristic quality layer
 
 
 class DesignState(str, Enum):

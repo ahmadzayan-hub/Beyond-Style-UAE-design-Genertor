@@ -2,9 +2,24 @@
 
 Updated: 2026-08-24 · Slices done: (1) deterministic Golden Path core,
 (2) PostgreSQL persistence + versioning + approval lock + audit (ADR-0001),
-(3) reference/WhatsApp intake + upload security + anonymous sessions + mobile-first customer UI
-Test evidence: `cd backend && python3 -m pytest` → **86 passed** (PostgreSQL 16 integration)
-+ browser E2E `python3 e2e/golden_path_e2e.py` → 3 flows passed (screenshots in `docs/evidence/`).
+(3) reference/WhatsApp intake + upload security + anonymous sessions + mobile-first customer UI,
+(4) design quality gate: perceptual dedup + high-fidelity proofs + curated 32-archetype library + minimal Designer Copilot
+Test evidence: `cd backend && python3 -m pytest` → **110 passed** (PostgreSQL 16 integration)
++ browser E2E `python3 e2e/golden_path_e2e.py` (3 flows) + `python3 e2e/copilot_e2e.py` (edit→undo/redo→approve v2) — screenshots in `docs/evidence/`.
+
+## Slice 4 evidence (quality gate / proofs / copilot)
+
+| Feature | Status | Test | Evidence | Gap |
+|---|---|---|---|---|
+| High-fidelity relief proofs | WORKING | `test_relief_proofs_show_text_layer` | plate compositions render base + differentiated text layer; production SVG/DXF unchanged single silhouette (`test_production_svg_unchanged_single_silhouette`) | proof styling is 2-tone flat, no material shading yet |
+| Proof ↔ canonical fidelity | WORKING | `test_openwork_proof_matches_canonical_geometry`, `test_counters_and_holes_visible_in_proofs` | proof path bbox == geometry mm bounds ±0.02; subpath count == exterior+holes; evenodd | — |
+| Perceptual dedup | WORKING | `test_no_near_duplicates_in_top10` (5 names) | occupancy-grid IoU gate 0.86; measured max pairwise IoU 0.78–0.85 per name (diversity-report.json) | grid comparison only; no learned perceptual model (by design) |
+| Structural diversity | WORKING | `test_structural_diversity_spread` | per name: ≥4 compositions, ≥2 fonts, ≥5 DNA families in top 10 | vertical/circular text layouts limited to frame/plate forms |
+| Curated 32-archetype library | WORKING | `test_curated_library_dna_complete` | 32 recipes ×(family, purpose, products, text-length fit, mfg constraints, rights=BEYOND_STYLE_ORIGINAL_PARAMETRIC); distinct purpose each | 32/150; pgvector retrieval not yet needed at this scale |
+| Long-text adaptation | WORKING | `test_every_golden_name_yields_valid_top10[ما شاء الله]` | deterministic stroke+size boost for >8 letters keeps phrase manufacturable | single-line only; multi-line phrase composition later |
+| Quality evaluation layer | WORKING | `test_top10_all_pass_manufacturing_and_identity` | 7-dimension report per candidate; heuristic dims labelled HEURISTIC / NOT ML-VALIDATED; persisted on candidates | visual dims remain geometric proxies |
+| Golden visual regression | WORKING | `test_golden_visual_regression` | 5-name fixture (own parametric outputs): top-10 ids + combined geometry sha256; regenerator `e2e/generate_golden.py` | fixture grows with future golden dataset |
+| Designer Copilot (minimal) | WORKING | `e2e/copilot_e2e.py` | sliders (stroke/spacing/width/height/size) + composition/loops selects; Apply → NEW version; undo/redo navigates immutable versions; edited v2 approved+locked; invalid edits flagged & blocked from approval | per-glyph move/tail/swash editing not yet (needs glyph-variant machinery) |
 
 ## Slice 3 evidence (intake / security / customer UI)
 
@@ -69,8 +84,8 @@ Test evidence: `cd backend && python3 -m pytest` → **86 passed** (PostgreSQL 1
 | Frontend (mobile+desktop) | WORKING | see Slice 3 table | browser E2E on mobile + desktop viewports | visual polish; plate-relief proofs render as silhouette (text not visually distinct) |
 
 ## Known honest limitations
-- Plate/relief compositions render as solid silhouettes in 2D proofs (raised text not visually differentiated) — display improvement pending; geometry itself is correct.
-- Two "Flowing Naskh" variants in a top-10 can look visually similar despite differing parameters — diversity metric is feature-space, not perceptual.
+- Deterministic dot/text bridges take the shortest path and can look crude (e.g. a diagonal chord inside a medallion ring) — aesthetic bridge routing is a future refinement; geometry is manufacturable.
+- Copilot edits are composition-level parameters; per-glyph move/tail/swash requires the glyph-variant library (later slice).
 - Workshop rule values are development defaults, clearly labelled `TEST_DEFAULTS`.
 - Ranking uses spec weights, but 4 of 6 dimensions are geometric heuristics labelled HEURISTIC / NOT ML-VALIDATED.
 - ~30–45% of internal candidates fail validation by design (thin script joins at small sizes) — blocked, not repaired; deterministic bridging/counter-fill happen at construction time and are tested.

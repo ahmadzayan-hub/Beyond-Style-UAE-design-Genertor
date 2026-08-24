@@ -207,6 +207,8 @@ def generate_and_persist_candidates(
                 ranking_config_version=c.ranking_config_version or DEFAULT_RANKING.version,
                 diversity_rank=rank_by_key.get(c.candidate_id),
                 geometry_wkt=c.geometry_wkt,
+                text_geometry_wkt=c.text_geometry_wkt or None,
+                quality_report=c.quality_report,
                 source_text_sha256=c.source_text_sha256,
             )
         )
@@ -257,6 +259,7 @@ def select_candidate(
         source_sha=req.source_text_sha256,
         recipe=RecipeParams(**row.recipe),
         geometry_wkt=row.geometry_wkt,
+        text_geometry_wkt=row.text_geometry_wkt,
         validation=row.validation,
         identity_verified=row.identity_verified,
         score=row.score,
@@ -278,6 +281,7 @@ def _create_version_row(
     recipe: RecipeParams,
     geometry_wkt: str,
     validation: dict,
+    text_geometry_wkt: str | None,
     identity_verified: bool,
     score: float,
     created_by: str,
@@ -299,6 +303,7 @@ def _create_version_row(
         immutable_source_text=source_text,
         source_text_sha256=source_sha,
         geometry_wkt=geometry_wkt,
+        text_geometry_wkt=text_geometry_wkt,
         geometry_hash=_geometry_hash(geometry_wkt),
         schema_version=SCHEMA_VERSION,
         arabic_engine_version=ARABIC_ENGINE_VERSION,
@@ -387,6 +392,7 @@ def edit_version(
         source_sha=parent.source_text_sha256,
         recipe=new_recipe,
         geometry_wkt=built.geometry.wkt if not built.geometry.is_empty else "",
+        text_geometry_wkt=(built.text_geometry.wkt if built.text_geometry is not None and not built.text_geometry.is_empty else None),
         validation=report.model_dump(),
         identity_verified=proof.verified,
         score=0.0,
@@ -439,6 +445,7 @@ def change_source_text(
         source_sha=source.sha256,
         recipe=recipe,
         geometry_wkt=built.geometry.wkt if not built.geometry.is_empty else "",
+        text_geometry_wkt=(built.text_geometry.wkt if built.text_geometry is not None and not built.text_geometry.is_empty else None),
         validation=report.model_dump(),
         identity_verified=proof.verified,
         score=0.0,
@@ -558,6 +565,7 @@ def _version_to_candidate(version: m.DesignVersion) -> tuple[DesignCandidate, Im
         ),
         validation=ValidationReport(**version.validation),
         geometry_wkt=version.geometry_wkt,
+        text_geometry_wkt=version.text_geometry_wkt or "",
     )
     return candidate, source
 

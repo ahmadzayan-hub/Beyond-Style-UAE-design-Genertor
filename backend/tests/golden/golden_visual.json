@@ -1,0 +1,191 @@
+{
+ "ميثة": {
+  "top_candidate_ids": [
+   "6109811cb67b73b6",
+   "cdecb952da2129c2",
+   "fb53a2a8c8094291",
+   "9f5dfc37992089f0",
+   "ceaee8005a35713f",
+   "9ad06e451a740015",
+   "1a86f1376b9bac88",
+   "1c2917e0c2b9fb65",
+   "db3c3f07aec3abd0",
+   "a02b647eb28c55bd"
+  ],
+  "combined_geometry_sha256": "e915a31b9fadd9f9d1f7a2b2edc2bd7ee0de16adc287babd739aa901978f630e",
+  "families": [
+   "circular-medallion",
+   "naskh-elegant",
+   "naskh-luxury",
+   "petite-charm",
+   "plate-relief",
+   "suspended-bar"
+  ],
+  "compositions": [
+   "bare",
+   "frame_circle",
+   "plate_oval",
+   "plate_rect",
+   "top_bar",
+   "underline_bar"
+  ],
+  "fonts": [
+   "amiri-regular",
+   "cairo",
+   "scheherazade-new"
+  ]
+ },
+ "نورة": {
+  "top_candidate_ids": [
+   "fd81bd3080954f61",
+   "ce2d7159568f9d8f",
+   "b85e23f5be474e42",
+   "311e1a6594d49b34",
+   "172f716ede92a344",
+   "45c3f8bbf9e7073f",
+   "1220e6dac6d844cf",
+   "2525a7c40a3fb20c",
+   "30c21188adfdcc2f",
+   "dbe56d43812882c0"
+  ],
+  "combined_geometry_sha256": "85b3f7603d8a939a565fa4da4467d08f99dd5292ab48da05accde55167284d7f",
+  "families": [
+   "frame-openwork",
+   "kufi-bold",
+   "kufi-minimal",
+   "naskh-elegant",
+   "naskh-openwork",
+   "petite-charm",
+   "plate-relief",
+   "suspended-bar"
+  ],
+  "compositions": [
+   "bare",
+   "frame_rect",
+   "plate_oval",
+   "plate_rect",
+   "top_bar",
+   "underline_bar"
+  ],
+  "fonts": [
+   "amiri-regular",
+   "cairo",
+   "scheherazade-new"
+  ]
+ },
+ "محمد": {
+  "top_candidate_ids": [
+   "2ecb3cc93e6c8976",
+   "33a64c8624a7b653",
+   "0cd7dbba56a000f2",
+   "5c8e9340486d6155",
+   "4a8953346aabd262",
+   "d5f041af18b57de6",
+   "27c0798970895144",
+   "f82f42f5a1a0f321",
+   "ff1a18c80fe1db44",
+   "f3f15825d89b5254"
+  ],
+  "combined_geometry_sha256": "4b7b5fed2db51c0d560fc653c0359acb75fa99278e29a08f70cbfcddb7d8b129",
+  "families": [
+   "circular-medallion",
+   "frame-openwork",
+   "naskh-elegant",
+   "naskh-luxury",
+   "petite-charm",
+   "plate-relief",
+   "suspended-bar"
+  ],
+  "compositions": [
+   "bare",
+   "frame_circle",
+   "frame_rect",
+   "plate_oval",
+   "plate_rect",
+   "top_bar",
+   "underline_bar"
+  ],
+  "fonts": [
+   "amiri-regular",
+   "cairo",
+   "scheherazade-new"
+  ]
+ },
+ "Amal": {
+  "top_candidate_ids": [
+   "5a3aee7ddb78cbdc",
+   "275d4446b7f2a2ef",
+   "869412f184275fad",
+   "a456b77cf33c7765",
+   "80c4e097f4d372cc",
+   "c99c4a99bf1c3d5f",
+   "111c5a5b81e93698",
+   "a525bca5e83c2003",
+   "bcdb3e8c7942698a",
+   "1e2b3a6793e4c86f"
+  ],
+  "combined_geometry_sha256": "9d0f6de705701586bf124413a3ef8921a7d3e0dfbfa8b2fe7bb246ed61813fad",
+  "families": [
+   "kufi-bold",
+   "kufi-minimal",
+   "naskh-elegant",
+   "naskh-luxury",
+   "naskh-openwork",
+   "petite-charm",
+   "plate-relief",
+   "suspended-bar"
+  ],
+  "compositions": [
+   "bare",
+   "plate_oval",
+   "plate_rect",
+   "top_bar",
+   "underline_bar"
+  ],
+  "fonts": [
+   "amiri-regular",
+   "cairo",
+   "scheherazade-new"
+  ]
+ },
+ "Basma": {
+  "top_candidate_ids": [
+   "f3eaf4cedb9312b1",
+   "2362930ab780c3e3",
+   "8afefaf20b415db6",
+   "bb5bb0240d85bac7",
+   "d3d0e035592cc101",
+   "5d735ca50f2368c5",
+   "f457919c551b3f41",
+   "7f8a926ce5e851ee",
+   "96451407ccea0a93",
+   "506cb374b4c5ad81"
+  ],
+  "combined_geometry_sha256": "936335ece3ba3eaf889df19731282dc9e611bbc63e58994ea02e0c9fdc07c335",
+  "families": [
+   "frame-openwork",
+   "kufi-bold",
+   "kufi-minimal",
+   "naskh-elegant",
+   "naskh-luxury",
+   "naskh-nameplate",
+   "petite-charm",
+   "plate-relief",
+   "suspended-bar"
+  ],
+  "compositions": [
+   "bare",
+   "baseline_bar",
+   "frame_rect",
+   "plate_oval",
+   "plate_rect",
+   "top_bar",
+   "underline_bar"
+  ],
+  "fonts": [
+   "amiri-regular",
+   "cairo",
+   "scheherazade-new"
+  ]
+ }
+}

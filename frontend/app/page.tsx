@@ -42,13 +42,24 @@ export default function GoldenPathPage() {
   const [confirmChecked, setConfirmChecked] = useState(false);
   const [genStep, setGenStep] = useState(0);
   const [proofs, setProofs] = useState<ProofCard[]>([]);
-  const [selected, setSelected] = useState<{
+  interface SelectedVersion {
     version_id: string;
     version_number: number;
     source_text_sha256: string;
     geometry_hash: string;
+    validation_passed: boolean;
+    recipe: any;
     svg?: string;
-  } | null>(null);
+  }
+  const [history, setHistory] = useState<SelectedVersion[]>([]);
+  const [histIdx, setHistIdx] = useState(-1);
+  const selected = histIdx >= 0 ? history[histIdx] : null;
+  function pushVersion(v: SelectedVersion) {
+    setHistory((h) => [...h.slice(0, histIdx + 1), v]);
+    setHistIdx((i) => i + 1);
+  }
+  const [editOpen, setEditOpen] = useState(false);
+  const [editParams, setEditParams] = useState<any>({});
   const [repair, setRepair] = useState<{
     available: boolean;
     beforeSvg?: string;
@@ -150,12 +161,65 @@ export default function GoldenPathPage() {
     setBusy(true);
     try {
       const sel = await api.selectCandidate(designId, candidateId);
-      const svg = await api.versionSvg(sel.version_id);
-      setSelected({ ...sel, svg });
+      const [svg, full] = await Promise.all([
+        api.versionSvg(sel.version_id),
+        api.getVersion(sel.version_id),
+      ]);
+      const v = {
+        version_id: sel.version_id,
+        version_number: sel.version_number,
+        source_text_sha256: sel.source_text_sha256,
+        geometry_hash: sel.geometry_hash,
+        validation_passed: true,
+        recipe: full.recipe,
+        svg,
+      };
+      setHistory([v]);
+      setHistIdx(0);
+      setEditParams({ ...full.recipe });
       const opts = await api.repairOptions(sel.version_id);
       setRepair({ available: opts.options.length > 0, applied: false });
       setBusy(false);
       setStep("selected");
+    } catch {
+      fail(t.error_generation);
+    }
+  }
+
+  async function applyCopilotEdit() {
+    if (!selected) return;
+    setBusy(true);
+    setError(null);
+    const overrides: any = {};
+    for (const k of [
+      "stroke_delta_mm", "letter_spacing_mm", "x_scale", "y_scale",
+      "target_height_mm", "composition", "loops", "dot_strategy",
+    ]) {
+      if (editParams[k] !== undefined && editParams[k] !== selected.recipe[k]) {
+        overrides[k] = editParams[k];
+      }
+    }
+    if (Object.keys(overrides).length === 0) {
+      setBusy(false);
+      return;
+    }
+    try {
+      const res = await api.editVersion(selected.version_id, overrides, "copilot edit");
+      const [svg, full] = await Promise.all([
+        api.versionSvg(res.version_id),
+        api.getVersion(res.version_id),
+      ]);
+      pushVersion({
+        version_id: res.version_id,
+        version_number: res.version_number,
+        source_text_sha256: res.source_text_sha256,
+        geometry_hash: res.geometry_hash,
+        validation_passed: res.validation_passed,
+        recipe: full.recipe,
+        svg,
+      });
+      if (!res.validation_passed) setError(t.edit_invalid);
+      setBusy(false);
     } catch {
       fail(t.error_generation);
     }
@@ -188,11 +252,13 @@ export default function GoldenPathPage() {
     setBusy(true);
     try {
       const v = await api.getVersion(repair.newVersionId);
-      setSelected({
+      pushVersion({
         version_id: v.version_id,
         version_number: v.version_number,
         source_text_sha256: v.source_text_sha256,
         geometry_hash: v.geometry_hash,
+        validation_passed: v.validation_passed,
+        recipe: v.recipe,
         svg: repair.afterSvg,
       });
       setRepair((r) => ({ ...r, applied: true }));
@@ -487,9 +553,104 @@ export default function GoldenPathPage() {
             </div>
           )}
 
+          <div className="flex items-center justify-between rounded-lg bg-white p-2 text-sm" data-testid="version-bar">
+            <span>
+              {t.version_label} <b data-testid="current-version">{selected.version_number}</b>
+              {!selected.validation_passed && " ⚠"}
+            </span>
+            <span className="flex gap-2">
+              <button
+                data-testid="undo"
+                disabled={histIdx <= 0 || busy}
+                onClick={() => { setHistIdx(histIdx - 1); setEditParams({ ...history[histIdx - 1].recipe }); }}
+                className="rounded border border-stone-300 px-3 py-1 disabled:opacity-30"
+              >
+                {t.undo}
+              </button>
+              <button
+                data-testid="redo"
+                disabled={histIdx >= history.length - 1 || busy}
+                onClick={() => { setHistIdx(histIdx + 1); setEditParams({ ...history[histIdx + 1].recipe }); }}
+                className="rounded border border-stone-300 px-3 py-1 disabled:opacity-30"
+              >
+                {t.redo}
+              </button>
+            </span>
+          </div>
+
+          <button
+            data-testid="edit-toggle"
+            onClick={() => setEditOpen(!editOpen)}
+            className="rounded-xl border border-brand-gold p-3 text-sm font-semibold text-brand-gold"
+          >
+            {t.edit_open}
+          </button>
+
+          {editOpen && (
+            <div className="flex flex-col gap-3 rounded-xl border border-stone-200 bg-white p-4" data-testid="copilot-panel">
+              <p className="text-sm font-bold">{t.edit_title}</p>
+              {([
+                ["stroke_delta_mm", t.edit_thickness, 0, 0.5, 0.01],
+                ["letter_spacing_mm", t.edit_spacing, -0.3, 1.5, 0.05],
+                ["x_scale", t.edit_width, 0.8, 1.3, 0.01],
+                ["y_scale", t.edit_height_scale, 0.8, 1.4, 0.01],
+                ["target_height_mm", t.edit_size, 8, 20, 0.5],
+              ] as [string, string, number, number, number][]).map(([key, label, min, max, step_]) => (
+                <label key={key} className="text-xs">
+                  <span className="flex justify-between">
+                    <span>{label}</span>
+                    <span className="tabular-nums">{Number(editParams[key] ?? 0).toFixed(2)}</span>
+                  </span>
+                  <input
+                    type="range"
+                    data-testid={`slider-${key}`}
+                    min={min} max={max} step={step_}
+                    value={editParams[key] ?? 0}
+                    onChange={(e) => setEditParams({ ...editParams, [key]: Number(e.target.value) })}
+                    className="w-full accent-brand-gold"
+                  />
+                </label>
+              ))}
+              <label className="text-xs">
+                {t.edit_composition}
+                <select
+                  data-testid="select-composition"
+                  value={editParams.composition ?? "bare"}
+                  onChange={(e) => setEditParams({ ...editParams, composition: e.target.value })}
+                  className="mt-1 w-full rounded border border-stone-300 p-2"
+                >
+                  {["bare", "baseline_bar", "underline_bar", "top_bar", "plate_oval", "plate_rect", "frame_circle", "frame_rect"].map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </label>
+              <label className="text-xs">
+                {t.edit_loops}
+                <select
+                  data-testid="select-loops"
+                  value={editParams.loops ?? "top"}
+                  onChange={(e) => setEditParams({ ...editParams, loops: e.target.value })}
+                  className="mt-1 w-full rounded border border-stone-300 p-2"
+                >
+                  {["top", "left_right", "none"].map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </label>
+              <button
+                data-testid="apply-edit"
+                disabled={busy}
+                onClick={applyCopilotEdit}
+                className="rounded-lg bg-brand-dark py-3 text-sm font-semibold text-white disabled:opacity-40"
+              >
+                {t.edit_apply}
+              </button>
+            </div>
+          )}
+
           <button
             data-testid="to-approve"
-            disabled={busy}
+            disabled={busy || !selected.validation_passed}
             onClick={() => setStep("approve")}
             className="rounded-xl bg-brand-dark p-4 text-lg font-semibold text-white disabled:opacity-40"
           >

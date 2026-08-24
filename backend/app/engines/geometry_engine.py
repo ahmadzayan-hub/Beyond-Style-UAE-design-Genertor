@@ -26,7 +26,11 @@ QUAD_SEGS = 8  # deterministic buffer resolution
 
 @dataclass
 class BuiltGeometry:
-    geometry: MultiPolygon  # final geometry, mm
+    geometry: MultiPolygon  # final manufacturing silhouette, mm (canonical)
+    # Text-only geometry in the same final coordinates. Used by the proof
+    # renderer to differentiate raised text on solid plates. Display aid
+    # only — the manufacturing truth remains `geometry`.
+    text_geometry: MultiPolygon | None = None
     outline_issues: list[str] = field(default_factory=list)
     bridges_added: int = 0
     loop_centers_mm: list[tuple[float, float]] = field(default_factory=list)
@@ -164,6 +168,7 @@ def compose(runs: list[ShapedRun], recipe: RecipeParams, loop_inner_d: float, lo
     if body.is_empty:
         return BuiltGeometry(geometry=MultiPolygon([]), outline_issues=issues)
 
+    text_body = _as_multipolygon(body)
     minx, miny, maxx, maxy = body.bounds
     w, h = maxx - minx, maxy - miny
     ch = recipe.connector_height_mm
@@ -192,6 +197,15 @@ def compose(runs: list[ShapedRun], recipe: RecipeParams, loop_inner_d: float, lo
             Point(cx, cy).buffer(r, quad_segs=QUAD_SEGS * 4)
         )
         parts.append(ring)
+    elif recipe.composition == "frame_rect":
+        # Open rectangular frame around the text (openwork tag).
+        m = recipe.frame_margin_mm
+        outer = box(minx - m - ch, miny - m - ch, maxx + m + ch, maxy + m + ch)
+        inner = box(minx - m, miny - m, maxx + m, maxy + m)
+        parts.append(outer.difference(inner))
+    elif recipe.composition == "top_bar":
+        # Hanging bar above the text; letters suspend from it.
+        parts.append(box(minx - ch, maxy - ch * 0.3, maxx + ch, maxy + ch))
     # "bare": text only; dots must be bridged.
 
     geom = _as_multipolygon(unary_union(parts))
@@ -225,6 +239,7 @@ def compose(runs: list[ShapedRun], recipe: RecipeParams, loop_inner_d: float, lo
     geom = _as_multipolygon(geom.buffer(0))
     return BuiltGeometry(
         geometry=geom,
+        text_geometry=text_body,
         outline_issues=issues,
         bridges_added=bridges,
         loop_centers_mm=loop_centers,

@@ -82,6 +82,8 @@ class DesignCandidateRow(TimestampMixin, Base):
     ranking_config_version: Mapped[str] = mapped_column(String(16), nullable=False)
     diversity_rank: Mapped[int | None] = mapped_column(Integer)
     geometry_wkt: Mapped[str] = mapped_column(Text, nullable=False)
+    text_geometry_wkt: Mapped[str | None] = mapped_column(Text)
+    quality_report: Mapped[dict | None] = mapped_column(JSONB)
     source_text_sha256: Mapped[str] = mapped_column(String(64), nullable=False)
 
     request: Mapped[DesignRequest] = relationship(back_populates="candidates")
@@ -119,6 +121,7 @@ class DesignVersion(TimestampMixin, Base):
     immutable_source_text: Mapped[str] = mapped_column(Text, nullable=False)
     source_text_sha256: Mapped[str] = mapped_column(String(64), nullable=False)
     geometry_wkt: Mapped[str] = mapped_column(Text, nullable=False)
+    text_geometry_wkt: Mapped[str | None] = mapped_column(Text)
     geometry_hash: Mapped[str] = mapped_column(String(64), nullable=False)
 
     schema_version: Mapped[str] = mapped_column(String(16), nullable=False)

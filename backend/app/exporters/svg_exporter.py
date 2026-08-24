@@ -34,6 +34,59 @@ def geometry_to_path_d(geom, flip_y: float) -> str:
     return " ".join(parts)
 
 
+#: Compositions where the text sits on a solid plate — without relief
+#: differentiation the proof would render as a featureless silhouette.
+RELIEF_COMPOSITIONS = {"plate_oval", "plate_rect"}
+
+
+def export_proof_svg(candidate: DesignCandidate, source: ImmutableSourceText) -> str:
+    """High-fidelity customer/designer proof render.
+
+    Faithful to the canonical vector geometry (same mm frame, same holes,
+    counters, bridges, dots and loops). For relief compositions the raised
+    text is drawn as a second differentiated layer so it stays visible on
+    the solid plate. Display artifact only — production SVG/DXF remain the
+    single-silhouette canonical exports."""
+    if not candidate.geometry_wkt:
+        raise ValueError("Candidate has no geometry to render.")
+    from shapely import affinity
+
+    geom = shapely_wkt.loads(candidate.geometry_wkt)
+    minx, miny, maxx, maxy = geom.bounds
+    margin = 1.0
+    w = round(maxx - minx + 2 * margin, PRECISION)
+    h = round(maxy - miny + 2 * margin, PRECISION)
+    local = affinity.translate(geom, xoff=-minx + margin, yoff=-miny + margin)
+    base_d = geometry_to_path_d(local, flip_y=h)
+
+    text_layer = ""
+    if candidate.recipe.composition in RELIEF_COMPOSITIONS and candidate.text_geometry_wkt:
+        text_geom = shapely_wkt.loads(candidate.text_geometry_wkt)
+        text_local = affinity.translate(text_geom, xoff=-minx + margin, yoff=-miny + margin)
+        text_d = geometry_to_path_d(text_local, flip_y=h)
+        text_layer = (
+            f'  <path d="{text_d}" fill="#f5efe2" fill-rule="evenodd" stroke="none"/>\n'
+        )
+
+    meta = {
+        "proof_render": True,
+        "relief_differentiated": bool(text_layer),
+        "design_id": candidate.design_id,
+        "candidate_id": candidate.candidate_id,
+        "units": "mm",
+        "source_text_sha256": source.sha256,
+        "note": "display proof; canonical geometry unchanged",
+    }
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}mm" height="{h}mm" '
+        f'viewBox="0 0 {w} {h}">\n'
+        f"  <metadata>{escape(json.dumps(meta, ensure_ascii=False))}</metadata>\n"
+        f'  <path d="{base_d}" fill="#1a1a1a" fill-rule="evenodd" stroke="none"/>\n'
+        f"{text_layer}"
+        f"</svg>\n"
+    )
+
+
 def export_svg(candidate: DesignCandidate, source: ImmutableSourceText) -> str:
     if not candidate.geometry_wkt:
         raise ValueError("Candidate has no geometry to export.")

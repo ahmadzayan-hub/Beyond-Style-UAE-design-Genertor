@@ -1,22 +1,1049 @@
 {
-  "library_version": "0.1.0",
-  "note": "Seed parametric design recipes for the P0 slice (~10 of the eventual 150+ archetypes). Each recipe is a structured construction, not artwork. Values in mm.",
-  "recipes": [
-    {"recipe_id": "naskh-classic-bar", "name": "Classic Naskh nameplate", "font_id": "amiri-regular", "composition": "baseline_bar", "letter_spacing_mm": 0.0, "x_scale": 1.0, "y_scale": 1.0, "stroke_delta_mm": 0.12, "dot_strategy": "bridge", "connector_height_mm": 1.2, "loops": "left_right", "frame_margin_mm": 2.0, "target_height_mm": 12.0},
-    {"recipe_id": "naskh-flow-bare", "name": "Flowing Naskh script", "font_id": "amiri-regular", "composition": "bare", "letter_spacing_mm": 0.0, "x_scale": 1.0, "y_scale": 1.0, "stroke_delta_mm": 0.22, "dot_strategy": "bridge", "connector_height_mm": 1.0, "loops": "top", "frame_margin_mm": 2.0, "target_height_mm": 14.0},
-    {"recipe_id": "naskh-tall-elegant", "name": "Elongated elegant Naskh", "font_id": "amiri-regular", "composition": "underline_bar", "letter_spacing_mm": 0.3, "x_scale": 0.92, "y_scale": 1.18, "stroke_delta_mm": 0.15, "dot_strategy": "bridge", "connector_height_mm": 1.1, "loops": "left_right", "frame_margin_mm": 2.0, "target_height_mm": 13.0},
-    {"recipe_id": "trad-naskh-circle", "name": "Traditional medallion ring", "font_id": "scheherazade-new", "composition": "frame_circle", "letter_spacing_mm": 0.0, "x_scale": 1.0, "y_scale": 1.0, "stroke_delta_mm": 0.18, "dot_strategy": "bridge", "connector_height_mm": 1.2, "loops": "top", "frame_margin_mm": 1.6, "target_height_mm": 10.0},
-    {"recipe_id": "trad-naskh-bar", "name": "Traditional Naskh nameplate", "font_id": "scheherazade-new", "composition": "baseline_bar", "letter_spacing_mm": 0.2, "x_scale": 1.05, "y_scale": 1.0, "stroke_delta_mm": 0.2, "dot_strategy": "bridge", "connector_height_mm": 1.3, "loops": "left_right", "frame_margin_mm": 2.0, "target_height_mm": 11.0},
-    {"recipe_id": "kufi-solid-plate-oval", "name": "Modern oval plate relief", "font_id": "cairo", "composition": "plate_oval", "letter_spacing_mm": 0.2, "x_scale": 1.0, "y_scale": 1.0, "stroke_delta_mm": 0.0, "dot_strategy": "bridge", "connector_height_mm": 1.2, "loops": "top", "frame_margin_mm": 2.2, "target_height_mm": 9.0},
-    {"recipe_id": "kufi-bold-bare", "name": "Bold modern Kufi silhouette", "font_id": "cairo", "composition": "bare", "letter_spacing_mm": 0.15, "x_scale": 1.0, "y_scale": 1.0, "stroke_delta_mm": 0.28, "dot_strategy": "bridge", "connector_height_mm": 1.0, "loops": "top", "frame_margin_mm": 2.0, "target_height_mm": 11.0},
-    {"recipe_id": "kufi-wide-minimal", "name": "Minimal wide spacing", "font_id": "cairo", "composition": "underline_bar", "letter_spacing_mm": 0.9, "x_scale": 1.08, "y_scale": 0.95, "stroke_delta_mm": 0.05, "dot_strategy": "bridge", "connector_height_mm": 0.9, "loops": "left_right", "frame_margin_mm": 2.0, "target_height_mm": 10.0},
-    {"recipe_id": "kufi-rect-plate", "name": "Geometric rectangular tag", "font_id": "cairo", "composition": "plate_rect", "letter_spacing_mm": 0.3, "x_scale": 1.0, "y_scale": 1.0, "stroke_delta_mm": 0.0, "dot_strategy": "bridge", "connector_height_mm": 1.2, "loops": "top", "frame_margin_mm": 1.8, "target_height_mm": 8.5},
-    {"recipe_id": "naskh-condensed-luxury", "name": "Condensed luxury script", "font_id": "amiri-regular", "composition": "bare", "letter_spacing_mm": -0.1, "x_scale": 0.98, "y_scale": 1.28, "stroke_delta_mm": 0.3, "dot_strategy": "bridge", "connector_height_mm": 1.1, "loops": "top", "frame_margin_mm": 2.0, "target_height_mm": 15.0}
-  ],
-  "variation_axes": {
-    "note": "Deterministic per-recipe variations applied by the generator to reach >=30 candidates.",
-    "stroke_delta_mm": [0.0, 0.1],
-    "letter_spacing_mm": [0.0, 0.25],
-    "y_scale": [1.0, 1.1]
+ "library_version": "0.2.0",
+ "note": "Curated parametric archetypes (32) — each with a distinct visual purpose and Design DNA. Structured constructions, not artwork copies. Rights: original Beyond Style parametric recipes. Values in mm.",
+ "recipes": [
+  {
+   "recipe_id": "naskh-classic-bar",
+   "name": "Classic Naskh nameplate",
+   "font_id": "amiri-regular",
+   "composition": "baseline_bar",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.15,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "left_right",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 12,
+   "dna": {
+    "family": "naskh-nameplate",
+    "visual_purpose": "connected nameplate with side loops",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "recipe_id": "naskh-flow-script",
+   "name": "Flowing Naskh script",
+   "font_id": "amiri-regular",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.22,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 14,
+   "dna": {
+    "family": "naskh-openwork",
+    "visual_purpose": "openwork flowing script silhouette",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 11,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "recipe_id": "naskh-tall-elegant",
+   "name": "Elongated elegant Naskh",
+   "font_id": "amiri-regular",
+   "composition": "underline_bar",
+   "letter_spacing_mm": 0.3,
+   "x_scale": 0.92,
+   "y_scale": 1.18,
+   "stroke_delta_mm": 0.16,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "left_right",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 13,
+   "dna": {
+    "family": "naskh-elegant",
+    "visual_purpose": "vertically stretched elegance on underline",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 10,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "recipe_id": "naskh-condensed-luxury",
+   "name": "Condensed luxury script",
+   "font_id": "amiri-regular",
+   "composition": "bare",
+   "letter_spacing_mm": -0.1,
+   "x_scale": 0.98,
+   "y_scale": 1.28,
+   "stroke_delta_mm": 0.3,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 15,
+   "dna": {
+    "family": "naskh-luxury",
+    "visual_purpose": "dense high-contrast luxury statement",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 12,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "recipe_id": "naskh-medallion",
+   "name": "Naskh medallion ring",
+   "font_id": "amiri-regular",
+   "composition": "frame_circle",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.2,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 1.6,
+   "target_height_mm": 10,
+   "dna": {
+    "family": "circular-medallion",
+    "visual_purpose": "circular medallion enclosure",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 8.0,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "recipe_id": "naskh-oval-cameo",
+   "name": "Oval cameo relief",
+   "font_id": "amiri-regular",
+   "composition": "plate_oval",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.1,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.2,
+   "target_height_mm": 9,
+   "dna": {
+    "family": "plate-relief",
+    "visual_purpose": "raised text on solid oval cameo",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 8.0,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "recipe_id": "naskh-open-frame",
+   "name": "Naskh gallery frame",
+   "font_id": "amiri-regular",
+   "composition": "frame_rect",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.18,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 1.8,
+   "target_height_mm": 10.5,
+   "dna": {
+    "family": "frame-openwork",
+    "visual_purpose": "openwork rectangular gallery frame",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 8.0,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "recipe_id": "naskh-suspended",
+   "name": "Suspended Naskh letters",
+   "font_id": "amiri-regular",
+   "composition": "top_bar",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.2,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.1,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 12.5,
+   "dna": {
+    "family": "suspended-bar",
+    "visual_purpose": "letters hanging from a top bar",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9.5,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "recipe_id": "naskh-wide-airy",
+   "name": "Wide airy Naskh",
+   "font_id": "amiri-regular",
+   "composition": "bare",
+   "letter_spacing_mm": 0.6,
+   "x_scale": 1.1,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.15,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "left_right",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11,
+   "dna": {
+    "family": "naskh-airy",
+    "visual_purpose": "airy wide-tracked horizontal script",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 8.0,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "recipe_id": "naskh-bold-tag",
+   "name": "Bold Naskh solid tag",
+   "font_id": "amiri-regular",
+   "composition": "plate_rect",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.08,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 1.5,
+   "target_height_mm": 8.5,
+   "dna": {
+    "family": "plate-relief",
+    "visual_purpose": "compact solid rectangular tag relief",
+    "products": [
+     "pendant",
+     "keychain",
+     "bracelet"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 8.0,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "recipe_id": "naskh-petite-charm",
+   "name": "Petite Naskh charm",
+   "font_id": "amiri-regular",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.3,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 10,
+   "dna": {
+    "family": "petite-charm",
+    "visual_purpose": "small delicate charm",
+    "products": [
+     "bracelet",
+     "earrings",
+     "pendant"
+    ],
+    "text_length_chars": [
+     1,
+     8
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 8.0,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "recipe_id": "trad-nameplate",
+   "name": "Traditional nameplate",
+   "font_id": "scheherazade-new",
+   "composition": "baseline_bar",
+   "letter_spacing_mm": 0.2,
+   "x_scale": 1.05,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.2,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.3,
+   "loops": "left_right",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11,
+   "dna": {
+    "family": "naskh-nameplate",
+    "visual_purpose": "traditional connected nameplate",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 8.0,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "recipe_id": "trad-medallion",
+   "name": "Traditional medallion",
+   "font_id": "scheherazade-new",
+   "composition": "frame_circle",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.18,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 1.6,
+   "target_height_mm": 10,
+   "dna": {
+    "family": "circular-medallion",
+    "visual_purpose": "traditional circular medallion",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 8.0,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "recipe_id": "trad-flow",
+   "name": "Traditional flowing script",
+   "font_id": "scheherazade-new",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.2,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 13.5,
+   "dna": {
+    "family": "naskh-openwork",
+    "visual_purpose": "traditional openwork script",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 10.5,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "recipe_id": "trad-underline",
+   "name": "Traditional underline",
+   "font_id": "scheherazade-new",
+   "composition": "underline_bar",
+   "letter_spacing_mm": 0.2,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.2,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 12,
+   "dna": {
+    "family": "naskh-elegant",
+    "visual_purpose": "script resting on an underline",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "recipe_id": "trad-tall",
+   "name": "Tall traditional script",
+   "font_id": "scheherazade-new",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.25,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 14,
+   "dna": {
+    "family": "naskh-luxury",
+    "visual_purpose": "vertically emphasized traditional form",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 11,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "recipe_id": "trad-oval-relief",
+   "name": "Traditional oval relief",
+   "font_id": "scheherazade-new",
+   "composition": "plate_oval",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.1,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 9,
+   "dna": {
+    "family": "plate-relief",
+    "visual_purpose": "raised traditional text on oval plate",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 8.0,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "recipe_id": "trad-suspended",
+   "name": "Suspended traditional letters",
+   "font_id": "scheherazade-new",
+   "composition": "top_bar",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.22,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 12,
+   "dna": {
+    "family": "suspended-bar",
+    "visual_purpose": "traditional letters from hanging bar",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "recipe_id": "trad-frame-tag",
+   "name": "Traditional frame tag",
+   "font_id": "scheherazade-new",
+   "composition": "frame_rect",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.2,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 1.7,
+   "target_height_mm": 10,
+   "dna": {
+    "family": "frame-openwork",
+    "visual_purpose": "openwork frame around traditional script",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 8.0,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "recipe_id": "trad-compact-bold",
+   "name": "Compact bold traditional",
+   "font_id": "scheherazade-new",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.32,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11,
+   "dna": {
+    "family": "petite-charm",
+    "visual_purpose": "compact bold charm",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     10
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 8.0,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "recipe_id": "trad-wide-classic",
+   "name": "Wide classic nameplate",
+   "font_id": "scheherazade-new",
+   "composition": "baseline_bar",
+   "letter_spacing_mm": 0.5,
+   "x_scale": 1.08,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.18,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 10.5,
+   "dna": {
+    "family": "naskh-nameplate",
+    "visual_purpose": "wide classic nameplate",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 8.0,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "recipe_id": "kufi-bold-silhouette",
+   "name": "Bold modern Kufi",
+   "font_id": "cairo",
+   "composition": "bare",
+   "letter_spacing_mm": 0.15,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.28,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11,
+   "dna": {
+    "family": "kufi-bold",
+    "visual_purpose": "bold geometric silhouette",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 8.0,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "recipe_id": "kufi-minimal-line",
+   "name": "Minimal Kufi line",
+   "font_id": "cairo",
+   "composition": "underline_bar",
+   "letter_spacing_mm": 0.9,
+   "x_scale": 1.08,
+   "y_scale": 0.95,
+   "stroke_delta_mm": 0.05,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 0.9,
+   "loops": "left_right",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 10,
+   "dna": {
+    "family": "kufi-minimal",
+    "visual_purpose": "hairline minimal on underline",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 8.0,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "recipe_id": "kufi-oval-relief",
+   "name": "Modern oval relief",
+   "font_id": "cairo",
+   "composition": "plate_oval",
+   "letter_spacing_mm": 0.2,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.0,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.2,
+   "target_height_mm": 9,
+   "dna": {
+    "family": "plate-relief",
+    "visual_purpose": "modern raised text on oval plate",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 8.0,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "recipe_id": "kufi-rect-tag",
+   "name": "Geometric rectangular tag",
+   "font_id": "cairo",
+   "composition": "plate_rect",
+   "letter_spacing_mm": 0.3,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.0,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 1.8,
+   "target_height_mm": 8.5,
+   "dna": {
+    "family": "plate-relief",
+    "visual_purpose": "geometric solid tag relief",
+    "products": [
+     "pendant",
+     "keychain",
+     "cufflinks"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 8.0,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "recipe_id": "kufi-open-frame",
+   "name": "Kufi open frame",
+   "font_id": "cairo",
+   "composition": "frame_rect",
+   "letter_spacing_mm": 0.2,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.15,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 1.8,
+   "target_height_mm": 10,
+   "dna": {
+    "family": "frame-openwork",
+    "visual_purpose": "geometric openwork frame",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 8.0,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "recipe_id": "kufi-circle-badge",
+   "name": "Kufi circle badge",
+   "font_id": "cairo",
+   "composition": "frame_circle",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.15,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 1.5,
+   "target_height_mm": 9.5,
+   "dna": {
+    "family": "circular-medallion",
+    "visual_purpose": "modern circular badge",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 8.0,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "recipe_id": "kufi-suspended",
+   "name": "Suspended Kufi letters",
+   "font_id": "cairo",
+   "composition": "top_bar",
+   "letter_spacing_mm": 0.25,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.2,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11.5,
+   "dna": {
+    "family": "suspended-bar",
+    "visual_purpose": "geometric letters from top bar",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 8.5,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "recipe_id": "kufi-wide-tracking",
+   "name": "Wide-tracked Kufi",
+   "font_id": "cairo",
+   "composition": "bare",
+   "letter_spacing_mm": 1.2,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.18,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "left_right",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 10,
+   "dna": {
+    "family": "kufi-minimal",
+    "visual_purpose": "ultra-wide modern tracking",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 8.0,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "recipe_id": "kufi-tall-monolith",
+   "name": "Tall Kufi monolith",
+   "font_id": "cairo",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 0.95,
+   "y_scale": 1.35,
+   "stroke_delta_mm": 0.22,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 14,
+   "dna": {
+    "family": "kufi-bold",
+    "visual_purpose": "tall condensed geometric block",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 11,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "recipe_id": "kufi-petite-charm",
+   "name": "Petite Kufi charm",
+   "font_id": "cairo",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 9,
+   "dna": {
+    "family": "petite-charm",
+    "visual_purpose": "small geometric charm",
+    "products": [
+     "bracelet",
+     "earrings"
+    ],
+    "text_length_chars": [
+     1,
+     8
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 8.0,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "recipe_id": "kufi-classic-bar",
+   "name": "Kufi nameplate",
+   "font_id": "cairo",
+   "composition": "baseline_bar",
+   "letter_spacing_mm": 0.2,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.15,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "left_right",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 10.5,
+   "dna": {
+    "family": "kufi-nameplate",
+    "visual_purpose": "modern nameplate with bar",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 8.0,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
   }
+ ],
+ "variation_axes": {
+  "note": "Deterministic stroke variants applied by the generator for parameter spread beyond the curated bases.",
+  "stroke_delta_mm": [
+   0.0,
+   0.08,
+   0.15
+  ],
+  "letter_spacing_mm": [
+   0.0,
+   0.25
+  ],
+  "y_scale": [
+   1.0,
+   1.1
+  ]
+ }
 }

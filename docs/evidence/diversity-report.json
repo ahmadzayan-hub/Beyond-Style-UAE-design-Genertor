@@ -1,0 +1,146 @@
+{
+ "ميثة": {
+  "top_count": 10,
+  "max_pairwise_perceptual_iou": 0.801,
+  "feature_diversity_min_pairwise": 0.5928,
+  "families": [
+   "circular-medallion",
+   "naskh-elegant",
+   "naskh-luxury",
+   "petite-charm",
+   "plate-relief",
+   "suspended-bar"
+  ],
+  "compositions": [
+   "bare",
+   "frame_circle",
+   "plate_oval",
+   "plate_rect",
+   "top_bar",
+   "underline_bar"
+  ],
+  "fonts": [
+   "amiri-regular",
+   "cairo",
+   "scheherazade-new"
+  ],
+  "all_manufacturing_pass": true
+ },
+ "نورة": {
+  "top_count": 10,
+  "max_pairwise_perceptual_iou": 0.793,
+  "feature_diversity_min_pairwise": 0.6259,
+  "families": [
+   "frame-openwork",
+   "kufi-bold",
+   "kufi-minimal",
+   "naskh-elegant",
+   "naskh-openwork",
+   "petite-charm",
+   "plate-relief",
+   "suspended-bar"
+  ],
+  "compositions": [
+   "bare",
+   "frame_rect",
+   "plate_oval",
+   "plate_rect",
+   "top_bar",
+   "underline_bar"
+  ],
+  "fonts": [
+   "amiri-regular",
+   "cairo",
+   "scheherazade-new"
+  ],
+  "all_manufacturing_pass": true
+ },
+ "محمد": {
+  "top_count": 10,
+  "max_pairwise_perceptual_iou": 0.778,
+  "feature_diversity_min_pairwise": 0.7679,
+  "families": [
+   "circular-medallion",
+   "frame-openwork",
+   "naskh-elegant",
+   "naskh-luxury",
+   "petite-charm",
+   "plate-relief",
+   "suspended-bar"
+  ],
+  "compositions": [
+   "bare",
+   "frame_circle",
+   "frame_rect",
+   "plate_oval",
+   "plate_rect",
+   "top_bar",
+   "underline_bar"
+  ],
+  "fonts": [
+   "amiri-regular",
+   "cairo",
+   "scheherazade-new"
+  ],
+  "all_manufacturing_pass": true
+ },
+ "Amal": {
+  "top_count": 10,
+  "max_pairwise_perceptual_iou": 0.854,
+  "feature_diversity_min_pairwise": 0.4903,
+  "families": [
+   "kufi-bold",
+   "kufi-minimal",
+   "naskh-elegant",
+   "naskh-luxury",
+   "naskh-openwork",
+   "petite-charm",
+   "plate-relief",
+   "suspended-bar"
+  ],
+  "compositions": [
+   "bare",
+   "plate_oval",
+   "plate_rect",
+   "top_bar",
+   "underline_bar"
+  ],
+  "fonts": [
+   "amiri-regular",
+   "cairo",
+   "scheherazade-new"
+  ],
+  "all_manufacturing_pass": true
+ },
+ "Basma": {
+  "top_count": 10,
+  "max_pairwise_perceptual_iou": 0.811,
+  "feature_diversity_min_pairwise": 0.6155,
+  "families": [
+   "frame-openwork",
+   "kufi-bold",
+   "kufi-minimal",
+   "naskh-elegant",
+   "naskh-luxury",
+   "naskh-nameplate",
+   "petite-charm",
+   "plate-relief",
+   "suspended-bar"
+  ],
+  "compositions": [
+   "bare",
+   "baseline_bar",
+   "frame_rect",
+   "plate_oval",
+   "plate_rect",
+   "top_bar",
+   "underline_bar"
+  ],
+  "fonts": [
+   "amiri-regular",
+   "cairo",
+   "scheherazade-new"
+  ],
+  "all_manufacturing_pass": true
+ }
+}
