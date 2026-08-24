@@ -1,0 +1,7 @@
+# Optional AI dependencies (worker host only — NOT installed in API/CI).
+# Verified against the Apache-2.0 models in app/ai/registry.py.
+torch==2.4.1
+transformers==4.49.0
+diffusers==0.31.0
+accelerate==1.0.1
+safetensors==0.4.5

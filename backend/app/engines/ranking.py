@@ -39,6 +39,23 @@ class RankingConfig(BaseModel):
 
 DEFAULT_RANKING = RankingConfig()
 
+#: Reference-driven requests (spec K): ArabicIdentity 25, Manufacturability 25,
+#: ReferenceIntentMatch 15 (applied as the transparent intake-hint bonus),
+#: Aesthetic 15, Originality 10, ProductFit 5, Diversity 5 (diversity is
+#: enforced by the max-min selector + perceptual gate, not the scalar score).
+#: Hard gates (text identity, manufacturing, rights, copy risk, export lock)
+#: always override the score.
+REFERENCE_RANKING = RankingConfig(
+    version="ref-0.1.0",
+    arabic_integrity=25.0,
+    manufacturability=25.0,
+    visual_quality=15.0,
+    wearability=5.0,
+    originality=10.0,
+    customer_fit=5.0,
+)
+REFERENCE_INTENT_WEIGHT = 15.0
+
 HEURISTIC_DIMENSIONS = {
     "visual_quality": "HEURISTIC / NOT ML-VALIDATED (aspect-ratio + fill balance)",
     "wearability": "HEURISTIC / NOT ML-VALIDATED (size envelope + hole snag proxy)",

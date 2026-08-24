@@ -211,6 +211,7 @@ def upsert_brief(
     quantity: int = 1,
     deadline: str | None = None,
     delivery_emirate: str | None = None,
+    style_strength: float = 0.5,
 ) -> m.CustomerBrief:
     req = session.get(m.DesignRequest, request_id)
     if req is None:
@@ -247,7 +248,26 @@ def upsert_brief(
     brief.material_preference = material_preference
     brief.style_intent = style_intent
     brief.reference_ids = [str(r.id) for r in refs]
-    brief.generation_hints = generation_hints_from(analysis, style_intent)
+    hints = generation_hints_from(analysis, style_intent)
+    # Reference Intelligence: if DesignDNA exists for a reference, its
+    # visual-grammar hints take precedence (style only — never text).
+    dna_row = session.execute(
+        select(m.ReferenceDNARow).where(
+            m.ReferenceDNARow.design_request_id == request_id
+        )
+    ).scalars().first()
+    if dna_row is not None:
+        from .reference_intelligence import dna_generation_hints
+
+        dna_hints = dna_generation_hints(dna_row.dna, style_strength)
+        merged = dict(hints)
+        merged.update(dna_hints)
+        if "preferred_compositions" in hints and "preferred_compositions" in dna_hints:
+            merged["preferred_compositions"] = list(
+                dict.fromkeys(dna_hints["preferred_compositions"] + hints["preferred_compositions"])
+            )
+        hints = merged
+    brief.generation_hints = hints
     brief.quantity = quantity
     brief.deadline = deadline
     brief.delivery_emirate = delivery_emirate

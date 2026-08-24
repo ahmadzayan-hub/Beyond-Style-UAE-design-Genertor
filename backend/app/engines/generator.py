@@ -321,7 +321,12 @@ def generate_candidates(
     bypass validation or the schema."""
     recipes = _adapt_for_text_length(expand_recipes(min_internal), source.normalized_text)
     all_candidates = [build_candidate(design_id, source, r, rules) for r in recipes]
-    _apply_ranking(all_candidates)
+    from .ranking import DEFAULT_RANKING, REFERENCE_RANKING
+
+    ranking_config = (
+        REFERENCE_RANKING if hints and hints.get("source") == "reference_dna" else DEFAULT_RANKING
+    )
+    _apply_ranking(all_candidates, ranking_config)
     if hints:
         _apply_hint_bonus(all_candidates, hints)
     top = select_diverse(all_candidates, top_n)
@@ -356,23 +361,35 @@ def _attach_quality_reports(top: list[DesignCandidate]) -> None:
 
 
 def _apply_hint_bonus(candidates: list[DesignCandidate], hints: dict) -> None:
+    """Reference-intent match, applied as a transparent scaled bonus.
+    style_strength (bonus_scale 0.5–1.5) maps "more original" ↔ "similar
+    inspiration". Never bypasses validation or the near-duplicate gate."""
     preferred_comp = set(hints.get("preferred_compositions", []))
     preferred_recipes = set(hints.get("preferred_recipes", []))
+    scale = float(hints.get("bonus_scale", 1.0))
     for c in candidates:
         bonus = 0.0
         if c.recipe.composition in preferred_comp:
             bonus += 4.0
         if any(c.recipe.recipe_id.startswith(r) for r in preferred_recipes):
             bonus += 4.0
+        if hints.get("prefer_kashida") and c.recipe.kashida_count > 0:
+            bonus += 3.0
+        if hints.get("prefer_swash") and c.recipe.swash != "none":
+            bonus += 3.0
+        bonus = round(bonus * scale, 4)
         if bonus and c.score_breakdown is not None:
             c.score = round(c.score + bonus, 4)
             c.score_breakdown["intake_hint_bonus"] = bonus
+            c.score_breakdown["reference_intent_match"] = True
 
 
-def _apply_ranking(candidates: list[DesignCandidate]) -> None:
+def _apply_ranking(candidates: list[DesignCandidate], ranking_config=None) -> None:
     """Score the pool with the configurable ranking engine (spec weights).
     Originality uses distance from the pool mean in normalized feature space."""
     from .ranking import DEFAULT_RANKING, score_candidate
+
+    ranking_config = ranking_config or DEFAULT_RANKING
 
     with_features = [c for c in candidates if c.features]
     vectors = _normalize_matrix([_feature_vector(c) for c in with_features]) if with_features else []
@@ -388,7 +405,8 @@ def _apply_ranking(candidates: list[DesignCandidate]) -> None:
             stroke_slack_ratio=c.recipe.stroke_delta_mm / 0.3,
             pool_mean_vector=mean,
             feature_vector=vec_by_id.get(c.candidate_id),
+            config=ranking_config,
         )
         c.score = score
         c.score_breakdown = breakdown
-        c.ranking_config_version = DEFAULT_RANKING.version
+        c.ranking_config_version = ranking_config.version

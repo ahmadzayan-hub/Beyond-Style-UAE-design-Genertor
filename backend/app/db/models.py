@@ -232,6 +232,47 @@ class CustomerBrief(TimestampMixin, Base):
     status: Mapped[str] = mapped_column(String(24), default="DRAFT", nullable=False)
 
 
+class ReferenceDNARow(TimestampMixin, Base):
+    """Structured DesignDNA + embedding for a reference asset (labelled
+    source: vlm or deterministic_fallback). Vector retrieval is served by
+    the embeddings module (pgvector-shaped interface)."""
+
+    __tablename__ = "reference_dna"
+    __table_args__ = (UniqueConstraint("reference_id"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=_uuid)
+    reference_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("reference_assets.id"), nullable=False
+    )
+    design_request_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("design_requests.id"), nullable=False, index=True
+    )
+    source: Mapped[str] = mapped_column(String(32), nullable=False)
+    analyzer_model: Mapped[str] = mapped_column(String(80), nullable=False)
+    dna: Mapped[dict] = mapped_column(JSONB, nullable=False)
+    embedding: Mapped[list] = mapped_column(JSONB, nullable=False)
+    encoder_version: Mapped[str] = mapped_column(String(32), nullable=False)
+
+
+class AIJob(TimestampMixin, Base):
+    """Async AI job queue — model work runs in a separate worker process,
+    never inside the API. Honest terminal states include MODEL_UNAVAILABLE."""
+
+    __tablename__ = "ai_jobs"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=_uuid)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utcnow, onupdate=utcnow, nullable=False
+    )
+    kind: Mapped[str] = mapped_column(String(40), nullable=False)  # analyze | preview | t2i
+    status: Mapped[str] = mapped_column(String(24), default="QUEUED", nullable=False)
+    payload: Mapped[dict] = mapped_column(JSONB, nullable=False)
+    result: Mapped[dict | None] = mapped_column(JSONB)
+    error: Mapped[str | None] = mapped_column(Text)
+    attempts: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    timeout_s: Mapped[float] = mapped_column(Float, default=120.0, nullable=False)
+
+
 class FontReference(TimestampMixin, Base):
     __tablename__ = "font_references"
     __table_args__ = (UniqueConstraint("font_id", "file_sha256"),)

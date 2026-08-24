@@ -35,6 +35,8 @@ export default function GoldenPathPage() {
   const [styleIntent, setStyleIntent] = useState<string | null>(null);
   const [refFile, setRefFile] = useState<File | null>(null);
   const [refPreview, setRefPreview] = useState<string | null>(null);
+  const [styleStrength, setStyleStrength] = useState(0.5);
+  const [refUnderstood, setRefUnderstood] = useState(false);
   const [copyNotice, setCopyNotice] = useState(false);
 
   const [designId, setDesignId] = useState<string | null>(null);
@@ -93,6 +95,11 @@ export default function GoldenPathPage() {
         try {
           const ref = await api.uploadReference(created.design_id, refFile, message || null);
           if (ref.ip_risk === "POTENTIAL_COPY_RISK") setCopyNotice(true);
+          // Reference Intelligence: DesignDNA analysis (labelled source).
+          try {
+            await api.analyzeReference(created.design_id, ref.reference_id);
+            setRefUnderstood(true);
+          } catch {}
         } catch {
           return fail(t.error_upload);
         }
@@ -102,6 +109,7 @@ export default function GoldenPathPage() {
         style_intent: styleIntent,
         product_type: "pendant",
         language: lang,
+        style_strength: styleStrength,
       });
       setBusy(false);
       setStep("confirm");
@@ -374,6 +382,21 @@ export default function GoldenPathPage() {
               />
             )}
             {refFile && (
+              <label className="mt-3 block text-xs">
+                <span className="flex justify-between">
+                  <span>{t.strength_original}</span>
+                  <span className="font-medium">{t.style_strength}</span>
+                  <span>{t.strength_similar}</span>
+                </span>
+                <input
+                  type="range" data-testid="style-strength"
+                  min={0} max={1} step={0.1} value={styleStrength}
+                  onChange={(e) => setStyleStrength(Number(e.target.value))}
+                  className="w-full accent-brand-gold"
+                />
+              </label>
+            )}
+            {refFile && (
               <textarea
                 data-testid="message-input"
                 value={message}
@@ -466,7 +489,13 @@ export default function GoldenPathPage() {
 
       {step === "proofs" && (
         <section>
-          <h2 className="mb-4 text-xl font-bold">{t.proofs_title}</h2>
+          <h2 className="mb-2 text-xl font-bold">{t.proofs_title}</h2>
+          <div className="mb-3 flex flex-wrap gap-1 text-[10px]" data-testid="trust-badges">
+            {refUnderstood && <span className="rounded-full bg-emerald-50 px-2 py-1 text-emerald-800">{t.badge_ref}</span>}
+            <span className="rounded-full bg-emerald-50 px-2 py-1 text-emerald-800">{t.badge_arabic}</span>
+            <span className="rounded-full bg-emerald-50 px-2 py-1 text-emerald-800">{t.badge_mfg}</span>
+            <span className="rounded-full bg-emerald-50 px-2 py-1 text-emerald-800">{t.badge_original}</span>
+          </div>
           <div className="grid grid-cols-2 gap-3" data-testid="proof-grid">
             {proofs.map((p) => (
               <div

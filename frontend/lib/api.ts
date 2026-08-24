@@ -61,6 +61,15 @@ export async function uploadReference(designId: string, file: File, message: str
   );
 }
 
+export async function analyzeReference(designId: string, referenceId: string) {
+  return jsonOrThrow(
+    await fetch(`/api/designs/${designId}/references/${referenceId}/analyze`, {
+      method: "POST",
+      headers: authHeaders(),
+    })
+  );
+}
+
 export async function updateBrief(designId: string, brief: object) {
   return jsonOrThrow(
     await fetch(`/api/designs/${designId}/brief`, {

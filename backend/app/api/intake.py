@@ -27,6 +27,7 @@ class BriefRequest(BaseModel):
     quantity: int = Field(default=1, ge=1, le=500)
     deadline: str | None = None
     delivery_emirate: str | None = None
+    style_strength: float = Field(default=0.5, ge=0.0, le=1.0)
 
 
 def _brief_response(brief: m.CustomerBrief) -> dict:
@@ -128,6 +129,7 @@ def update_brief(
         quantity=body.quantity,
         deadline=body.deadline,
         delivery_emirate=body.delivery_emirate,
+        style_strength=body.style_strength,
     )
     return _brief_response(brief)
 
