@@ -176,6 +176,8 @@ class DesignCandidate(BaseModel):
     validation: Optional[ValidationReport] = None
     features: Optional[CandidateFeatures] = None
     score: float = 0.0
+    score_breakdown: Optional[dict] = None
+    ranking_config_version: Optional[str] = None
     diversity_rank: Optional[int] = None
     geometry_wkt: str = ""  # canonical vector geometry (WKT MultiPolygon, mm)
 

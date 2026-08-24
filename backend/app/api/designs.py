@@ -1,36 +1,44 @@
-"""Minimal API exercising the P0 backend Golden Path.
+"""API for the persistent P0 Golden Path.
 
-Flow: create design (draft) → confirm exact text → generate candidates
-(≥30 internal, diverse top 10 returned) → fetch candidate SVG / DXF.
-
-Storage is in-memory for this slice (PostgreSQL persistence is a later
-slice); state transitions and the immutability of confirmed source text
-are enforced here.
+Flow: create request → confirm exact text → generate candidates →
+select (Design + version 1) → designer edit (new versions) → customer
+approval (immutable lock) → authorized production export. Backed by
+PostgreSQL via app.services.design_service.
 """
 from __future__ import annotations
 
-import unicodedata
 import uuid
 
-from fastapi import APIRouter, HTTPException, Response
+from fastapi import APIRouter, Depends, Header, HTTPException, Response
 from pydantic import BaseModel, Field
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 
-from ..config import DEFAULT_RULES
-from ..engines.generator import diversity_score, generate_candidates
-from ..exporters.dxf_exporter import ProductionExportBlocked, export_dxf
+from ..db import models as m
+from ..db.base import get_session
+from ..engines.generator import diversity_score
+from ..exporters.dxf_exporter import ProductionExportBlocked
 from ..exporters.svg_exporter import export_svg
 from ..fonts.registry import get_registry
 from ..schemas.jewellery_design import (
-    DesignState,
+    DesignCandidate,
     ImmutableSourceText,
-    JewelleryDesign,
+    RecipeParams,
+    TextIdentityProof,
+    ValidationReport,
 )
+from ..services import design_service as svc
 
 router = APIRouter(prefix="/api/designs", tags=["designs"])
+versions_router = APIRouter(prefix="/api/versions", tags=["versions"])
 fonts_router = APIRouter(prefix="/api/fonts", tags=["fonts"])
 
-# In-memory store for the P0 slice only.
-_DESIGNS: dict[str, JewelleryDesign] = {}
+
+def _uuid(value: str) -> uuid.UUID:
+    try:
+        return uuid.UUID(value)
+    except ValueError:
+        raise HTTPException(404, "Not found.")
 
 
 class CreateDesignRequest(BaseModel):
@@ -42,62 +50,70 @@ class ConfirmTextRequest(BaseModel):
     confirmed_text: str
 
 
+class SelectRequest(BaseModel):
+    candidate_id: str
+
+
+class EditRequest(BaseModel):
+    recipe_overrides: dict = Field(default_factory=dict)
+    note: str | None = None
+    created_by: str = "designer"
+
+
+class ChangeTextRequest(BaseModel):
+    new_text: str = Field(min_length=1, max_length=120)
+    confirmed: bool = False
+    created_by: str = "designer"
+
+
+class ApproveRequest(BaseModel):
+    confirmed_text: str
+    source_text_sha256: str
+    geometry_hash: str
+    approved_by: str = "customer"
+    approval_method: str = "api"
+
+
 @router.post("", status_code=201)
-def create_design(req: CreateDesignRequest):
-    design = JewelleryDesign(
-        design_id=uuid.uuid4().hex[:12],
-        source_text=ImmutableSourceText.create(req.text),
-        rules=DEFAULT_RULES,
-        product_type=req.product_type,
-    )
-    _DESIGNS[design.design_id] = design
+def create_design(req: CreateDesignRequest, session: Session = Depends(get_session)):
+    row = svc.create_request(session, req.text, req.product_type)
     return {
-        "design_id": design.design_id,
-        "state": design.state,
-        "normalized_text": design.source_text.normalized_text,
-        "source_text_sha256": design.source_text.sha256,
+        "design_id": str(row.id),
+        "state": row.status,
+        "normalized_text": row.source_text_normalized,
+        "source_text_sha256": row.source_text_sha256,
         "requires_confirmation": True,
     }
 
 
 @router.post("/{design_id}/confirm")
-def confirm_text(design_id: str, req: ConfirmTextRequest):
-    design = _get(design_id)
-    if design.state != DesignState.DRAFT:
-        raise HTTPException(409, "Text already confirmed.")
-    if unicodedata.normalize("NFC", req.confirmed_text) != design.source_text.normalized_text:
-        raise HTTPException(
-            422,
-            "Confirmed text does not exactly match the original text. "
-            "Source text is immutable; create a new design to change it.",
-        )
-    confirmed = ImmutableSourceText.create(design.source_text.raw_text, confirmed=True)
-    design = design.model_copy(update={"source_text": confirmed, "state": DesignState.TEXT_CONFIRMED})
-    _DESIGNS[design_id] = design
-    return {"design_id": design_id, "state": design.state, "confirmed": True}
+def confirm_text(design_id: str, req: ConfirmTextRequest, session: Session = Depends(get_session)):
+    try:
+        row = svc.confirm_request_text(session, _uuid(design_id), req.confirmed_text)
+    except KeyError:
+        raise HTTPException(404, "Design not found.")
+    except svc.ConflictError as exc:
+        raise HTTPException(409, str(exc))
+    except svc.ApprovalRejected as exc:
+        raise HTTPException(422, str(exc))
+    return {"design_id": design_id, "state": row.status, "confirmed": True}
 
 
 @router.post("/{design_id}/candidates")
-def generate(design_id: str):
-    design = _get(design_id)
-    if design.state == DesignState.DRAFT:
-        raise HTTPException(409, "Exact source text must be confirmed before generation.")
-    all_candidates, top = generate_candidates(design_id, design.source_text, design.rules)
-    design = design.model_copy(
-        update={
-            "candidates": all_candidates,
-            "top_candidate_ids": [c.candidate_id for c in top],
-            "state": DesignState.CANDIDATES_GENERATED,
-        }
-    )
-    _DESIGNS[design_id] = design
+def generate(design_id: str, session: Session = Depends(get_session)):
+    try:
+        result = svc.generate_and_persist_candidates(session, _uuid(design_id))
+    except KeyError:
+        raise HTTPException(404, "Design not found.")
+    except svc.ConflictError as exc:
+        raise HTTPException(409, str(exc))
+    all_c, top = result["all"], result["top"]
     return {
         "design_id": design_id,
-        "internal_candidate_count": len(all_candidates),
-        "valid_candidate_count": sum(
-            1 for c in all_candidates if c.validation and c.validation.passed
-        ),
+        "internal_candidate_count": len(all_c),
+        "valid_candidate_count": sum(1 for c in all_c if c.validation and c.validation.passed),
         "diversity_min_pairwise": diversity_score(top),
+        "ranking_config_version": top[0].ranking_config_version if top else None,
         "top": [
             {
                 "candidate_id": c.candidate_id,
@@ -107,6 +123,7 @@ def generate(design_id: str):
                 "font_id": c.recipe.font_id,
                 "composition": c.recipe.composition,
                 "score": c.score,
+                "score_breakdown": c.score_breakdown,
                 "width_mm": c.features.width_mm if c.features else None,
                 "height_mm": c.features.height_mm if c.features else None,
                 "source_text_sha256": c.source_text_sha256,
@@ -117,49 +134,236 @@ def generate(design_id: str):
 
 
 @router.get("/{design_id}")
-def get_design(design_id: str):
-    design = _get(design_id)
+def get_design(design_id: str, session: Session = Depends(get_session)):
+    row = session.get(m.DesignRequest, _uuid(design_id))
+    if row is None:
+        raise HTTPException(404, "Design not found.")
     return {
-        "design_id": design.design_id,
-        "schema_version": design.schema_version,
-        "state": design.state,
-        "product_type": design.product_type,
+        "design_id": design_id,
+        "schema_version": row.schema_version,
+        "state": row.status,
+        "product_type": row.product_type,
         "source_text": {
-            "normalized_text": design.source_text.normalized_text,
-            "sha256": design.source_text.sha256,
-            "confirmed": design.source_text.confirmed,
+            "normalized_text": row.source_text_normalized,
+            "sha256": row.source_text_sha256,
+            "confirmed": row.confirmed,
         },
-        "rules_profile": design.rules.profile_name,
-        "internal_candidate_count": len(design.candidates),
-        "top_candidate_ids": design.top_candidate_ids,
+        "ranking_config_version": row.ranking_config_version,
     }
 
 
+@router.get("/{design_id}/candidates")
+def list_candidates(
+    design_id: str, include_invalid: bool = False, session: Session = Depends(get_session)
+):
+    rows = session.execute(
+        select(m.DesignCandidateRow).where(m.DesignCandidateRow.request_id == _uuid(design_id))
+    ).scalars().all()
+    return [
+        {
+            "candidate_id": r.candidate_key,
+            "validation_passed": r.validation_passed,
+            "diversity_rank": r.diversity_rank,
+            "score": r.score,
+        }
+        for r in rows
+        if include_invalid or r.validation_passed
+    ]
+
+
 @router.get("/{design_id}/candidates/{candidate_id}/validation")
-def get_validation(design_id: str, candidate_id: str):
-    _, candidate = _get_candidate(design_id, candidate_id)
-    return candidate.validation
+def get_validation(design_id: str, candidate_id: str, session: Session = Depends(get_session)):
+    row = _candidate_row(session, design_id, candidate_id)
+    return row.validation
 
 
 @router.get("/{design_id}/candidates/{candidate_id}/svg")
-def get_svg(design_id: str, candidate_id: str):
-    design, candidate = _get_candidate(design_id, candidate_id)
-    svg = export_svg(candidate, design.source_text)
-    return Response(content=svg, media_type="image/svg+xml")
+def get_candidate_svg(design_id: str, candidate_id: str, session: Session = Depends(get_session)):
+    """Preview SVG for a generated candidate (pre-selection, not production)."""
+    row = _candidate_row(session, design_id, candidate_id)
+    req = session.get(m.DesignRequest, _uuid(design_id))
+    candidate, source = _row_to_candidate(row, req)
+    return Response(content=export_svg(candidate, source), media_type="image/svg+xml")
 
 
-@router.get("/{design_id}/candidates/{candidate_id}/dxf")
-def get_dxf(design_id: str, candidate_id: str):
-    design, candidate = _get_candidate(design_id, candidate_id)
+@router.post("/{design_id}/select", status_code=201)
+def select_candidate(design_id: str, req: SelectRequest, session: Session = Depends(get_session)):
     try:
-        dxf = export_dxf(candidate, design.source_text)
+        design, version = svc.select_candidate(session, _uuid(design_id), req.candidate_id)
+    except KeyError as exc:
+        raise HTTPException(404, str(exc))
+    except svc.ConflictError as exc:
+        raise HTTPException(409, str(exc))
+    return {
+        "design_uuid": str(design.id),
+        "version_id": str(version.id),
+        "version_number": version.version_number,
+        "status": version.status,
+        "source_text_sha256": version.source_text_sha256,
+        "geometry_hash": version.geometry_hash,
+    }
+
+
+@router.get("/{design_id}/events")
+def list_events(design_id: str, session: Session = Depends(get_session)):
+    rid = _uuid(design_id)
+    design_ids = list(
+        session.execute(select(m.Design.id).where(m.Design.request_id == rid)).scalars()
+    )
+    rows = session.execute(
+        select(m.DesignEvent)
+        .where(
+            (m.DesignEvent.request_id == rid)
+            | (m.DesignEvent.design_id == rid)
+            | (m.DesignEvent.design_id.in_(design_ids))
+        )
+        .order_by(m.DesignEvent.created_at)
+    ).scalars().all()
+    return [
+        {
+            "event_id": str(r.id),
+            "event_type": r.event_type,
+            "version_id": str(r.version_id) if r.version_id else None,
+            "actor": r.actor,
+            "actor_type": r.actor_type,
+            "created_at": r.created_at.isoformat(),
+            "metadata": r.event_metadata,
+        }
+        for r in rows
+    ]
+
+
+# ------------------------------------------------------------- versions
+
+
+@versions_router.get("/{version_id}")
+def get_version(version_id: str, session: Session = Depends(get_session)):
+    v = session.get(m.DesignVersion, _uuid(version_id))
+    if v is None:
+        raise HTTPException(404, "Version not found.")
+    return {
+        "version_id": str(v.id),
+        "design_uuid": str(v.design_id),
+        "version_number": v.version_number,
+        "parent_version_id": str(v.parent_version_id) if v.parent_version_id else None,
+        "status": v.status,
+        "immutable_source_text": v.immutable_source_text,
+        "source_text_sha256": v.source_text_sha256,
+        "geometry_hash": v.geometry_hash,
+        "schema_version": v.schema_version,
+        "arabic_engine_version": v.arabic_engine_version,
+        "font_id": v.font_id,
+        "font_version": v.font_version,
+        "recipe_id": v.recipe_id,
+        "recipe_version": v.recipe_version,
+        "manufacturing_rules_version": v.manufacturing_rules_version,
+        "validation_passed": v.validation_passed,
+        "identity_verified": v.identity_verified,
+        "created_by": v.created_by,
+        "created_at": v.created_at.isoformat(),
+        "edit_metadata": v.edit_metadata,
+    }
+
+
+@versions_router.post("/{version_id}/edit", status_code=201)
+def edit_version(version_id: str, req: EditRequest, session: Session = Depends(get_session)):
+    try:
+        version = svc.edit_version(
+            session, _uuid(version_id), req.recipe_overrides, req.note, req.created_by
+        )
+    except KeyError:
+        raise HTTPException(404, "Version not found.")
+    except svc.ApprovalRejected as exc:
+        raise HTTPException(422, str(exc))
+    return {
+        "version_id": str(version.id),
+        "version_number": version.version_number,
+        "status": version.status,
+        "validation_passed": version.validation_passed,
+        "geometry_hash": version.geometry_hash,
+        "source_text_sha256": version.source_text_sha256,
+    }
+
+
+@versions_router.post("/{version_id}/change-text", status_code=201)
+def change_text(version_id: str, req: ChangeTextRequest, session: Session = Depends(get_session)):
+    try:
+        version = svc.change_source_text(
+            session, _uuid(version_id), req.new_text, req.confirmed, req.created_by
+        )
+    except KeyError:
+        raise HTTPException(404, "Version not found.")
+    except svc.ApprovalRejected as exc:
+        raise HTTPException(422, str(exc))
+    return {
+        "version_id": str(version.id),
+        "version_number": version.version_number,
+        "status": version.status,
+        "source_text_sha256": version.source_text_sha256,
+        "approvals_invalidated": True,
+    }
+
+
+@versions_router.post("/{version_id}/approve", status_code=201)
+def approve(version_id: str, req: ApproveRequest, session: Session = Depends(get_session)):
+    try:
+        approval = svc.approve_version(
+            session,
+            _uuid(version_id),
+            confirmed_text=req.confirmed_text,
+            source_text_sha256=req.source_text_sha256,
+            geometry_hash=req.geometry_hash,
+            approved_by=req.approved_by,
+            approval_method=req.approval_method,
+        )
+    except KeyError:
+        raise HTTPException(404, "Version not found.")
+    except svc.ConflictError as exc:
+        raise HTTPException(409, str(exc))
+    except svc.ApprovalRejected as exc:
+        raise HTTPException(422, str(exc))
+    return {
+        "approval_id": str(approval.id),
+        "approval_hash": approval.approval_hash,
+        "approved_at": approval.approved_at.isoformat(),
+        "status": approval.status,
+        "version_status": "APPROVED_LOCKED",
+        "confirmation_statement": approval.confirmation_statement,
+    }
+
+
+@versions_router.get("/{version_id}/export/{fmt}")
+def export(
+    version_id: str,
+    fmt: str,
+    session: Session = Depends(get_session),
+    idempotency_key: str | None = Header(default=None, alias="Idempotency-Key"),
+):
+    try:
+        content, record = svc.export_version(
+            session, _uuid(version_id), fmt, idempotency_key=idempotency_key
+        )
+    except KeyError:
+        raise HTTPException(404, "Version not found.")
+    except ValueError as exc:
+        raise HTTPException(422, str(exc))
+    except svc.ConflictError as exc:
+        raise HTTPException(409, str(exc))
     except ProductionExportBlocked as exc:
         raise HTTPException(423, str(exc))
+    if not content:
+        return {
+            "idempotent_replay": True,
+            "export_id": str(record.id),
+            "content_sha256": record.content_sha256,
+        }
+    media = "image/svg+xml" if fmt == "svg" else "application/dxf"
     return Response(
-        content=dxf,
-        media_type="application/dxf",
+        content=content,
+        media_type=media,
         headers={
-            "Content-Disposition": f'attachment; filename="{design_id}-{candidate_id}.dxf"'
+            "X-Export-Id": str(record.id),
+            "X-Content-Sha256": record.content_sha256,
         },
     )
 
@@ -179,15 +383,36 @@ def list_fonts():
     ]
 
 
-def _get(design_id: str) -> JewelleryDesign:
-    if design_id not in _DESIGNS:
-        raise HTTPException(404, "Design not found.")
-    return _DESIGNS[design_id]
+# ------------------------------------------------------------- helpers
 
 
-def _get_candidate(design_id: str, candidate_id: str):
-    design = _get(design_id)
-    for c in design.candidates:
-        if c.candidate_id == candidate_id:
-            return design, c
-    raise HTTPException(404, "Candidate not found.")
+def _candidate_row(session: Session, design_id: str, candidate_id: str) -> m.DesignCandidateRow:
+    row = session.execute(
+        select(m.DesignCandidateRow).where(
+            m.DesignCandidateRow.request_id == _uuid(design_id),
+            m.DesignCandidateRow.candidate_key == candidate_id,
+        )
+    ).scalar_one_or_none()
+    if row is None:
+        raise HTTPException(404, "Candidate not found.")
+    return row
+
+
+def _row_to_candidate(row: m.DesignCandidateRow, req: m.DesignRequest):
+    source = ImmutableSourceText.create(req.source_text_raw, confirmed=req.confirmed)
+    candidate = DesignCandidate(
+        candidate_id=row.candidate_key,
+        design_id=str(row.request_id),
+        source_text_sha256=row.source_text_sha256,
+        recipe=RecipeParams(**row.recipe),
+        shaped_runs=[],
+        identity_proof=TextIdentityProof(
+            verified=row.identity_verified,
+            covered_codepoint_indices=[],
+            uncovered_codepoint_indices=[],
+            notdef_glyph_count=0,
+        ),
+        validation=ValidationReport(**row.validation) if row.validation else None,
+        geometry_wkt=row.geometry_wkt,
+    )
+    return candidate, source

@@ -7,10 +7,20 @@ before any commercial production use.
 """
 from __future__ import annotations
 
+import os
+
 from pydantic import BaseModel, Field
 
 SCHEMA_VERSION = "0.1.0"
 GENERATOR_VERSION = "0.1.0"
+ARABIC_ENGINE_VERSION = "0.1.0"
+RANKING_CONFIG_VERSION = "0.1.0"
+
+# PostgreSQL source of truth. No secrets committed — see backend/.env.example.
+DATABASE_URL = os.environ.get(
+    "DATABASE_URL",
+    "postgresql+psycopg2://postgres:postgres@localhost:5432/beyondstyle",
+)
 
 
 class WorkshopRules(BaseModel):
@@ -36,6 +46,14 @@ class WorkshopRules(BaseModel):
     @property
     def effective_min_gap_mm(self) -> float:
         return max(self.min_gap_mm - self.kerf_mm, 0.1)
+
+    @property
+    def rules_version(self) -> str:
+        """Profile name + content hash — provenance stamp for versions."""
+        import hashlib
+
+        digest = hashlib.sha256(self.model_dump_json().encode()).hexdigest()[:12]
+        return f"{self.profile_name}@{digest}"
 
 
 DEFAULT_RULES = WorkshopRules()

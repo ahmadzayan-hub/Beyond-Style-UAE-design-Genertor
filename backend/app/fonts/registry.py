@@ -41,6 +41,17 @@ class FontRecord(BaseModel):
     def commercial_production_allowed(self) -> bool:
         return self.rights_status in COMMERCIAL_OK
 
+    @property
+    def file_sha256(self) -> str:
+        """Font binary hash — used as the font version stamp on versions."""
+        import hashlib
+
+        if not hasattr(self, "_file_sha256"):
+            object.__setattr__(
+                self, "_file_sha256", hashlib.sha256(self.path.read_bytes()).hexdigest()
+            )
+        return self._file_sha256
+
 
 class FontRegistry:
     def __init__(self, registry_file: Path = REGISTRY_FILE):

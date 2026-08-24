@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from fastapi import FastAPI
 
-from .api.designs import fonts_router, router as designs_router
+from .api.designs import fonts_router, router as designs_router, versions_router
 from .config import SCHEMA_VERSION
 
 app = FastAPI(
@@ -11,6 +11,7 @@ app = FastAPI(
     version=SCHEMA_VERSION,
 )
 app.include_router(designs_router)
+app.include_router(versions_router)
 app.include_router(fonts_router)
 
 

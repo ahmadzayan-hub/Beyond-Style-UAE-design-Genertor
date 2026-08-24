@@ -125,14 +125,8 @@ def build_candidate(
             loops_class=LOOPS_CLASSES[recipe.loops],
         )
 
-    # TEST heuristic ranking (documented, deterministic): validity is a hard
-    # gate; among valid candidates prefer manufacturable margin & compactness.
-    score = 0.0
-    if report.passed and features:
-        compact = 1.0 / (1.0 + abs(features.aspect_ratio - 2.2))
-        margin = min(recipe.stroke_delta_mm / 0.3, 1.0)
-        score = round(0.6 + 0.25 * compact + 0.15 * margin, 4)
-
+    # Scored later in generate_candidates() via the configurable ranking
+    # engine (needs the whole pool for the originality dimension).
     return DesignCandidate(
         candidate_id=_candidate_id(design_id, recipe, source.sha256),
         design_id=design_id,
@@ -142,7 +136,7 @@ def build_candidate(
         identity_proof=proof,
         validation=report,
         features=features,
-        score=score,
+        score=0.0,
         geometry_wkt=geom.wkt if not geom.is_empty else "",
     )
 
@@ -223,5 +217,31 @@ def generate_candidates(
     """Returns (all_internal_candidates, diverse_top_n)."""
     recipes = expand_recipes(min_internal)
     all_candidates = [build_candidate(design_id, source, r, rules) for r in recipes]
+    _apply_ranking(all_candidates)
     top = select_diverse(all_candidates, top_n)
     return all_candidates, top
+
+
+def _apply_ranking(candidates: list[DesignCandidate]) -> None:
+    """Score the pool with the configurable ranking engine (spec weights).
+    Originality uses distance from the pool mean in normalized feature space."""
+    from .ranking import DEFAULT_RANKING, score_candidate
+
+    with_features = [c for c in candidates if c.features]
+    vectors = _normalize_matrix([_feature_vector(c) for c in with_features]) if with_features else []
+    mean = (
+        [sum(col) / len(col) for col in zip(*vectors)] if vectors else None
+    )
+    vec_by_id = {c.candidate_id: v for c, v in zip(with_features, vectors)}
+    for c in candidates:
+        score, breakdown = score_candidate(
+            identity_verified=c.identity_proof.verified,
+            validation_passed=bool(c.validation and c.validation.passed),
+            features=c.features,
+            stroke_slack_ratio=c.recipe.stroke_delta_mm / 0.3,
+            pool_mean_vector=mean,
+            feature_vector=vec_by_id.get(c.candidate_id),
+        )
+        c.score = score
+        c.score_breakdown = breakdown
+        c.ranking_config_version = DEFAULT_RANKING.version

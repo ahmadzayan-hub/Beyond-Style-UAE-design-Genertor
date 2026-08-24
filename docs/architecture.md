@@ -1,7 +1,35 @@
 # Architecture — current implemented state
 
-Scope: P0 backend Golden Path slice (deterministic core). Frontend, DB
-persistence, approval/lock, 3D, pricing are NOT implemented yet.
+Scope: P0 backend Golden Path (deterministic core) + PostgreSQL
+persistence / versioning / approval-lock / audit slice. Frontend,
+reference intake, 3D, pricing are NOT implemented yet.
+
+## Persistence layer (see ADR-0001)
+
+PostgreSQL (SQLAlchemy 2 + Alembic) is the source of truth. Entities:
+`design_requests`, `design_candidates`, `designs`, `design_versions`
+(append-only, DB-trigger-enforced immutability; only legal transition
+UNAPPROVED→APPROVED_LOCKED), `customer_approvals` (unique per version,
+hash-frozen, ACTIVE→INVALIDATED only), `design_events` (append-only
+audit), `font_references` (font binary sha256 provenance),
+`manufacturing_validation_runs`, `exports` (production export records
+with content sha256, mm dims, unique idempotency keys).
+
+Lifecycle service (`app/services/design_service.py`):
+request → confirm exact text → generate/persist candidates (idempotent,
+deterministic keys) → select (Design + version 1) → designer edits (new
+versions; visual recipe fields only — source text untouchable) →
+intentional text change (new version + forced APPROVAL_INVALIDATED) →
+customer approval (server verifies NFC-exact text, identity PASS,
+manufacturing PASS, rights PASS, both hashes; race-safe conditional
+UPDATE lock) → authorized production export (re-verifies hashes at
+export time; 423 BLOCK_PRODUCTION_EXPORT otherwise).
+
+Ranking (`app/engines/ranking.py`): configurable spec weights
+Arabic 30 / Manufacturing 25 / Visual 20 / Wearability 10 /
+Originality 10 / CustomerFit 5, version-stamped onto every candidate;
+visual/wearability/originality/customer-fit are labelled
+HEURISTIC / NOT ML-VALIDATED in each stored score breakdown.
 
 ## Pipeline (all deterministic, no AI dependency)
 
