@@ -55,6 +55,9 @@ class DesignRequest(TimestampMixin, Base):
     product_type: Mapped[str] = mapped_column(String(40), default="pendant", nullable=False)
     status: Mapped[str] = mapped_column(String(32), default="DRAFT", nullable=False)
     ranking_config_version: Mapped[str | None] = mapped_column(String(16))
+    # Anonymous session ownership: sha256 of the secret token issued at
+    # creation. All request-scoped access must present the matching token.
+    session_token_hash: Mapped[str | None] = mapped_column(String(64), index=True)
 
     candidates: Mapped[list["DesignCandidateRow"]] = relationship(back_populates="request")
 
@@ -169,6 +172,61 @@ class DesignEvent(TimestampMixin, Base):
     actor: Mapped[str] = mapped_column(String(120), default="system", nullable=False)
     actor_type: Mapped[str] = mapped_column(String(24), default="system", nullable=False)
     event_metadata: Mapped[dict | None] = mapped_column(JSONB)
+
+
+class ReferenceAsset(TimestampMixin, Base):
+    """Customer-uploaded reference image/screenshot. PRIVATE by default:
+    content is served only to the owning session, never via public URL."""
+
+    __tablename__ = "reference_assets"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=_uuid)
+    design_request_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("design_requests.id"), nullable=False, index=True
+    )
+    type: Mapped[str] = mapped_column(String(32), default="reference_image", nullable=False)
+    original_filename: Mapped[str] = mapped_column(String(255), nullable=False)
+    media_type: Mapped[str] = mapped_column(String(64), nullable=False)  # verified, not client-claimed
+    storage_key: Mapped[str] = mapped_column(String(255), nullable=False)
+    sha256: Mapped[str] = mapped_column(String(64), nullable=False)
+    size_bytes: Mapped[int] = mapped_column(Integer, nullable=False)
+    provenance: Mapped[str] = mapped_column(String(32), default="UNKNOWN", nullable=False)
+    ip_risk: Mapped[str] = mapped_column(String(32), default="UNKNOWN", nullable=False)
+    privacy_status: Mapped[str] = mapped_column(String(24), default="PRIVATE", nullable=False)
+    scan_status: Mapped[str] = mapped_column(String(24), default="PENDING_SCAN", nullable=False)
+    analysis: Mapped[dict | None] = mapped_column(JSONB)  # safe design metadata only, never text truth
+    deleted: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+
+
+class CustomerBrief(TimestampMixin, Base):
+    """Structured intake brief. OCR/vision never writes confirmed_text —
+    only explicit customer confirmation does."""
+
+    __tablename__ = "customer_briefs"
+    __table_args__ = (UniqueConstraint("design_request_id"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=_uuid)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utcnow, onupdate=utcnow, nullable=False
+    )
+    design_request_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("design_requests.id"), nullable=False
+    )
+    request_type: Mapped[str] = mapped_column(String(40), default="NEEDS_CLARIFICATION", nullable=False)
+    customer_message: Mapped[str | None] = mapped_column(Text)
+    confirmed_text: Mapped[str | None] = mapped_column(Text)  # set only via explicit confirmation
+    language: Mapped[str | None] = mapped_column(String(8))
+    product_type: Mapped[str | None] = mapped_column(String(40))
+    material_preference: Mapped[str | None] = mapped_column(String(40))
+    style_intent: Mapped[str | None] = mapped_column(String(40))
+    reference_ids: Mapped[list | None] = mapped_column(JSONB)
+    generation_hints: Mapped[dict | None] = mapped_column(JSONB)
+    quantity: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
+    deadline: Mapped[str | None] = mapped_column(String(40))
+    delivery_emirate: Mapped[str | None] = mapped_column(String(40))
+    missing_fields: Mapped[list | None] = mapped_column(JSONB)
+    confidence: Mapped[float] = mapped_column(Float, default=1.0, nullable=False)
+    status: Mapped[str] = mapped_column(String(24), default="DRAFT", nullable=False)
 
 
 class FontReference(TimestampMixin, Base):

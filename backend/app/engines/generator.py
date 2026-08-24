@@ -213,13 +213,33 @@ def generate_candidates(
     rules: WorkshopRules,
     min_internal: int = 30,
     top_n: int = 10,
+    hints: dict | None = None,
 ) -> tuple[list[DesignCandidate], list[DesignCandidate]]:
-    """Returns (all_internal_candidates, diverse_top_n)."""
+    """Returns (all_internal_candidates, diverse_top_n). `hints` come from
+    deterministic reference intake; they add a transparent score bonus so
+    reference-matching styles seed the diverse selection first — they never
+    bypass validation or the schema."""
     recipes = expand_recipes(min_internal)
     all_candidates = [build_candidate(design_id, source, r, rules) for r in recipes]
     _apply_ranking(all_candidates)
+    if hints:
+        _apply_hint_bonus(all_candidates, hints)
     top = select_diverse(all_candidates, top_n)
     return all_candidates, top
+
+
+def _apply_hint_bonus(candidates: list[DesignCandidate], hints: dict) -> None:
+    preferred_comp = set(hints.get("preferred_compositions", []))
+    preferred_recipes = set(hints.get("preferred_recipes", []))
+    for c in candidates:
+        bonus = 0.0
+        if c.recipe.composition in preferred_comp:
+            bonus += 4.0
+        if any(c.recipe.recipe_id.startswith(r) for r in preferred_recipes):
+            bonus += 4.0
+        if bonus and c.score_breakdown is not None:
+            c.score = round(c.score + bonus, 4)
+            c.score_breakdown["intake_hint_bonus"] = bonus
 
 
 def _apply_ranking(candidates: list[DesignCandidate]) -> None:

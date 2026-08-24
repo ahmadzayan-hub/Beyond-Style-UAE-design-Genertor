@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import uuid
 
-from fastapi import APIRouter, Depends, Header, HTTPException, Response
+from fastapi import APIRouter, Depends, Header, HTTPException, Request, Response
 from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -27,7 +27,9 @@ from ..schemas.jewellery_design import (
     TextIdentityProof,
     ValidationReport,
 )
+from ..security.sessions import GENERATE_LIMITER, issue_token
 from ..services import design_service as svc
+from .auth import require_owned_request, require_owned_version
 
 router = APIRouter(prefix="/api/designs", tags=["designs"])
 versions_router = APIRouter(prefix="/api/versions", tags=["versions"])
@@ -76,9 +78,11 @@ class ApproveRequest(BaseModel):
 
 @router.post("", status_code=201)
 def create_design(req: CreateDesignRequest, session: Session = Depends(get_session)):
-    row = svc.create_request(session, req.text, req.product_type)
+    token, token_hash = issue_token()
+    row = svc.create_request(session, req.text, req.product_type, session_token_hash=token_hash)
     return {
         "design_id": str(row.id),
+        "session_token": token,
         "state": row.status,
         "normalized_text": row.source_text_normalized,
         "source_text_sha256": row.source_text_sha256,
@@ -87,11 +91,10 @@ def create_design(req: CreateDesignRequest, session: Session = Depends(get_sessi
 
 
 @router.post("/{design_id}/confirm")
-def confirm_text(design_id: str, req: ConfirmTextRequest, session: Session = Depends(get_session)):
+def confirm_text(design_id: str, req: ConfirmTextRequest, request: Request, session: Session = Depends(get_session)):
+    owned = require_owned_request(session, design_id, request)
     try:
-        row = svc.confirm_request_text(session, _uuid(design_id), req.confirmed_text)
-    except KeyError:
-        raise HTTPException(404, "Design not found.")
+        row = svc.confirm_request_text(session, owned.id, req.confirmed_text)
     except svc.ConflictError as exc:
         raise HTTPException(409, str(exc))
     except svc.ApprovalRejected as exc:
@@ -100,11 +103,12 @@ def confirm_text(design_id: str, req: ConfirmTextRequest, session: Session = Dep
 
 
 @router.post("/{design_id}/candidates")
-def generate(design_id: str, session: Session = Depends(get_session)):
+def generate(design_id: str, request: Request, session: Session = Depends(get_session)):
+    owned = require_owned_request(session, design_id, request)
+    if not GENERATE_LIMITER.allow(owned.session_token_hash or design_id):
+        raise HTTPException(429, "Too many generation requests. Please wait a moment.")
     try:
-        result = svc.generate_and_persist_candidates(session, _uuid(design_id))
-    except KeyError:
-        raise HTTPException(404, "Design not found.")
+        result = svc.generate_and_persist_candidates(session, owned.id)
     except svc.ConflictError as exc:
         raise HTTPException(409, str(exc))
     all_c, top = result["all"], result["top"]
@@ -134,10 +138,8 @@ def generate(design_id: str, session: Session = Depends(get_session)):
 
 
 @router.get("/{design_id}")
-def get_design(design_id: str, session: Session = Depends(get_session)):
-    row = session.get(m.DesignRequest, _uuid(design_id))
-    if row is None:
-        raise HTTPException(404, "Design not found.")
+def get_design(design_id: str, request: Request, session: Session = Depends(get_session)):
+    row = require_owned_request(session, design_id, request)
     return {
         "design_id": design_id,
         "schema_version": row.schema_version,
@@ -154,8 +156,12 @@ def get_design(design_id: str, session: Session = Depends(get_session)):
 
 @router.get("/{design_id}/candidates")
 def list_candidates(
-    design_id: str, include_invalid: bool = False, session: Session = Depends(get_session)
+    design_id: str,
+    request: Request,
+    include_invalid: bool = False,
+    session: Session = Depends(get_session),
 ):
+    require_owned_request(session, design_id, request)
     rows = session.execute(
         select(m.DesignCandidateRow).where(m.DesignCandidateRow.request_id == _uuid(design_id))
     ).scalars().all()
@@ -172,24 +178,26 @@ def list_candidates(
 
 
 @router.get("/{design_id}/candidates/{candidate_id}/validation")
-def get_validation(design_id: str, candidate_id: str, session: Session = Depends(get_session)):
+def get_validation(design_id: str, candidate_id: str, request: Request, session: Session = Depends(get_session)):
+    require_owned_request(session, design_id, request)
     row = _candidate_row(session, design_id, candidate_id)
     return row.validation
 
 
 @router.get("/{design_id}/candidates/{candidate_id}/svg")
-def get_candidate_svg(design_id: str, candidate_id: str, session: Session = Depends(get_session)):
+def get_candidate_svg(design_id: str, candidate_id: str, request: Request, session: Session = Depends(get_session)):
     """Preview SVG for a generated candidate (pre-selection, not production)."""
+    req = require_owned_request(session, design_id, request)
     row = _candidate_row(session, design_id, candidate_id)
-    req = session.get(m.DesignRequest, _uuid(design_id))
     candidate, source = _row_to_candidate(row, req)
     return Response(content=export_svg(candidate, source), media_type="image/svg+xml")
 
 
 @router.post("/{design_id}/select", status_code=201)
-def select_candidate(design_id: str, req: SelectRequest, session: Session = Depends(get_session)):
+def select_candidate(design_id: str, req: SelectRequest, request: Request, session: Session = Depends(get_session)):
+    owned = require_owned_request(session, design_id, request)
     try:
-        design, version = svc.select_candidate(session, _uuid(design_id), req.candidate_id)
+        design, version = svc.select_candidate(session, owned.id, req.candidate_id)
     except KeyError as exc:
         raise HTTPException(404, str(exc))
     except svc.ConflictError as exc:
@@ -205,8 +213,8 @@ def select_candidate(design_id: str, req: SelectRequest, session: Session = Depe
 
 
 @router.get("/{design_id}/events")
-def list_events(design_id: str, session: Session = Depends(get_session)):
-    rid = _uuid(design_id)
+def list_events(design_id: str, request: Request, session: Session = Depends(get_session)):
+    rid = require_owned_request(session, design_id, request).id
     design_ids = list(
         session.execute(select(m.Design.id).where(m.Design.request_id == rid)).scalars()
     )
@@ -237,10 +245,8 @@ def list_events(design_id: str, session: Session = Depends(get_session)):
 
 
 @versions_router.get("/{version_id}")
-def get_version(version_id: str, session: Session = Depends(get_session)):
-    v = session.get(m.DesignVersion, _uuid(version_id))
-    if v is None:
-        raise HTTPException(404, "Version not found.")
+def get_version(version_id: str, request: Request, session: Session = Depends(get_session)):
+    v = require_owned_version(session, version_id, request)
     return {
         "version_id": str(v.id),
         "design_uuid": str(v.design_id),
@@ -266,10 +272,11 @@ def get_version(version_id: str, session: Session = Depends(get_session)):
 
 
 @versions_router.post("/{version_id}/edit", status_code=201)
-def edit_version(version_id: str, req: EditRequest, session: Session = Depends(get_session)):
+def edit_version(version_id: str, req: EditRequest, request: Request, session: Session = Depends(get_session)):
+    owned = require_owned_version(session, version_id, request)
     try:
         version = svc.edit_version(
-            session, _uuid(version_id), req.recipe_overrides, req.note, req.created_by
+            session, owned.id, req.recipe_overrides, req.note, req.created_by
         )
     except KeyError:
         raise HTTPException(404, "Version not found.")
@@ -286,10 +293,11 @@ def edit_version(version_id: str, req: EditRequest, session: Session = Depends(g
 
 
 @versions_router.post("/{version_id}/change-text", status_code=201)
-def change_text(version_id: str, req: ChangeTextRequest, session: Session = Depends(get_session)):
+def change_text(version_id: str, req: ChangeTextRequest, request: Request, session: Session = Depends(get_session)):
+    owned = require_owned_version(session, version_id, request)
     try:
         version = svc.change_source_text(
-            session, _uuid(version_id), req.new_text, req.confirmed, req.created_by
+            session, owned.id, req.new_text, req.confirmed, req.created_by
         )
     except KeyError:
         raise HTTPException(404, "Version not found.")
@@ -305,11 +313,12 @@ def change_text(version_id: str, req: ChangeTextRequest, session: Session = Depe
 
 
 @versions_router.post("/{version_id}/approve", status_code=201)
-def approve(version_id: str, req: ApproveRequest, session: Session = Depends(get_session)):
+def approve(version_id: str, req: ApproveRequest, request: Request, session: Session = Depends(get_session)):
+    owned = require_owned_version(session, version_id, request)
     try:
         approval = svc.approve_version(
             session,
-            _uuid(version_id),
+            owned.id,
             confirmed_text=req.confirmed_text,
             source_text_sha256=req.source_text_sha256,
             geometry_hash=req.geometry_hash,
@@ -336,12 +345,14 @@ def approve(version_id: str, req: ApproveRequest, session: Session = Depends(get
 def export(
     version_id: str,
     fmt: str,
+    request: Request,
     session: Session = Depends(get_session),
     idempotency_key: str | None = Header(default=None, alias="Idempotency-Key"),
 ):
+    owned = require_owned_version(session, version_id, request)
     try:
         content, record = svc.export_version(
-            session, _uuid(version_id), fmt, idempotency_key=idempotency_key
+            session, owned.id, fmt, idempotency_key=idempotency_key
         )
     except KeyError:
         raise HTTPException(404, "Version not found.")
@@ -366,6 +377,67 @@ def export(
             "X-Content-Sha256": record.content_sha256,
         },
     )
+
+
+@versions_router.get("/{version_id}/svg")
+def version_preview_svg(version_id: str, request: Request, session: Session = Depends(get_session)):
+    """Owner-scoped PREVIEW render of a version (any status) — used for
+    proof display and repair before/after. Not a production export: no
+    export record, and the production DXF path stays lock-gated."""
+    v = require_owned_version(session, version_id, request)
+    candidate, source = svc._version_to_candidate(v)
+    return Response(content=export_svg(candidate, source), media_type="image/svg+xml")
+
+
+class RepairRequest(BaseModel):
+    created_by: str = "customer"
+
+
+@versions_router.get("/{version_id}/repair-options")
+def repair_options(version_id: str, request: Request, session: Session = Depends(get_session)):
+    """Deterministic, validated repair proposals only. Empty list = nothing
+    to offer (design already comfortably manufacturable)."""
+    v = require_owned_version(session, version_id, request)
+    recipe = RecipeParams(**v.recipe)
+    options = []
+    if recipe.stroke_delta_mm < 0.45:
+        options.append(
+            {
+                "repair_id": "thicken_strokes",
+                "label_ar": "تحسين قابلية التصنيع (تسميك الخطوط)",
+                "label_en": "Improve manufacturability (thicken strokes)",
+                "overrides": {"stroke_delta_mm": round(recipe.stroke_delta_mm + 0.1, 3)},
+            }
+        )
+    return {"version_id": version_id, "options": options}
+
+
+@versions_router.post("/{version_id}/repair", status_code=201)
+def apply_repair(
+    version_id: str, req: RepairRequest, request: Request, session: Session = Depends(get_session)
+):
+    """Apply the safe deterministic fix as a NEW version (before/after =
+    parent SVG vs new SVG). Historical/approved versions are never mutated."""
+    v = require_owned_version(session, version_id, request)
+    recipe = RecipeParams(**v.recipe)
+    overrides = {"stroke_delta_mm": round(recipe.stroke_delta_mm + 0.1, 3)}
+    try:
+        version = svc.edit_version(
+            session, v.id, overrides, note="auto-repair: thicken strokes", created_by=req.created_by
+        )
+    except svc.ApprovalRejected as exc:
+        raise HTTPException(422, str(exc))
+    return {
+        "version_id": str(version.id),
+        "parent_version_id": str(v.id),
+        "version_number": version.version_number,
+        "status": version.status,
+        "validation_passed": version.validation_passed,
+        "geometry_hash": version.geometry_hash,
+        "source_text_sha256": version.source_text_sha256,
+        "before_svg_url": f"/api/versions/{v.id}/svg",
+        "after_svg_url": f"/api/versions/{version.id}/svg",
+    }
 
 
 @fonts_router.get("")

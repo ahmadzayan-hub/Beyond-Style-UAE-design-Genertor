@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-brand-cream text-brand-dark antialiased;
+}
+
+.proof-svg svg {
+  /* Fit-to-screen display scaling only — the SVG file itself keeps its
+     real mm width/height for production. */
+  width: 100%;
+  height: auto;
+  max-height: 160px;
+}
+
+.proof-svg-large svg {
+  width: 100%;
+  height: auto;
+  max-height: 280px;
+}

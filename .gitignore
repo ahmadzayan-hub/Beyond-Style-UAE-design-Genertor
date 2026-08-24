@@ -2,3 +2,8 @@ __pycache__/
 *.pyc
 .pytest_cache/
 .venv/
+node_modules/
+.next/
+backend/var/
+frontend/next-env.d.ts
+.env

@@ -1,8 +1,38 @@
 # Architecture — current implemented state
 
 Scope: P0 backend Golden Path (deterministic core) + PostgreSQL
-persistence / versioning / approval-lock / audit slice. Frontend,
-reference intake, 3D, pricing are NOT implemented yet.
+persistence / versioning / approval-lock / audit + reference intake +
+mobile-first customer UI. 3D, pricing, orders are NOT implemented yet.
+
+## Reference intake + customer UI (slice 3)
+
+Intake (`app/services/intake_service.py`, `app/api/intake.py`):
+`reference_assets` (private, sha256, provenance, ip_risk, honest
+PENDING_SCAN status) + `customer_briefs` (deterministic rule-based
+classification: EXACT_TEXT_REPLACEMENT / SAME_STRUCTURE_NEW_TEXT /
+STYLE_INSPIRED_REDESIGN / PRODUCT_CONVERSION / MATERIAL_CONVERSION /
+TEXT_ONLY_DESIGN / NEEDS_CLARIFICATION; optional AI analyzer is
+feature-flagged and suggestion-only). OCR/vision text can never become
+immutable source text — only explicit customer confirmation sets it.
+Reference analysis → generation hints (composition/recipe boosts,
+transparent score bonus) — never bypasses the schema or validation.
+
+Security (`app/security/`): magic-byte MIME verification (JPEG/PNG/WebP
+whitelist), size cap, EXIF strip via re-encode, non-guessable keys in
+LocalPrivateStorage (S3-shaped interface; owner-token access only, no
+public URLs), malware-scan adapter with honest PENDING_SCAN fallback,
+sliding-window rate limits on upload/generation, anonymous session
+tokens (sha256 stored; wrong token → 404, no existence leak) scoping
+every request/version endpoint, privacy delete that purges files.
+
+Frontend (`frontend/`, Next.js 14 + Tailwind, 93KB first load): one
+mobile-first golden-path flow — start (text or reference upload +
+message + style intent) → exact-text confirmation → generating →
+10 proofs (progressive SVG) → selected (+ deterministic repair
+before/after creating a NEW version) → approval statement + lock →
+authorized SVG/DXF download; true RTL Arabic default with LTR English
+toggle; MAKE IT FOR ME shown disabled (not faked). Domain logic stays
+in the backend; the UI only orchestrates the API.
 
 ## Persistence layer (see ADR-0001)
 
@@ -61,7 +91,7 @@ text → NFC normalization → BiDi run segmentation → HarfBuzz shaping
 | `engines/generator.py` | Seed library (10 recipes, `data/design_recipes.json`) × fixed variation axes → 40 internal candidates; documented TEST ranking heuristic; greedy max-min diversity top-10 |
 | `exporters/svg_exporter.py` | mm width/height + viewBox, evenodd single path, JSON metadata (ids, source text + hash, versions), no raster |
 | `exporters/dxf_exporter.py` | R2010, `$INSUNITS=4`, closed LWPOLYLINE on CUT/HOLES layers, custom header vars for traceability; raises `ProductionExportBlocked` on failed validation or unconfirmed text |
-| `api/designs.py` + `main.py` | FastAPI: create → confirm exact text → generate → validation/SVG/DXF per candidate; fonts registry endpoint. In-memory store (slice only) |
+| `api/designs.py` + `api/intake.py` + `api/auth.py` + `main.py` | FastAPI over PostgreSQL: full lifecycle + intake + repair endpoints, all request/version routes session-token scoped |
 
 ## Key invariants enforced in code + tests
 
@@ -72,6 +102,7 @@ text → NFC normalization → BiDi run segmentation → HarfBuzz shaping
 5. Fonts are lettering sources, not products; rights status gates production; UNKNOWN_RIGHTS never exports commercially.
 
 ## Deferred (later slices)
-PostgreSQL persistence + pgvector retrieval, approval/version lock,
-designer copilot edits, reference/WhatsApp intake, auto-repair application
-UI, frontend, Redis, S3, Docker Compose orchestration, CI.
+pgvector retrieval over a grown archetype library, designer copilot
+editor UI, WhatsApp channel integration, real malware scanner + S3,
+Redis-backed rate limits, accounts/design claiming, CI pipeline,
+3D preview, pricing/orders (P1).

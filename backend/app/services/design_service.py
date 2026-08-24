@@ -107,7 +107,13 @@ def _emit(
 # ---------------------------------------------------------------- requests
 
 
-def create_request(session: Session, text: str, product_type: str, actor: str = "customer") -> m.DesignRequest:
+def create_request(
+    session: Session,
+    text: str,
+    product_type: str,
+    actor: str = "customer",
+    session_token_hash: str | None = None,
+) -> m.DesignRequest:
     src = ImmutableSourceText.create(text)
     req = m.DesignRequest(
         schema_version=SCHEMA_VERSION,
@@ -116,6 +122,7 @@ def create_request(session: Session, text: str, product_type: str, actor: str = 
         source_text_sha256=src.sha256,
         product_type=product_type,
         status="DRAFT",
+        session_token_hash=session_token_hash,
     )
     session.add(req)
     session.flush()
@@ -138,6 +145,16 @@ def confirm_request_text(session: Session, request_id: uuid.UUID, confirmed_text
     req.confirmed = True
     req.confirmed_at = _utcnow()
     req.status = "TEXT_CONFIRMED"
+    # Mirror into the intake brief: confirmed_text comes ONLY from here
+    # (explicit customer confirmation) — never from OCR/vision.
+    brief = session.execute(
+        select(m.CustomerBrief).where(m.CustomerBrief.design_request_id == req.id)
+    ).scalar_one_or_none()
+    if brief is not None:
+        brief.confirmed_text = req.source_text_normalized
+        brief.missing_fields = [f for f in (brief.missing_fields or []) if f != "confirmed_text"]
+        if not brief.missing_fields:
+            brief.status = "READY"
     _emit(session, "TEXT_CONFIRMED", request_id=req.id, actor=actor, actor_type="customer")
     return req
 
@@ -154,8 +171,13 @@ def generate_and_persist_candidates(
     if req.status == "DRAFT":
         raise ConflictError("Exact source text must be confirmed before generation.")
 
+    brief = session.execute(
+        select(m.CustomerBrief).where(m.CustomerBrief.design_request_id == req.id)
+    ).scalar_one_or_none()
+    hints = brief.generation_hints if brief else None
+
     source = ImmutableSourceText.create(req.source_text_raw, confirmed=True)
-    all_candidates, top = generate_candidates(str(req.id), source, rules)
+    all_candidates, top = generate_candidates(str(req.id), source, rules, hints=hints)
 
     # Idempotent per request: regeneration replaces nothing — same
     # deterministic candidate_keys conflict-skip via unique constraint.

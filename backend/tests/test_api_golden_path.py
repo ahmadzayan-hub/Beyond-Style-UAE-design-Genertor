@@ -17,10 +17,11 @@ def client(clean_tables):
 
 
 def test_full_golden_path_arabic(client):
-    # 1. Create with exact Arabic text.
+    # 1. Create with exact Arabic text; anonymous session token issued.
     r = client.post("/api/designs", json={"text": "ميثة"})
     assert r.status_code == 201
     design_id = r.json()["design_id"]
+    client.headers.update({"X-Session-Token": r.json()["session_token"]})
     assert r.json()["requires_confirmation"] is True
 
     # 2. Generation before confirmation is refused.
@@ -116,6 +117,7 @@ def test_full_golden_path_arabic(client):
 def test_invalid_candidate_cannot_be_selected(client):
     r = client.post("/api/designs", json={"text": "مريم"})
     design_id = r.json()["design_id"]
+    client.headers.update({"X-Session-Token": r.json()["session_token"]})
     client.post(f"/api/designs/{design_id}/confirm", json={"confirmed_text": "مريم"})
     client.post(f"/api/designs/{design_id}/candidates")
     rows = client.get(
@@ -140,6 +142,7 @@ def test_font_registry_endpoint(client):
 def test_english_golden_path(client):
     r = client.post("/api/designs", json={"text": "Amal"})
     design_id = r.json()["design_id"]
+    client.headers.update({"X-Session-Token": r.json()["session_token"]})
     client.post(f"/api/designs/{design_id}/confirm", json={"confirmed_text": "Amal"})
     r = client.post(f"/api/designs/{design_id}/candidates")
     assert len(r.json()["top"]) == 10
