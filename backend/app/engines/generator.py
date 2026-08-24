@@ -19,7 +19,13 @@ from ..schemas.jewellery_design import (
     ImmutableSourceText,
     RecipeParams,
 )
-from .arabic_engine import shape_text, verify_identity
+from .arabic_engine import (
+    apply_kashida,
+    remap_runs_to_source,
+    shape_multiline,
+    shape_text,
+    verify_identity,
+)
 from .geometry_engine import compose
 from .validator import validate
 
@@ -67,26 +73,87 @@ def expand_recipes(min_count: int = 30) -> list[RecipeParams]:
 
 
 def _adapt_for_text_length(recipes: list[RecipeParams], text: str) -> list[RecipeParams]:
-    """Deterministic long-text adaptation: phrases need a physically larger
-    piece and bolder strokes to keep letter joins manufacturable. Single-line
-    only — multi-line phrase composition is a later slice."""
+    """Deterministic long-text adaptation.
+
+    9–8+ letters, ≤2 words: bolder strokes + larger piece (single line).
+    3+ words: convert layout-capable recipes to stacked multi-line (2 or 3
+    lines by word count, alternating for diversity); plates/frames keep
+    their composition around the stacked block. Kashida is disabled on
+    stacked text (elongation fights balanced line widths)."""
     n = sum(1 for c in text if not c.isspace())
+    words = [w for w in text.split(" ") if w]
     if n <= 8:
         return recipes
-    return [
-        r.model_copy(
-            update={
-                "stroke_delta_mm": round(r.stroke_delta_mm + 0.2, 3),
-                "target_height_mm": r.target_height_mm + 4.0,
-            }
+    if len(words) <= 2:
+        return [
+            r.model_copy(
+                update={
+                    "stroke_delta_mm": round(r.stroke_delta_mm + 0.2, 3),
+                    "target_height_mm": r.target_height_mm + 4.0,
+                }
+            )
+            for r in recipes
+        ]
+    out = []
+    base_lines = 3 if len(words) >= 5 else 2
+    for i, r in enumerate(recipes):
+        lines = base_lines if i % 2 == 0 else min(base_lines + 1, len(words), 4)
+        out.append(
+            r.model_copy(
+                update={
+                    "max_lines": max(r.max_lines, lines),
+                    "kashida_count": 0,
+                    "swash": "none" if r.swash == "double_flourish" else r.swash,
+                    "stroke_delta_mm": round(r.stroke_delta_mm + 0.15, 3),
+                }
+            )
         )
-        for r in recipes
-    ]
+    return out
 
 
 def _candidate_id(design_id: str, recipe: RecipeParams, source_sha: str) -> str:
     payload = f"{design_id}|{recipe.model_dump_json()}|{source_sha}|{GENERATOR_VERSION}"
     return hashlib.sha256(payload.encode()).hexdigest()[:16]
+
+
+def build_geometry_for_recipe(source_text: str, recipe: RecipeParams, rules: WorkshopRules):
+    """Shared deterministic build path (generator + designer edits).
+    Applies the Glyph Variant Library (OT feature set, kashida with source
+    index remapping) and multi-line composition. Returns (runs, proof, built).
+    """
+    from ..fonts.glyph_variants import resolve_features
+
+    features = None
+    if recipe.ot_feature_set != "default":
+        try:
+            features = resolve_features(recipe.ot_feature_set, recipe.font_id)
+        except (KeyError, ValueError):
+            features = None  # inapplicable to this font → standard forms
+
+    line_runs = None
+    if recipe.max_lines > 1 and " " in source_text.strip():
+        line_runs, proof = shape_multiline(
+            source_text, recipe.font_id, recipe.max_lines, features
+        )
+        runs = [r for line in line_runs for r in line]
+    else:
+        display, imap = apply_kashida(source_text, recipe.kashida_count)
+        runs = shape_text(display, recipe.font_id, features)
+        if recipe.kashida_count > 0:
+            runs = remap_runs_to_source(runs, imap, source_text)
+        proof = verify_identity(source_text, runs)
+
+    built = compose(
+        runs,
+        recipe,
+        loop_inner_d=rules.loop_inner_diameter_mm,
+        loop_wall=rules.loop_wall_mm,
+        bridge_width=rules.min_bridge_mm,
+        min_gap_eff=rules.effective_min_gap_mm,
+        line_runs=line_runs,
+        fit_width_mm=rules.max_width_mm - 4.0,
+    )
+    return runs, proof, built
 
 
 def build_candidate(
@@ -97,16 +164,7 @@ def build_candidate(
 ) -> DesignCandidate:
     registry = get_registry()
     font = registry.get(recipe.font_id)
-    runs = shape_text(source.normalized_text, recipe.font_id)
-    proof = verify_identity(source.normalized_text, runs)
-    built = compose(
-        runs,
-        recipe,
-        loop_inner_d=rules.loop_inner_diameter_mm,
-        loop_wall=rules.loop_wall_mm,
-        bridge_width=rules.min_bridge_mm,
-        min_gap_eff=rules.effective_min_gap_mm,
-    )
+    runs, proof, built = build_geometry_for_recipe(source.normalized_text, recipe, rules)
     expected_loops = {"none": 0, "top": 1, "left_right": 2}[recipe.loops]
     report = validate(
         built,
@@ -159,8 +217,13 @@ def build_candidate(
     )
 
 
+DOT_CLASSES = {"round": 0, "diamond": 1, "square": 2, "petal": 3}
+SWASH_CLASSES = {"none": 0, "underline_flourish": 1, "tail_sweep": 2, "double_flourish": 3}
+
+
 def _feature_vector(c: DesignCandidate) -> list[float]:
     f = c.features
+    r = c.recipe
     return [
         f.aspect_ratio,
         f.fill_ratio,
@@ -170,6 +233,10 @@ def _feature_vector(c: DesignCandidate) -> list[float]:
         f.composition_class,
         f.font_index,
         f.loops_class,
+        DOT_CLASSES.get(r.dot_style, 0),
+        SWASH_CLASSES.get(r.swash, 0),
+        float(r.kashida_count),
+        float(r.max_lines),
     ]
 
 

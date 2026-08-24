@@ -24,9 +24,20 @@ DATABASE_URL = os.environ.get(
 
 
 class WorkshopRules(BaseModel):
-    """All values in millimetres. Source: TEST_DEFAULTS (not production)."""
+    """All values in millimetres. Profiles load from
+    data/workshop_profiles.json (versioned, configurable per
+    product × material). calibration_status is honest: INDUSTRY_TYPICAL
+    values must be calibrated with the real Beyond Style workshop before
+    is_production_profile may become true."""
 
     profile_name: str = "TEST_DEFAULTS"
+    product: str = "pendant"
+    material: str = "silver-925"
+    thickness_class: str = "sheet-1.1"
+    max_slenderness: float = Field(8.0, gt=0)
+    min_counter_mm: float = Field(0.5, gt=0)
+    calibration_status: str = "TEST_DEFAULTS"
+    profiles_version: str = "none"
     is_production_profile: bool = False
     min_stroke_mm: float = Field(0.6, gt=0)
     min_gap_mm: float = Field(0.5, gt=0)
@@ -56,4 +67,23 @@ class WorkshopRules(BaseModel):
         return f"{self.profile_name}@{digest}"
 
 
-DEFAULT_RULES = WorkshopRules()
+def load_workshop_profiles() -> dict:
+    import json
+    from pathlib import Path
+
+    path = Path(__file__).resolve().parent / "data" / "workshop_profiles.json"
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def get_profile(product: str = "pendant", material: str = "silver-925") -> WorkshopRules:
+    """Load a versioned workshop rule profile. Unknown combinations raise
+    (no silent fallback to wrong manufacturing limits)."""
+    data = load_workshop_profiles()
+    for entry in data["profiles"]:
+        if entry["product"] == product and entry["material"] == material:
+            return WorkshopRules(**entry, profiles_version=data["profiles_version"])
+    raise KeyError(f"No workshop profile for {product}/{material}")
+
+
+#: Default rules: pendant in 925 silver (versioned profile, uncalibrated).
+DEFAULT_RULES = get_profile("pendant", "silver-925")

@@ -194,6 +194,7 @@ export default function GoldenPathPage() {
     for (const k of [
       "stroke_delta_mm", "letter_spacing_mm", "x_scale", "y_scale",
       "target_height_mm", "composition", "loops", "dot_strategy",
+      "dot_style", "swash", "kashida_count", "ot_feature_set", "max_lines",
     ]) {
       if (editParams[k] !== undefined && editParams[k] !== selected.recipe[k]) {
         overrides[k] = editParams[k];
@@ -620,6 +621,59 @@ export default function GoldenPathPage() {
                   className="mt-1 w-full rounded border border-stone-300 p-2"
                 >
                   {["bare", "baseline_bar", "underline_bar", "top_bar", "plate_oval", "plate_rect", "frame_circle", "frame_rect"].map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </label>
+              <label className="text-xs">
+                {t.edit_dot_style}
+                <select
+                  data-testid="select-dot-style"
+                  value={editParams.dot_style ?? "round"}
+                  onChange={(e) => setEditParams({ ...editParams, dot_style: e.target.value })}
+                  className="mt-1 w-full rounded border border-stone-300 p-2"
+                >
+                  {["round", "diamond", "square", "petal"].map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </label>
+              <label className="text-xs">
+                {t.edit_swash}
+                <select
+                  data-testid="select-swash"
+                  value={editParams.swash ?? "none"}
+                  onChange={(e) => setEditParams({ ...editParams, swash: e.target.value })}
+                  className="mt-1 w-full rounded border border-stone-300 p-2"
+                >
+                  {["none", "underline_flourish", "tail_sweep", "double_flourish"].map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </label>
+              <label className="text-xs">
+                <span className="flex justify-between">
+                  <span>{t.edit_kashida}</span>
+                  <span className="tabular-nums">{editParams.kashida_count ?? 0}</span>
+                </span>
+                <input
+                  type="range"
+                  data-testid="slider-kashida"
+                  min={0} max={3} step={1}
+                  value={editParams.kashida_count ?? 0}
+                  onChange={(e) => setEditParams({ ...editParams, kashida_count: Number(e.target.value) })}
+                  className="w-full accent-brand-gold"
+                />
+              </label>
+              <label className="text-xs">
+                {t.edit_lines}
+                <select
+                  data-testid="select-lines"
+                  value={editParams.max_lines ?? 1}
+                  onChange={(e) => setEditParams({ ...editParams, max_lines: Number(e.target.value) })}
+                  className="mt-1 w-full rounded border border-stone-300 p-2"
+                >
+                  {[1, 2, 3, 4].map((c) => (
                     <option key={c} value={c}>{c}</option>
                   ))}
                 </select>

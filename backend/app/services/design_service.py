@@ -28,6 +28,7 @@ from ..config import (
 from ..db import models as m
 from ..engines.arabic_engine import shape_text, verify_identity
 from ..engines.generator import (
+    build_geometry_for_recipe,
     diversity_score,
     generate_candidates,
     load_recipe_library,
@@ -62,6 +63,12 @@ EDITABLE_RECIPE_FIELDS = {
     "target_height_mm",
     "dot_strategy",
     "font_id",
+    "ot_feature_set",
+    "dot_style",
+    "swash",
+    "kashida_count",
+    "max_lines",
+    "line_spacing_ratio",
 }
 
 
@@ -368,16 +375,7 @@ def edit_version(
 
     # Deterministic re-run of the pipeline on the unchanged source text.
     source = ImmutableSourceText.create(parent.immutable_source_text, confirmed=True)
-    runs = shape_text(source.normalized_text, new_recipe.font_id)
-    proof = verify_identity(source.normalized_text, runs)
-    built = compose(
-        runs,
-        new_recipe,
-        loop_inner_d=rules.loop_inner_diameter_mm,
-        loop_wall=rules.loop_wall_mm,
-        bridge_width=rules.min_bridge_mm,
-        min_gap_eff=rules.effective_min_gap_mm,
-    )
+    runs, proof, built = build_geometry_for_recipe(source.normalized_text, new_recipe, rules)
     font = get_registry().get(new_recipe.font_id)
     expected_loops = {"none": 0, "top": 1, "left_right": 2}[new_recipe.loops]
     report = validate(
@@ -424,15 +422,7 @@ def change_source_text(
     design = session.get(m.Design, parent.design_id)
     source = ImmutableSourceText.create(new_text, confirmed=True)
     recipe = RecipeParams(**parent.recipe)
-    runs = shape_text(source.normalized_text, recipe.font_id)
-    proof = verify_identity(source.normalized_text, runs)
-    built = compose(
-        runs, recipe,
-        loop_inner_d=rules.loop_inner_diameter_mm,
-        loop_wall=rules.loop_wall_mm,
-        bridge_width=rules.min_bridge_mm,
-        min_gap_eff=rules.effective_min_gap_mm,
-    )
+    runs, proof, built = build_geometry_for_recipe(source.normalized_text, recipe, rules)
     font = get_registry().get(recipe.font_id)
     report = validate(
         built, rules, proof,

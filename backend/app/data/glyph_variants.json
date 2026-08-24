@@ -1,0 +1,44 @@
+{
+  "library_version": "0.1.0",
+  "note": "Deterministic glyph-variant registry. OT feature sets are real OpenType features shipped in the licensed fonts (positional forms init/medial/final/isolated are always on via HarfBuzz). Dot styles and swashes are parametric geometry recipes applied by the geometry engine — reusable assets, not ad-hoc logic. All variants preserve letter identity; the identity proof still gates production.",
+  "ot_feature_sets": {
+    "default": {"fonts": ["amiri-regular", "scheherazade-new", "cairo"], "features": {}, "label": "Standard forms"},
+    "amiri-ornate-1": {"fonts": ["amiri-regular"], "features": {"ss01": true, "ss05": true}, "label": "Amiri stylistic alternates I"},
+    "amiri-ornate-2": {"fonts": ["amiri-regular"], "features": {"ss02": true, "ss06": true}, "label": "Amiri stylistic alternates II"},
+    "amiri-ornate-3": {"fonts": ["amiri-regular"], "features": {"ss03": true, "ss07": true, "ss08": true}, "label": "Amiri stylistic alternates III"},
+    "sche-salt": {"fonts": ["scheherazade-new"], "features": {"salt": true}, "label": "Scheherazade stylistic alternates"},
+    "sche-cv-tails": {"fonts": ["scheherazade-new"], "features": {"cv44": 1, "cv48": 1, "cv49": 1}, "label": "Scheherazade alternate tails"},
+    "sche-cv-forms": {"fonts": ["scheherazade-new"], "features": {"cv51": 1, "cv62": 1, "cv78": 1}, "label": "Scheherazade alternate letterforms"},
+    "cairo-dlig": {"fonts": ["cairo"], "features": {"dlig": true}, "label": "Cairo discretionary ligatures"}
+  },
+  "dot_styles": {
+    "round": {"label": "Classic round dots", "shape": "circle", "scale": 1.0},
+    "diamond": {"label": "Diamond-cut dots", "shape": "diamond", "scale": 1.15},
+    "square": {"label": "Kufi square dots", "shape": "square", "scale": 1.0},
+    "petal": {"label": "Petal dots", "shape": "petal", "scale": 1.2}
+  },
+  "swashes": {
+    "none": {"label": "No flourish"},
+    "underline_flourish": {
+      "label": "Underline flourish",
+      "kind": "underline_curve",
+      "depth_ratio": 0.22,
+      "thickness_ratio": 0.6,
+      "extend_ratio": 0.12
+    },
+    "tail_sweep": {
+      "label": "Trailing tail sweep",
+      "kind": "end_curve",
+      "depth_ratio": 0.35,
+      "thickness_ratio": 0.55,
+      "extend_ratio": 0.3
+    },
+    "double_flourish": {
+      "label": "Mirrored double flourish",
+      "kind": "double_curve",
+      "depth_ratio": 0.18,
+      "thickness_ratio": 0.55,
+      "extend_ratio": 0.1
+    }
+  }
+}

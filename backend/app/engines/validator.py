@@ -235,6 +235,27 @@ def validate(
                 )
             )
 
+    # Slenderness: overly long/thin pieces bend and snag.
+    w_, h_ = built.width_mm, built.height_mm
+    if h_ > 0 and w_ > 0:
+        slenderness = max(w_ / h_, h_ / w_)
+        if slenderness > rules.max_slenderness:
+            violations.append(
+                Violation(
+                    code=ViolationCode.OVERSIZE,
+                    severity=ValidationSeverity.ERROR,
+                    detail=(
+                        f"Aspect {slenderness:.1f} exceeds max slenderness "
+                        f"{rules.max_slenderness} for {rules.product}."
+                    ),
+                    proposed_fix=ProposedFix(
+                        action="recompose",
+                        detail="Use stacked/multi-line or more compact composition.",
+                        params={"max_slenderness": rules.max_slenderness},
+                    ),
+                )
+            )
+
     # Size envelope.
     if built.width_mm > rules.max_width_mm or built.height_mm > rules.max_height_mm:
         violations.append(

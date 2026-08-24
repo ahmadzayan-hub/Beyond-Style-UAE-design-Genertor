@@ -1,146 +1,191 @@
 {
  "ميثة": {
   "top_count": 10,
-  "max_pairwise_perceptual_iou": 0.801,
-  "feature_diversity_min_pairwise": 0.5928,
-  "families": [
-   "circular-medallion",
-   "naskh-elegant",
-   "naskh-luxury",
-   "petite-charm",
-   "plate-relief",
-   "suspended-bar"
-  ],
-  "compositions": [
+  "composition_families": [
    "bare",
    "frame_circle",
-   "plate_oval",
+   "frame_rect",
    "plate_rect",
    "top_bar",
    "underline_bar"
+  ],
+  "dna_families": [
+   "circular-medallion",
+   "flourish-crest",
+   "frame-openwork",
+   "kashida-elongated",
+   "kufi-minimal",
+   "naskh-luxury",
+   "petite-charm",
+   "plate-relief",
+   "stacked-emblem",
+   "suspended-bar"
+  ],
+  "stylistic_families": [
+   "dot:petal",
+   "kashida:3",
+   "swash:double_flourish",
+   "swash:tail_sweep",
+   "swash:underline_flourish"
   ],
   "fonts": [
    "amiri-regular",
    "cairo",
    "scheherazade-new"
   ],
-  "all_manufacturing_pass": true
+  "max_pairwise_perceptual_iou": 0.71,
+  "near_dup_gate": 0.86,
+  "feature_diversity_min_pairwise": 1.1361,
+  "all_manufacturing_pass": true,
+  "all_identity_verified": true,
+  "acceptance_pass": true
  },
  "نورة": {
   "top_count": 10,
-  "max_pairwise_perceptual_iou": 0.793,
-  "feature_diversity_min_pairwise": 0.6259,
-  "families": [
+  "composition_families": [
+   "bare",
+   "frame_circle",
+   "frame_rect",
+   "plate_oval",
+   "plate_rect"
+  ],
+  "dna_families": [
+   "circular-medallion",
    "frame-openwork",
    "kufi-bold",
    "kufi-minimal",
-   "naskh-elegant",
-   "naskh-openwork",
+   "naskh-luxury",
    "petite-charm",
    "plate-relief",
-   "suspended-bar"
+   "stacked-emblem"
   ],
-  "compositions": [
-   "bare",
-   "frame_rect",
-   "plate_oval",
-   "plate_rect",
-   "top_bar",
-   "underline_bar"
+  "stylistic_families": [
+   "dot:square",
+   "kashida:2",
+   "swash:tail_sweep"
   ],
   "fonts": [
    "amiri-regular",
    "cairo",
    "scheherazade-new"
   ],
-  "all_manufacturing_pass": true
+  "max_pairwise_perceptual_iou": 0.811,
+  "near_dup_gate": 0.86,
+  "feature_diversity_min_pairwise": 1.1978,
+  "all_manufacturing_pass": true,
+  "all_identity_verified": true,
+  "acceptance_pass": true
  },
  "محمد": {
   "top_count": 10,
-  "max_pairwise_perceptual_iou": 0.778,
-  "feature_diversity_min_pairwise": 0.7679,
-  "families": [
+  "composition_families": [
+   "bare",
+   "baseline_bar",
+   "frame_circle",
+   "plate_rect",
+   "top_bar",
+   "underline_bar"
+  ],
+  "dna_families": [
    "circular-medallion",
+   "flourish-crest",
+   "kashida-elongated",
+   "naskh-airy",
+   "naskh-nameplate",
+   "plate-relief",
+   "stacked-emblem",
+   "suspended-bar"
+  ],
+  "stylistic_families": [
+   "dot:petal",
+   "kashida:2",
+   "kashida:3",
+   "swash:double_flourish",
+   "swash:underline_flourish"
+  ],
+  "fonts": [
+   "amiri-regular",
+   "cairo",
+   "scheherazade-new"
+  ],
+  "max_pairwise_perceptual_iou": 0.62,
+  "near_dup_gate": 0.86,
+  "feature_diversity_min_pairwise": 1.2401,
+  "all_manufacturing_pass": true,
+  "all_identity_verified": true,
+  "acceptance_pass": true
+ },
+ "حامد محمد سلطان ميثة حمد خالد مهرة": {
+  "top_count": 10,
+  "composition_families": [
+   "bare",
+   "frame_rect",
+   "plate_oval",
+   "plate_rect",
+   "top_bar"
+  ],
+  "dna_families": [
+   "earring-drop",
    "frame-openwork",
-   "naskh-elegant",
    "naskh-luxury",
+   "naskh-openwork",
    "petite-charm",
    "plate-relief",
    "suspended-bar"
   ],
-  "compositions": [
+  "stylistic_families": [
+   "dot:diamond",
+   "dot:square",
+   "lines:3",
+   "lines:4"
+  ],
+  "fonts": [
+   "amiri-regular",
+   "cairo",
+   "scheherazade-new"
+  ],
+  "max_pairwise_perceptual_iou": 0.811,
+  "near_dup_gate": 0.86,
+  "feature_diversity_min_pairwise": 1.009,
+  "all_manufacturing_pass": true,
+  "all_identity_verified": true,
+  "acceptance_pass": true
+ },
+ "سلام هي حتى مطلع الفجر": {
+  "top_count": 10,
+  "composition_families": [
    "bare",
    "frame_circle",
    "frame_rect",
    "plate_oval",
    "plate_rect",
-   "top_bar",
    "underline_bar"
   ],
-  "fonts": [
-   "amiri-regular",
-   "cairo",
-   "scheherazade-new"
-  ],
-  "all_manufacturing_pass": true
- },
- "Amal": {
-  "top_count": 10,
-  "max_pairwise_perceptual_iou": 0.854,
-  "feature_diversity_min_pairwise": 0.4903,
-  "families": [
-   "kufi-bold",
-   "kufi-minimal",
-   "naskh-elegant",
-   "naskh-luxury",
-   "naskh-openwork",
-   "petite-charm",
-   "plate-relief",
-   "suspended-bar"
-  ],
-  "compositions": [
-   "bare",
-   "plate_oval",
-   "plate_rect",
-   "top_bar",
-   "underline_bar"
-  ],
-  "fonts": [
-   "amiri-regular",
-   "cairo",
-   "scheherazade-new"
-  ],
-  "all_manufacturing_pass": true
- },
- "Basma": {
-  "top_count": 10,
-  "max_pairwise_perceptual_iou": 0.811,
-  "feature_diversity_min_pairwise": 0.6155,
-  "families": [
+  "dna_families": [
+   "circular-medallion",
    "frame-openwork",
+   "kashida-elongated",
    "kufi-bold",
-   "kufi-minimal",
    "naskh-elegant",
-   "naskh-luxury",
-   "naskh-nameplate",
    "petite-charm",
-   "plate-relief",
-   "suspended-bar"
+   "plate-relief"
   ],
-  "compositions": [
-   "bare",
-   "baseline_bar",
-   "frame_rect",
-   "plate_oval",
-   "plate_rect",
-   "top_bar",
-   "underline_bar"
+  "stylistic_families": [
+   "dot:square",
+   "lines:3",
+   "lines:4",
+   "swash:underline_flourish"
   ],
   "fonts": [
    "amiri-regular",
    "cairo",
    "scheherazade-new"
   ],
-  "all_manufacturing_pass": true
+  "max_pairwise_perceptual_iou": 0.774,
+  "near_dup_gate": 0.86,
+  "feature_diversity_min_pairwise": 1.046,
+  "all_manufacturing_pass": true,
+  "all_identity_verified": true,
+  "acceptance_pass": true
  }
 }

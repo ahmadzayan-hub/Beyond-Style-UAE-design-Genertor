@@ -148,6 +148,14 @@ class RecipeParams(BaseModel):
     loops: str = "top"  # none | top | left_right
     frame_margin_mm: float = 2.0
     target_height_mm: float = 18.0
+    # Glyph Variant Library axes (deterministic, data-driven).
+    ot_feature_set: str = "default"  # OpenType stylistic set (font-dependent)
+    dot_style: str = "round"  # round | diamond | square | petal
+    swash: str = "none"  # none | underline_flourish | tail_sweep | double_flourish
+    kashida_count: int = 0  # baseline elongation units before final letter
+    # Long-text composition.
+    max_lines: int = 1  # 1 = single line; >1 = stacked multi-line
+    line_spacing_ratio: float = 0.22
     # Curated archetype metadata (Design DNA, products, text-length fit,
     # rights provenance). Informational — geometry uses the fields above.
     dna: Optional[dict] = None

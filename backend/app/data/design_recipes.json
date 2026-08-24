@@ -1,5 +1,5 @@
 {
- "library_version": "0.2.0",
+ "library_version": "0.3.0",
  "note": "Curated parametric archetypes (32) — each with a distinct visual purpose and Design DNA. Structured constructions, not artwork copies. Rights: original Beyond Style parametric recipes. Values in mm.",
  "recipes": [
   {
@@ -32,7 +32,8 @@
      "rules_profile": "TEST_DEFAULTS"
     },
     "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
-   }
+   },
+   "kashida_count": 2
   },
   {
    "recipe_id": "naskh-flow-script",
@@ -128,7 +129,8 @@
      "rules_profile": "TEST_DEFAULTS"
     },
     "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
-   }
+   },
+   "swash": "tail_sweep"
   },
   {
    "recipe_id": "naskh-medallion",
@@ -288,7 +290,8 @@
      "rules_profile": "TEST_DEFAULTS"
     },
     "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
-   }
+   },
+   "dot_style": "petal"
   },
   {
    "recipe_id": "naskh-bold-tag",
@@ -386,7 +389,8 @@
      "rules_profile": "TEST_DEFAULTS"
     },
     "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
-   }
+   },
+   "kashida_count": 1
   },
   {
    "recipe_id": "trad-medallion",
@@ -450,7 +454,8 @@
      "rules_profile": "TEST_DEFAULTS"
     },
     "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
-   }
+   },
+   "ot_feature_set": "sche-salt"
   },
   {
    "recipe_id": "trad-underline",
@@ -706,7 +711,8 @@
      "rules_profile": "TEST_DEFAULTS"
     },
     "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
-   }
+   },
+   "dot_style": "square"
   },
   {
    "recipe_id": "kufi-minimal-line",
@@ -803,7 +809,8 @@
      "rules_profile": "TEST_DEFAULTS"
     },
     "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
-   }
+   },
+   "dot_style": "square"
   },
   {
    "recipe_id": "kufi-open-frame",
@@ -1025,6 +1032,309 @@
     "manufacturing_constraints": {
      "min_target_height_mm": 8.0,
      "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "left_right",
+   "frame_margin_mm": 2.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "underline_flourish",
+   "kashida_count": 3,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "recipe_id": "naskh-kashida-royal",
+   "name": "Royal elongated nameplate",
+   "font_id": "amiri-regular",
+   "composition": "underline_bar",
+   "stroke_delta_mm": 0.22,
+   "target_height_mm": 12,
+   "dna": {
+    "family": "kashida-elongated",
+    "visual_purpose": "royal kashida-stretched nameplate with flourish",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 8.0,
+     "rules_profile": "workshop_profiles"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "ot_feature_set": "default",
+   "dot_style": "petal",
+   "swash": "double_flourish",
+   "kashida_count": 0,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "recipe_id": "naskh-flourish-crest",
+   "name": "Flourished crest",
+   "font_id": "amiri-regular",
+   "composition": "bare",
+   "stroke_delta_mm": 0.28,
+   "target_height_mm": 13,
+   "dna": {
+    "family": "flourish-crest",
+    "visual_purpose": "mirrored double-flourish emblem crest",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 8.0,
+     "rules_profile": "workshop_profiles"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "ot_feature_set": "sche-cv-tails",
+   "dot_style": "diamond",
+   "swash": "tail_sweep",
+   "kashida_count": 0,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "recipe_id": "sche-ornate-tails",
+   "name": "Ornate traditional tails",
+   "font_id": "scheherazade-new",
+   "composition": "bare",
+   "stroke_delta_mm": 0.26,
+   "target_height_mm": 13.5,
+   "dna": {
+    "family": "ornate-tails",
+    "visual_purpose": "alternate-tail calligraphy with trailing sweep",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 8.0,
+     "rules_profile": "workshop_profiles"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 1.6,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 2,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "recipe_id": "sche-kashida-medallion",
+   "name": "Elongated medallion",
+   "font_id": "scheherazade-new",
+   "composition": "frame_circle",
+   "stroke_delta_mm": 0.2,
+   "target_height_mm": 9.5,
+   "dna": {
+    "family": "circular-medallion",
+    "visual_purpose": "kashida-balanced circular medallion",
+    "products": [
+     "pendant",
+     "medallion"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 8.0,
+     "rules_profile": "workshop_profiles"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "max_lines": 3,
+   "line_spacing_ratio": 0.22,
+   "recipe_id": "stacked-emblem",
+   "name": "Stacked emblem",
+   "font_id": "amiri-regular",
+   "composition": "bare",
+   "stroke_delta_mm": 0.3,
+   "target_height_mm": 11,
+   "dna": {
+    "family": "stacked-emblem",
+    "visual_purpose": "multi-line emblem of names/phrases",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     9,
+     60
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 8.0,
+     "rules_profile": "workshop_profiles"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "max_lines": 2,
+   "line_spacing_ratio": 0.22,
+   "recipe_id": "stacked-plate-badge",
+   "name": "Stacked badge plate",
+   "font_id": "cairo",
+   "composition": "plate_rect",
+   "stroke_delta_mm": 0.0,
+   "target_height_mm": 8.5,
+   "dna": {
+    "family": "phrase-badge",
+    "visual_purpose": "phrase badge on solid plate",
+    "products": [
+     "pendant",
+     "keychain"
+    ],
+    "text_length_chars": [
+     9,
+     60
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 8.0,
+     "rules_profile": "workshop_profiles"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 1.8,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "max_lines": 3,
+   "line_spacing_ratio": 0.22,
+   "recipe_id": "stacked-medallion-phrase",
+   "name": "Medallion phrase",
+   "font_id": "scheherazade-new",
+   "composition": "frame_circle",
+   "stroke_delta_mm": 0.24,
+   "target_height_mm": 8.5,
+   "dna": {
+    "family": "circular-medallion",
+    "visual_purpose": "stacked phrase inside medallion ring",
+    "products": [
+     "pendant",
+     "medallion"
+    ],
+    "text_length_chars": [
+     9,
+     60
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 8.0,
+     "rules_profile": "workshop_profiles"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   }
+  },
+  {
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "ot_feature_set": "default",
+   "dot_style": "diamond",
+   "swash": "none",
+   "kashida_count": 0,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "recipe_id": "kufi-earring-drop",
+   "name": "Petite earring drop",
+   "font_id": "cairo",
+   "composition": "bare",
+   "stroke_delta_mm": 0.24,
+   "target_height_mm": 8,
+   "dna": {
+    "family": "earring-drop",
+    "visual_purpose": "compact drop for earrings",
+    "products": [
+     "earring"
+    ],
+    "text_length_chars": [
+     1,
+     6
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 8.0,
+     "rules_profile": "workshop_profiles"
     },
     "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
    }

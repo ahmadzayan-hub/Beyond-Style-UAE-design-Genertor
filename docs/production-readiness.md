@@ -3,9 +3,23 @@
 Updated: 2026-08-24 · Slices done: (1) deterministic Golden Path core,
 (2) PostgreSQL persistence + versioning + approval lock + audit (ADR-0001),
 (3) reference/WhatsApp intake + upload security + anonymous sessions + mobile-first customer UI,
-(4) design quality gate: perceptual dedup + high-fidelity proofs + curated 32-archetype library + minimal Designer Copilot
-Test evidence: `cd backend && python3 -m pytest` → **110 passed** (PostgreSQL 16 integration)
+(4) design quality gate: perceptual dedup + high-fidelity proofs + curated archetype library + minimal Designer Copilot,
+(5) decorative engine: Glyph Variant Library (OT sets, dot styles, swashes, kashida w/ identity remap), aesthetic bridge routing (vertical/radial + fillets), versioned workshop profiles (product × material, wp-1.0.0, INDUSTRY_TYPICAL_UNCALIBRATED), stacked multi-line long-text composition with width-fit, Copilot variant controls, CI workflow
+Test evidence: `cd backend && python3 -m pytest` → **127 passed** (PostgreSQL 16 integration)
 + browser E2E `python3 e2e/golden_path_e2e.py` (3 flows) + `python3 e2e/copilot_e2e.py` (edit→undo/redo→approve v2) — screenshots in `docs/evidence/`.
+
+## Slice 5 evidence (decorative engine / rules / multi-line / CI)
+
+| Feature | Status | Test | Evidence | Gap |
+|---|---|---|---|---|
+| Glyph Variant Library | WORKING | `test_variant_registry_loads_and_validates`, `test_dot_styles_change_geometry_not_identity`, `test_swash_adds_ornament_only` | data-driven registry (OT feature sets, 4 dot styles, 3 swashes); geometry changes, identity proof intact | OT sets rarely alter common name letters in these fonts (probed honestly); per-glyph tail editing needs deeper glyph machinery |
+| Kashida elongation | WORKING | `test_kashida_preserves_identity_and_elongates` | +30% width on joining names; tatweel is shaping-input only, cluster indices remapped to source; نورة correctly unchanged | — |
+| Aesthetic bridges | WORKING | `test_vertical_bridge_prefers_dot_over_chord`, `test_radial_bridge_in_medallion_no_chord`, `test_bridges_deterministic` | vertical-slab dot joins, radial medallion spokes, round caps + closing fillet; deterministic | bridge width taper is uniform (no artistic taper yet) |
+| Workshop profiles | WORKING | `test_profiles_versioned_and_complete`, `test_earring_profile_blocks_pendant_sized_design`, `test_slenderness_gate` | wp-1.0.0: 6 product×material profiles; earring envelope blocks oversized designs; slenderness gate | values are INDUSTRY_TYPICAL_UNCALIBRATED — Beyond Style workshop calibration required before production claim |
+| Multi-line long text | WORKING | `test_long_text_yields_10_valid_stacked_options` (7-name chain + phrase) | balanced lossless line breaking, per-line shaping+identity merge, stacked bodies, deterministic width-fit; 10 valid options each | circular/arc text path not yet; last-line readability at 4 lines is tight |
+| Copilot variant controls | WORKING | `copilot_e2e.py` + EDITABLE fields | dot/swash/kashida/lines/variant-set editable → new immutable versions | — |
+| CI pipeline | ADDED | `.github/workflows/ci.yml` | postgres service, migration cycle, full pytest, evidence artifact upload, frontend build | not yet observed green on GitHub (push required); browser E2E not in CI |
+| Acceptance evidence (5 cases) | WORKING | `e2e/generate_evidence_reports.py` (exit-code gated) | all 5 PASS: 10 options, ≥4 composition families (7-name: 5), ≥2 stylistic families, IoU < 0.86, all manufacturing+identity pass; PNG sheets in docs/evidence | — |
 
 ## Slice 4 evidence (quality gate / proofs / copilot)
 
