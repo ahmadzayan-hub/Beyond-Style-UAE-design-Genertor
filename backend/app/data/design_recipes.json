@@ -1,0 +1,22 @@
+{
+  "library_version": "0.1.0",
+  "note": "Seed parametric design recipes for the P0 slice (~10 of the eventual 150+ archetypes). Each recipe is a structured construction, not artwork. Values in mm.",
+  "recipes": [
+    {"recipe_id": "naskh-classic-bar", "name": "Classic Naskh nameplate", "font_id": "amiri-regular", "composition": "baseline_bar", "letter_spacing_mm": 0.0, "x_scale": 1.0, "y_scale": 1.0, "stroke_delta_mm": 0.12, "dot_strategy": "bridge", "connector_height_mm": 1.2, "loops": "left_right", "frame_margin_mm": 2.0, "target_height_mm": 12.0},
+    {"recipe_id": "naskh-flow-bare", "name": "Flowing Naskh script", "font_id": "amiri-regular", "composition": "bare", "letter_spacing_mm": 0.0, "x_scale": 1.0, "y_scale": 1.0, "stroke_delta_mm": 0.22, "dot_strategy": "bridge", "connector_height_mm": 1.0, "loops": "top", "frame_margin_mm": 2.0, "target_height_mm": 14.0},
+    {"recipe_id": "naskh-tall-elegant", "name": "Elongated elegant Naskh", "font_id": "amiri-regular", "composition": "underline_bar", "letter_spacing_mm": 0.3, "x_scale": 0.92, "y_scale": 1.18, "stroke_delta_mm": 0.15, "dot_strategy": "bridge", "connector_height_mm": 1.1, "loops": "left_right", "frame_margin_mm": 2.0, "target_height_mm": 13.0},
+    {"recipe_id": "trad-naskh-circle", "name": "Traditional medallion ring", "font_id": "scheherazade-new", "composition": "frame_circle", "letter_spacing_mm": 0.0, "x_scale": 1.0, "y_scale": 1.0, "stroke_delta_mm": 0.18, "dot_strategy": "bridge", "connector_height_mm": 1.2, "loops": "top", "frame_margin_mm": 1.6, "target_height_mm": 10.0},
+    {"recipe_id": "trad-naskh-bar", "name": "Traditional Naskh nameplate", "font_id": "scheherazade-new", "composition": "baseline_bar", "letter_spacing_mm": 0.2, "x_scale": 1.05, "y_scale": 1.0, "stroke_delta_mm": 0.2, "dot_strategy": "bridge", "connector_height_mm": 1.3, "loops": "left_right", "frame_margin_mm": 2.0, "target_height_mm": 11.0},
+    {"recipe_id": "kufi-solid-plate-oval", "name": "Modern oval plate relief", "font_id": "cairo", "composition": "plate_oval", "letter_spacing_mm": 0.2, "x_scale": 1.0, "y_scale": 1.0, "stroke_delta_mm": 0.0, "dot_strategy": "bridge", "connector_height_mm": 1.2, "loops": "top", "frame_margin_mm": 2.2, "target_height_mm": 9.0},
+    {"recipe_id": "kufi-bold-bare", "name": "Bold modern Kufi silhouette", "font_id": "cairo", "composition": "bare", "letter_spacing_mm": 0.15, "x_scale": 1.0, "y_scale": 1.0, "stroke_delta_mm": 0.28, "dot_strategy": "bridge", "connector_height_mm": 1.0, "loops": "top", "frame_margin_mm": 2.0, "target_height_mm": 11.0},
+    {"recipe_id": "kufi-wide-minimal", "name": "Minimal wide spacing", "font_id": "cairo", "composition": "underline_bar", "letter_spacing_mm": 0.9, "x_scale": 1.08, "y_scale": 0.95, "stroke_delta_mm": 0.05, "dot_strategy": "bridge", "connector_height_mm": 0.9, "loops": "left_right", "frame_margin_mm": 2.0, "target_height_mm": 10.0},
+    {"recipe_id": "kufi-rect-plate", "name": "Geometric rectangular tag", "font_id": "cairo", "composition": "plate_rect", "letter_spacing_mm": 0.3, "x_scale": 1.0, "y_scale": 1.0, "stroke_delta_mm": 0.0, "dot_strategy": "bridge", "connector_height_mm": 1.2, "loops": "top", "frame_margin_mm": 1.8, "target_height_mm": 8.5},
+    {"recipe_id": "naskh-condensed-luxury", "name": "Condensed luxury script", "font_id": "amiri-regular", "composition": "bare", "letter_spacing_mm": -0.1, "x_scale": 0.98, "y_scale": 1.28, "stroke_delta_mm": 0.3, "dot_strategy": "bridge", "connector_height_mm": 1.1, "loops": "top", "frame_margin_mm": 2.0, "target_height_mm": 15.0}
+  ],
+  "variation_axes": {
+    "note": "Deterministic per-recipe variations applied by the generator to reach >=30 candidates.",
+    "stroke_delta_mm": [0.0, 0.1],
+    "letter_spacing_mm": [0.0, 0.25],
+    "y_scale": [1.0, 1.1]
+  }
+}

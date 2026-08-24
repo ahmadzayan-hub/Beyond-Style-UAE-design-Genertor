@@ -1,0 +1,48 @@
+{
+  "registry_version": "0.1.0",
+  "note": "Fonts are design tools/sources for lettering, never the final product. Converting glyphs to outlines does not remove license obligations. UNKNOWN_RIGHTS fonts are preview/internal only and must never reach commercial production export.",
+  "fonts": [
+    {
+      "font_id": "amiri-regular",
+      "family": "Amiri",
+      "style_family": "naskh",
+      "file": "Amiri-Regular.ttf",
+      "license": "SIL OFL 1.1",
+      "license_file": "Amiri-OFL.txt",
+      "source_url": "https://github.com/aliftype/amiri",
+      "rights_status": "VERIFIED_OPEN_SOURCE",
+      "redistribution_permitted": true,
+      "scripts": ["arab", "latn"],
+      "supports_harakat": true,
+      "notes": "Classical Naskh revival; strong contextual shaping and ligatures."
+    },
+    {
+      "font_id": "cairo",
+      "family": "Cairo",
+      "style_family": "modern-kufi",
+      "file": "Cairo.ttf",
+      "license": "SIL OFL 1.1",
+      "license_file": "Cairo-OFL.txt",
+      "source_url": "https://github.com/Gue3bara/Cairo",
+      "rights_status": "VERIFIED_OPEN_SOURCE",
+      "redistribution_permitted": true,
+      "scripts": ["arab", "latn"],
+      "supports_harakat": false,
+      "notes": "Contemporary low-contrast Kufi-influenced sans; variable font, default instance used."
+    },
+    {
+      "font_id": "scheherazade-new",
+      "family": "Scheherazade New",
+      "style_family": "naskh-traditional",
+      "file": "ScheherazadeNew-Regular.ttf",
+      "license": "SIL OFL 1.1",
+      "license_file": "ScheherazadeNew-OFL.txt",
+      "source_url": "https://software.sil.org/scheherazade/",
+      "rights_status": "VERIFIED_OPEN_SOURCE",
+      "redistribution_permitted": true,
+      "scripts": ["arab", "latn"],
+      "supports_harakat": true,
+      "notes": "Traditional Naskh with wide Arabic coverage including Harakat."
+    }
+  ]
+}
