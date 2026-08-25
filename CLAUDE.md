@@ -144,10 +144,14 @@ Version and trace:
 Agent, Model, Prompt, Tools, Design-KB, Arabic Engine, Manufacturing Rules, Evaluations.
 Support routing, permissions, budgets, feature flags and rollback.
 Deterministic rules override AI for text truth, licensing, pricing math, manufacturing hard limits and security.
-Implemented as: Hermes-compatible orchestration (in-process adapter; detects
-the real `hermes-agent` package but does not require it) + Claude
-(fast/primary/escalate tiered routing) + GPT-Image-2 (visualization only,
-never manufacturing truth) — see `docs/adr/0002-hermes-claude-gpt-image2-orchestration.md`.
+Implemented as: Hermes-compatible orchestration (in-process adapter, or an
+OPTIONAL isolated runtime in `services/hermes/` with its own dependency
+pins, reached over HTTP with automatic fallback to in-process — never a
+hard dependency) + Claude (fast/primary/escalate tiered routing, 9 real
+tools wired to existing services, human-only write tools always blocked)
++ GPT-Image-2 (visualization only, never manufacturing truth) — see
+`docs/adr/0002-hermes-claude-gpt-image2-orchestration.md` and
+`docs/adr/0003-isolated-hermes-runtime-and-tool-wiring.md`.
 No credentials in this environment: report `SKIPPED_EXTERNAL_MODEL` /
 `PHOTOREAL_PREVIEW_UNAVAILABLE`, never a fabricated result.
 

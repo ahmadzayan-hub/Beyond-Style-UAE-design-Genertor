@@ -135,17 +135,20 @@ fields — those stay DB-trigger-protected per ADR-0001.
 | `ai/preview_guard.py` | Alpha-aware, bbox-normalized occupancy-grid IoU between canonical geometry and AI raster → PASS / REVIEW_REQUIRED / REJECTED_GEOMETRY_DRIFT |
 | `ai/quality_layer.py` | Design Jury (one structured Claude call, 4 weighted scores), deterministic `ConfidenceReport`, opt-in taste-memory signals (reuses `design_events`), read-only design lineage assembly, shadow-model evaluation (advisory promotion recommendation only) |
 | `ai/product_skills.py` | 8-product progressive-disclosure skill registry mapped to existing workshop profiles |
-| `api/visual.py` | `/api/visual/*` + `/api/orchestration/status` — every failure mode returns an honest status (`PHOTOREAL_PREVIEW_UNAVAILABLE`, `SKIPPED_EXTERNAL_MODEL`, `BUDGET_*`), never a fabricated result; deterministic SVG/DXF path is unaffected |
+| `ai/tools.py` | 9 real tools wired to existing services/engines (`analyze_reference`, `retrieve_design_memory`, `generate_design_recipes`, `validate_arabic`, `validate_manufacturing`, `repair_geometry`, `rank_candidates`, `create_visual_preview`, `approve_design`); strict Pydantic I/O, `TOOL_REGISTRY` + `execute_tool()` dispatcher |
+| `ai/hermes_client.py` | `HermesClient` — resolves `HERMES_MODE` (in_process/isolated/disabled); isolated-runtime failure always falls back to the in-process `Orchestrator`, never blocks design |
+| `api/visual.py` | `/api/visual/*` + `/api/orchestration/status` + `/api/orchestration/internal/tools/{tool}` (closed by default; the isolated runtime's tool-call callback target) — every failure mode returns an honest status (`PHOTOREAL_PREVIEW_UNAVAILABLE`, `SKIPPED_EXTERNAL_MODEL`, `BUDGET_*`), never a fabricated result; deterministic SVG/DXF path is unaffected |
+| `services/hermes/` | OPTIONAL isolated Hermes runtime (own `Dockerfile`/`requirements.txt`, pinning the real `hermes-agent`); `GET /health`, `POST /orchestrate/{agent}`; never merged into `backend/requirements.txt` (ADR-0003) |
 
 Real Claude/GPT-Image-2 calls are UNAVAILABLE in this environment (no API
 keys) — routing, budgets, guards and fallbacks are proven; live-model
-behavior is not yet observed.
+behavior is not yet observed. `Orchestrator.call_tool` now executes real
+tools (not just policy simulation) with durable per-call audit events.
 
 ## Deferred (later slices)
 pgvector retrieval over a grown archetype library, designer copilot
 editor UI, WhatsApp channel integration, real malware scanner + S3,
 Redis-backed rate limits, accounts/design claiming, CI pipeline,
-3D preview, pricing/orders (P1). Hermes runtime package installation (an
-approved-pin decision needed first), live Claude/GPT-Image-2 credentials,
-tool-execution wiring from `Orchestrator.run_agent` into
-`reference_intelligence.py`/`design_memory.py` services.
+3D preview, pricing/orders (P1). Real `hermes-agent` package install +
+actual Docker build of `services/hermes/` (no docker daemon in this
+environment), live Claude/GPT-Image-2 credentials.

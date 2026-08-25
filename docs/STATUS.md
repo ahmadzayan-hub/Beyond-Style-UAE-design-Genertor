@@ -1,7 +1,43 @@
 # STATUS
 
-Statuses: VERIFIED (automated tests + evidence) / PARTIAL / FALLBACK / DISABLED / UNAVAILABLE / NOT_IMPLEMENTED.
-Updated: 2026-08-25 · Backend suite: 174 passed (PostgreSQL 16) · E2E: 4 browser flows passed.
+Statuses (general sections below): VERIFIED (automated tests + evidence) / PARTIAL / FALLBACK / DISABLED / UNAVAILABLE / NOT_IMPLEMENTED.
+Statuses (Real Tool Wiring section, precise per-claim vocabulary):
+  VERIFIED_LOCAL — real code path executed against a real local dependency (PostgreSQL, engines) in this environment.
+  VERIFIED_EXTERNAL — a real external provider (Claude/GPT-Image-2) call actually executed and returned.
+  VERIFIED_E2E — proven through a full HTTP/browser round trip, not just a unit call.
+  AVAILABLE_NOT_VERIFIED — code is real/wired but has not itself been executed in this environment (e.g. no docker daemon).
+  SKIPPED_NO_CREDENTIALS — the honest-skip branch ran (no API key); the real-call branch is implemented but unexercised here.
+  OPTIONAL — a feature designed to be absent-by-default without degrading the deterministic path.
+  BLOCKED — implemented but intentionally refused (e.g. approve_design for agents).
+Updated: 2026-08-25 · Backend suite: 195 passed (PostgreSQL 16) · E2E: 4 browser flows passed.
+
+## Real Tool Wiring + Isolated Hermes Runtime + Live Provider Acceptance (this slice, see ADR-0003)
+
+**Adding real credentials to a deployment** (never commit them —
+`backend/.env.example` only ever holds empty values): set
+`ANTHROPIC_API_KEY`, `OPENAI_API_KEY` and `OPENAI_IMAGE_ENABLED=true` as
+secret environment variables on the actual deployment target (e.g. your
+platform's secrets manager / `.env` on the server, injected at
+container-start — never baked into an image or a git-tracked file). If
+running Hermes isolated, also set `HERMES_MODE=isolated`,
+`INTERNAL_TOOL_TOKEN` (main app) and the identical `MAIN_APP_TOOL_TOKEN`
+(services/hermes) as a matching secret pair.
+
+| Component | Status | Detail |
+|---|---|---|
+| 9 real tools wired to existing services (analyze_reference, retrieve_design_memory, generate_design_recipes, validate_arabic, validate_manufacturing, repair_geometry, rank_candidates, create_visual_preview, approve_design) | VERIFIED_LOCAL | `test_hermes_tools_live.py`; each calls the exact function the HTTP API uses, strict Pydantic I/O schemas, no duplicated logic |
+| Orchestrator.call_tool (policy + budget + durable audit) | VERIFIED_LOCAL | every call recorded as a `design_events` row (`TOOL_INVOKED`) with job_id/agent/tool/input_hash/result_status/latency/timestamp; failed calls audited then raised, never swallowed |
+| Per-agent tool allow-lists (ReferenceAgent/DesignAgent/ManufacturingAgent examples) | VERIFIED_LOCAL | cross-agent tool use blocked even for globally-permitted tools |
+| approve_design wired but always agent-blocked | BLOCKED (by design) | real function in TOOL_REGISTRY; `WRITE_TOOLS_REQUIRING_HUMAN` membership makes `ToolNotPermitted` unconditional, proven for every registered agent |
+| No shell/file/network tool ever allow-listed | VERIFIED_LOCAL | `test_no_shell_file_network_tools_registered` |
+| Isolated Hermes runtime app code (services/hermes/) | AVAILABLE_NOT_VERIFIED (as a container) / VERIFIED_LOCAL (as app code) | `/health` + `/orchestrate/{agent}` run correctly via direct `uvicorn` in this sandbox (same site-packages, not the pinned isolated venv) and were exercised live against `HermesClient`; `pip install --dry-run -r services/hermes/requirements.txt` resolves cleanly (hermes-agent==0.19.0 + pydantic==2.13.4 + openai==2.24.0 + anthropic==1.0.0 + fastapi==0.118.0, no conflicts) — the actual Docker build/run is still unverified: no docker daemon in this sandbox (`docker info` fails) |
+| HERMES_MODE=isolated → in_process fallback | VERIFIED_LOCAL | tested both isolated-reachable (SKIPPED_EXTERNAL_MODEL propagates honestly) and isolated-unreachable (connection refused → silent fallback, never blocks) |
+| Internal tool-call callback endpoint (`/api/orchestration/internal/tools/{tool}`) | VERIFIED_LOCAL | closed (403) with `INTERNAL_TOOL_TOKEN` unset (this environment's default); works end-to-end once a shared secret is configured |
+| Dependency isolation (main app pins unaffected by Hermes) | VERIFIED_LOCAL | `test_main_app_dependency_pins_unaffected_by_hermes` reads both requirements.txt files; `test_main_app_installed_pydantic_version_matches_pin` checks the actually-imported `pydantic.VERSION` |
+| Real `hermes-agent` package | OPTIONAL, not installed anywhere | pinned only in `services/hermes/requirements.txt`; never a dependency of `backend/requirements.txt` |
+| Live Claude acceptance (نورة reference case) | SKIPPED_NO_CREDENTIALS | `test_live_claude_acceptance_arabic_norah_reference`; no `ANTHROPIC_API_KEY` here — honest-skip branch ran; deterministic candidate generation + exact source_text preservation proven regardless |
+| Live GPT-Image-2 acceptance (ع → 18K gold earring) | SKIPPED_NO_CREDENTIALS | `test_live_gpt_image2_acceptance_letter_ain_earring`; canonical `geometry_hash` exists and PNG/AI raster export is blocked regardless of provider availability |
+| Full agent orchestration E2E (reference → Claude(skip) → deterministic generation → Arabic QA → Manufacturing QA → ranking → selection → optional preview(skip) → human approval) | VERIFIED_LOCAL | `test_full_agent_orchestration_e2e_deterministic_path_always_completes`; completes with Claude, Hermes-isolated and GPT-Image-2 all unavailable |
 
 ## Hermes + Claude + GPT-Image-2 orchestration (this slice, see ADR-0002)
 | Component | Status | Detail |
@@ -75,4 +111,4 @@ malware scanner provider, S3/Redis, accounts/RBAC.
 ## Next
 1. Calibrate workshop profiles with real Beyond Style workshop values.
 2. Push branch → observe CI green on GitHub.
-3. Reference Intelligence P0.5 / Hermes+Claude+GPT-Image-2: needs real `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` credentials (and a pin-conflict decision for the real `hermes-agent` package) before any live-model behavior can be claimed VERIFIED — stop-condition: cannot be built honestly without them.
+3. Real Claude/GPT-Image-2/isolated-Hermes execution: needs real `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` credentials, a deployment target with a docker daemon to actually build+run `services/hermes/`, and a resolvable `hermes-agent==0.19.0` install to move any of this from SKIPPED_NO_CREDENTIALS/AVAILABLE_NOT_VERIFIED to VERIFIED_EXTERNAL — stop-condition: cannot be built honestly without them.

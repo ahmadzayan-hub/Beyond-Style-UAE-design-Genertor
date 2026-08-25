@@ -1,0 +1,13 @@
+# Isolated Hermes runtime — deliberately SEPARATE dependency set from
+# backend/requirements.txt. The real `hermes-agent` package pins
+# pydantic==2.13.4 / openai==2.24.0, which conflict with the main API
+# process's pinned fastapi==0.115.0/pydantic==2.9.2 — so this service
+# gets its own container/venv instead of forcing an upgrade there.
+# See docs/adr/0002-hermes-claude-gpt-image2-orchestration.md and
+# docs/adr/0003-isolated-hermes-runtime.md.
+fastapi==0.118.0
+uvicorn==0.34.0
+pydantic==2.13.4
+hermes-agent==0.19.0
+anthropic==1.0.0
+httpx==0.28.1

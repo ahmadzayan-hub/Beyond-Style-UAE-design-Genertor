@@ -6,6 +6,7 @@ preview, which is what the workshop pipeline uses anyway.
 """
 from __future__ import annotations
 
+import os
 import uuid
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
@@ -13,7 +14,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from ..ai.agents import orchestration_status
+from ..ai.agents import Orchestrator, ToolExecutionError, ToolNotPermitted, orchestration_status
 from ..ai.image_providers import ImageProviderUnavailable, image_provider_status
 from ..ai.llm import LLMUnavailable
 from ..ai.product_skills import PRODUCT_SKILLS, load_skill
@@ -27,6 +28,12 @@ from .auth import require_owned_request, require_owned_version
 
 router = APIRouter(prefix="/api/visual", tags=["visual-studio"])
 orchestration_router = APIRouter(prefix="/api/orchestration", tags=["orchestration"])
+
+#: Shared secret for the isolated Hermes runtime's tool-call callback
+#: (services/hermes/app/tool_client.py). Unset by default, which closes
+#: the endpoint unconditionally — only a deployment that explicitly runs
+#: Hermes in isolated mode needs to set this.
+INTERNAL_TOOL_TOKEN = os.environ.get("INTERNAL_TOOL_TOKEN", "")
 
 
 @orchestration_router.get("/status")
@@ -234,3 +241,35 @@ def spend(design_id: str, request: Request, session: Session = Depends(get_sessi
         "session_spend_usd": vs.session_spend_usd(session, req.id),
         "max_ai_cost_per_session_usd": MAX_AI_COST_PER_SESSION_USD,
     }
+
+
+class InternalToolCallRequest(BaseModel):
+    agent_name: str
+    job_id: str
+    request_id: str | None = None
+    input: dict = Field(default_factory=dict)
+
+
+@orchestration_router.post("/internal/tools/{tool_name}")
+def internal_tool_call(
+    tool_name: str, body: InternalToolCallRequest, request: Request, session: Session = Depends(get_session)
+):
+    """MCP-style callback target for the isolated Hermes runtime
+    (services/hermes/app/tool_client.py) — Hermes decides which tool to
+    call; this process is the only one that ever executes it (it owns
+    the DB session + deterministic engines, app/ai/tools.py). Closed by
+    default: INTERNAL_TOOL_TOKEN is unset unless a deployment explicitly
+    runs Hermes in isolated mode, in which case both processes must be
+    given the same shared secret out of band (never checked into the
+    repo — see backend/.env.example)."""
+    if not INTERNAL_TOOL_TOKEN or request.headers.get("X-Internal-Tool-Token") != INTERNAL_TOOL_TOKEN:
+        raise HTTPException(403, "Internal tool endpoint requires a valid X-Internal-Tool-Token.")
+    kwargs = dict(body.input)
+    if body.request_id and "request_id" not in kwargs:
+        kwargs["request_id"] = body.request_id
+    orch = Orchestrator(job_id=body.job_id)
+    try:
+        result = orch.call_tool(body.agent_name, tool_name, session, **kwargs)
+    except (ToolNotPermitted, ToolExecutionError) as exc:
+        raise HTTPException(422, str(exc))
+    return {"status": "OK", "result": result}

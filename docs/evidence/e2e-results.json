@@ -3,7 +3,7 @@
     "text-flow": {
       "text": "ميثة",
       "locked_version": "1",
-      "approval_hash": "c8c5c962e29fb5581e78ac483574573700330231ef9504ae2c6668638a8c68fe",
+      "approval_hash": "27ba0c2c743bbf128677e401391b137875e90e09b65014af10a5a4e887ac5708",
       "events": [
         "REQUEST_CREATED",
         "BRIEF_UPDATED",
@@ -19,7 +19,7 @@
     "reference-flow": {
       "text": "نورة",
       "locked_version": "1",
-      "approval_hash": "e185b8da23c293e5dcaae53b5d92fc1700eaf153efce64137b1baf3152d84d24",
+      "approval_hash": "b4ec5943c268e444f381e17f7e90fc42047195679a0fe26bd5517384cf09cdb3",
       "events": [
         "REQUEST_CREATED",
         "REFERENCE_UPLOADED",
@@ -37,7 +37,7 @@
     "desktop-text-flow": {
       "text": "Amal",
       "locked_version": "1",
-      "approval_hash": "f14920d1d4345ea5374a80ca9789f558cee74f80a7fb940a55ca4636b97c1368",
+      "approval_hash": "ef4db9d5d321a4928dde08d8ec18b8db102c37316dcaa4cfe56959f2a837c06e",
       "events": [
         "REQUEST_CREATED",
         "BRIEF_UPDATED",

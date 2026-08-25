@@ -19,7 +19,9 @@ Hard invariants enforced here, not by any model:
 """
 from __future__ import annotations
 
+import hashlib
 import importlib.util
+import json
 import os
 import time
 import uuid
@@ -37,18 +39,41 @@ MAX_AI_COST_PER_JOB_USD = float(os.environ.get("MAX_AI_COST_PER_JOB", 1.50))
 MAX_AI_COST_PER_SESSION_USD = float(os.environ.get("MAX_AI_COST_PER_SESSION", 5.00))
 AGENT_TIMEOUT_S = float(os.environ.get("AGENT_TIMEOUT_S", 90))
 
+#: Overrides scoped to jobs dispatched to the isolated Hermes runtime
+#: (see app/ai/hermes_client.py); default to the shared MAX_* constants
+#: above so unset envs change nothing about existing behavior.
+HERMES_MAX_AGENT_DEPTH = int(os.environ.get("HERMES_MAX_AGENT_DEPTH", MAX_AGENT_DEPTH))
+HERMES_MAX_TOOL_CALLS = int(os.environ.get("HERMES_MAX_TOOL_CALLS", MAX_TOOL_CALLS_PER_JOB))
+HERMES_MAX_COST_PER_JOB = float(os.environ.get("HERMES_MAX_COST_PER_JOB", MAX_AI_COST_PER_JOB_USD))
+
 #: Read/search tools are separated from production/write actions. Write
 #: actions are NEVER allow-listed for agents — they require the
 #: deterministic service layer plus human approval.
+#:
+#: The 9 real-tool wirings in app/ai/tools.py (analyze_reference,
+#: generate_design_recipes, validate_arabic, validate_manufacturing,
+#: repair_geometry, rank_candidates, create_visual_preview) only ever
+#: create NEW rows through existing services — never approved/locked
+#: data — so they are safe to allow-list here. approve_design is wired
+#: for completeness in tools.py but stays a write-tool below: it can
+#: never be reached through Orchestrator.call_tool.
 READ_TOOLS = {
     "retrieve_design_memory",
     "retrieve_reference_dna",
     "load_skill",
     "read_workshop_profile",
     "web_search",
+    "analyze_reference",
+    "generate_design_recipes",
+    "validate_arabic",
+    "validate_manufacturing",
+    "repair_geometry",
+    "rank_candidates",
+    "create_visual_preview",
 }
 WRITE_TOOLS_REQUIRING_HUMAN = {
     "approve_version",
+    "approve_design",
     "production_export",
     "release_order",
     "modify_source_text",
@@ -78,17 +103,19 @@ AGENT_REGISTRY: dict[str, AgentSpec] = {
         _spec("master_orchestrator", "Routes jobs, coordinates specialists", "fast", ["load_skill"], 2000),
         _spec("customer_brief", "Understands AR/EN requests, WhatsApp intent", "fast", ["load_skill"], 3000),
         _spec("reference_intelligence", "Extracts STYLE-ONLY DesignDNA from references", "primary",
-              ["retrieve_reference_dna", "load_skill"], 6000),
-        _spec("calligraphy_art_director", "Chooses script/style family", "primary", ["load_skill", "retrieve_design_memory"], 4000),
+              ["retrieve_reference_dna", "load_skill", "analyze_reference", "retrieve_design_memory"], 6000),
+        _spec("calligraphy_art_director", "Chooses script/style family", "primary",
+              ["load_skill", "retrieve_design_memory", "validate_arabic"], 4000),
         _spec("design_concept", "Produces diverse DesignRecipes (never raster)", "primary",
-              ["retrieve_design_memory", "load_skill"], 6000),
+              ["retrieve_design_memory", "load_skill", "generate_design_recipes"], 6000),
         _spec("jewellery_engineering", "Maps artistic intent to manufacturable geometry params", "primary",
-              ["read_workshop_profile", "load_skill"], 5000),
+              ["read_workshop_profile", "load_skill", "validate_manufacturing"], 5000),
         _spec("manufacturing_qa", "Reads deterministic validator output, explains failures", "fast",
-              ["read_workshop_profile"], 3000),
+              ["read_workshop_profile", "validate_manufacturing", "repair_geometry"], 3000),
         _spec("visual_critic", "Scores result vs design intent / reference DNA", "primary",
-              ["retrieve_reference_dna"], 5000),
-        _spec("diversity", "Checks perceptual/structural difference of top concepts", "fast", [], 2500),
+              ["retrieve_reference_dna", "create_visual_preview"], 5000),
+        _spec("diversity", "Checks perceptual/structural difference of top concepts", "fast",
+              ["rank_candidates"], 2500),
         _spec("design_memory", "Curates approved styles/recipes/outcomes", "fast", ["retrieve_design_memory"], 3000),
         _spec("trend_scout", "Researches trends (inspiration only, never copies)", "primary", ["web_search"], 6000),
         _spec("font_research", "Finds font/calligraphy resources + license metadata", "primary", ["web_search"], 5000),
@@ -103,6 +130,11 @@ class ToolNotPermitted(Exception):
 
 class AgentDepthExceeded(Exception):
     pass
+
+
+class ToolExecutionError(Exception):
+    """A permitted tool ran and raised. Distinct from ToolNotPermitted
+    (policy) — the caller already passed the allow-list/budget gate."""
 
 
 @dataclass
@@ -196,6 +228,49 @@ class Orchestrator:
         self.budget.count_tool_call()
         self._log(agent_name, "tool_call", {"tool": tool}, depth=0, cost=0.0)
 
+    def call_tool(self, agent_name: str, tool: str, session, **kwargs) -> dict:
+        """Policy-checked, budget-charged, durably-audited REAL tool
+        execution (app/ai/tools.py). Agent output never mutates the DB
+        directly — this only ever calls the same service/engine
+        functions the HTTP API uses. Every invocation is recorded as a
+        `design_events` row (event_type=TOOL_INVOKED) with job_id, agent,
+        tool, input_hash, result_status, latency and timestamp — durable
+        even across process restarts, unlike the in-memory `self.audit`.
+
+        `kwargs` are passed straight through to the tool's own input
+        schema (app/ai/tools.py). When a tool naturally takes a
+        `request_id` (generate_design_recipes, create_visual_preview,
+        rank_candidates, ...) the audit event links to it automatically;
+        for tools that don't (analyze_reference, validate_arabic, ...)
+        the audit event still records job_id/agent/tool/input_hash/
+        result_status/latency/timestamp with no request_id FK."""
+        self.check_tool(agent_name, tool)  # raises ToolNotPermitted / BudgetExceeded first
+        from .tools import execute_tool
+
+        input_hash = hashlib.sha256(json.dumps(kwargs, sort_keys=True, default=str).encode()).hexdigest()
+        start = time.time()
+        status, error, result = "OK", None, None
+        try:
+            result = execute_tool(tool, session, **kwargs)
+        except Exception as exc:  # noqa: BLE001 — deliberately broad: any tool failure is audited then re-raised
+            status, error = "ERROR", str(exc)
+        latency_ms = round((time.time() - start) * 1000, 2)
+
+        from ..services.design_service import _emit
+
+        meta = {
+            "job_id": self.job_id, "agent": agent_name, "tool": tool,
+            "input_hash": input_hash, "result_status": status, "latency_ms": latency_ms,
+        }
+        if error:
+            meta["error"] = error
+        _emit(session, "TOOL_INVOKED", request_id=kwargs.get("request_id"), actor=agent_name,
+              actor_type="agent", metadata=meta)
+
+        if status == "ERROR":
+            raise ToolExecutionError(f"{tool} failed: {error}")
+        return result
+
     def _log(self, agent: str, action: str, detail: dict, depth: int, cost: float) -> None:
         self.audit.append(
             AuditEntry(job_id=self.job_id, agent=agent, action=action, detail=detail,
@@ -246,15 +321,23 @@ class Orchestrator:
 
 
 def orchestration_status() -> dict:
+    from .hermes_client import hermes_client_status
     from .llm import llm_status
+    from .tools import TOOL_REGISTRY
 
     return {
         "hermes": HermesRuntimeAdapter.status(),
+        "hermes_client": hermes_client_status(),
         "claude": llm_status(),
         "agents": {
             name: {"role": s.role, "model": TIER_MODELS[s.tier],
                    "tools": sorted(s.tools), "context_budget_tokens": s.context_budget_tokens}
             for name, s in AGENT_REGISTRY.items()
+        },
+        "tools": {
+            "wired": sorted(TOOL_REGISTRY.keys()),
+            "agent_invocable": sorted(READ_TOOLS & set(TOOL_REGISTRY.keys())),
+            "human_only": sorted(WRITE_TOOLS_REQUIRING_HUMAN & set(TOOL_REGISTRY.keys())),
         },
         "budgets": {
             "max_agent_depth": MAX_AGENT_DEPTH,
@@ -263,6 +346,9 @@ def orchestration_status() -> dict:
             "max_ai_cost_per_job_usd": MAX_AI_COST_PER_JOB_USD,
             "max_ai_cost_per_session_usd": MAX_AI_COST_PER_SESSION_USD,
             "agent_timeout_s": AGENT_TIMEOUT_S,
+            "hermes_max_agent_depth": HERMES_MAX_AGENT_DEPTH,
+            "hermes_max_tool_calls": HERMES_MAX_TOOL_CALLS,
+            "hermes_max_cost_per_job_usd": HERMES_MAX_COST_PER_JOB,
         },
         "source_of_truth_hierarchy": [
             "confirmed customer source_text",
