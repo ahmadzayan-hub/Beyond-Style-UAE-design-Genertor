@@ -1,0 +1,29 @@
+name: Deployment Smoke Test
+
+# Manual only — run against the real deployed URLs after a release.
+# Never fabricates success: exits non-zero on the first real failure.
+on:
+  workflow_dispatch:
+    inputs:
+      frontend_url:
+        description: "Real production/preview frontend URL (e.g. https://www.beyondstyle.ae)"
+        required: true
+      backend_url:
+        description: "Real production backend URL (e.g. https://<app>.repl.co)"
+        required: true
+
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    env:
+      FRONTEND_URL: ${{ inputs.frontend_url }}
+      BACKEND_URL: ${{ inputs.backend_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Optional — Pillow for the reference-upload check
+        run: pip install pillow==10.4.0
+      - name: Run production smoke test
+        run: python3 scripts/production-smoke.py

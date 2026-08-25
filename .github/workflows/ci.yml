@@ -6,6 +6,13 @@ on:
   pull_request:
 
 jobs:
+  secret-scan:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scan tracked files for credential-like content
+        run: python3 scripts/secret_scan.py
+
   backend:
     runs-on: ubuntu-24.04
     services:
@@ -66,3 +73,69 @@ jobs:
       - name: Type-check + production build
         working-directory: frontend
         run: npm run build
+      - name: Assert no secret key material in build output
+        run: |
+          if grep -rl -e "ANTHROPIC_API_KEY" -e "OPENAI_API_KEY" frontend/.next; then
+            echo "Secret key name leaked into the frontend build output." >&2
+            exit 1
+          fi
+
+  e2e:
+    runs-on: ubuntu-24.04
+    needs: [backend, frontend]
+    services:
+      postgres:
+        image: postgres:16.4-bookworm
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: beyondstyle
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s --health-timeout 3s --health-retries 10
+    env:
+      DATABASE_URL: postgresql+psycopg2://postgres:postgres@localhost:5432/beyondstyle
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install backend dependencies
+        run: pip install -r backend/requirements.txt
+      - name: Install E2E (Playwright) dependencies
+        run: pip install -r e2e/requirements.txt && python -m playwright install --with-deps chromium
+      - name: Migrate database
+        working-directory: backend
+        run: python -m alembic upgrade head
+      - name: Install + build frontend
+        working-directory: frontend
+        run: npm ci && npm run build
+      - name: Start backend
+        working-directory: backend
+        run: nohup uvicorn app.main:app --port 8000 > /tmp/backend.log 2>&1 &
+      - name: Start frontend
+        working-directory: frontend
+        run: nohup npm start > /tmp/frontend.log 2>&1 &
+      - name: Wait for backend + frontend to be ready
+        run: |
+          for i in $(seq 1 30); do curl -sf http://localhost:8000/ready && break; sleep 2; done
+          for i in $(seq 1 30); do curl -sf -o /dev/null http://localhost:3000/ && break; sleep 2; done
+      - name: Golden Path + Copilot browser E2E
+        run: python e2e/golden_path_e2e.py && python e2e/copilot_e2e.py
+      - name: Show backend/frontend logs on failure
+        if: failure()
+        run: tail -n 200 /tmp/backend.log /tmp/frontend.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-evidence
+          path: docs/evidence/*.png
+          if-no-files-found: ignore

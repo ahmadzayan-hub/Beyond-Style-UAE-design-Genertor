@@ -10,7 +10,28 @@ Statuses (External AI / Real Tool Wiring sections, precise per-claim vocabulary)
   OPTIONAL_NOT_RUNNING — an optional runtime (isolated Hermes) is not configured/reachable; the deterministic path is unaffected.
   BLOCKED — implemented but intentionally refused (e.g. approve_design for agents).
   FAILED — a real call/round-trip was attempted and errored (never silently downgraded to a softer status).
-Updated: 2026-08-25 · Backend suite: 204 passed (PostgreSQL 16) · E2E: 4 browser flows passed.
+Updated: 2026-08-25 · Backend suite: 219 passed (PostgreSQL 16) · E2E: 4 browser flows passed · production smoke: 14/14 checks passed (local).
+
+## Deployment Readiness (this slice, see docs/DEPLOYMENT.md)
+| Component | Status | Detail |
+|---|---|---|
+| Root cause of reported "تعذر توليد التصاميم" identified | VERIFIED_LOCAL | `lib/api.ts` used relative fetch paths with no `NEXT_PUBLIC_API_URL`; no CORS middleware existed at all; both fixed — see `docs/DEPLOYMENT.md` |
+| Real pre-existing bug found + fixed: Pillow used at module import but absent from `backend/requirements.txt` | VERIFIED_LOCAL | `app/security/uploads.py` imports PIL at module level — a fresh `pip install -r requirements.txt` would crash the whole app on Replit; now pinned `pillow==10.4.0` |
+| CORS (`ALLOWED_ORIGINS`, no wildcard+credentials) | VERIFIED_LOCAL | `test_deployment_readiness.py`; preflight tested for an allowed and a non-allowed origin |
+| `/health`, `/ready` (7 components), `/api/ai/status` | VERIFIED_LOCAL | all components report `ok` locally; never leaks a DSN/password/path |
+| Correlation IDs (`X-Request-ID`) end-to-end | VERIFIED_LOCAL | generated or propagated, echoed in headers + every error body |
+| Structured error codes (never a raw stack trace) | VERIFIED_LOCAL | `error_code`+`request_id` on every 4xx/5xx; unhandled 500s return a generic message only, verified via a forced internal exception |
+| Frontend direct-fetch to `NEXT_PUBLIC_API_URL` (production) with local-dev rewrite fallback unchanged | VERIFIED_LOCAL | `npm run build` bakes the URL correctly; local E2E (relative paths + rewrite) still green |
+| Frontend error-code → friendly AR/EN message + retry + request-id detail | VERIFIED_LOCAL | `lib/i18n.ts:error_codes`; every previously-generic catch site now passes the real error through |
+| Real "Generate Designs" works with the exact reported scenario (`حامد حمد فاطمة سلطان خالد مهرة`, reference upload) | VERIFIED_LOCAL | `scripts/production-smoke.py` A–K, 14/14, against local backend+frontend |
+| GitHub CI: secret scan + E2E job added | VERIFIED_LOCAL | `.github/workflows/ci.yml`; YAML validated, jobs mirror the exact commands run locally |
+| `external-ai-acceptance` / `deployment-smoke` GitHub workflows | VERIFIED_LOCAL (workflow definitions) / AVAILABLE_NOT_VERIFIED (as actual GitHub Actions runs) | manual `workflow_dispatch` only; not yet observed running on GitHub |
+| Secret-leak prevention (`.gitignore`, `scripts/secret_scan.py`, frontend-build-no-secrets test) | VERIFIED_LOCAL | `test_secret_scan.py` (4 tests) incl. a real `npm run build` + grep on the actual build output |
+| `.replit` config (build/run/deploy) | AVAILABLE_NOT_VERIFIED | valid TOML, standard Replit conventions; never executed — no Replit access in this session |
+| Vercel frontend project | VERIFIED_E2E (build/deploy only) | real linked project `frontend` (`prj_qf9LfOdeVRzfYTZ39sS6pja9iDCm`), latest deployment `READY`, 0 runtime errors in 7d (checked via the Vercel API this session) — consistent with the root-cause diagnosis (client never reached a backend, not a Vercel server error) |
+| `NEXT_PUBLIC_API_URL` actually set on the Vercel project | BLOCKED (manual action required) | no tool in this session can set a Vercel project env var; must be done in the Vercel dashboard/CLI once a real backend URL exists |
+| Replit backend deployment | BLOCKED (manual action required) | no Replit access in this session (no MCP connector, no CLI token) — backend has never been deployed to any public host |
+| Full release gate (items 6/8/9 in docs/DEPLOYMENT.md: Replit `/ready`, real CORS/API request, real Generate Designs — all against the REAL deployed URLs) | AVAILABLE_NOT_VERIFIED | code + tests + local proof exist; production URLs don't exist yet to point the smoke test at |
 
 ## P0 STATUS: FROZEN/STABLE
 
@@ -146,6 +167,9 @@ existing request→version→approval→export trace, per-glyph move/tail editin
 malware scanner provider, S3/Redis, accounts/RBAC.
 
 ## Next
-1. Calibrate workshop profiles with real Beyond Style workshop values.
-2. Push branch → observe CI green on GitHub.
-3. Run `make external-ai-e2e` on a deployment with real `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` (+ `OPENAI_IMAGE_ENABLED=true`) and, separately, a docker daemon running `services/hermes/` with `HERMES_MODE=isolated` — this is the deployment acceptance gate for CLAUDE/GPT_IMAGE/HERMES to move from SKIPPED_NO_CREDENTIALS/OPTIONAL_NOT_RUNNING to VERIFIED_EXTERNAL. Stop-condition: cannot be built honestly without them; P0 itself does not block on this (see "P0 STATUS: FROZEN/STABLE" above).
+1. **Deploy the backend to Replit** (manual — see `docs/DEPLOYMENT.md` "Replit" section; no Replit access in this session): import the repo, set `DATABASE_URL`/`ALLOWED_ORIGINS` secrets, click Publish.
+2. **Set `NEXT_PUBLIC_API_URL` on the Vercel project** (manual — no tool in this session can set Vercel env vars) to the real Replit URL from step 1, then redeploy.
+3. Run `python3 scripts/production-smoke.py` against the real `FRONTEND_URL`/`BACKEND_URL` to close the release gate's remaining items (6/8/9 in `docs/DEPLOYMENT.md`) — this is the exact previously-failing "Generate Designs" scenario, now with real evidence instead of local-only.
+4. Calibrate workshop profiles with real Beyond Style workshop values.
+5. Push branch → observe CI green on GitHub (now includes a real E2E job + secret scan, not yet observed running on GitHub itself).
+6. Run `make external-ai-e2e` on a deployment with real `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` (+ `OPENAI_IMAGE_ENABLED=true`) and, separately, a docker daemon running `services/hermes/` with `HERMES_MODE=isolated` — this is the deployment acceptance gate for CLAUDE/GPT_IMAGE/HERMES to move from SKIPPED_NO_CREDENTIALS/OPTIONAL_NOT_RUNNING to VERIFIED_EXTERNAL. Stop-condition: cannot be built honestly without them; P0 itself does not block on this (see "P0 STATUS: FROZEN/STABLE" above).

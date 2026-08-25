@@ -1,0 +1,3 @@
+# E2E browser test tooling only — NOT a production/runtime dependency
+# of backend/ (kept out of backend/requirements.txt on purpose).
+playwright==1.47.0

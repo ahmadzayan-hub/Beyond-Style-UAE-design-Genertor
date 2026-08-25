@@ -28,7 +28,9 @@ export default function GoldenPathPage() {
   const t = STRINGS[lang];
   const [step, setStep] = useState<Step>("start");
   const [error, setError] = useState<string | null>(null);
+  const [requestId, setRequestId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [busyLabel, setBusyLabel] = useState<string | null>(null);
 
   const [text, setText] = useState("");
   const [message, setMessage] = useState("");
@@ -84,13 +86,30 @@ export default function GoldenPathPage() {
     document.documentElement.lang = lang;
   }, [lang, t.dir]);
 
-  function fail(msg: string) {
-    setError(msg);
+  /** Accepts either a pre-localized string (for a few call sites that
+   * already know the specific, more actionable message to show) or the
+   * caught error itself — an api.ApiError carries a structured `code`
+   * mapped to a friendly AR/EN message plus an optional request_id
+   * shown as a small support detail; anything else falls back to the
+   * generic UNKNOWN message rather than a raw stack trace. */
+  function fail(err: string | unknown) {
+    if (typeof err === "string") {
+      setError(err);
+      setRequestId(null);
+    } else if (err instanceof api.ApiError) {
+      setError(t.error_codes[err.code] || t.error_codes.UNKNOWN);
+      setRequestId(err.requestId || null);
+    } else {
+      setError(t.error_codes.UNKNOWN);
+      setRequestId(null);
+    }
     setBusy(false);
+    setBusyLabel(null);
   }
 
   async function handleStart() {
     setError(null);
+    setRequestId(null);
     if (!text.trim()) return;
     setBusy(true);
     try {
@@ -99,15 +118,18 @@ export default function GoldenPathPage() {
       setNormalizedText(created.normalized_text);
       if (refFile) {
         try {
+          setBusyLabel(t.uploading_label);
           const ref = await api.uploadReference(created.design_id, refFile, message || null);
           if (ref.ip_risk === "POTENTIAL_COPY_RISK") setCopyNotice(true);
           // Reference Intelligence: DesignDNA analysis (labelled source).
           try {
+            setBusyLabel(t.analyzing_label);
             await api.analyzeReference(created.design_id, ref.reference_id);
             setRefUnderstood(true);
           } catch {}
-        } catch {
-          return fail(t.error_upload);
+          setBusyLabel(null);
+        } catch (e) {
+          return fail(e instanceof api.ApiError ? e : t.error_upload);
         }
       }
       await api.updateBrief(created.design_id, {
@@ -119,19 +141,20 @@ export default function GoldenPathPage() {
       });
       setBusy(false);
       setStep("confirm");
-    } catch {
-      fail(t.error_generation);
+    } catch (e) {
+      fail(e);
     }
   }
 
   async function handleConfirm() {
     if (!designId || !confirmChecked) return;
     setError(null);
+    setRequestId(null);
     setBusy(true);
     try {
       await api.confirmText(designId, normalizedText);
-    } catch (e: any) {
-      return fail(e.status === 422 ? t.error_mismatch : t.error_generation);
+    } catch (e) {
+      return fail(e instanceof api.ApiError && e.code === "ARABIC_VALIDATION_FAILED" ? t.error_mismatch : e);
     }
     setStep("generating");
     setGenStep(0);
@@ -162,16 +185,17 @@ export default function GoldenPathPage() {
           );
         } catch {}
       });
-    } catch {
+    } catch (e) {
       clearInterval(ticker);
       setStep("confirm");
-      fail(t.error_generation);
+      fail(e);
     }
   }
 
   async function handleChoose(candidateId: string) {
     if (!designId) return;
     setError(null);
+    setRequestId(null);
     setBusy(true);
     try {
       const sel = await api.selectCandidate(designId, candidateId);
@@ -195,8 +219,8 @@ export default function GoldenPathPage() {
       setRepair({ available: opts.options.length > 0, applied: false });
       setBusy(false);
       setStep("selected");
-    } catch {
-      fail(t.error_generation);
+    } catch (e) {
+      fail(e);
     }
   }
 
@@ -235,8 +259,8 @@ export default function GoldenPathPage() {
       });
       if (!res.validation_passed) setError(t.edit_invalid);
       setBusy(false);
-    } catch {
-      fail(t.error_generation);
+    } catch (e) {
+      fail(e);
     }
   }
 
@@ -277,8 +301,8 @@ export default function GoldenPathPage() {
         applied: false,
       });
       setBusy(false);
-    } catch {
-      fail(t.error_generation);
+    } catch (e) {
+      fail(e);
     }
   }
 
@@ -298,14 +322,15 @@ export default function GoldenPathPage() {
       });
       setRepair((r) => ({ ...r, applied: true }));
       setBusy(false);
-    } catch {
-      fail(t.error_generation);
+    } catch (e) {
+      fail(e);
     }
   }
 
   async function handleApprove() {
     if (!selected || !approveChecked) return;
     setError(null);
+    setRequestId(null);
     setBusy(true);
     try {
       const res = await api.approveVersion(
@@ -317,8 +342,8 @@ export default function GoldenPathPage() {
       setApproval(res);
       setBusy(false);
       setStep("approved");
-    } catch (e: any) {
-      fail(e.status === 422 ? t.error_mismatch : t.error_generation);
+    } catch (e) {
+      fail(e instanceof api.ApiError && e.code === "ARABIC_VALIDATION_FAILED" ? t.error_mismatch : e);
     }
   }
 
@@ -328,6 +353,7 @@ export default function GoldenPathPage() {
       await api.downloadExport(selected.version_id, fmt);
     } catch {
       setError(t.error_export);
+      setRequestId(null);
     }
   }
 
@@ -353,9 +379,14 @@ export default function GoldenPathPage() {
           className="mb-4 rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-800"
         >
           {error}
-          <button className="ms-3 underline" onClick={() => setError(null)}>
+          <button className="ms-3 underline" onClick={() => { setError(null); setRequestId(null); }}>
             {t.retry}
           </button>
+          {requestId && (
+            <p className="mt-1 text-xs text-red-800/60" data-testid="error-request-id">
+              {t.support_detail} {requestId}
+            </p>
+          )}
         </div>
       )}
 
@@ -452,6 +483,11 @@ export default function GoldenPathPage() {
               ))}
             </div>
           </div>
+          {busyLabel && (
+            <p className="text-center text-sm text-brand-dark/70" data-testid="busy-label">
+              {busyLabel}
+            </p>
+          )}
           <button
             data-testid="start-continue"
             disabled={!text.trim() || busy}

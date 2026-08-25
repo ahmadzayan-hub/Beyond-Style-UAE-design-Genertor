@@ -67,12 +67,12 @@ def test_provider_failure_deterministic_path_still_completes(clean_tables, db_se
 def test_evidence_never_contains_secrets_or_raw_payload():
     usage = {"model": "claude-sonnet-5", "response_id": "msg_123", "latency_ms": 42.0,
               "input_tokens": 10, "output_tokens": 5, "estimated_cost_usd": 0.0001,
-              "api_key": "sk-ant-SECRET-TEST-VALUE", "prompt": "leaked raw text",
+              "api_key": "FAKE-NOT-A-REAL-KEY-TEST-VALUE", "prompt": "leaked raw text",
               "raw_response": "should never be here"}
     redacted = eaa._redact_usage(usage)
     assert set(redacted) <= set(eaa.USAGE_EVIDENCE_KEYS)
     assert "api_key" not in redacted and "prompt" not in redacted and "raw_response" not in redacted
-    assert "sk-ant-SECRET-TEST-VALUE" not in json.dumps(redacted)
+    assert "FAKE-NOT-A-REAL-KEY-TEST-VALUE" not in json.dumps(redacted)
 
 
 def test_makefile_target_exists_and_points_at_script():

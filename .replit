@@ -1,0 +1,26 @@
+entrypoint = "backend/app/main.py"
+modules = ["python-3.11"]
+
+# Local "Run" button command — used during development only.
+run = "cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+
+[nix]
+channel = "stable-24_05"
+
+# Deployment (Replit "Publish" — Reserved VM or Autoscale). Build
+# installs pinned deps; run applies migrations (forward-only, never
+# destructive) then serves on Replit's platform-provided $PORT, bound
+# to 0.0.0.0 (required for external traffic), no --reload in production.
+[deployment]
+deploymentTarget = "cloudrun"
+build = ["sh", "-c", "cd backend && pip install -r requirements.txt"]
+run = ["sh", "-c", "cd backend && python -m alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT"]
+
+[[ports]]
+localPort = 8000
+externalPort = 80
+
+# Required secrets (set in Replit's Secrets pane, never in this file or
+# a committed .env): DATABASE_URL, ALLOWED_ORIGINS, and optionally
+# ANTHROPIC_API_KEY / OPENAI_API_KEY / OPENAI_IMAGE_ENABLED /
+# INTERNAL_TOOL_TOKEN — see backend/.env.example and docs/DEPLOYMENT.md.

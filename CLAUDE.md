@@ -155,6 +155,14 @@ tools wired to existing services, human-only write tools always blocked)
 No credentials in this environment: report `SKIPPED_EXTERNAL_MODEL` /
 `PHOTOREAL_PREVIEW_UNAVAILABLE`, never a fabricated result.
 
+## Deployment
+GitHub = source + CI/CD · Vercel = Next.js frontend (direct browser→backend
+fetch via `NEXT_PUBLIC_API_URL`, CORS — never a Vercel-side proxy in
+production) · Replit = FastAPI backend + PostgreSQL. Full env contract,
+CORS, health/readiness, error-code taxonomy, CI workflows, secret-leak
+prevention and the release gate are in `docs/DEPLOYMENT.md` — do not
+restate it here.
+
 ## Trend Agents
 One shared research gateway; specialized agents consume normalized evidence.
 Cover Global, UAE/GCC, Women, Men, Kids/Teens, Gifts, Accessories, Materials/Manufacturing, Competition, IP/Evidence, Merchandising.

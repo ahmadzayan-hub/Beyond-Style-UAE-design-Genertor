@@ -27,10 +27,34 @@ ref_router = APIRouter(prefix="/api/designs", tags=["reference-intelligence"])
 
 @router.get("/status")
 def status():
-    """Honest per-model availability + license registry."""
+    """Honest per-model availability + license registry — covers the
+    local Qwen/FLUX visual stack AND Claude/GPT-Image-2/Hermes. Never a
+    fabricated PASS; deterministic_fallback is always available
+    regardless of what any provider reports."""
+    from ..ai.agents import orchestration_status
+    from ..ai.image_providers import image_provider_status
+
+    orch = orchestration_status()
+    image = image_provider_status()
     return {
         **ai_status(),
         "registry": {k: v.model_dump() for k, v in MODEL_REGISTRY.items()},
+        "claude": {
+            "sdk_installed": orch["claude"]["sdk_installed"],
+            "credentials_configured": orch["claude"]["credentials_configured"],
+            "routing": orch["claude"]["routing"],
+        },
+        "gpt_image_2": {
+            "enabled_flag": image["health"]["enabled_flag"],
+            "sdk_installed": image["health"]["sdk_installed"],
+            "key_configured": image["health"]["key_configured"],
+            "role": image["health"]["role"],
+        },
+        "hermes": orch["hermes_client"],
+        "deterministic_fallback": {
+            "status": "always_available",
+            "note": "Arabic/geometry/manufacturing engines never depend on any AI provider above",
+        },
     }
 
 
