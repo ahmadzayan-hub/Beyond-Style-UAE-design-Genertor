@@ -1,7 +1,27 @@
 # STATUS
 
 Statuses: VERIFIED (automated tests + evidence) / PARTIAL / FALLBACK / DISABLED / UNAVAILABLE / NOT_IMPLEMENTED.
-Updated: 2026-08-24 · Backend suite: 143 passed (PostgreSQL 16) · E2E: 4 browser flows passed.
+Updated: 2026-08-25 · Backend suite: 174 passed (PostgreSQL 16) · E2E: 4 browser flows passed.
+
+## Hermes + Claude + GPT-Image-2 orchestration (this slice, see ADR-0002)
+| Component | Status | Detail |
+|---|---|---|
+| Source-of-truth hierarchy enforcement | VERIFIED | `orchestration_status()`; no AI write path touches immutable text/geometry/manufacturing columns (DB-trigger-protected, ADR-0001) |
+| Hermes agent registry (13 specialists) + tool allow-listing + budgets + audit | VERIFIED | `test_hermes_claude_visual.py`; write tools (`approve_version`/`production_export`/etc.) raise `ToolNotPermitted` even for the master orchestrator |
+| Real `hermes-agent` runtime | UNAVAILABLE (not installed) | pins `pydantic==2.13.4`/`openai==2.24.0`, conflicts with this project's pins; detection adapter reports `execution_mode: in_process_orchestrator` honestly; in-process `Orchestrator` implements the same registry/policy/budget contract |
+| Claude model routing (fast/primary/escalate) | VERIFIED (routing) / UNAVAILABLE (live calls) | `anthropic==1.0.0` SDK installed this slice; no `ANTHROPIC_API_KEY` in this environment → `LLMUnavailable`; `llm_status()` reports `sdk_installed: true, credentials_configured: false` |
+| Design Jury (structured 4-role Claude call) | UNAVAILABLE (no credentials) | endpoint returns HTTP 200 `{"status":"SKIPPED_EXTERNAL_MODEL"}`, never a fabricated verdict; weighting formula verified directly |
+| Shadow model evaluation | UNAVAILABLE (no credentials) | `run_shadow_evaluation` raises `LLMUnavailable`; promotion is advisory-only by design, never auto-applied |
+| GPT-Image-2 visualization provider | VERIFIED (guards/wiring) / UNAVAILABLE (live calls) | `openai==3.3.1` SDK installed this slice; `OPENAI_IMAGE_ENABLED=false` default + no key → `ImageProviderUnavailable`; preview endpoint returns 503 `PHOTOREAL_PREVIEW_UNAVAILABLE` with a working `fallback` to the deterministic SVG |
+| Visual Identity Guard (geometry-preserving preview) | VERIFIED | alpha-aware, bbox-normalized occupancy-grid IoU; bounded retries (`MAX_PREVIEW_RETRIES=2`, exactly 3 attempts max, never infinite); PASS/REVIEW_REQUIRED/REJECTED_GEOMETRY_DRIFT all exercised with a fake provider double |
+| VisualBrief + VisualPromptBuilder (preservation rules, negative constraints) | VERIFIED | cache-key stability + material-sensitivity tested; reference DNA never injects text-content keys into the prompt |
+| Cost/cache/session budgets | VERIFIED | cache hit avoids a second paid call; `max_session_cost_usd`/image-count caps reject *before* any spend |
+| AI raster never exportable as DXF/CAD | VERIFIED | `export_version()` rejects any format but svg/dxf; reference-workflow and material-variant flows keep `immutable_source_text` unchanged |
+| Confidence Engine | VERIFIED | deterministic (no model call); low-dimension flags `requires_human_review` |
+| Customer taste memory (opt-in) | VERIFIED | reuses `design_events` (`CUSTOMER_FEEDBACK`); never touches source text; scoped per-customer request ids |
+| Design lineage (Request→…→Export, no orphans) | VERIFIED | full-chain + cross-session isolation tested |
+| Product-specific Hermes skills (8 products) | VERIFIED | registry + endpoint + unknown-product 404 |
+| Secrets never leak via orchestration/status endpoints | VERIFIED | literal API-key value asserted absent from `/api/orchestration/status` JSON |
 
 ## Visual Reference Intelligence (this slice) — honest AI status
 | Component | Status | Detail |
@@ -55,4 +75,4 @@ malware scanner provider, S3/Redis, accounts/RBAC.
 ## Next
 1. Calibrate workshop profiles with real Beyond Style workshop values.
 2. Push branch → observe CI green on GitHub.
-3. Reference Intelligence P0.5: needs an approved VLM provider + budget decision (stop-condition: cannot be built honestly without one).
+3. Reference Intelligence P0.5 / Hermes+Claude+GPT-Image-2: needs real `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` credentials (and a pin-conflict decision for the real `hermes-agent` package) before any live-model behavior can be claimed VERIFIED — stop-condition: cannot be built honestly without them.

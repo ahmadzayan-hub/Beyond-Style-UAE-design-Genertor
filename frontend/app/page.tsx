@@ -60,6 +60,12 @@ export default function GoldenPathPage() {
     setHistory((h) => [...h.slice(0, histIdx + 1), v]);
     setHistIdx((i) => i + 1);
   }
+  const [studioTab, setStudioTab] = useState<"2d" | "photoreal">("2d");
+  const [previewMaterial, setPreviewMaterial] = useState("silver-925");
+  const [previewScene, setPreviewScene] = useState("studio_white");
+  const [previewQuality, setPreviewQuality] = useState("DRAFT");
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewNote, setPreviewNote] = useState<string | null>(null);
   const [editOpen, setEditOpen] = useState(false);
   const [editParams, setEditParams] = useState<any>({});
   const [repair, setRepair] = useState<{
@@ -231,6 +237,26 @@ export default function GoldenPathPage() {
       setBusy(false);
     } catch {
       fail(t.error_generation);
+    }
+  }
+
+  async function handleGeneratePreview() {
+    if (!selected) return;
+    setBusy(true);
+    setPreviewNote(null);
+    try {
+      const res = await api.generatePreview(selected.version_id, {
+        material: previewMaterial,
+        scene: previewScene,
+        quality: previewQuality,
+      });
+      setPreviewUrl(await api.previewImageUrl(res.generation_id));
+      setPreviewNote(t.ai_preview_label);
+      setBusy(false);
+    } catch (e: any) {
+      setPreviewUrl(null);
+      setPreviewNote(e.status === 503 ? t.preview_unavailable : t.preview_rejected);
+      setBusy(false);
     }
   }
 
@@ -531,9 +557,85 @@ export default function GoldenPathPage() {
       {step === "selected" && selected && (
         <section className="flex flex-col gap-4">
           <h2 className="text-xl font-bold">{t.selected_title}</h2>
-          <div className="proof-svg-large rounded-xl border border-stone-200 bg-white p-4" data-testid="selected-preview">
-            {selected.svg && <div dangerouslySetInnerHTML={{ __html: selected.svg }} />}
+          <div className="flex gap-2 text-xs" data-testid="studio-tabs">
+            {(["2d", "photoreal"] as const).map((tab) => (
+              <button
+                key={tab}
+                data-testid={`tab-${tab}`}
+                onClick={() => setStudioTab(tab)}
+                className={`rounded-full border px-3 py-1 ${
+                  studioTab === tab ? "border-brand-gold bg-brand-gold text-white" : "border-stone-300 bg-white"
+                }`}
+              >
+                {tab === "2d" ? t.tab_2d : t.tab_photoreal}
+              </button>
+            ))}
           </div>
+          {studioTab === "2d" ? (
+            <div className="proof-svg-large rounded-xl border border-stone-200 bg-white p-4" data-testid="selected-preview">
+              {selected.svg && <div dangerouslySetInnerHTML={{ __html: selected.svg }} />}
+            </div>
+          ) : (
+            <div className="flex flex-col gap-3 rounded-xl border border-stone-200 bg-white p-4" data-testid="photoreal-panel">
+              {previewUrl ? (
+                <img src={previewUrl} alt="AI preview" className="w-full rounded-lg" data-testid="photoreal-image" />
+              ) : (
+                <div className="proof-svg-large">
+                  {selected.svg && <div dangerouslySetInnerHTML={{ __html: selected.svg }} />}
+                </div>
+              )}
+              {previewNote && (
+                <p className="text-[11px] text-stone-500" data-testid="preview-note">{previewNote}</p>
+              )}
+              <label className="text-xs">
+                {t.studio_material}
+                <select
+                  data-testid="preview-material"
+                  value={previewMaterial}
+                  onChange={(e) => setPreviewMaterial(e.target.value)}
+                  className="mt-1 w-full rounded border border-stone-300 p-2"
+                >
+                  {["silver-925", "gold-18k-yellow", "gold-18k-rose", "gold-18k-white", "platinum", "two-tone", "enamel"].map((mm) => (
+                    <option key={mm} value={mm}>{mm}</option>
+                  ))}
+                </select>
+              </label>
+              <label className="text-xs">
+                {t.studio_scene}
+                <select
+                  data-testid="preview-scene"
+                  value={previewScene}
+                  onChange={(e) => setPreviewScene(e.target.value)}
+                  className="mt-1 w-full rounded border border-stone-300 p-2"
+                >
+                  {["clean_design", "studio_white", "luxury_black", "beyond_style_gold", "on_body_neck", "on_body_ear", "on_body_hand", "on_body_wrist", "packaging", "macro_detail"].map((sc) => (
+                    <option key={sc} value={sc}>{sc}</option>
+                  ))}
+                </select>
+              </label>
+              <label className="text-xs">
+                {t.studio_quality}
+                <select
+                  data-testid="preview-quality"
+                  value={previewQuality}
+                  onChange={(e) => setPreviewQuality(e.target.value)}
+                  className="mt-1 w-full rounded border border-stone-300 p-2"
+                >
+                  {["DRAFT", "STANDARD", "FINAL"].map((q) => (
+                    <option key={q} value={q}>{q}</option>
+                  ))}
+                </select>
+              </label>
+              <button
+                data-testid="generate-preview"
+                disabled={busy}
+                onClick={handleGeneratePreview}
+                className="rounded-lg bg-brand-dark py-3 text-sm font-semibold text-white disabled:opacity-40"
+              >
+                {t.studio_generate}
+              </button>
+            </div>
+          )}
           <div dir="auto" className="rounded-lg bg-white p-3 text-center text-2xl font-bold" data-testid="selected-text">
             {normalizedText}
           </div>

@@ -26,6 +26,8 @@ def geometry_occupancy(geometry_wkt: str) -> list[bool]:
     geom = shapely_wkt.loads(geometry_wkt)
     minx, miny, maxx, maxy = geom.bounds
     w, h = maxx - minx, maxy - miny
+    if w <= 0 or h <= 0:
+        return [False] * (GRID * GRID)
     prepared = prep(geom)
     cells = []
     for j in range(GRID):
@@ -37,11 +39,41 @@ def geometry_occupancy(geometry_wkt: str) -> list[bool]:
 
 
 def image_occupancy(image_bytes: bytes, threshold: int = 128, subject_darker: bool = True) -> list[bool]:
-    """Foreground occupancy of a rendered preview (grayscale threshold on
-    the design region, resized to the guard grid)."""
-    img = Image.open(io.BytesIO(image_bytes)).convert("L").resize((GRID, GRID))
-    px = list(img.getdata())
-    return [(p < threshold) if subject_darker else (p >= threshold) for p in px]
+    """Foreground occupancy of a rendered preview.
+
+    Alpha-aware (transparent pixels are background), then cropped to the
+    subject's bounding box before sampling, so the comparison is
+    invariant to framing/padding — a photoreal render places the piece
+    inside a scene, while the canonical grid covers the geometry bbox.
+    """
+    img = Image.open(io.BytesIO(image_bytes))
+    if img.mode in ("RGBA", "LA") or (img.mode == "P" and "transparency" in img.info):
+        rgba = img.convert("RGBA")
+        alpha = rgba.getchannel("A")
+        gray = rgba.convert("L")
+        opaque = [a > 32 for a in alpha.getdata()]
+        lum = list(gray.getdata())
+        mask = [
+            op and ((v < threshold) if subject_darker else (v >= threshold))
+            for op, v in zip(opaque, lum)
+        ]
+        # A fully transparent background means alpha alone marks the subject.
+        if not any(mask) and any(opaque):
+            mask = opaque
+        mask_img = Image.new("L", img.size)
+        mask_img.putdata([255 if v else 0 for v in mask])
+    else:
+        gray = img.convert("L")
+        mask_img = Image.new("L", img.size)
+        mask_img.putdata([
+            255 if ((v < threshold) if subject_darker else (v >= threshold)) else 0
+            for v in gray.getdata()
+        ])
+    bbox = mask_img.getbbox()
+    if bbox is None:
+        return [False] * (GRID * GRID)
+    sampled = mask_img.crop(bbox).resize((GRID, GRID), Image.BILINEAR)
+    return [v >= 128 for v in sampled.getdata()]
 
 
 def identity_divergence(geometry_wkt: str, image_bytes: bytes, subject_darker: bool = True) -> float:

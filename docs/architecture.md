@@ -117,8 +117,35 @@ text → NFC normalization → BiDi run segmentation → HarfBuzz shaping
 4. DXF export refuses unvalidated candidates and unconfirmed text (HTTP 423 / `ProductionExportBlocked`).
 5. Fonts are lettering sources, not products; rights status gates production; UNKNOWN_RIGHTS never exports commercially.
 
+## AI orchestration: Hermes + Claude + GPT-Image-2 (slice 5 — see ADR-0002)
+
+Deterministic engines above remain sole source of truth; this layer is
+advisory/visualization only (`orchestration_status()` publishes the
+6-level source-of-truth hierarchy) and cannot write
+`design_versions.immutable_source_text`, geometry, or manufacturing
+fields — those stay DB-trigger-protected per ADR-0001.
+
+| Module | Responsibility |
+|---|---|
+| `ai/llm.py` | `ClaudeProvider` (tiered fast/primary/escalate routing, env-overridable model ids, structured `.parse()` calls, cost estimation); raises `LLMUnavailable` honestly with no credentials |
+| `ai/agents.py` | 13-agent Hermes-compatible registry, tool allow-listing (`READ_TOOLS` vs human-only write tools), `JobBudget` (cost/depth/call caps), audit log, `HermesRuntimeAdapter` (detects the real `hermes-agent` package vs in-process fallback) |
+| `ai/visual_brief.py` | Machine-readable, cacheable `VisualBrief`; `VisualPromptBuilder` — single centralized prompt assembly with explicit preservation-rule + negative-constraint text |
+| `ai/image_providers.py` | `OpenAIImage2Provider` (generate/edit + semantic preview wrappers); disabled by default, guarded by `OPENAI_IMAGE_ENABLED` + API key |
+| `services/visual_studio.py` | Renders canonical geometry to PNG, builds the brief, calls the provider, runs the identity guard with bounded retries, enforces session cost/image-count budgets before any paid call, caches identical requests |
+| `ai/preview_guard.py` | Alpha-aware, bbox-normalized occupancy-grid IoU between canonical geometry and AI raster → PASS / REVIEW_REQUIRED / REJECTED_GEOMETRY_DRIFT |
+| `ai/quality_layer.py` | Design Jury (one structured Claude call, 4 weighted scores), deterministic `ConfidenceReport`, opt-in taste-memory signals (reuses `design_events`), read-only design lineage assembly, shadow-model evaluation (advisory promotion recommendation only) |
+| `ai/product_skills.py` | 8-product progressive-disclosure skill registry mapped to existing workshop profiles |
+| `api/visual.py` | `/api/visual/*` + `/api/orchestration/status` — every failure mode returns an honest status (`PHOTOREAL_PREVIEW_UNAVAILABLE`, `SKIPPED_EXTERNAL_MODEL`, `BUDGET_*`), never a fabricated result; deterministic SVG/DXF path is unaffected |
+
+Real Claude/GPT-Image-2 calls are UNAVAILABLE in this environment (no API
+keys) — routing, budgets, guards and fallbacks are proven; live-model
+behavior is not yet observed.
+
 ## Deferred (later slices)
 pgvector retrieval over a grown archetype library, designer copilot
 editor UI, WhatsApp channel integration, real malware scanner + S3,
 Redis-backed rate limits, accounts/design claiming, CI pipeline,
-3D preview, pricing/orders (P1).
+3D preview, pricing/orders (P1). Hermes runtime package installation (an
+approved-pin decision needed first), live Claude/GPT-Image-2 credentials,
+tool-execution wiring from `Orchestrator.run_agent` into
+`reference_intelligence.py`/`design_memory.py` services.

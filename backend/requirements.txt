@@ -15,6 +15,12 @@ psycopg2-binary==2.9.9
 fastapi==0.115.0
 uvicorn==0.30.6
 pydantic==2.9.2
+# AI providers (thin HTTP SDKs — NOT the GPU stack in requirements-ai.txt).
+# Claude = base reasoning/design intelligence; GPT-Image-2 = visualization
+# only, never source of truth. Both are guarded by *Unavailable exceptions
+# when credentials are absent — see app/ai/llm.py, app/ai/image_providers.py.
+anthropic==1.0.0
+openai==3.3.1
 # Test
 pytest==8.3.3
 httpx==0.27.2

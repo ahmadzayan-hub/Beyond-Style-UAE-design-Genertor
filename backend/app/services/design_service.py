@@ -570,7 +570,10 @@ def export_version(
     """Authorized production export. Requires APPROVED_LOCKED + hash
     re-verification + stored validation PASS + rights PASS."""
     if fmt not in ("svg", "dxf"):
-        raise ValueError("format must be svg or dxf")
+        # Only deterministic vector formats are exportable. AI rasters
+        # (ai_generations) are display artifacts and can never become a
+        # manufacturing file — see ADR-0002.
+        raise ValueError("format must be svg or dxf (AI raster output is never exportable)")
     version = session.get(m.DesignVersion, version_id)
     if version is None:
         raise KeyError("version not found")

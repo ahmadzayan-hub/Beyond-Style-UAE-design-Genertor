@@ -149,6 +149,24 @@ export async function applyRepair(versionId: string) {
   );
 }
 
+export async function generatePreview(versionId: string, opts: object) {
+  return jsonOrThrow(
+    await fetch(`/api/visual/versions/${versionId}/preview`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...authHeaders() },
+      body: JSON.stringify(opts),
+    })
+  );
+}
+
+export async function previewImageUrl(generationId: string): Promise<string> {
+  const res = await fetch(`/api/visual/generations/${generationId}/image`, {
+    headers: authHeaders(),
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return URL.createObjectURL(await res.blob());
+}
+
 export async function getVersion(versionId: string) {
   return jsonOrThrow(await fetch(`/api/versions/${versionId}`, { headers: authHeaders() }));
 }

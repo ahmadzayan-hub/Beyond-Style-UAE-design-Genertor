@@ -254,6 +254,37 @@ class ReferenceDNARow(TimestampMixin, Base):
     encoder_version: Mapped[str] = mapped_column(String(32), nullable=False)
 
 
+class AIGeneration(TimestampMixin, Base):
+    """One AI image generation (DESIGN → IMAGE). Display artifact only:
+    kind is always an ai_* value and the production export path refuses
+    these rows — an AI raster can never become manufacturing geometry."""
+
+    __tablename__ = "ai_generations"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=_uuid)
+    design_request_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("design_requests.id"), nullable=False, index=True
+    )
+    design_version_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("design_versions.id"), nullable=False, index=True
+    )
+    kind: Mapped[str] = mapped_column(String(24), default="ai_preview", nullable=False)
+    provider: Mapped[str] = mapped_column(String(48), nullable=False)
+    model: Mapped[str] = mapped_column(String(64), nullable=False)
+    visual_brief: Mapped[dict] = mapped_column(JSONB, nullable=False)
+    cache_key: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    geometry_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    source_text_sha256: Mapped[str] = mapped_column(String(64), nullable=False)
+    prompt: Mapped[str] = mapped_column(Text, nullable=False)
+    storage_key: Mapped[str | None] = mapped_column(String(255))
+    content_sha256: Mapped[str | None] = mapped_column(String(64))
+    guard_status: Mapped[str] = mapped_column(String(32), nullable=False)
+    guard_report: Mapped[dict] = mapped_column(JSONB, nullable=False)
+    attempts: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
+    cost_usd: Mapped[float] = mapped_column(Float, default=0.0, nullable=False)
+    quality: Mapped[str] = mapped_column(String(16), default="DRAFT", nullable=False)
+
+
 class AIJob(TimestampMixin, Base):
     """Async AI job queue — model work runs in a separate worker process,
     never inside the API. Honest terminal states include MODEL_UNAVAILABLE."""
