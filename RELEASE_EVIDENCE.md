@@ -6,15 +6,19 @@ Status vocabulary used below (per the release-hardening mandate):
 `VERIFIED_LOCAL` (real execution against local infra) /
 `VERIFIED_CI` (real execution on GitHub Actions) /
 `VERIFIED_PRODUCTION` (real execution against a real deployed production
-URL) / `SKIPPED_NO_CREDENTIALS` (honest skip, no API key) / `BLOCKED`
-(no tool access in this session) / `FAILED` (a real attempt errored).
-Local evidence is never promoted to production evidence.
+URL) / `SKIPPED_NO_CREDENTIALS` (honest skip, no API key) /
+`OPTIONAL_NOT_RUNNING` (an optional runtime is not configured, the
+deterministic path is unaffected) / `BLOCKED` (no tool access in this
+session) / `FAILED` (a real attempt errored). Local evidence is never
+promoted to production evidence.
 
 ## COMMIT SHA
 
-`27b48d62fdb2f1b63519e4268d3edb42be0ec05a` on branch
+`912355efee0d68aa1de4e43b1f4ac4ee61e40075` on branch
 `claude/p0-golden-path-audit-jtyduw`,
-`ahmadzayan-hub/Beyond-Style-UAE-design-Genertor`.
+`ahmadzayan-hub/Beyond-Style-UAE-design-Genertor`. Vercel's latest
+production deployment (`dpl_AVrE7sRwAh6nQYDVnzk8xdbiL7r1`) confirmed
+via the Vercel API to match this exact SHA.
 
 ## SECURITY (dependency triage — pip-audit + npm audit, this slice)
 
@@ -101,34 +105,63 @@ Real GitHub Actions history, not assumed:
   a storage-quota (or any other artifact-service) failure can never
   fail an otherwise-green required job again.
 - **Run 12** (`32884649563`, commit `27b48d6`, the code-changing
-  commit this slice): `frontend` and `secret-scan` jobs **succeeded**;
-  `backend` job's `Install`/`Migrations up/down/up` steps **succeeded**
-  and its test-suite step was genuinely executing (no collection
-  error) as of the last check — **still `in_progress` when this report
-  was written** (this run's test suite alone took ~7-8 real minutes on
-  a prior commit; the `e2e` job runs after and adds Playwright install
-  + real browser time on top). This document does not claim a pass it
-  has not observed — check the live run at
-  https://github.com/ahmadzayan-hub/Beyond-Style-UAE-design-Genertor/actions/runs/32884649563
-  for the current status. `CI = VERIFIED_CI` only once this run's
-  `conclusion` is confirmed `success`.
+  commit): **`conclusion: success`, confirmed** — all 4 jobs green:
+  `frontend` (success, 18:36:26), `secret-scan` (success, 18:35:46),
+  `backend` (success, 18:44:41 — test suite 230 tests in 7m26s +
+  proof-sheet evidence upload), `e2e` (success, 18:47:05 — Playwright
+  install + real backend/frontend + `golden_path_e2e.py` +
+  `copilot_e2e.py` both passing). **This is the first fully green CI
+  run on this branch.**
+- **Run 13** (`32884909589`, commit `99c5bea`, docs-only): `success`.
+- **Run 14** (`32885060609`, commit `912355e`, docs-only, current
+  HEAD): `success`.
+
+**`CI = VERIFIED_CI`.** `head_sha` of the latest green run
+(`912355efee0d68aa1de4e43b1f4ac4ee61e40075`) matches this document's
+release-candidate commit exactly.
 
 ## REPLIT BACKEND
 
-**BLOCKED.** Re-confirmed this slice via `ToolSearch("replit")`: no
-Replit MCP connector, no Replit CLI/API token, no matching tool of any
-kind in this session. `.replit` (build/run/deploy config) is prepared
-and valid:
+**BLOCKED.** Re-confirmed again this slice via `ToolSearch("replit")`:
+no Replit MCP connector, no Replit CLI/API token, no matching tool of
+any kind in this session. `.replit` (build/run/deploy config) is
+prepared and valid:
 ```toml
+entrypoint = "backend/app/main.py"
+[deployment]
+deploymentTarget = "cloudrun"
+build = ["sh", "-c", "cd backend && pip install -r requirements.txt"]
 run = ["sh", "-c", "cd backend && python -m alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT"]
 ```
-Real production start command uses the correct module path
-(`app.main:app`), binds `0.0.0.0:$PORT`, no `--reload`, runs Alembic
-forward-only before serving. **Exact manual action required** (project
-owner, in the Replit dashboard): import this repo, open the Secrets
-pane, set `DATABASE_URL` and `ALLOWED_ORIGINS` (required), optionally
-`ANTHROPIC_API_KEY`/`OPENAI_API_KEY`/`OPENAI_IMAGE_ENABLED=true`/
-`HERMES_MODE`/`INTERNAL_TOOL_TOKEN`, then click Publish.
+Verified this slice, fresh, against the current (post-hardening) local
+backend — all real, none fabricated:
+- Start command uses the correct module path (`app.main:app`), binds
+  `0.0.0.0:$PORT`, **no `--reload`**.
+- Alembic migration path: `python -m alembic upgrade head` runs before
+  `uvicorn` starts — forward-only, confirmed by reading the command and
+  by 4 separate from-scratch clean-venv runs this pass (all succeeded,
+  none used `downgrade`/`stamp`).
+- `GET /health` → `200 {"status":"ok","schema_version":"0.1.0"}`.
+- `GET /ready` → `200`, all 7 components `ok` (database, migrations at
+  head `9520aa9396f0`, font_registry, arabic_shaping_engine,
+  geometry_and_manufacturing_engine, storage, design_generator).
+- `GET /api/ai/status` → `200`, honestly reports `ai_mode: "disabled"`,
+  `claude.credentials_configured: false`, `gpt_image_2.key_configured:
+  false`, `hermes.mode: "in_process"`,
+  `deterministic_fallback.status: "always_available"` — no fabricated
+  provider state.
+- Structured logs: every request emits one JSON line
+  (`app/observability.py`) with `request_id`/`route`/`method`/`status`/
+  `duration_ms` — verified present in this slice's local server output.
+- **PostgreSQL only**: `DATABASE_URL` in `.env.example` and `.replit`'s
+  comment both specify `postgresql+psycopg2://...`; no SQLite path
+  exists anywhere in `app/db/base.py` or the Alembic env.
+
+**Exact manual action required** (project owner, in the Replit
+dashboard): import this repo, open the Secrets pane, set `DATABASE_URL`
+and `ALLOWED_ORIGINS` (required — exact value below), optionally
+`ANTHROPIC_API_KEY`/`OPENAI_API_KEY`/`OPENAI_IMAGE_ENABLED=false`/
+`HERMES_MODE=in_process`/`INTERNAL_TOOL_TOKEN`, then click Publish.
 
 **Note on the mandate's requested env var list**: `SECRET_KEY`,
 `APP_ENV`, and `AI_PROVIDER` were requested but do not exist anywhere
@@ -144,9 +177,10 @@ settings that silently no-op.
 ## VERCEL FRONTEND
 
 Real Vercel project `frontend` (`prj_qf9LfOdeVRzfYTZ39sS6pja9iDCm`),
-confirmed via the Vercel API. Latest deployment auto-triggered by this
-slice's push will match commit `27b48d6` once built (verify via
-`get_project` before relying on this).
+confirmed via the Vercel API this slice. Latest production deployment
+`dpl_AVrE7sRwAh6nQYDVnzk8xdbiL7r1`, `readyState: READY`,
+`githubCommitSha: 912355efee0d68aa1de4e43b1f4ac4ee61e40075` — **exact
+match** to this document's commit SHA.
 
 **`NEXT_PUBLIC_API_URL` still not set — BLOCKED.** No tool in this
 session (`update_project_deployment_protection` covers only
@@ -192,12 +226,18 @@ exists yet. `VERIFIED_PRODUCTION`: not possible, no production backend.
 
 ## PRODUCTION SMOKE
 
-`VERIFIED_LOCAL`: **15/15**, run three times this slice against
+`VERIFIED_LOCAL`: **15/15**, run three times in the prior slice against
 successive dependency states (pre-upgrade, mid-upgrade with the
 since-reverted FastAPI/starlette, and final reverted state) — all
-15/15. `VERIFIED_PRODUCTION`: `BLOCKED` — no real `FRONTEND_URL`/
-`BACKEND_URL` exist yet (backend never deployed; frontend not publicly
-reachable — see REPLIT BACKEND / VERCEL FRONTEND above).
+15/15; baseline unchanged this slice (no code touched). `VERIFIED_CI`:
+the 230-test backend suite and the full browser `e2e` job (Golden Path
++ Copilot flows) both independently passed on GitHub Actions run
+`32884649563` against this exact commit's code — a second, independent
+confirmation of the same baseline beyond this sandbox.
+`VERIFIED_PRODUCTION`: `BLOCKED` — no real `FRONTEND_URL`/`BACKEND_URL`
+exist yet (backend never deployed; frontend not publicly reachable —
+see REPLIT BACKEND / VERCEL FRONTEND above). Per the mandate, this
+gap is reported as `BLOCKED`, not filled in with local results.
 
 ## 7-NAME GOLDEN PATH
 
@@ -259,10 +299,11 @@ the project owner once DNS is ready.
 | 1 | Backend never deployed anywhere | Project owner (human) | Import repo into Replit, set `DATABASE_URL` + `ALLOWED_ORIGINS` secrets, click Publish. No tool in this session can do this. |
 | 2 | `NEXT_PUBLIC_API_URL` not set on Vercel | Project owner (human) | Vercel dashboard → project `frontend` → Settings → Environment Variables → Production → set to the real backend URL from #1 → redeploy. No tool in this session can set a Vercel env var. |
 | 3 | Vercel deployment not publicly reachable | Project owner (human), only after security clears | SSO deliberately left enabled per the mandate until Starlette CVEs (below) are resolved. Then disable SSO or attach `www.beyondstyle.ae`. |
-| 4 | Starlette has 9 unresolved CVEs | Future dedicated slice | The smallest compatible fix (`fastapi==0.135.0`+`starlette==1.3.1`) was tried and caused a real P0 regression (candidate persistence invisible under real HTTP handling) — reverted. Needs a proper bisection/reproduction outside this app before retrying. |
-| 5 | `beyondstyle.ae` custom domain not attached | Project owner (human) | Register/point DNS, then attach in Vercel project settings. |
-| 6 | CI run 32884649563 (this slice's commit) not yet confirmed passing | Re-check | https://github.com/ahmadzayan-hub/Beyond-Style-UAE-design-Genertor/actions/runs/32884649563 |
-| 7 | Production smoke/E2E/7-name scenario never run against real production URLs | Blocked on 1–3 | Re-run once real URLs exist. |
+| 4 | Starlette has 9 unresolved CVEs | Future dedicated slice | The smallest compatible fix (`fastapi==0.135.0`+`starlette==1.3.1`) was tried and caused a real P0 regression (candidate persistence invisible under real HTTP handling) — reverted, not re-attempted this slice per explicit instruction. Needs a proper bisection/reproduction outside this app before retrying. |
+| 5 | `beyondstyle.ae` custom domain not attached | Project owner (human), only after #4 clears | Register/point DNS, then attach in Vercel project settings — deliberately not done yet per the mandate. |
+| 6 | Production smoke/E2E/7-name scenario never run against real production URLs | Blocked on 1–2 | Re-run `scripts/production-smoke.py` and the browser E2E scripts with `FRONTEND_URL`/`BACKEND_URL` set to the real deployed URLs, once 1–2 are resolved. |
+
+~~CI run not yet confirmed~~ — **resolved this slice**: run `32884649563` confirmed `success` on all 4 jobs (frontend/secret-scan/backend/e2e), and the two subsequent docs-only commits (`99c5bea`, `912355e` — current HEAD) both also confirmed `success`. `CI = VERIFIED_CI`.
 
 No percentage, no "mostly ready," no assumption about any blocker's
 outcome. Everything above this table is real, executed evidence backed
