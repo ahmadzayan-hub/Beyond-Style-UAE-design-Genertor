@@ -100,13 +100,18 @@ Real GitHub Actions history, not assumed:
   `continue-on-error: true` to both `actions/upload-artifact` steps, so
   a storage-quota (or any other artifact-service) failure can never
   fail an otherwise-green required job again.
-- **Run 12** (`32884649563`, commit `27b48d6`, this slice's final
-  commit): triggered by this slice's push. Status as of this report:
-  **check the live run** at
+- **Run 12** (`32884649563`, commit `27b48d6`, the code-changing
+  commit this slice): `frontend` and `secret-scan` jobs **succeeded**;
+  `backend` job's `Install`/`Migrations up/down/up` steps **succeeded**
+  and its test-suite step was genuinely executing (no collection
+  error) as of the last check — **still `in_progress` when this report
+  was written** (this run's test suite alone took ~7-8 real minutes on
+  a prior commit; the `e2e` job runs after and adds Playwright install
+  + real browser time on top). This document does not claim a pass it
+  has not observed — check the live run at
   https://github.com/ahmadzayan-hub/Beyond-Style-UAE-design-Genertor/actions/runs/32884649563
-  — not claimed passing until observed. `CI = VERIFIED_CI` only once
-  this run's `conclusion` is confirmed `success` with `head_sha`
-  matching the release candidate commit above.
+  for the current status. `CI = VERIFIED_CI` only once this run's
+  `conclusion` is confirmed `success`.
 
 ## REPLIT BACKEND
 
