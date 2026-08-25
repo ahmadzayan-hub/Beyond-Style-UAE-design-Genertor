@@ -1,17 +1,54 @@
 # STATUS
 
 Statuses (general sections below): VERIFIED (automated tests + evidence) / PARTIAL / FALLBACK / DISABLED / UNAVAILABLE / NOT_IMPLEMENTED.
-Statuses (Real Tool Wiring section, precise per-claim vocabulary):
+Statuses (External AI / Real Tool Wiring sections, precise per-claim vocabulary):
   VERIFIED_LOCAL — real code path executed against a real local dependency (PostgreSQL, engines) in this environment.
-  VERIFIED_EXTERNAL — a real external provider (Claude/GPT-Image-2) call actually executed and returned.
+  VERIFIED_EXTERNAL — a real external provider/runtime call actually executed and returned (Claude/GPT-Image-2/isolated Hermes).
   VERIFIED_E2E — proven through a full HTTP/browser round trip, not just a unit call.
   AVAILABLE_NOT_VERIFIED — code is real/wired but has not itself been executed in this environment (e.g. no docker daemon).
   SKIPPED_NO_CREDENTIALS — the honest-skip branch ran (no API key); the real-call branch is implemented but unexercised here.
-  OPTIONAL — a feature designed to be absent-by-default without degrading the deterministic path.
+  OPTIONAL_NOT_RUNNING — an optional runtime (isolated Hermes) is not configured/reachable; the deterministic path is unaffected.
   BLOCKED — implemented but intentionally refused (e.g. approve_design for agents).
-Updated: 2026-08-25 · Backend suite: 195 passed (PostgreSQL 16) · E2E: 4 browser flows passed.
+  FAILED — a real call/round-trip was attempted and errored (never silently downgraded to a softer status).
+Updated: 2026-08-25 · Backend suite: 204 passed (PostgreSQL 16) · E2E: 4 browser flows passed.
 
-## Real Tool Wiring + Isolated Hermes Runtime + Live Provider Acceptance (this slice, see ADR-0003)
+## P0 STATUS: FROZEN/STABLE
+
+All freeze criteria hold: 204/204 backend tests green (PostgreSQL 16,
+real Alembic migrations) · 4/4 browser E2E flows green (text/reference/
+desktop/copilot) · all 9 real tools still VERIFIED_LOCAL (unchanged
+this slice) · deterministic fallback re-verified explicitly (both as a
+unit check and via `make external-ai-e2e`'s
+`provider_failure_deterministic_path` run, forcing Claude/GPT-Image-2/
+Hermes-isolated all unavailable) · no TODO/FIXME/XXX in any Golden Path
+module (`engines/`, `services/design_service.py`, `schemas/`,
+`api/designs.py`) · STATUS below distinguishes VERIFIED_LOCAL from
+SKIPPED_NO_CREDENTIALS/OPTIONAL_NOT_RUNNING everywhere external
+execution is claimed.
+
+**External Claude/GPT-Image-2/isolated-Hermes verification is an
+explicit deployment acceptance gate, not a P0 blocker** — this
+environment has no `ANTHROPIC_API_KEY`/`OPENAI_API_KEY`/docker daemon,
+so those three remain SKIPPED_NO_CREDENTIALS / SKIPPED_NO_CREDENTIALS /
+OPTIONAL_NOT_RUNNING here. They are NOT marked complete or VERIFIED —
+run `make external-ai-e2e` on a deployment with real credentials to
+move them to VERIFIED_EXTERNAL; see `docs/evidence/external-ai-acceptance.json`
+for the current (honest) run.
+
+## External AI Acceptance (`make external-ai-e2e`, see `backend/scripts/external_ai_acceptance.py`)
+| Component | Status | Detail |
+|---|---|---|
+| `make external-ai-e2e` command | VERIFIED_LOCAL | runs from repo root, migrates its target DB, writes `docs/evidence/external-ai-acceptance.json`, exits 0 unless any check is FAILED |
+| CLAUDE (نورة reference: Claude structured DesignDNA → deterministic Arabic engine → geometry → manufacturing validation) | SKIPPED_NO_CREDENTIALS | no `ANTHROPIC_API_KEY` here; asserts source_text is still exactly "نورة" after the (skipped) call attempt; real-call branch captures model/response_id/latency/tokens/cost/structured_response_hash/design_dna_hash/source_text_sha256/final_geometry_hash when credentials exist |
+| GPT_IMAGE (ع → 18K yellow-gold earring, luxury studio scene → IdentityGuard → PASS/REVIEW/REJECT) | SKIPPED_NO_CREDENTIALS | `OPENAI_IMAGE_ENABLED=false`/no key here; asserts PNG/AI-raster export is refused (`ValueError`) regardless; real-call branch captures provider/model/latency/cost/guard_status/geometry_hash/content_sha256 |
+| HERMES (one harmless read-only tool job through the isolated runtime) | OPTIONAL_NOT_RUNNING (default) | manually verified VERIFIED_EXTERNAL in this session with `services/hermes` actually running (`HERMES_MODE=isolated`, live `/health` + a real `retrieve_design_memory` round trip) — not this environment's default configuration, so the checked-in evidence file reflects the honest default (OPTIONAL_NOT_RUNNING) |
+| Real agent tool chain (reference → analyze_reference → retrieve_design_memory → generate_design_recipes → validate_arabic → validate_manufacturing → repair-if-required → rank_candidates → create_visual_preview-if-available), STOPPING before approve_design | VERIFIED_LOCAL | `approve_design` asserted `ToolNotPermitted` even when attempted by `master_orchestrator`; human/customer approval remains the only path to `APPROVED_LOCKED` |
+| Provider-failure fallback (text → 10 concepts → select → manufacturing validation → approval/export, forcing Claude/GPT-Image-2/Hermes-isolated all unavailable) | VERIFIED_LOCAL | reaches `APPROVED_LOCKED` + a real DXF export with content sha256, unaffected by any provider's absence |
+| Cost/usage evidence capture (provider, model, tokens, image generations, retries, latency, estimated cost) | VERIFIED_LOCAL (shape) / pending real numbers | redaction allow-list (`USAGE_EVIDENCE_KEYS`) proven to strip any injected secret/prompt/raw-payload key before writing; real numbers appear only once a real call executes |
+| No paid photoreal preview for all 10 candidates | VERIFIED_LOCAL | `create_visual_preview` is called only once, on the single selected/ranked candidate — never per-candidate |
+| Security: keys server-side only, never logged, no raw images in evidence | VERIFIED_LOCAL | `test_evidence_never_contains_secrets_or_raw_payload`; evidence JSON contains hashes/statuses/numbers only |
+
+## Real Tool Wiring + Isolated Hermes Runtime + Live Provider Acceptance (see ADR-0003)
 
 **Adding real credentials to a deployment** (never commit them —
 `backend/.env.example` only ever holds empty values): set
@@ -34,12 +71,12 @@ running Hermes isolated, also set `HERMES_MODE=isolated`,
 | HERMES_MODE=isolated → in_process fallback | VERIFIED_LOCAL | tested both isolated-reachable (SKIPPED_EXTERNAL_MODEL propagates honestly) and isolated-unreachable (connection refused → silent fallback, never blocks) |
 | Internal tool-call callback endpoint (`/api/orchestration/internal/tools/{tool}`) | VERIFIED_LOCAL | closed (403) with `INTERNAL_TOOL_TOKEN` unset (this environment's default); works end-to-end once a shared secret is configured |
 | Dependency isolation (main app pins unaffected by Hermes) | VERIFIED_LOCAL | `test_main_app_dependency_pins_unaffected_by_hermes` reads both requirements.txt files; `test_main_app_installed_pydantic_version_matches_pin` checks the actually-imported `pydantic.VERSION` |
-| Real `hermes-agent` package | OPTIONAL, not installed anywhere | pinned only in `services/hermes/requirements.txt`; never a dependency of `backend/requirements.txt` |
+| Real `hermes-agent` package | OPTIONAL_NOT_RUNNING (not installed anywhere) | pinned only in `services/hermes/requirements.txt`; never a dependency of `backend/requirements.txt` |
 | Live Claude acceptance (نورة reference case) | SKIPPED_NO_CREDENTIALS | `test_live_claude_acceptance_arabic_norah_reference`; no `ANTHROPIC_API_KEY` here — honest-skip branch ran; deterministic candidate generation + exact source_text preservation proven regardless |
 | Live GPT-Image-2 acceptance (ع → 18K gold earring) | SKIPPED_NO_CREDENTIALS | `test_live_gpt_image2_acceptance_letter_ain_earring`; canonical `geometry_hash` exists and PNG/AI raster export is blocked regardless of provider availability |
 | Full agent orchestration E2E (reference → Claude(skip) → deterministic generation → Arabic QA → Manufacturing QA → ranking → selection → optional preview(skip) → human approval) | VERIFIED_LOCAL | `test_full_agent_orchestration_e2e_deterministic_path_always_completes`; completes with Claude, Hermes-isolated and GPT-Image-2 all unavailable |
 
-## Hermes + Claude + GPT-Image-2 orchestration (this slice, see ADR-0002)
+## Hermes + Claude + GPT-Image-2 orchestration (see ADR-0002)
 | Component | Status | Detail |
 |---|---|---|
 | Source-of-truth hierarchy enforcement | VERIFIED | `orchestration_status()`; no AI write path touches immutable text/geometry/manufacturing columns (DB-trigger-protected, ADR-0001) |
@@ -59,7 +96,7 @@ running Hermes isolated, also set `HERMES_MODE=isolated`,
 | Product-specific Hermes skills (8 products) | VERIFIED | registry + endpoint + unknown-product 404 |
 | Secrets never leak via orchestration/status endpoints | VERIFIED | literal API-key value asserted absent from `/api/orchestration/status` JSON |
 
-## Visual Reference Intelligence (this slice) — honest AI status
+## Visual Reference Intelligence — honest AI status
 | Component | Status | Detail |
 |---|---|---|
 | Provider abstraction (VisualAnalyzer/ImageGenerator/ImageEditor/Embedding) | VERIFIED | interfaces + AI_MODE config + license registry; MODEL_UNAVAILABLE errors, never faked results |
@@ -111,4 +148,4 @@ malware scanner provider, S3/Redis, accounts/RBAC.
 ## Next
 1. Calibrate workshop profiles with real Beyond Style workshop values.
 2. Push branch → observe CI green on GitHub.
-3. Real Claude/GPT-Image-2/isolated-Hermes execution: needs real `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` credentials, a deployment target with a docker daemon to actually build+run `services/hermes/`, and a resolvable `hermes-agent==0.19.0` install to move any of this from SKIPPED_NO_CREDENTIALS/AVAILABLE_NOT_VERIFIED to VERIFIED_EXTERNAL — stop-condition: cannot be built honestly without them.
+3. Run `make external-ai-e2e` on a deployment with real `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` (+ `OPENAI_IMAGE_ENABLED=true`) and, separately, a docker daemon running `services/hermes/` with `HERMES_MODE=isolated` — this is the deployment acceptance gate for CLAUDE/GPT_IMAGE/HERMES to move from SKIPPED_NO_CREDENTIALS/OPTIONAL_NOT_RUNNING to VERIFIED_EXTERNAL. Stop-condition: cannot be built honestly without them; P0 itself does not block on this (see "P0 STATUS: FROZEN/STABLE" above).

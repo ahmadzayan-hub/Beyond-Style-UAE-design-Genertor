@@ -117,3 +117,31 @@ def fallback_dna(image_analysis: dict | None) -> DesignDNA:
         }.get(analysis.get("orientation"), "unknown"),
         reference_confidence=0.2 if analysis else 0.0,
     )
+
+
+CLAUDE_DNA_SYSTEM = (
+    "You are producing a structured DesignDNA for a jewellery reference. "
+    "You are given ONLY deterministic, already-computed visual signals "
+    "(aspect ratio, orientation, provenance, ip_risk status) — never the "
+    "customer's text or any transcription of it, and no image bytes. "
+    "Fill the DesignDNA schema fields describing style/construction/"
+    "ornament only, from those signals plus general jewellery-design "
+    "knowledge. Set source='vlm' and analyzer_model to your own model "
+    "id. Never invent specific text content."
+)
+
+
+def claude_dna_from_reference(deterministic_signals: dict, tier: str = "primary") -> tuple[DesignDNA, dict]:
+    """Real Claude structured-output call producing a DesignDNA object.
+
+    Raises LLMUnavailable (via ClaudeProvider) with no credentials —
+    callers must report SKIPPED_EXTERNAL_MODEL/SKIPPED_NO_CREDENTIALS,
+    never fabricate a DesignDNA. `deterministic_signals` must never
+    contain source text or OCR output — see FORBIDDEN_TEXT_KEYS."""
+    from .llm import get_provider
+
+    cleaned = {k: v for k, v in deterministic_signals.items() if k not in FORBIDDEN_TEXT_KEYS}
+    provider = get_provider(tier)
+    return provider.structured(
+        system=CLAUDE_DNA_SYSTEM, user_content=str(cleaned), schema=DesignDNA, effort="low"
+    )

@@ -1,0 +1,70 @@
+{
+  "generated_at_utc": null,
+  "claude": {
+    "status": "SKIPPED_NO_CREDENTIALS",
+    "reason": "no ANTHROPIC_API_KEY / ANTHROPIC_AUTH_TOKEN configured"
+  },
+  "gpt_image": {
+    "status": "SKIPPED_NO_CREDENTIALS",
+    "reason": "OPENAI_IMAGE_ENABLED=false"
+  },
+  "hermes": {
+    "status": "OPTIONAL_NOT_RUNNING",
+    "reason": "HERMES_MODE=in_process (isolated runtime not configured for this run)"
+  },
+  "agent_tool_chain": {
+    "status": "VERIFIED_LOCAL",
+    "steps": [
+      {
+        "agent": "reference_intelligence",
+        "tool": "analyze_reference",
+        "status": "OK"
+      },
+      {
+        "agent": "reference_intelligence",
+        "tool": "retrieve_design_memory",
+        "status": "OK"
+      },
+      {
+        "agent": "design_concept",
+        "tool": "generate_design_recipes",
+        "status": "OK"
+      },
+      {
+        "agent": "calligraphy_art_director",
+        "tool": "validate_arabic",
+        "status": "OK"
+      },
+      {
+        "agent": "diversity",
+        "tool": "rank_candidates",
+        "status": "OK"
+      },
+      {
+        "agent": "jewellery_engineering",
+        "tool": "validate_manufacturing",
+        "status": "OK"
+      },
+      {
+        "agent": "visual_critic",
+        "tool": "create_visual_preview",
+        "status": "SKIPPED_NO_CREDENTIALS"
+      },
+      {
+        "agent": "master_orchestrator",
+        "tool": "approve_design",
+        "status": "BLOCKED_HUMAN_ONLY"
+      }
+    ],
+    "candidate_count": 48
+  },
+  "provider_failure_deterministic_path": {
+    "status": "VERIFIED_LOCAL",
+    "evidence": {
+      "version_status": "APPROVED_LOCKED",
+      "approval_status": "ACTIVE",
+      "export_format": "dxf",
+      "export_sha256": "951197417d6f82afae5a803e5257a5f01016045c5a4ff929be8b8e8baf678bb2"
+    }
+  }
+}

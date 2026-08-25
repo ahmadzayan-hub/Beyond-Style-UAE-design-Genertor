@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import importlib.util
 import os
+import time
 from typing import Any, Type
 
 from pydantic import BaseModel
@@ -130,6 +131,7 @@ class ClaudeProvider:
         if cache_system:
             system_block[0]["cache_control"] = {"type": "ephemeral"}
         kwargs = self._request_kwargs(effort)
+        start = time.monotonic()
         response = client.messages.parse(
             model=self.model,
             max_tokens=max_tokens,
@@ -138,8 +140,11 @@ class ClaudeProvider:
             output_format=schema,
             **kwargs,
         )
+        latency_ms = round((time.monotonic() - start) * 1000, 2)
         usage = {
             "model": self.model,
+            "response_id": getattr(response, "id", None),
+            "latency_ms": latency_ms,
             "input_tokens": response.usage.input_tokens,
             "output_tokens": response.usage.output_tokens,
             "cache_read_input_tokens": getattr(response.usage, "cache_read_input_tokens", 0),

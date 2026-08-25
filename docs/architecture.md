@@ -139,11 +139,14 @@ fields — those stay DB-trigger-protected per ADR-0001.
 | `ai/hermes_client.py` | `HermesClient` — resolves `HERMES_MODE` (in_process/isolated/disabled); isolated-runtime failure always falls back to the in-process `Orchestrator`, never blocks design |
 | `api/visual.py` | `/api/visual/*` + `/api/orchestration/status` + `/api/orchestration/internal/tools/{tool}` (closed by default; the isolated runtime's tool-call callback target) — every failure mode returns an honest status (`PHOTOREAL_PREVIEW_UNAVAILABLE`, `SKIPPED_EXTERNAL_MODEL`, `BUDGET_*`), never a fabricated result; deterministic SVG/DXF path is unaffected |
 | `services/hermes/` | OPTIONAL isolated Hermes runtime (own `Dockerfile`/`requirements.txt`, pinning the real `hermes-agent`); `GET /health`, `POST /orchestrate/{agent}`; never merged into `backend/requirements.txt` (ADR-0003) |
+| `scripts/external_ai_acceptance.py` (`make external-ai-e2e`) | Production acceptance check — independently reports CLAUDE/GPT_IMAGE/HERMES as VERIFIED_EXTERNAL/SKIPPED_NO_CREDENTIALS/OPTIONAL_NOT_RUNNING/FAILED, runs the real agent tool chain (stopping before `approve_design`) and the provider-failure fallback check, writes redacted evidence to `docs/evidence/external-ai-acceptance.json` |
 
 Real Claude/GPT-Image-2 calls are UNAVAILABLE in this environment (no API
 keys) — routing, budgets, guards and fallbacks are proven; live-model
 behavior is not yet observed. `Orchestrator.call_tool` now executes real
 tools (not just policy simulation) with durable per-call audit events.
+P0 is FROZEN/STABLE (see `docs/STATUS.md`) — external AI verification is
+a deployment acceptance gate, not a P0 blocker.
 
 ## Deferred (later slices)
 pgvector retrieval over a grown archetype library, designer copilot
