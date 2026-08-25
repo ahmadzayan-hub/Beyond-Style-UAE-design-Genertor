@@ -10,7 +10,14 @@ Statuses (External AI / Real Tool Wiring sections, precise per-claim vocabulary)
   OPTIONAL_NOT_RUNNING — an optional runtime (isolated Hermes) is not configured/reachable; the deterministic path is unaffected.
   BLOCKED — implemented but intentionally refused (e.g. approve_design for agents).
   FAILED — a real call/round-trip was attempted and errored (never silently downgraded to a softer status).
-Updated: 2026-08-25 · Backend suite: 219 passed (PostgreSQL 16) · E2E: 4 browser flows passed · production smoke: 14/14 checks passed (local).
+Updated: 2026-08-25 · Backend suite: 230 passed (PostgreSQL 16, incl. 11-test immutable seven-name golden fixture) · E2E: 5 browser flows passed (incl. dedicated seven-name+reference flow) · production smoke: 15/15 checks passed (local, corrected fixture — see RELEASE_EVIDENCE.md).
+
+## P0 RELEASE CLOSURE (this slice, see RELEASE_EVIDENCE.md)
+**Status: NOT PRODUCTION-READY.** Full evidence in `RELEASE_EVIDENCE.md` at repo root.
+- Fixed `scripts/production-smoke.py`'s Golden Path fixture: it previously used an incorrect 6-name Arabic string including فاطمة (not one of the required names) and missing محمد. Now uses the exact required 7 names in order — حامد، محمد، سلطان، ميثة، حمد، خالد، مهرة — with a byte-exact server-round-trip preservation check.
+- Added `backend/tests/test_seven_name_golden_fixture.py`: 11 tests locking exact count, exact Unicode codepoints, exact order, no omission/substitution/duplication/invention, RTL preservation, full-request coverage (all 7 names present in generated candidates), and 5 parametrized adversarial mutation cases proving Arabic validation fails closed (`ApprovalRejected`, request stays `DRAFT`) on any change.
+- Added `e2e/golden_seven_names_e2e.py`: dedicated browser E2E for the exact 7-name scenario with reference-image upload, through the real UI (mobile viewport), producing real screenshots + JSON evidence.
+- **Blocked, not assumed complete:** backend deployment to a real production URL (no Replit MCP access in this session) and setting `NEXT_PUBLIC_API_URL` on the real Vercel project (no tool in this session can set Vercel project env vars). Items 3–5 of the release-closure requirement (real production URL testing, verifying the 7-name scenario through the live production UI) remain undone for this reason and are reported as explicit blockers, not silently skipped.
 
 ## Deployment Readiness (this slice, see docs/DEPLOYMENT.md)
 | Component | Status | Detail |
@@ -23,7 +30,7 @@ Updated: 2026-08-25 · Backend suite: 219 passed (PostgreSQL 16) · E2E: 4 brows
 | Structured error codes (never a raw stack trace) | VERIFIED_LOCAL | `error_code`+`request_id` on every 4xx/5xx; unhandled 500s return a generic message only, verified via a forced internal exception |
 | Frontend direct-fetch to `NEXT_PUBLIC_API_URL` (production) with local-dev rewrite fallback unchanged | VERIFIED_LOCAL | `npm run build` bakes the URL correctly; local E2E (relative paths + rewrite) still green |
 | Frontend error-code → friendly AR/EN message + retry + request-id detail | VERIFIED_LOCAL | `lib/i18n.ts:error_codes`; every previously-generic catch site now passes the real error through |
-| Real "Generate Designs" works with the exact reported scenario (`حامد حمد فاطمة سلطان خالد مهرة`, reference upload) | VERIFIED_LOCAL | `scripts/production-smoke.py` A–K, 14/14, against local backend+frontend |
+| Real "Generate Designs" works with the exact required 7-name scenario (`حامد محمد سلطان ميثة حمد خالد مهرة`, reference upload) | VERIFIED_LOCAL | `scripts/production-smoke.py` A–O, 15/15, against local backend+frontend; corrected this slice (previous fixture used a wrong/incomplete name list) — see RELEASE_EVIDENCE.md |
 | GitHub CI: secret scan + E2E job added | VERIFIED_LOCAL | `.github/workflows/ci.yml`; YAML validated, jobs mirror the exact commands run locally |
 | `external-ai-acceptance` / `deployment-smoke` GitHub workflows | VERIFIED_LOCAL (workflow definitions) / AVAILABLE_NOT_VERIFIED (as actual GitHub Actions runs) | manual `workflow_dispatch` only; not yet observed running on GitHub |
 | Secret-leak prevention (`.gitignore`, `scripts/secret_scan.py`, frontend-build-no-secrets test) | VERIFIED_LOCAL | `test_secret_scan.py` (4 tests) incl. a real `npm run build` + grep on the actual build output |
@@ -167,9 +174,9 @@ existing request→version→approval→export trace, per-glyph move/tail editin
 malware scanner provider, S3/Redis, accounts/RBAC.
 
 ## Next
-1. **Deploy the backend to Replit** (manual — see `docs/DEPLOYMENT.md` "Replit" section; no Replit access in this session): import the repo, set `DATABASE_URL`/`ALLOWED_ORIGINS` secrets, click Publish.
-2. **Set `NEXT_PUBLIC_API_URL` on the Vercel project** (manual — no tool in this session can set Vercel env vars) to the real Replit URL from step 1, then redeploy.
-3. Run `python3 scripts/production-smoke.py` against the real `FRONTEND_URL`/`BACKEND_URL` to close the release gate's remaining items (6/8/9 in `docs/DEPLOYMENT.md`) — this is the exact previously-failing "Generate Designs" scenario, now with real evidence instead of local-only.
+1. **Deploy the backend to Replit** (manual — see `docs/DEPLOYMENT.md` "Replit" section; still no Replit access in this session as of the P0 release-closure slice): import the repo, set `DATABASE_URL`/`ALLOWED_ORIGINS` secrets, click Publish.
+2. **Set `NEXT_PUBLIC_API_URL` on the Vercel project** (manual — still no tool in this session can set Vercel env vars) to the real Replit URL from step 1, then redeploy.
+3. Run `python3 scripts/production-smoke.py` (now with the corrected 7-name fixture, 15 checks) against the real `FRONTEND_URL`/`BACKEND_URL` to close the release gate's remaining items — this is the exact required 7-name scenario, still only verified locally, not against real production URLs. See `RELEASE_EVIDENCE.md`.
 4. Calibrate workshop profiles with real Beyond Style workshop values.
 5. Push branch → observe CI green on GitHub (now includes a real E2E job + secret scan, not yet observed running on GitHub itself).
 6. Run `make external-ai-e2e` on a deployment with real `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` (+ `OPENAI_IMAGE_ENABLED=true`) and, separately, a docker daemon running `services/hermes/` with `HERMES_MODE=isolated` — this is the deployment acceptance gate for CLAUDE/GPT_IMAGE/HERMES to move from SKIPPED_NO_CREDENTIALS/OPTIONAL_NOT_RUNNING to VERIFIED_EXTERNAL. Stop-condition: cannot be built honestly without them; P0 itself does not block on this (see "P0 STATUS: FROZEN/STABLE" above).
