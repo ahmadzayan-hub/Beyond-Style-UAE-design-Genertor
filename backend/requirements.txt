@@ -2,7 +2,11 @@
 # Native shaping stack (HarfBuzz via uharfbuzz wheels; FreeType-equivalent
 # outline access via fontTools glyf/CFF parsing).
 uharfbuzz==0.42.0
-fonttools==4.53.1
+# 4.60.2: patches CVE-2025-66034 (arbitrary file write via the
+# `fontTools.varLib` CLI merge script — not invoked anywhere in this
+# app, which only does glyf/CFF parsing, but patched anyway since the
+# bump is a same-major, low-risk minor version).
+fonttools==4.60.2
 python-bidi==0.6.6
 # Geometry / export
 shapely==2.0.6
@@ -11,7 +15,11 @@ ezdxf==1.3.3
 # identity guard) — imported at module level by app/security/uploads.py,
 # so a missing pin here breaks the whole app on import, not just a
 # feature path. Previously undeclared; discovered this deployment slice.
-pillow==10.4.0
+# 12.3.0: patches 24 known CVEs in 10.4.0 (incl. native heap
+# out-of-bounds writes reachable via untrusted image input on the
+# upload path) — see RELEASE_EVIDENCE.md security scan. Full backend
+# suite (230/230) re-verified green against this version before pinning.
+pillow==12.3.0
 # Persistence (PostgreSQL source of truth)
 sqlalchemy==2.0.35
 alembic==1.13.3
@@ -20,6 +28,14 @@ psycopg2-binary==2.9.9
 fastapi==0.115.0
 uvicorn==0.30.6
 pydantic==2.9.2
+# Required by FastAPI's Form()/File() multipart parsing (reference-image
+# upload endpoint). Previously undeclared — present only as a stray
+# package in dev sandboxes, so local/unit runs never caught its absence;
+# a clean `pip install -r requirements.txt` (GitHub Actions runner,
+# fresh Replit deploy) crashes on the first multipart request with
+# RuntimeError. Discovered this slice via 9/9 real GitHub Actions CI
+# failures on this branch — see RELEASE_EVIDENCE.md.
+python-multipart==0.0.31
 # AI providers (thin HTTP SDKs — NOT the GPU stack in requirements-ai.txt).
 # Claude = base reasoning/design intelligence; GPT-Image-2 = visualization
 # only, never source of truth. Both are guarded by *Unavailable exceptions
