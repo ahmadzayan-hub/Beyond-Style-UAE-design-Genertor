@@ -97,12 +97,17 @@ Do not add them to the Vercel project.
 needed). Local dev default (only used when `ALLOWED_ORIGINS` is unset):
 `http://localhost:3000`.
 
-Production example:
+Production example — the exact HTTPS origins required for the P1
+release gate (see RELEASE_EVIDENCE.md): the current live Vercel
+deployment origin (needed until the custom domain is attached) plus
+the two target custom-domain origins:
 ```
-ALLOWED_ORIGINS=https://www.beyondstyle.ae,https://beyondstyle.ae
+ALLOWED_ORIGINS=https://frontend-sigma-sable-22.vercel.app,https://beyondstyle.ae,https://www.beyondstyle.ae
 ```
-Add a Vercel preview domain only if you explicitly want previews to
-call the production backend (usually you don't).
+Drop the `frontend-sigma-sable-22.vercel.app` entry once
+`beyondstyle.ae`/`www.beyondstyle.ae` is the site's only production
+origin. Add a Vercel preview domain only if you explicitly want
+previews to call the production backend (usually you don't).
 
 ## Health / readiness
 

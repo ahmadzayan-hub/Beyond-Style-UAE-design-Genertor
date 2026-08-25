@@ -49,8 +49,13 @@ jobs:
       - name: Generate proof-sheet diversity report (evidence artifact)
         working-directory: backend
         run: python ../e2e/generate_evidence_reports.py
+      # Evidence upload is supplementary; a GitHub-side storage-quota
+      # error here must never fail an otherwise-green test job (real
+      # incident: run 32872953221 — tests passed, only this step hit
+      # "Artifact storage quota has been hit").
       - uses: actions/upload-artifact@v4
         if: always()
+        continue-on-error: true
         with:
           name: evidence-reports
           path: |
@@ -135,6 +140,7 @@ jobs:
         run: tail -n 200 /tmp/backend.log /tmp/frontend.log
       - uses: actions/upload-artifact@v4
         if: always()
+        continue-on-error: true
         with:
           name: e2e-evidence
           path: docs/evidence/*.png
