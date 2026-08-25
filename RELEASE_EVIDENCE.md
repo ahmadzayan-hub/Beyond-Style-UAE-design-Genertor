@@ -1,111 +1,144 @@
-# P0 Release Evidence
+# Release Evidence — P1 Production Deployment Closure
 
-**Status: NOT PRODUCTION-READY.** Every check below that could be run
-in this environment passed. Two release-gate items (real backend
-deployment, and the same checks re-run against real production URLs)
-remain genuinely undone — this session has no Replit access and no
-tool that can set a Vercel project environment variable. No assumption
-is made about their outcome. See "Remaining blockers" at the end.
+**FINAL RELEASE DECISION: NOT PRODUCTION READY.**
 
-## Commit
+Every check that could be executed against real infrastructure from
+this session was executed and is recorded below with real command
+output — no check is claimed done without it. Two hard blockers,
+verified (not assumed) to be outside this session's tool access,
+prevent full closure: no backend has ever been deployed anywhere, and
+the one Vercel frontend deployment that exists is not publicly
+reachable. See "FINAL RELEASE DECISION" at the end for the exact
+blocker/owner/action list.
 
-`7313438a0681608238561d1b1bd98d6655ac5a2e` on branch
-`claude/p0-golden-path-audit-jtyduw`, pushed to
-`ahmadzayan-hub/Beyond-Style-UAE-design-Genertor`.
+## COMMIT SHA
 
-## Frontend URL (real, deployed)
+`680aa1d9934becb13e331c5bb8e4b88b31ec6484` on branch
+`claude/p0-golden-path-audit-jtyduw`,
+`ahmadzayan-hub/Beyond-Style-UAE-design-Genertor`. Confirmed via
+`git merge-base --is-ancestor` that HEAD descends from the prior
+closure commit `1e1fa6c`.
 
-Vercel project `frontend` (`prj_qf9LfOdeVRzfYTZ39sS6pja9iDCm`), linked
-to this GitHub repo/branch. Confirmed via the Vercel API:
+## FRONTEND PRODUCTION URL
 
-- Latest deployment: `dpl_DA2HhruJRJjSu9NSHZrEChLd1yhn`
-- `githubCommitSha` on that deployment: `7313438a0681608238561d1b1bd98d6655ac5a2e` (exact match to the commit above)
-- `readyState`: `READY`
-- Build time: ~19.5s (`buildingAt` 1787668974440 → `ready` 1787668993911, epoch ms)
-- Production domains: `frontend-sigma-sable-22.vercel.app`, `frontend-celia2026-3923s-projects.vercel.app`
-- Runtime errors in the last 1h (checked via `get_runtime_errors`): **0**
+Real Vercel project `frontend` (`prj_qf9LfOdeVRzfYTZ39sS6pja9iDCm`),
+confirmed via the Vercel API (`get_project`/`get_deployment`), not
+assumed:
 
-**`NEXT_PUBLIC_API_URL` is NOT set on this Vercel deployment** — no
-tool available in this session can set a Vercel project environment
-variable. Until it is set (manually, by the project owner) and the
-project redeployed, the live production frontend cannot reach any
-backend, by design (see docs/DEPLOYMENT.md's root-cause writeup from
-the prior slice).
+- Latest deployment: `dpl_6aMGbMLjF1Z3yCexXRQfn6tEGJEE`, `readyState: READY`, `target: production`
+- `githubCommitSha` on that deployment: `680aa1d9934becb13e331c5bb8e4b88b31ec6484` — **exact match** to this document's commit
+- Domains: `frontend-sigma-sable-22.vercel.app`, `frontend-celia2026-3923s-projects.vercel.app`, `frontend-git-claude-p0-golden-p-b26d96-celia2026-3923s-projects.vercel.app`
+- Runtime errors (`get_runtime_errors`, 24h window): **0**
+- Runtime logs (`get_runtime_logs`, 24h window): **0 log lines found** — consistent with the finding below that the site is receiving no real traffic
 
-## Backend URL (real, deployed)
+**This deployment is NOT publicly reachable as a working product.** Two independent, verified reasons:
 
-**None. Not deployed anywhere.** This session has no Replit MCP
-connector and no Replit CLI/API token — there is no tool available
-here that can create, configure, or publish a Replit deployment.
-Nothing was fabricated: no URL, deployment ID, or "verified" claim is
-made for a backend host that does not exist. `.replit` (build/run/
-deploy config) is prepared and valid TOML but has never been executed.
+1. **Vercel Authentication (SSO) is enabled on the project**
+   (`get_project_deployment_protection`: `ssoProtection.enabled: true`,
+   `deploymentType: all_except_custom_domains`). None of the project's
+   three domains is a custom domain — all are `*.vercel.app` — so
+   **every one of them requires a Vercel login to view**. A real
+   customer hitting any of these URLs today gets Vercel's auth wall,
+   not the app.
+2. **This session's own network egress is blocked to `vercel.app`.**
+   `curl https://frontend-sigma-sable-22.vercel.app/` failed with
+   `CONNECT tunnel failed, response 403`; the agent-proxy status
+   endpoint confirms this as a policy denial, not a transient error:
+   ```
+   "recentRelayFailures": [
+     {"kind": "connect_rejected",
+      "detail": "gateway answered 403 to CONNECT (policy denial or upstream failure)",
+      "host": "frontend-sigma-sable-22.vercel.app:443"}
+   ]
+   ```
+   Per this environment's own proxy documentation: "do not retry
+   organization policy denials — report them instead." This session
+   therefore could not load the production URL in a real browser
+   (Playwright) or via `curl`/`WebFetch` to verify it end-to-end, even
+   setting the SSO issue aside.
 
-## Deployment IDs
+**`NEXT_PUBLIC_API_URL` is still not set** — no tool available in this
+session (Vercel MCP tools here are read-only for project config: only
+`get_project_deployment_protection`/`update_project_deployment_protection`
+for auth settings, `list_deployments`/`get_deployment`/build-logs/
+runtime-logs/errors — no env-var write endpoint) can set a Vercel
+project environment variable. Even if the SSO/egress issues above were
+resolved, the deployed frontend still cannot reach any backend.
+
+## BACKEND PRODUCTION URL
+
+**None. Not deployed anywhere.** Re-confirmed this slice: no Replit MCP
+connector, no Replit CLI/API token (`ToolSearch` for "replit" returns
+no matching tool). No other backend-hosting tool available in this
+session can run a Python/FastAPI process (the Supabase MCP tools
+present manage Postgres + Deno edge functions only, not a Python ASGI
+app — using them would mean rewriting the backend, which is out of
+scope for a deployment-closure pass). `.replit` (build/run/deploy
+config) is prepared and valid but has never been executed outside this
+sandbox.
+
+## DEPLOYMENT IDs
 
 | Component | ID | State |
 |---|---|---|
-| Vercel frontend | `dpl_DA2HhruJRJjSu9NSHZrEChLd1yhn` | READY |
+| Vercel frontend | `dpl_6aMGbMLjF1Z3yCexXRQfn6tEGJEE` | READY (SSO-gated, not publicly reachable) |
 | Replit backend | — | NOT DEPLOYED |
 
-## Backend test result
+## DATABASE CONNECTIVITY
 
-**230/230 passed**, PostgreSQL 16, real Alembic migrations (all local —
-no real production backend exists to run tests against).
-
-```
-........................................................................ [ 31%]
-........................................................................ [ 62%]
-........................................................................ [ 93%]
-..............                                                          [100%]
-[exited with code 0]
-```
-
-Includes the 11 new immutable golden-fixture tests
-(`backend/tests/test_seven_name_golden_fixture.py`):
-`test_exactly_seven_names_in_exact_unicode_and_order`,
-`test_no_omitted_substituted_duplicated_or_invented_name`,
-`test_nfc_normalization_is_a_no_op_on_this_fixture`,
-`test_rtl_preserved`, `test_arabic_identity_verifies_and_covers_every_name`,
-`test_generated_design_request_contains_all_seven_names_in_order`, and
-5 parametrized `test_arabic_validation_fails_closed_on_any_mutation`
-cases (omit last name, duplicate last name, substitute ميثة→فاطمة,
-reorder first two, invent an 8th name) — all raise `ApprovalRejected`
-and leave the original request untouched.
-
-## E2E result (local — no real production URLs exist to test against)
-
-All 5 browser flows passed, run with the frontend **built against
-`NEXT_PUBLIC_API_URL=http://localhost:8000`** — i.e. the exact
-production code path (direct browser→backend fetch + real CORS), not
-the local-dev-only Next.js rewrite proxy:
+**Production: none exists.** No backend is deployed, so no
+`DATABASE_URL` has ever been configured against a real production
+database. Local PostgreSQL 16 (this sandbox) is real and verified:
 
 ```
-[text-flow] approved, locked version 1, hash 6b66cbc1788e…
-[reference-flow] approved, locked version 1, hash a2c577a59e3e…
-[desktop-text-flow] approved, locked version 1, hash e4539d2695a4…
-E2E PASSED — evidence in docs/evidence/
-COPILOT E2E PASSED — locked edited version 2
-[seven-names-flow] approved, locked version 1, hash c4d9b394b761…
-SEVEN-NAME E2E PASSED — text preserved exactly: حامد محمد سلطان ميثة حمد خالد مهرة
+$ psql -c "SELECT version();"
+PostgreSQL 16.13 (Ubuntu 16.13-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu
+
+$ psql -c "SELECT version_num FROM alembic_version;"
+9520aa9396f0
+
+$ curl http://localhost:8000/ready
+{"status": "ready", "components": {
+  "database": {"status": "ok"},
+  "migrations": {"status": "ok", "revision": "9520aa9396f0"}, ...
+}}
 ```
+`/ready`'s reported migration revision matches the database's actual
+`alembic_version` row exactly — the readiness check reads real state.
 
-**Real bug found and fixed along the way**: the local-dev-only Next.js
-`rewrites()` proxy (`next.config.mjs`, only used when
-`NEXT_PUBLIC_API_URL` is unset) has a hard ~30s response cap. The
-7-name fixture's real generation time is ~50s, so the FIRST attempt at
-this E2E scenario failed — not because of a code defect, but because
-it was run against the dev-proxy path instead of the direct-fetch
-production path. Confirmed by direct HTTP timing:
-  - Direct to backend (`localhost:8000`): candidates call = 49.1s, 200 OK, 10 candidates.
-  - Through the Next rewrite proxy (`localhost:3000/api/...`): candidates call = 30.0s, **500 error**.
-`e2e/golden_path_e2e.py`'s `run_flow()` now takes a configurable
-`generate_timeout_ms` (Playwright client-side wait, unrelated to the
-proxy issue); the actual fix was building+running the frontend in
-direct-fetch mode, matching how production is architected — the
-rewrite proxy is never used in production regardless.
+## DATABASE PERSISTENCE
 
-## Production smoke: 15/15 (local — corrected fixture)
+Not verifiable in production (no deployment exists to restart). Locally,
+migrations were run forward-only (`alembic upgrade head`) against a
+from-scratch database three times this slice (once per clean-venv
+dependency-bump validation) with no data-loss operation in any
+migration — `.replit`'s deploy command runs `alembic upgrade head`
+only, never `downgrade`/`stamp`/a destructive command.
+
+## BACKEND TEST RESULT
+
+**230/230 passed**, verified THREE separate ways this slice, not just
+reused from before:
+
+1. This sandbox's existing environment (pre-seeded packages): 230/230.
+2. **From-scratch clean venv** (`python3 -m venv` + `pip install -r
+   requirements.txt` only, nothing pre-seeded) with the pillow +
+   python-multipart bump: 230/230, exit code 0.
+3. Same clean venv, adding the fonttools bump on top (all three
+   dependency changes together): 230/230, exit code 0.
+
+Step 2/3 exist specifically because step 1 alone was misleading: this
+sandbox had a stray `python-multipart` package installed outside
+`requirements.txt`, silently masking a real bug (see "SECURITY RESULT"
+below) that a genuinely clean install — like GitHub's runner, or a
+fresh Replit deploy — would hit immediately.
+
+## SMOKE RESULT
+
+**15/15**, local (`FRONTEND_URL`/`BACKEND_URL` = localhost — no real
+production URLs exist to point this at; re-run this slice against the
+Pillow/python-multipart/fonttools-upgraded backend to confirm no
+regression):
 
 ```
 [PASS] A. frontend loads — status=200
@@ -114,7 +147,7 @@ rewrite proxy is never used in production regardless.
 [PASS] K. no sensitive data in /ready
 [PASS] D. CORS allows the frontend origin — got='http://localhost:3000'
 [PASS] E. Arabic generation request creates a design — status=201
-[PASS] E. exact 7-name text preserved byte-for-byte (no substitution/omission/reorder) — got='حامد محمد سلطان ميثة حمد خالد مهرة'
+[PASS] E. exact 7-name text preserved byte-for-byte — got='حامد محمد سلطان ميثة حمد خالد مهرة'
 [PASS] G. reference upload request — status=201
 [PASS] confirm exact text — status=200
 [PASS] F. exactly 10 candidate designs returned — status=200 count=10
@@ -127,140 +160,223 @@ rewrite proxy is never used in production regardless.
 15/15 checks passed.
 ```
 
-(14 checks from the prior slice + the new byte-exact preservation
-check added this slice.)
+## E2E RESULT
 
-## Exact seven-name test evidence
+**5/5 browser flows passed**, local, frontend built with
+`NEXT_PUBLIC_API_URL=http://localhost:8000` (the production code path —
+direct browser→backend fetch, not the dev-only rewrite proxy):
+
+```
+[text-flow] approved, locked version 1, hash 6b66cbc1788e…
+[reference-flow] approved, locked version 1, hash a2c577a59e3e…
+[desktop-text-flow] approved, locked version 1, hash e4539d2695a4…
+[seven-names-flow] approved, locked version 1, hash c4d9b394b761…
+COPILOT E2E PASSED — locked edited version 2
+```
+
+No real production URL exists to run these against.
+
+## 7-NAME GOLDEN-PATH RESULT
 
 Fixture: **حامد محمد سلطان ميثة حمد خالد مهرة** (oldest to youngest,
-this exact order, this exact Unicode).
+exact order, exact Unicode) — verified at three levels, all local:
 
-- Unit-level: `backend/tests/test_seven_name_golden_fixture.py` (11
-  tests, all passing — see "Backend test result" above). Codepoint
-  fingerprint locked per name (catches a visually-similar wrong
-  character); order locked; membership locked (no invented/omitted/
-  duplicated/substituted name); fail-closed on any of the 5 mutation
-  cases.
-- HTTP-level: `scripts/production-smoke.py` step E asserts
-  `normalized_text == "حامد محمد سلطان ميثة حمد خالد مهرة"` exactly —
-  PASS (see smoke output above).
-- Browser-level, **with the uploaded reference image**, through the
-  real customer UI (`e2e/golden_seven_names_e2e.py`):
-  `docs/evidence/seven-names-e2e-results.json`:
-  ```json
-  {
-    "text": "حامد محمد سلطان ميثة حمد خالد مهرة",
-    "locked_version": "1",
-    "approval_hash": "c4d9b394b76198914c8076da83395007b1b4c0472d3921611e53774832a1c1f4",
-    "events": [
-      "REQUEST_CREATED", "REFERENCE_UPLOADED", "REFERENCE_ANALYZED",
-      "BRIEF_UPDATED", "TEXT_CONFIRMED", "CANDIDATES_GENERATED",
-      "VERSION_CREATED", "VALIDATION_PASSED", "DESIGN_SELECTED",
-      "CUSTOMER_APPROVED", "VERSION_LOCKED"
-    ]
-  }
+- **Unit**: `backend/tests/test_seven_name_golden_fixture.py` (11
+  tests) — exact count, per-name codepoint fingerprint, exact order,
+  no omission/substitution/duplication/invention, RTL preserved, all 7
+  names present in every one of 10 generated candidates, and 5
+  parametrized mutation cases all fail closed (`ApprovalRejected`,
+  request stays `DRAFT`).
+- **HTTP**: `scripts/production-smoke.py` step E — byte-exact
+  `normalized_text` match, PASS.
+- **Browser, with the uploaded reference image**, through the real
+  customer UI (`e2e/golden_seven_names_e2e.py`):
+  `docs/evidence/seven-names-e2e-results.json` — locked version 1,
+  hash `c4d9b394b76198914c8076da83395007b1b4c0472d3921611e53774832a1c1f4`,
+  full event trail (`REFERENCE_UPLOADED` → `REFERENCE_ANALYZED` → … →
+  `CUSTOMER_APPROVED` → `VERSION_LOCKED`). Screenshots:
+  `docs/evidence/seven-names-flow-{1-start,2-confirm,3-proofs,
+  4-selected,5-approved}.png`.
+
+**Not run through the live production UI** — no live, publicly
+reachable production UI exists (see "FRONTEND PRODUCTION URL" above).
+
+## REFERENCE IMAGE RESULT
+
+Verified this slice against the local backend with the
+Pillow/python-multipart-upgraded dependency set:
+
+- Normal upload (valid PNG, reference to a real `design_id`): `201`.
+- **Oversized upload (9MB PNG, 8MB limit)**: `413`, structured error,
+  no stack trace:
   ```
-  Screenshots: `docs/evidence/seven-names-flow-{1-start,2-confirm,
-  3-proofs,4-selected,5-approved}.png`.
-- Real backend runtime log line for this exact request (from
-  `/tmp/uv_fresh.log`, structured JSON, `app/observability.py`):
+  status=413
+  {"detail":"File exceeds the maximum allowed size.","error_code":"REFERENCE_NOT_READY","request_id":"f6ca92b5360d4839a4803d623aedd151"}
+  ```
+  Matching runtime log line:
   ```json
-  {"request_id": "782fcd33cfe74fdb92e70f7ba678ccdc", "route": "/api/designs/4b281b64-cfcc-46a5-9b0c-87a81e59496f/candidates", "method": "POST", "status": 200, "duration_ms": 51306.69}
+  {"request_id": "f6ca92b5360d4839a4803d623aedd151", "route": "/api/designs/db0a7d97-c87e-450f-90ab-c6a5129cd1ec/references", "method": "POST", "status": 413, "duration_ms": 9320.19}
   ```
 
-**This was run against local backend+frontend, not a real production
-URL** — no production backend exists to run it against yet (see
-"Remaining blockers").
-
-## CORS evidence
+## CORS POSITIVE/NEGATIVE RESULT
 
 ```
 $ curl -i -X OPTIONS http://localhost:8000/api/designs \
     -H "Origin: http://localhost:3000" -H "Access-Control-Request-Method: POST"
 HTTP/1.1 200 OK
-access-control-allow-methods: GET, POST, PUT, DELETE, OPTIONS
-access-control-allow-headers: Accept, Accept-Language, Content-Language, Content-Type, X-Request-ID, X-Session-Token
 access-control-allow-origin: http://localhost:3000
-x-request-id: 21f158f4e4624adf9fe188ee3f94f0e3
 
 $ curl -i -X OPTIONS http://localhost:8000/api/designs \
     -H "Origin: https://evil.example.com" -H "Access-Control-Request-Method: POST"
 HTTP/1.1 400 Bad Request
 Disallowed CORS origin
-x-request-id: f58a53b5948f4d15a5c7070a42e2e6e2
+```
+No wildcard, no credentialed CORS (`allow_credentials=False`).
+`ALLOWED_ORIGINS` has no production default in code (confirmed by
+reading `app/main.py`) — it must be explicitly set wherever the
+backend is deployed; it is currently unset anywhere in production
+because no production backend exists.
+
+## SECURITY RESULT
+
+**Full dependency vulnerability scan run this slice** (`pip-audit` on
+`backend/requirements.txt`, `npm audit` on `frontend/package.json`) —
+not previously done in this session:
+
+**Fixed and verified** (all three together pass the full 230-test suite
+in a from-scratch clean venv — see "BACKEND TEST RESULT"):
+- **`python-multipart` — real, previously-undiscovered deployment
+  blocker**, not just a CVE. Required by FastAPI's `Form()`/`File()`
+  multipart parsing (the reference-image upload endpoint) but never
+  pinned in `requirements.txt`. This sandbox had it installed as a
+  stray package, masking the gap; a genuinely clean install — GitHub
+  Actions' runner, or a fresh Replit deploy — fails at test-collection
+  time with `RuntimeError: Form data requires "python-multipart" to be
+  installed`. **This is exactly why every one of the 9 prior GitHub
+  Actions CI runs on this branch failed** (confirmed by pulling the
+  real job logs — see "known limitations" below for the current CI
+  run's status). Fixed: pinned `python-multipart==0.0.31` (0 known
+  CVEs; the previously-implicit 0.0.9 had 7).
+- **Pillow 10.4.0 → 12.3.0**: patches 24 known CVEs, including several
+  native heap out-of-bounds writes reachable via untrusted image input
+  — directly relevant since Pillow processes every customer-uploaded
+  reference image (`app/security/uploads.py`).
+- **fonttools 4.53.1 → 4.60.2**: patches CVE-2025-66034 (arbitrary file
+  write via the `fontTools.varLib` CLI script). Low real relevance —
+  this app only uses fonttools for glyf/CFF parsing and never invokes
+  that script — patched anyway since it's a safe same-major bump.
+
+**Found, NOT fixed this slice — real, unresolved, and reported rather
+than silently left out:**
+- **Next.js 14.2.13 — `npm audit` reports 1 Critical, 1 High**, with
+  the fix requiring `next@16.3.3` (two major versions up). This is a
+  framework-level upgrade with real breaking-change risk (App Router
+  API changes across two majors) that cannot be safely validated within
+  this pass's scope ("do not redesign/refactor unless required to fix a
+  blocker" — and a blind 2-major bump without a dedicated regression
+  pass would itself be an uncontrolled production risk). **Reported as
+  an open release blocker**, not fixed.
+- **Starlette 0.38.6 — 9 known CVEs** (multipart form-data DoS/text-
+  field confusion, `StaticFiles` path handling, Host-header URL
+  reconstruction), fix versions 1.0.1–1.3.1. Checked precisely: FastAPI
+  `0.115.0` requires `starlette>=0.37.2,<0.39.0` — the patched
+  versions are outside that range, so fixing this requires a
+  coordinated FastAPI major-version upgrade too, with its own
+  regression risk. **Reported as an open release blocker**, not forced
+  through in this pass.
+
+**No secrets found anywhere checked**: `scripts/secret_scan.py` (repo-
+wide) — clean. `frontend/.next` build output grepped for
+`ANTHROPIC_API_KEY`/`OPENAI_API_KEY`/`sk-ant-`/`sk-proj-`/DB connection
+strings — none found. Production debug: no `debug=True`/`--reload` in
+`app/main.py`; `.replit`'s deploy command has no `--reload`. Error
+responses: confirmed structured (`error_code`+`request_id`), never a
+raw stack trace, on 422/413/400 paths tested live this slice.
+
+## RUNTIME LOG RESULT
+
+Real structured JSON request logs captured this slice
+(`app/observability.py`'s `CorrelationIdMiddleware`), against the
+Pillow/python-multipart-upgraded backend:
+
+```json
+{"request_id": "e07e5ca6549444caac12c1c4dc44f871", "route": "/api/designs/31d35fc6-f373-48d3-ba96-e4c0bf7e3e96/references", "method": "POST", "status": 201, "duration_ms": 29.02}
+{"request_id": "f6ca92b5360d4839a4803d623aedd151", "route": "/api/designs/db0a7d97-c87e-450f-90ab-c6a5129cd1ec/references", "method": "POST", "status": 413, "duration_ms": 9320.19}
 ```
 
-Allowed origin gets `access-control-allow-origin` echoed back; a
-non-configured origin is refused with `400` — no wildcard, no
-credentialed CORS (`allow_credentials=False`).
+No production runtime logs exist because no production backend exists.
+Vercel's own runtime-log/error tooling (`get_runtime_logs`,
+`get_runtime_errors`) confirms **0 log lines and 0 errors** for the
+frontend deployment in the last 24h — consistent with the SSO/egress
+findings above (nothing is reaching it).
 
-## Database evidence
+## KNOWN LIMITATIONS
 
-```
-$ psql -c "SELECT version();"
-PostgreSQL 16.13 (Ubuntu 16.13-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu
+1. **GitHub Actions CI — real, previously unexamined finding**: all 9
+   prior CI runs on this branch actually ran on GitHub and **failed**
+   (`conclusion: "failure"` on every one, verified via
+   `actions_list`/`get_job_logs` — not previously checked in this
+   session; `docs/STATUS.md` had incorrectly said CI was "not yet
+   observed running on GitHub"). Root cause: the `python-multipart` gap
+   above. The fix (commit `680aa1d`) triggered CI run
+   [`32872953221`](https://github.com/ahmadzayan-hub/Beyond-Style-UAE-design-Genertor/actions/runs/32872953221):
+   `secret-scan` and `frontend` jobs completed **success**; the
+   `backend` job's test-collection error is confirmed gone (all steps
+   through "Migrations up/down/up" succeeded, and the test-suite step
+   is genuinely executing rather than failing at collection, unlike
+   every prior run) — **but the run was still `in_progress` as of this
+   report** and this document does not claim a pass it has not
+   observed. Check the run URL above for the current status.
+2. No real production URL exists for any of: production smoke,
+   backend test suite, E2E, or the 7-name scenario to be run against.
+   Every result above is local.
+3. Next.js Critical CVE and Starlette CVEs remain open (see "SECURITY
+   RESULT") — deliberately not force-fixed this slice given the
+   breaking-change risk of the required major upgrades.
+4. `frontend`'s only route is `/` (no dynamic/deep-link routes exist in
+   `app/`) — "deep-link" testing from item 5 does not apply to this
+   app's actual routing surface; a refresh of `/` was exercised
+   implicitly at the start of every E2E flow.
+5. Database persistence across a real restart/redeploy is unverified
+   (no deployment to restart).
 
-$ psql -c "SELECT version_num FROM alembic_version;"
-9520aa9396f0
+## ROLLBACK METHOD
 
-$ curl http://localhost:8000/ready
-{"status": "ready", "components": {
-  "database": {"status": "ok"},
-  "migrations": {"status": "ok", "revision": "9520aa9396f0"},
-  ...
-}}
-```
+- **Frontend (Vercel)**: every prior deployment remains addressable
+  and most are marked `isRollbackCandidate: true` in the Vercel API;
+  rolling back means promoting an earlier deployment ID to production
+  via the Vercel dashboard/CLI, or reverting the git commit and letting
+  the GitHub integration redeploy. No destructive action is required —
+  Vercel deployments are immutable and additive.
+- **Backend (Replit, once deployed)**: `.replit`'s deploy `run` step
+  only ever runs `alembic upgrade head` (forward-only) before serving —
+  never a destructive migration. Rolling back the backend means
+  redeploying an earlier commit; because migrations are additive/
+  forward-only by convention in this codebase (no destructive migration
+  exists in the tree), an older app version continues to work against a
+  newer schema as long as no column the older code depends on was
+  dropped (none have been).
+- **Database**: no production database exists yet, so there is nothing
+  to roll back. Once one exists, standard point-in-time recovery is
+  whatever the hosting platform's Postgres offering provides — not
+  configured or verified in this session.
 
-`/ready`'s reported migration revision (`9520aa9396f0`) matches the
-database's actual `alembic_version` row exactly — the readiness check
-is reading real state, not a hardcoded value. 15 real tables present
-(`\dt`): `ai_generations`, `ai_jobs`, `alembic_version`,
-`customer_approvals`, `customer_briefs`, `design_candidates`,
-`design_events`, `design_requests`, `design_versions`, `designs`,
-`exports`, `font_references`, `manufacturing_validation_runs`,
-`reference_assets`, `reference_dna`.
+## FINAL RELEASE DECISION
 
-This is the LOCAL PostgreSQL 16 instance in this sandbox — no real
-production database exists yet (see "Remaining blockers").
+# NOT PRODUCTION READY
 
-## Runtime logs
+Exact remaining blockers, each with owner and required action:
 
-Structured JSON, one line per request (`app/observability.py`), no
-secrets/raw images:
+| # | Blocker | Owner | Exact action |
+|---|---|---|---|
+| 1 | Backend has never been deployed anywhere | Project owner (human) | Import this repo into Replit, set `DATABASE_URL` + `ALLOWED_ORIGINS` secrets (see `backend/.env.example`), click Publish. No tool in this session can do this. |
+| 2 | `NEXT_PUBLIC_API_URL` not set on the Vercel project | Project owner (human) | In the Vercel dashboard (project `frontend`, `prj_qf9LfOdeVRzfYTZ39sS6pja9iDCm`) → Settings → Environment Variables → Production, set `NEXT_PUBLIC_API_URL` to the real backend URL from step 1, then redeploy. No tool in this session can set a Vercel env var. |
+| 3 | The one Vercel deployment that exists is not publicly reachable | Project owner (human) | Disable Vercel Authentication (SSO) for this project, or attach and use a custom domain (SSO is scoped to `all_except_custom_domains`). Currently every `*.vercel.app` URL for this project requires a Vercel login. |
+| 4 | Next.js has 1 unresolved Critical + 1 High `npm audit` finding | Future dedicated slice | Upgrade `next` 14.2.13 → 16.3.3 (2 majors) with a full regression pass (App Router changes across two majors) — explicitly out of scope for a safe deployment-closure pass. |
+| 5 | Starlette has 9 unresolved CVEs | Future dedicated slice | Requires a coordinated FastAPI upgrade first (`fastapi==0.115.0` pins `starlette<0.39.0`; all Starlette fixes are `>=0.40.0`) — explicitly out of scope here. |
+| 6 | CI run for the fix that resolves 9/9 prior failures was still in progress when this report was written | Re-check | See run [`32872953221`](https://github.com/ahmadzayan-hub/Beyond-Style-UAE-design-Genertor/actions/runs/32872953221) for the now-current status; do not assume it passed. |
+| 7 | Production smoke/E2E/7-name scenario never run against real production URLs | Blocked on 1–3 | Re-run `python3 scripts/production-smoke.py` with real `FRONTEND_URL`/`BACKEND_URL`, and re-run the browser E2E scenario against the live production UI, once 1–3 are resolved. |
 
-```
-{"request_id": "782fcd33cfe74fdb92e70f7ba678ccdc", "route": "/api/designs/.../candidates", "method": "POST", "status": 200, "duration_ms": 51306.69}
-{"request_id": "06cdabb9f5784c63b6b285c249017cec", "route": "/api/designs/.../select", "method": "POST", "status": 201, "duration_ms": 125.13}
-{"request_id": "2849e6e689a24ac29cc109148ebe9b61", "route": "/api/versions/...", "method": "GET", "status": 200, "duration_ms": 17.55}
-{"request_id": "e99b864b175a4c718c2e646d272adcb9", "route": "/api/ai/status", "method": "GET", "status": 200, "duration_ms": 22.7}
-{"request_id": "21f158f4e4624adf9fe188ee3f94f0e3", "route": "/api/designs", "method": "OPTIONS", "status": 200, "duration_ms": 0.38}
-{"request_id": "f58a53b5948f4d15a5c7070a42e2e6e2", "route": "/api/designs", "method": "OPTIONS", "status": 400, "duration_ms": 0.33}
-{"request_id": "4a4575247a9346e8b7c77aef8f58375e", "route": "/ready", "method": "GET", "status": 200, "duration_ms": 17.47}
-```
-
-## Remaining blockers (release NOT closed)
-
-1. **No real backend deployment.** No Replit access in this session
-   (no MCP connector, no CLI/API token). `.replit` is prepared; the
-   backend has never run outside this local sandbox. Manual action
-   (per `docs/DEPLOYMENT.md`): import this repo into Replit, set
-   `DATABASE_URL`/`ALLOWED_ORIGINS` secrets, click Publish.
-2. **`NEXT_PUBLIC_API_URL` not set on the Vercel project.** No tool in
-   this session can set a Vercel environment variable. Manual action:
-   set it to the real Replit URL from step 1 in the Vercel dashboard
-   (Settings → Environment Variables, Production), then redeploy.
-3. Once 1 and 2 are done, re-run against the real URLs:
-   `python3 scripts/production-smoke.py` (with `FRONTEND_URL`/
-   `BACKEND_URL` set to the real URLs — this closes item E/F/H/I/J
-   from the smoke checklist against production for the first time),
-   and manually verify the exact 7-name scenario through the live
-   production UI (this document's browser-level evidence is local
-   only).
-4. GitHub Actions CI (`.github/workflows/ci.yml`,
-   `external-ai-acceptance.yml`, `deployment-smoke.yml`) has not been
-   observed running on GitHub itself yet — only validated locally
-   (YAML parse + the same commands run by hand).
-
-**No "production ready" claim is made.** This document records exactly
-what has and has not been verified, with real command output for
-everything claimed done.
+No percentage, no "mostly ready," no assumption about any blocker's
+outcome. Everything above this table is real, executed evidence;
+everything in this table is a concrete, actionable gap.
