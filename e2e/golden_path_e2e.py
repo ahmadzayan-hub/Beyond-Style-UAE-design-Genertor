@@ -35,7 +35,7 @@ def make_reference_jpeg() -> bytes:
     return buf.getvalue()
 
 
-def run_flow(page, name: str, text: str, with_reference: bool, message: str | None):
+def run_flow(page, name: str, text: str, with_reference: bool, message: str | None, generate_timeout_ms: int = 120000):
     page.goto(BASE)
     # True RTL for Arabic default UI.
     assert page.evaluate("document.documentElement.dir") == "rtl"
@@ -56,8 +56,10 @@ def run_flow(page, name: str, text: str, with_reference: bool, message: str | No
     page.get_by_test_id("confirm-checkbox").check()
     page.get_by_test_id("confirm-continue").click()
 
-    # Proof grid: exactly 10 cards, previews load progressively.
-    expect(page.get_by_test_id("proof-card")).to_have_count(10, timeout=120000)
+    # Proof grid: exactly 10 cards, previews load progressively. Longer
+    # texts (e.g. the 7-name fixture) take proportionally longer to
+    # generate — timeout is caller-configurable, default unchanged.
+    expect(page.get_by_test_id("proof-card")).to_have_count(10, timeout=generate_timeout_ms)
     page.wait_for_selector('[data-testid="proof-card"] svg', timeout=30000)
     page.screenshot(path=str(EVIDENCE / f"{name}-3-proofs.png"), full_page=True)
 

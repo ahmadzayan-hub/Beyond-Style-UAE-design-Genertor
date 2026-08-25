@@ -34,7 +34,12 @@ from urllib.parse import urlparse
 
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "").rstrip("/")
 BACKEND_URL = os.environ.get("BACKEND_URL", "").rstrip("/")
-ARABIC_TEXT = "حامد حمد فاطمة سلطان خالد مهرة"
+# The exact required 7-name Golden Path acceptance scenario, oldest to
+# youngest, in this exact order — see
+# backend/tests/test_seven_name_golden_fixture.py for the immutable
+# regression test that locks these Unicode strings and their order.
+GOLDEN_SEVEN_NAMES = ["حامد", "محمد", "سلطان", "ميثة", "حمد", "خالد", "مهرة"]
+ARABIC_TEXT = " ".join(GOLDEN_SEVEN_NAMES)
 
 SECRET_PATTERNS = ("sk-ant-", "sk-proj-", "sk-", "postgresql://", "postgresql+psycopg2://", "password=")
 
@@ -111,6 +116,11 @@ def main() -> int:
           f"status={status}")
     if "design_id" not in created:
         _summarize(); return 1
+    check(
+        "E. exact 7-name text preserved byte-for-byte (no substitution/omission/reorder)",
+        created.get("normalized_text") == ARABIC_TEXT,
+        f"got={created.get('normalized_text')!r}",
+    )
     design_id, token = created["design_id"], created["session_token"]
     auth = {"X-Session-Token": token}
 
