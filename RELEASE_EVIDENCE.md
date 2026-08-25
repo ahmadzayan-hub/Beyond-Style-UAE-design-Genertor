@@ -14,11 +14,12 @@ promoted to production evidence.
 
 ## COMMIT SHA
 
-`912355efee0d68aa1de4e43b1f4ac4ee61e40075` on branch
+`a7e38587bb21b28ef108959b676d461ccba4438f` on branch
 `claude/p0-golden-path-audit-jtyduw`,
 `ahmadzayan-hub/Beyond-Style-UAE-design-Genertor`. Vercel's latest
-production deployment (`dpl_AVrE7sRwAh6nQYDVnzk8xdbiL7r1`) confirmed
-via the Vercel API to match this exact SHA.
+production deployment (`dpl_AwMr2Pnttsgxnq8YuTibE8w49Eye`) confirmed
+via the Vercel API to match this exact SHA. GitHub Actions CI run
+`32900447345` on this exact commit confirmed `conclusion: success`.
 
 ## SECURITY (dependency triage — pip-audit + npm audit, this slice)
 
@@ -113,12 +114,14 @@ Real GitHub Actions history, not assumed:
   `copilot_e2e.py` both passing). **This is the first fully green CI
   run on this branch.**
 - **Run 13** (`32884909589`, commit `99c5bea`, docs-only): `success`.
-- **Run 14** (`32885060609`, commit `912355e`, docs-only, current
-  HEAD): `success`.
+- **Run 14** (`32885060609`, commit `912355e`, docs-only): `success`.
+- **Run 15** (`32900447345`, commit `a7e3858`, docs-only, **current
+  HEAD**): `status: completed`, **`conclusion: success`** — confirmed
+  via `get_workflow_run`, not assumed. Five consecutive green runs.
 
-**`CI = VERIFIED_CI`.** `head_sha` of the latest green run
-(`912355efee0d68aa1de4e43b1f4ac4ee61e40075`) matches this document's
-release-candidate commit exactly.
+**`CI = VERIFIED_CI`.** `head_sha` of the latest confirmed-green run
+(`a7e38587bb21b28ef108959b676d461ccba4438f`) matches this document's
+release-candidate commit (see COMMIT SHA below) exactly.
 
 ## REPLIT BACKEND
 
@@ -178,9 +181,25 @@ settings that silently no-op.
 
 Real Vercel project `frontend` (`prj_qf9LfOdeVRzfYTZ39sS6pja9iDCm`),
 confirmed via the Vercel API this slice. Latest production deployment
-`dpl_AVrE7sRwAh6nQYDVnzk8xdbiL7r1`, `readyState: READY`,
-`githubCommitSha: 912355efee0d68aa1de4e43b1f4ac4ee61e40075` — **exact
+`dpl_AwMr2Pnttsgxnq8YuTibE8w49Eye`, `readyState: READY`,
+`githubCommitSha: a7e38587bb21b28ef108959b676d461ccba4438f` — **exact
 match** to this document's commit SHA.
+
+**`VERIFIED_PRODUCTION` — frontend reachable through the current
+protected deployment**, real evidence this slice via an authenticated
+fetch (`web_fetch_vercel_url`, which authenticates through Vercel's own
+protection rather than bypassing it — SSO stays enabled):
+```
+GET https://frontend-sigma-sable-22.vercel.app/  → 200 OK
+```
+Real page HTML returned: correct title ("Beyond Style — صمّم قطعتك"),
+correct RTL Arabic UI (`text-input`, `upload-button`,
+`style-minimal/luxury/traditional/modern`, `start-continue` present
+and correctly `disabled` pre-input). This confirms the deployed
+frontend itself is healthy and serving the right build — it does not
+change the fact that an anonymous real customer still cannot reach it
+(SSO wall) nor that this session's own unauthenticated egress to
+`vercel.app` is still policy-blocked.
 
 **`NEXT_PUBLIC_API_URL` still not set — BLOCKED.** No tool in this
 session (`update_project_deployment_protection` covers only
@@ -234,9 +253,10 @@ the 230-test backend suite and the full browser `e2e` job (Golden Path
 + Copilot flows) both independently passed on GitHub Actions run
 `32884649563` against this exact commit's code — a second, independent
 confirmation of the same baseline beyond this sandbox.
-`VERIFIED_PRODUCTION`: `BLOCKED` — no real `FRONTEND_URL`/`BACKEND_URL`
-exist yet (backend never deployed; frontend not publicly reachable —
-see REPLIT BACKEND / VERCEL FRONTEND above). Per the mandate, this
+`VERIFIED_PRODUCTION`: `BLOCKED` for the full 15-check script — it
+requires both a real `FRONTEND_URL` and `BACKEND_URL`; only the
+frontend side is confirmed reachable this slice (see VERCEL FRONTEND
+above), no backend exists at all. Per the mandate, this
 gap is reported as `BLOCKED`, not filled in with local results.
 
 ## 7-NAME GOLDEN PATH

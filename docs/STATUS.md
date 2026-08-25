@@ -10,16 +10,17 @@ Statuses (External AI / Real Tool Wiring sections, precise per-claim vocabulary)
   OPTIONAL_NOT_RUNNING — an optional runtime (isolated Hermes) is not configured/reachable; the deterministic path is unaffected.
   BLOCKED — implemented but intentionally refused (e.g. approve_design for agents).
   FAILED — a real call/round-trip was attempted and errored (never silently downgraded to a softer status).
-Updated: 2026-08-25 · Backend suite: 230 passed (PostgreSQL 16, incl. 11-test immutable seven-name golden fixture) · E2E: 5 browser flows passed (incl. dedicated seven-name+reference flow) · production smoke: 15/15 checks passed (local, corrected fixture) · GitHub Actions CI: VERIFIED_CI, run 32884649563 conclusion=success on all 4 jobs, head_sha matches current HEAD — see RELEASE_EVIDENCE.md.
+Updated: 2026-08-25 · Backend suite: 230 passed (PostgreSQL 16, incl. 11-test immutable seven-name golden fixture) · E2E: 5 browser flows passed (incl. dedicated seven-name+reference flow) · production smoke: 15/15 checks passed (local, corrected fixture) · GitHub Actions CI: VERIFIED_CI, run 32900447345 (current HEAD `a7e3858`) conclusion=success — 5 consecutive green runs — see RELEASE_EVIDENCE.md.
 
-## DEPLOYMENT ACCEPTANCE PREPARATION + CI CONFIRMATION (this slice, see RELEASE_EVIDENCE.md)
+## DEPLOYMENT HANDOFF + PRODUCTION ACCEPTANCE (this slice, see RELEASE_EVIDENCE.md)
 **FINAL DECISION: NOT PRODUCTION READY.** Full evidence + exact blocker/owner/action table in `RELEASE_EVIDENCE.md` at repo root.
-- **CI = VERIFIED_CI, confirmed green.** GitHub Actions run `32884649563` (commit `27b48d6`) completed `conclusion: success` on all 4 jobs — `frontend`, `secret-scan`, `backend` (230/230 in 7m26s), `e2e` (real Playwright browser flows). This is the **first fully green CI run on this branch**. Two subsequent docs-only commits (`99c5bea`, `912355e` — current HEAD) also confirmed `success`.
-- **Replit backend fully prepared, re-verified fresh this slice** (`.replit` start command, Alembic path, `/health`, `/ready`, `/api/ai/status`, structured logs, PostgreSQL-only — all real, none fabricated) — still `BLOCKED`, no Replit tool in this session. Exact manual action documented in `RELEASE_EVIDENCE.md`.
-- **Exact `ALLOWED_ORIGINS` produced**: `https://frontend-sigma-sable-22.vercel.app,https://beyondstyle.ae,https://www.beyondstyle.ae` (current live Vercel origin confirmed via API to match HEAD `912355e` exactly).
-- **Vercel `NEXT_PUBLIC_API_URL` still `BLOCKED`** (no env-var-write tool) — SSO **deliberately kept ON** and custom domain **deliberately not attached**, per this slice's explicit instruction, since the Starlette CVEs (below) are still open.
-- No Starlette/FastAPI upgrade attempted this slice, per explicit instruction — the 9 CVEs remain an open, documented RELEASE BLOCKER (real regression found and reverted in the prior slice; needs a dedicated bisection slice).
-- Production smoke/E2E/7-name scenario **not run against real production URLs** — `BLOCKED`, no real backend URL exists yet; local results are not counted as production evidence.
+- **HEAD CI confirmed green**: run `32900447345` on current HEAD `a7e3858` — `conclusion: success`, confirmed via `get_workflow_run` (not assumed). 5th consecutive green CI run on this branch.
+- **Frontend reachability VERIFIED_PRODUCTION this slice**: an authenticated fetch (`web_fetch_vercel_url`, SSO stays enabled) against `https://frontend-sigma-sable-22.vercel.app/` returned real `200 OK` with the correct Arabic RTL UI — confirms the deployed build itself is healthy. Does not change that an anonymous customer still can't reach it (SSO) or that this session's own egress to `vercel.app` is still policy-blocked.
+- **Replit backend deployment contract complete and re-confirmed**: start command, required secrets, Alembic path, health/readiness URLs and expected responses all documented in `RELEASE_EVIDENCE.md` — still `BLOCKED`, no Replit tool in this session; not faked.
+- **Exact `ALLOWED_ORIGINS`**: `https://frontend-sigma-sable-22.vercel.app,https://beyondstyle.ae,https://www.beyondstyle.ae`.
+- **Vercel `NEXT_PUBLIC_API_URL` still `BLOCKED`** (no env-var-write tool) — SSO **kept ON**, custom domain **not attached**, per explicit instruction, since the Starlette CVEs (below) are still open.
+- No Starlette/FastAPI upgrade attempted this slice, per explicit instruction — the 9 CVEs remain the open RELEASE BLOCKER (real regression found and reverted previously; needs a dedicated bisection slice).
+- Production smoke / 7-name browser Golden Path **not run against real URLs** — `BLOCKED`, no real backend URL exists; local/CI results are not counted as production evidence.
 
 ## Deployment Readiness (this slice, see docs/DEPLOYMENT.md)
 | Component | Status | Detail |
