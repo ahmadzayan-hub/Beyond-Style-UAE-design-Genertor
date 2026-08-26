@@ -319,6 +319,13 @@ class GoldenProductionCase(TimestampMixin, Base):
     customer_sentiment: Mapped[str] = mapped_column(String(32), nullable=False)
     customer_approved: Mapped[bool] = mapped_column(Boolean, nullable=False)
 
+    # --- how the design was actually arrived at ---
+    #: Ordered lifecycle steps, each naming the ACTOR (customer / shop /
+    #: workshop) — a proven process is reusable memory in its own right.
+    design_process: Mapped[list | None] = mapped_column(JSONB)
+    #: Options put in front of the customer and which one she chose.
+    variant_selection: Mapped[dict | None] = mapped_column(JSONB)
+
     # --- learning / retrieval ---
     memory_tier: Mapped[str] = mapped_column(String(48), nullable=False)
     evidence_tier: Mapped[str] = mapped_column(String(48), nullable=False)

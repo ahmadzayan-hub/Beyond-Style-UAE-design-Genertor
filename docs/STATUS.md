@@ -10,7 +10,7 @@ Statuses (External AI / Real Tool Wiring sections, precise per-claim vocabulary)
   OPTIONAL_NOT_RUNNING — an optional runtime (isolated Hermes) is not configured/reachable; the deterministic path is unaffected.
   BLOCKED — implemented but intentionally refused (e.g. approve_design for agents).
   FAILED — a real call/round-trip was attempted and errored (never silently downgraded to a softer status).
-Updated: 2026-08-26 · Backend suite: 242 passed (230 + 12 Golden Production Memory) (PostgreSQL 16, incl. 11-test immutable seven-name golden fixture) · E2E: 5 browser flows passed (incl. dedicated seven-name+reference flow) · production smoke: 15/15 checks passed (local, corrected fixture) · GitHub Actions CI: VERIFIED_CI, run 32900447345 (current HEAD `a7e3858`) conclusion=success — 5 consecutive green runs — see RELEASE_EVIDENCE.md.
+Updated: 2026-08-26 · Backend suite: 245 passed (230 + 15 Golden Production Memory) (PostgreSQL 16, incl. 11-test immutable seven-name golden fixture) · E2E: 5 browser flows passed (incl. dedicated seven-name+reference flow) · production smoke: 15/15 checks passed (local, corrected fixture) · GitHub Actions CI: VERIFIED_CI, run 32900447345 (current HEAD `a7e3858`) conclusion=success — 5 consecutive green runs — see RELEASE_EVIDENCE.md.
 
 ## Golden Production Memory (this slice — Production Learning)
 Two REAL Beyond Style orders — designed, manufactured, delivered and positively received — are now stored as the
@@ -21,7 +21,8 @@ Golden Path is untouched: no generation, validation, approval or export code cha
 |---|---|---|
 | `GoldenProductionCase` table + Alembic migration, linked to design lineage (`design_version_id` FK) | VERIFIED_LOCAL | migration runs clean from base in the test session; 12 new tests |
 | Case 1 — Arabic letter drop earrings + hanging pearl (`BS-GPC-0001`) | VERIFIED_LOCAL | concept → workshop outline → manufactured pair → customer approval, registered with per-stage evidence hashes |
-| Case 2 — Layered English name necklace ADAM / OMAR (`BS-GPC-0002`) | VERIFIED_LOCAL | sketch → style reference → layout proof → manufactured piece → customer approval |
+| Case 2 — Layered English name necklace ADAM / OMAR (`BS-GPC-0002`) | VERIFIED_LOCAL | customer selection → shop hand annotation → construction sketch → two writing styles proposed → customer picks one → manufactured piece → customer approval |
+| Real selection lifecycle stored per case (`design_process`, `variant_selection`) | VERIFIED_LOCAL | `test_case2_records_the_real_customer_selection_lifecycle`, `test_case1_records_its_own_selection_lifecycle`; proven process transfers as a generation hint, geometry still does not |
 | Retrieval ranks a proven case first for its product family | VERIFIED_LOCAL | `test_arabic_letter_earring_request_retrieves_the_real_case`, `test_layered_english_name_necklace_request_retrieves_the_real_case` |
 | Learning priority: manufactured+approved > designer-approved > AI concept > external inspiration | VERIFIED_LOCAL | `test_manufactured_approved_memory_outranks_lower_evidence_tiers` (identical DNA, tier decides) |
 | Retrieval never returns/clones the original geometry | VERIFIED_LOCAL | `test_retrieval_never_returns_original_geometry` — asserts no geometry/lineage key in results or generation hints |
@@ -42,6 +43,9 @@ Golden Path is untouched: no generation, validation, approval or export code cha
 - **Evidence binaries are registered by sha256 but not uploaded.** Every descriptor carries `storage_key: null` and
   `storage_status: PENDING_OBJECT_STORE_UPLOAD`; the admin view says so instead of showing a broken image.
   Conversation screenshots are `EXCLUDED_PERSONAL_DATA` and will never be uploaded without explicit consent.
+- **Case 2's chosen writing style is inferred, not recorded.** Two writing styles were proposed and the customer
+  picked one, but which one was never stated — the stored `selected_variant` (`UPRIGHT_STACKED_LETTERS`) is read off
+  the finished piece and flagged `OBSERVED_FROM_FINAL_PRODUCT_NOT_OWNER_CONFIRMED`.
 - Retrieval scoring is the deterministic DNA encoder (`dna-onehot-1`) plus a bounded keyword bonus — not a learned
   ranker, and pgvector is still not installed on the DB host.
 

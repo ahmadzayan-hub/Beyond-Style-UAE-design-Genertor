@@ -35,8 +35,27 @@ interface EvidenceItem {
   note: string;
 }
 
+interface ProcessStep {
+  step: number;
+  actor: string;
+  action: string;
+}
+
+interface VariantSelection {
+  stage: string;
+  options_presented: number;
+  selection_method: string;
+  options?: { variant: string; description: string }[];
+  selected_variant: string;
+  selection_status: string;
+  note?: string;
+}
+
 interface CaseDetail extends CaseSummary {
   sections: {
+    customer_selection: EvidenceItem[];
+    writing_variants: { proposals: EvidenceItem[]; selection: VariantSelection | null };
+    design_process: ProcessStep[];
     concept: EvidenceItem[];
     reference_style: EvidenceItem[];
     layout_proof: EvidenceItem[];
@@ -205,6 +224,49 @@ export default function GoldenCasesPage() {
             <p className="text-xs text-gray-500 mt-1">
               authority: {detail.text_truth.authority}
             </p>
+          </section>
+
+          <Evidence title="Customer Selection" items={detail.sections.customer_selection} />
+
+          {detail.sections.design_process.length > 0 && (
+            <section className="mb-6">
+              <h3 className="font-semibold mb-2">How this design was arrived at</h3>
+              <ol className="text-sm space-y-1 list-decimal ps-5">
+                {detail.sections.design_process.map((step) => (
+                  <li key={step.step}>
+                    <span className="font-mono text-xs text-gray-500">{step.actor}</span>{" "}
+                    {step.action}
+                  </li>
+                ))}
+              </ol>
+            </section>
+          )}
+
+          <section className="mb-6">
+            <h3 className="font-semibold mb-2">Writing Variants Offered</h3>
+            {detail.sections.writing_variants.selection ? (
+              <>
+                <p className="text-sm">
+                  {detail.sections.writing_variants.selection.options_presented} option(s) presented ·
+                  selected: <strong>{detail.sections.writing_variants.selection.selected_variant}</strong>
+                </p>
+                <p className="text-xs text-amber-700 mt-1">
+                  {detail.sections.writing_variants.selection.selection_status}
+                </p>
+                <ul className="list-disc ps-5 text-sm mt-2">
+                  {(detail.sections.writing_variants.selection.options ?? []).map((o) => (
+                    <li key={o.variant}>
+                      <span className="font-mono">{o.variant}</span> — {o.description}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ) : (
+              <p className="text-sm text-gray-500">No variant round recorded for this case.</p>
+            )}
+            <div className="mt-3">
+              <Evidence title="Proposal sheets" items={detail.sections.writing_variants.proposals} />
+            </div>
           </section>
 
           <Evidence title="Concept" items={detail.sections.concept} />

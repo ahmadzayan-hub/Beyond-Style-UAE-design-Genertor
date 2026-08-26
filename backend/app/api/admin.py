@@ -72,8 +72,14 @@ def get_golden_case(case_id: str, session: Session = Depends(get_session)):
     return {
         **_summary(row),
         "sections": {
+            "customer_selection": by_role.get("customer_selection", [])
+            + by_role.get("shop_annotation", []),
             "concept": by_role.get("concept_sketch", []) + by_role.get("concept_selection", []),
             "reference_style": by_role.get("style_reference", []) + by_role.get("reference_image", []),
+            "writing_variants": {
+                "proposals": by_role.get("writing_variant_proposal", []),
+                "selection": row.variant_selection,
+            },
             "layout_proof": by_role.get("layout_proof", []) + by_role.get("workshop_outline", []),
             "final_product": by_role.get("final_product", []) + by_role.get("final_product_video", []),
             "customer_feedback": {
@@ -103,6 +109,7 @@ def get_golden_case(case_id: str, session: Session = Depends(get_session)):
                 "lineage_status": row.lineage_status,
             },
             "design_dna": row.design_dna,
+            "design_process": row.design_process or [],
             "lessons_learned": row.lessons_learned or [],
             "stage_comparison": row.stage_comparison,
         },

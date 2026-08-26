@@ -232,3 +232,45 @@ def test_aggregate_ignores_unassessed_dimensions():
     assert result["aggregate_score"] == 0.75
     assert result["not_assessed"] == ["z"]
     assert result["assessed_count"] == 2
+
+
+def test_case2_records_the_real_customer_selection_lifecycle(seeded):
+    """The customer chose an existing Beyond Style design, we drew on it by
+    hand, proposed two writing styles, and she picked one. That sequence is
+    the reusable part — it must be stored as it happened."""
+    case = _case(seeded, NECKLACE_CASE)
+    roles = [e["role"] for e in case.evidence]
+    # The starting point was the CUSTOMER's pick from our own catalogue,
+    # not an external style reference we sourced.
+    assert "customer_selection" in roles
+    assert "shop_annotation" in roles
+    assert "style_reference" not in roles
+    assert roles.count("writing_variant_proposal") == 2
+
+    actors = [step["actor"] for step in case.design_process]
+    assert actors[0] == "customer"          # selection starts with the customer
+    assert "beyond_style" in actors and "workshop" in actors
+    assert [s["step"] for s in case.design_process] == list(range(1, len(case.design_process) + 1))
+
+    selection = case.variant_selection
+    assert selection["options_presented"] == 2
+    assert selection["selection_method"] == "CUSTOMER_CHOSE_FROM_TWO_PROPOSALS"
+    assert {o["variant"] for o in selection["options"]} == {
+        "ROTATED_LETTERS", "UPRIGHT_STACKED_LETTERS"
+    }
+    # Which of the two she picked was never stated, so it is flagged as read
+    # off the finished piece rather than asserted as a record.
+    assert selection["selection_status"] == "OBSERVED_FROM_FINAL_PRODUCT_NOT_OWNER_CONFIRMED"
+
+
+def test_case1_records_its_own_selection_lifecycle(seeded):
+    case = _case(seeded, ARABIC_CASE)
+    assert case.design_process[0]["actor"] == "customer"
+    assert case.variant_selection["selection_method"] == "HAND_MARKED_ON_CONCEPT_SHEET"
+
+
+def test_proven_process_transfers_but_geometry_still_does_not(seeded):
+    hints = golden_case_generation_hints(_case(seeded, NECKLACE_CASE))
+    assert hints["proven_process"], "a proven process is reusable memory"
+    assert hints["proven_process"][0]["actor"] == "customer"
+    assert not (GEOMETRY_KEYS & set(hints))

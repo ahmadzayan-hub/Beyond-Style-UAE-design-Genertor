@@ -108,6 +108,7 @@ Test evidence: `cd backend && python3 -m pytest` → **127 passed** (PostgreSQL 
 | Source-text truth gate | WORKING | `test_confirmed_names_are_stored_exactly_and_never_inferred`, `test_ocr_can_never_supply_source_text` | Case 1 stays at the pending tier until an order record supplies its Arabic letters |
 | Privacy: WhatsApp conversations not persisted | WORKING | `test_personal_conversation_evidence_is_never_stored_or_exported` | Screenshots are hash-registered only; retaining them needs explicit consent |
 | Stage comparison (concept vs proof/outline vs product) | PARTIAL | stored per-dimension assessments + aggregate; labelled non-computed | Human visual review, NOT measured from vector geometry — impossible until a case has a `DesignVersion` |
+| Real selection lifecycle (who chose what, when) | WORKING | `design_process` + `variant_selection` per case; 3 lifecycle tests | Case 2's selected writing style is inferred from the finished piece, flagged as such |
 | Admin view | WORKING | real-uvicorn 403/200 smoke; `/admin/golden-cases` route in the Next.js build | Evidence binaries not uploaded, so the view lists descriptors, not images |
 
 ## Known honest limitations

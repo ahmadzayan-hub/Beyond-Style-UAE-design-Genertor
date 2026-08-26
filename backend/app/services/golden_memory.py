@@ -113,6 +113,8 @@ def seed_golden_cases(session: Session) -> list[str]:
             dimensions=spec.get("dimensions"),
             stone_or_pearl_details=spec.get("stone_or_pearl_details"),
             workshop_changes=spec.get("workshop_changes"),
+            design_process=spec.get("design_process"),
+            variant_selection=spec.get("variant_selection"),
             manufacturing_result=spec["manufacturing_result"],
             production_success=spec["production_success"],
             customer_feedback=spec.get("customer_feedback"),
@@ -323,6 +325,7 @@ def golden_case_generation_hints(
             "attachment_topology": case.attachment_topology,
             "chain_topology": case.chain_topology,
             "proven_lessons": list(case.lessons_learned or []),
+            "proven_process": list(case.design_process or []),
             "copies_original_geometry": False,
             "requires_customer_confirmed_text": True,
         }
@@ -354,6 +357,7 @@ def golden_training_export(session: Session) -> list[dict]:
                 "design_dna": row.design_dna,
                 "construction": row.construction,
                 "lessons_learned": row.lessons_learned or [],
+                "design_process": row.design_process or [],
                 "evidence_tier": row.evidence_tier,
                 "tier_weight": EVIDENCE_TIER_WEIGHTS[row.evidence_tier],
                 "evidence": [
