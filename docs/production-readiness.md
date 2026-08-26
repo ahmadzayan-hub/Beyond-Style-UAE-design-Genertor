@@ -97,6 +97,19 @@ Test evidence: `cd backend && python3 -m pytest` → **127 passed** (PostgreSQL 
 | Reference/WhatsApp intake | WORKING | see Slice 3 table | — | WhatsApp channel integration itself is P1 (uploads are the intake path) |
 | Frontend (mobile+desktop) | WORKING | see Slice 3 table | browser E2E on mobile + desktop viewports | visual polish; plate-relief proofs render as silhouette (text not visually distinct) |
 
+
+## Golden Production Memory (Production Learning slice)
+| Capability | Status | Evidence | Honest limitation |
+|---|---|---|---|
+| Real manufactured + customer-approved cases as top-tier memory | WORKING | `tests/test_golden_production_memory.py` (12 tests); 2 real cases seeded idempotently | Only 2 cases; both pre-platform, so neither links to a `DesignVersion` |
+| Retrieval by product family / keywords | WORKING | retrieval tests rank the correct real case first for Arabic-letter-earring and layered-name-necklace requests | Deterministic `dna-onehot-1` encoder + bounded keyword bonus, not a learned ranker; pgvector still absent |
+| Learning-priority weighting | WORKING | `test_manufactured_approved_memory_outranks_lower_evidence_tiers` | Weights are fixed constants, not fitted from outcomes |
+| No geometry cloning | WORKING | `test_retrieval_never_returns_original_geometry`; `golden_case_generation_hints` asserts against every geometry/lineage key | — |
+| Source-text truth gate | WORKING | `test_confirmed_names_are_stored_exactly_and_never_inferred`, `test_ocr_can_never_supply_source_text` | Case 1 stays at the pending tier until an order record supplies its Arabic letters |
+| Privacy: WhatsApp conversations not persisted | WORKING | `test_personal_conversation_evidence_is_never_stored_or_exported` | Screenshots are hash-registered only; retaining them needs explicit consent |
+| Stage comparison (concept vs proof/outline vs product) | PARTIAL | stored per-dimension assessments + aggregate; labelled non-computed | Human visual review, NOT measured from vector geometry — impossible until a case has a `DesignVersion` |
+| Admin view | WORKING | real-uvicorn 403/200 smoke; `/admin/golden-cases` route in the Next.js build | Evidence binaries not uploaded, so the view lists descriptors, not images |
+
 ## Known honest limitations
 - Deterministic dot/text bridges take the shortest path and can look crude (e.g. a diagonal chord inside a medallion ring) — aesthetic bridge routing is a future refinement; geometry is manufacturable.
 - Copilot edits are composition-level parameters; per-glyph move/tail/swash requires the glyph-variant library (later slice).

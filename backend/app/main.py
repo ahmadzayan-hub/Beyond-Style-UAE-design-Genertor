@@ -9,6 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
+from .api.admin import router as admin_router
 from .api.ai import ref_router as ai_ref_router, router as ai_router
 from .api.designs import fonts_router, router as designs_router, versions_router
 from .api.intake import router as intake_router
@@ -35,7 +36,7 @@ app.add_middleware(
     allow_origins=_allowed_origins,
     allow_credentials=False,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["Content-Type", "X-Session-Token", "X-Request-ID"],
+    allow_headers=["Content-Type", "X-Session-Token", "X-Request-ID", "X-Admin-Token"],
     expose_headers=["X-Request-ID"],
 )
 app.add_middleware(CorrelationIdMiddleware)
@@ -48,6 +49,7 @@ app.include_router(ai_router)
 app.include_router(ai_ref_router)
 app.include_router(visual_router)
 app.include_router(orchestration_router)
+app.include_router(admin_router)
 
 
 # --- Structured errors: every 4xx/5xx response carries a machine-

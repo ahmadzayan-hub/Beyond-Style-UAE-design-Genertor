@@ -10,9 +10,42 @@ Statuses (External AI / Real Tool Wiring sections, precise per-claim vocabulary)
   OPTIONAL_NOT_RUNNING — an optional runtime (isolated Hermes) is not configured/reachable; the deterministic path is unaffected.
   BLOCKED — implemented but intentionally refused (e.g. approve_design for agents).
   FAILED — a real call/round-trip was attempted and errored (never silently downgraded to a softer status).
-Updated: 2026-08-25 · Backend suite: 230 passed (PostgreSQL 16, incl. 11-test immutable seven-name golden fixture) · E2E: 5 browser flows passed (incl. dedicated seven-name+reference flow) · production smoke: 15/15 checks passed (local, corrected fixture) · GitHub Actions CI: VERIFIED_CI, run 32900447345 (current HEAD `a7e3858`) conclusion=success — 5 consecutive green runs — see RELEASE_EVIDENCE.md.
+Updated: 2026-08-26 · Backend suite: 242 passed (230 + 12 Golden Production Memory) (PostgreSQL 16, incl. 11-test immutable seven-name golden fixture) · E2E: 5 browser flows passed (incl. dedicated seven-name+reference flow) · production smoke: 15/15 checks passed (local, corrected fixture) · GitHub Actions CI: VERIFIED_CI, run 32900447345 (current HEAD `a7e3858`) conclusion=success — 5 consecutive green runs — see RELEASE_EVIDENCE.md.
 
-## DEPLOYMENT HANDOFF + PRODUCTION ACCEPTANCE (this slice, see RELEASE_EVIDENCE.md)
+## Golden Production Memory (this slice — Production Learning)
+Two REAL Beyond Style orders — designed, manufactured, delivered and positively received — are now stored as the
+highest-weight design-memory tier (`golden_production_cases`, migration `c1a7f30b52d4`). The existing production
+Golden Path is untouched: no generation, validation, approval or export code changed.
+
+| Item | Status | Evidence |
+|---|---|---|
+| `GoldenProductionCase` table + Alembic migration, linked to design lineage (`design_version_id` FK) | VERIFIED_LOCAL | migration runs clean from base in the test session; 12 new tests |
+| Case 1 — Arabic letter drop earrings + hanging pearl (`BS-GPC-0001`) | VERIFIED_LOCAL | concept → workshop outline → manufactured pair → customer approval, registered with per-stage evidence hashes |
+| Case 2 — Layered English name necklace ADAM / OMAR (`BS-GPC-0002`) | VERIFIED_LOCAL | sketch → style reference → layout proof → manufactured piece → customer approval |
+| Retrieval ranks a proven case first for its product family | VERIFIED_LOCAL | `test_arabic_letter_earring_request_retrieves_the_real_case`, `test_layered_english_name_necklace_request_retrieves_the_real_case` |
+| Learning priority: manufactured+approved > designer-approved > AI concept > external inspiration | VERIFIED_LOCAL | `test_manufactured_approved_memory_outranks_lower_evidence_tiers` (identical DNA, tier decides) |
+| Retrieval never returns/clones the original geometry | VERIFIED_LOCAL | `test_retrieval_never_returns_original_geometry` — asserts no geometry/lineage key in results or generation hints |
+| WhatsApp conversation evidence excluded; only normalized feedback kept | VERIFIED_LOCAL | `test_personal_conversation_evidence_is_never_stored_or_exported` |
+| Admin view "Golden Production Cases" (8 sections) | VERIFIED_E2E | `/api/admin/golden-cases[/{id}]` returns 403 with no/wrong token and real data with one, over real uvicorn HTTP; `frontend/app/admin/golden-cases` builds and ships as a route |
+
+**Honest limitations of this slice (do not read as more than it is):**
+- **Case 1's Arabic source text is NOT confirmed.** The letters are legible in the workshop drawing, but reading them
+  off an image is exactly what the text-truth rule forbids. The case is held at
+  `GOLDEN_PRODUCTION_PENDING_TEXT_VERIFICATION`, contributes style/construction memory only, and is excluded from
+  training export until `confirm_customer_source_text()` is called with an order record or an explicit confirmation.
+  Case 2's names (`ADAM`, `OMAR`) are stored verbatim on the owner's explicit written instruction — no order record
+  exists in this system for either case (both are pre-platform orders, `lineage_status=PRE_PLATFORM_CASE_NO_DESIGN_VERSION`).
+- **Stage-comparison scores are recorded human visual assessments, not computed geometry metrics.** Neither case has a
+  `DesignVersion` with vector geometry, so silhouette/proportion fidelity cannot be measured. Every stored comparison
+  carries `computed_from_vector_geometry: false` and `measurement_method: VISUAL_REVIEW_NO_VECTOR_GEOMETRY`;
+  unassessable dimensions (Case 1's `letter_identity`) stay `null` with `NOT_ASSESSED` rather than being invented.
+- **Evidence binaries are registered by sha256 but not uploaded.** Every descriptor carries `storage_key: null` and
+  `storage_status: PENDING_OBJECT_STORE_UPLOAD`; the admin view says so instead of showing a broken image.
+  Conversation screenshots are `EXCLUDED_PERSONAL_DATA` and will never be uploaded without explicit consent.
+- Retrieval scoring is the deterministic DNA encoder (`dna-onehot-1`) plus a bounded keyword bonus — not a learned
+  ranker, and pgvector is still not installed on the DB host.
+
+## DEPLOYMENT HANDOFF + PRODUCTION ACCEPTANCE (previous slice, see RELEASE_EVIDENCE.md)
 **FINAL DECISION: NOT PRODUCTION READY.** Full evidence + exact blocker/owner/action table in `RELEASE_EVIDENCE.md` at repo root.
 - **HEAD CI confirmed green**: run `32900447345` on current HEAD `a7e3858` — `conclusion: success`, confirmed via `get_workflow_run` (not assumed). 5th consecutive green CI run on this branch.
 - **Frontend reachability VERIFIED_PRODUCTION this slice**: an authenticated fetch (`web_fetch_vercel_url`, SSO stays enabled) against `https://frontend-sigma-sable-22.vercel.app/` returned real `200 OK` with the correct Arabic RTL UI — confirms the deployed build itself is healthy. Does not change that an anonymous customer still can't reach it (SSO) or that this session's own egress to `vercel.app` is still policy-blocked.

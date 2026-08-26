@@ -269,3 +269,41 @@ export async function downloadExport(versionId: string, fmt: "svg" | "dxf") {
   a.remove();
   URL.revokeObjectURL(url);
 }
+
+// --- Admin (Golden Production Cases) ---
+// Staff-only. The admin token is never bundled into the build: it is
+// entered by the operator and kept in sessionStorage for that tab only.
+
+const ADMIN_TOKEN_KEY = "bs_admin_token";
+
+export function getAdminToken(): string | null {
+  try {
+    return sessionStorage.getItem(ADMIN_TOKEN_KEY);
+  } catch {
+    return null;
+  }
+}
+
+export function setAdminToken(token: string): void {
+  try {
+    sessionStorage.setItem(ADMIN_TOKEN_KEY, token);
+  } catch {
+    /* storage unavailable — the caller keeps the token in component state */
+  }
+}
+
+function adminHeaders(token: string): Record<string, string> {
+  return { "X-Admin-Token": token };
+}
+
+export async function listGoldenCases(token: string) {
+  return jsonOrThrow(await doFetch("/api/admin/golden-cases", { headers: adminHeaders(token) }));
+}
+
+export async function getGoldenCase(token: string, caseId: string) {
+  return jsonOrThrow(
+    await doFetch(`/api/admin/golden-cases/${encodeURIComponent(caseId)}`, {
+      headers: adminHeaders(token),
+    })
+  );
+}

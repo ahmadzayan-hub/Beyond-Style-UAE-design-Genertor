@@ -254,6 +254,89 @@ class ReferenceDNARow(TimestampMixin, Base):
     encoder_version: Mapped[str] = mapped_column(String(32), nullable=False)
 
 
+class GoldenProductionCase(TimestampMixin, Base):
+    """A REAL manufactured, delivered and customer-approved order kept as
+    the highest-weight design memory tier.
+
+    Two hard rules are enforced by the service layer on top of this table:
+    1. `customer_source_text` is NEVER inferred from photos/OCR. Until an
+       order record or an explicit customer confirmation supplies it,
+       `source_text_status` stays PENDING_CUSTOMER_VERIFICATION and the
+       case cannot be promoted to the GOLDEN_PRODUCTION memory tier.
+    2. Retrieval returns DesignDNA + construction principles only.
+       `canonical_geometry_hash`/`design_version_id` are lineage columns —
+       they are never emitted as generation hints, so a proven case
+       informs new original geometry instead of being cloned.
+    """
+
+    __tablename__ = "golden_production_cases"
+    __table_args__ = (UniqueConstraint("case_id"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=_uuid)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utcnow, onupdate=utcnow, nullable=False
+    )
+    case_id: Mapped[str] = mapped_column(String(64), nullable=False)
+
+    # --- customer text truth (never OCR/vision-derived) ---
+    customer_source_text: Mapped[str | None] = mapped_column(Text)
+    source_text_status: Mapped[str] = mapped_column(
+        String(40), default="PENDING_CUSTOMER_VERIFICATION", nullable=False
+    )
+    source_text_authority: Mapped[str] = mapped_column(
+        String(48), default="NOT_ESTABLISHED", nullable=False
+    )
+    source_text_sha256: Mapped[str | None] = mapped_column(String(64))
+    primary_names: Mapped[list | None] = mapped_column(JSONB)
+    language: Mapped[str] = mapped_column(String(16), default="UNKNOWN", nullable=False)
+
+    # --- classification ---
+    product_type: Mapped[str] = mapped_column(String(48), nullable=False)
+    layout_style: Mapped[str | None] = mapped_column(String(48))
+    composition_type: Mapped[str | None] = mapped_column(String(48))
+    construction: Mapped[list] = mapped_column(JSONB, nullable=False)
+    construction_topology: Mapped[str | None] = mapped_column(String(96))
+    attachment_topology: Mapped[str | None] = mapped_column(String(96))
+    attachment_points: Mapped[list | None] = mapped_column(JSONB)
+    chain_topology: Mapped[str | None] = mapped_column(String(96))
+
+    # --- design lineage ---
+    design_version_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("design_versions.id"))
+    canonical_geometry_hash: Mapped[str | None] = mapped_column(String(64))
+    lineage_status: Mapped[str] = mapped_column(String(48), nullable=False)
+
+    # --- manufacturing facts ---
+    material: Mapped[str | None] = mapped_column(String(64))
+    finish: Mapped[str | None] = mapped_column(String(64))
+    dimensions: Mapped[dict | None] = mapped_column(JSONB)
+    stone_or_pearl_details: Mapped[dict | None] = mapped_column(JSONB)
+    workshop_changes: Mapped[list | None] = mapped_column(JSONB)
+    manufacturing_result: Mapped[str] = mapped_column(String(32), nullable=False)
+    production_success: Mapped[bool] = mapped_column(Boolean, nullable=False)
+
+    # --- customer outcome (anonymized before storage) ---
+    customer_feedback: Mapped[str | None] = mapped_column(Text)
+    customer_sentiment: Mapped[str] = mapped_column(String(32), nullable=False)
+    customer_approved: Mapped[bool] = mapped_column(Boolean, nullable=False)
+
+    # --- learning / retrieval ---
+    memory_tier: Mapped[str] = mapped_column(String(48), nullable=False)
+    evidence_tier: Mapped[str] = mapped_column(String(48), nullable=False)
+    ranking_weight: Mapped[str] = mapped_column(String(16), nullable=False)
+    design_fidelity_score: Mapped[float | None] = mapped_column(Float)
+    stage_comparison: Mapped[dict | None] = mapped_column(JSONB)
+    lessons_learned: Mapped[list | None] = mapped_column(JSONB)
+    design_dna: Mapped[dict] = mapped_column(JSONB, nullable=False)
+    dna_embedding: Mapped[list] = mapped_column(JSONB, nullable=False)
+    encoder_version: Mapped[str] = mapped_column(String(32), nullable=False)
+    retrieval_keywords: Mapped[list] = mapped_column(JSONB, nullable=False)
+
+    # --- rights / privacy ---
+    rights_provenance: Mapped[str] = mapped_column(String(48), nullable=False)
+    privacy_status: Mapped[str] = mapped_column(String(32), default="PRIVATE", nullable=False)
+    evidence: Mapped[list] = mapped_column(JSONB, nullable=False)
+
+
 class AIGeneration(TimestampMixin, Base):
     """One AI image generation (DESIGN → IMAGE). Display artifact only:
     kind is always an ai_* value and the production export path refuses
