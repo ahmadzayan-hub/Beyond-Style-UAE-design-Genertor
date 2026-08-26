@@ -443,17 +443,58 @@ def apply_repair(
 
 @fonts_router.get("")
 def list_fonts():
+    from ..fonts.glyph_variants import font_variant_capabilities
+
     return [
         {
             "font_id": f.font_id,
             "family": f.family,
             "style_family": f.style_family,
+            "script_family": f.script_family,
+            "style_influence": f.style_influence,
+            "production_capability": f.production_capability,
+            "style_tags": f.style_tags,
+            "version": f.version,
             "license": f.license,
             "rights_status": f.rights_status,
             "commercial_production_allowed": f.commercial_production_allowed,
+            "supports_harakat": f.supports_harakat,
+            "variant_sets": len(font_variant_capabilities(f.font_id)),
         }
         for f in get_registry().list()
     ]
+
+
+@fonts_router.get("/capabilities")
+def font_capabilities():
+    """What the style picker may promise. Scripts we cannot truly render
+    are reported LICENSE_REQUIRED with their closest licensed alternative —
+    a true Diwani/Thuluth request is never silently served by Amiri."""
+    from ..fonts.capabilities import production_capability_map, script_capability_map
+
+    return {
+        "production_capabilities": production_capability_map(),
+        "script_families": script_capability_map(),
+    }
+
+
+@fonts_router.get("/{font_id}/variants")
+def font_variants(font_id: str):
+    from ..fonts.glyph_variants import font_variant_capabilities
+
+    try:
+        get_registry().get(font_id)
+    except KeyError:
+        raise HTTPException(404, "Unknown font.")
+    return {"font_id": font_id, "variants": font_variant_capabilities(font_id)}
+
+
+@fonts_router.get("/resolve/{script_family}")
+def resolve_script(script_family: str):
+    """Customer-facing resolution of a requested script family."""
+    from ..fonts.capabilities import resolve_script_request
+
+    return resolve_script_request(script_family)
 
 
 # ------------------------------------------------------------- helpers

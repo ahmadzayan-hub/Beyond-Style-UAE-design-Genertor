@@ -10,9 +10,38 @@ Statuses (External AI / Real Tool Wiring sections, precise per-claim vocabulary)
   OPTIONAL_NOT_RUNNING — an optional runtime (isolated Hermes) is not configured/reachable; the deterministic path is unaffected.
   BLOCKED — implemented but intentionally refused (e.g. approve_design for agents).
   FAILED — a real call/round-trip was attempted and errored (never silently downgraded to a softer status).
-Updated: 2026-08-26 · Backend suite: 245 passed (230 + 15 Golden Production Memory) (PostgreSQL 16, incl. 11-test immutable seven-name golden fixture) · E2E: 5 browser flows passed (incl. dedicated seven-name+reference flow) · production smoke: 15/15 checks passed (local, corrected fixture) · GitHub Actions CI: VERIFIED_CI, run 32900447345 (current HEAD `a7e3858`) conclusion=success — 5 consecutive green runs — see RELEASE_EVIDENCE.md.
+Updated: 2026-08-26 · Backend suite: 276 passed (245 + 31 Font Capability) (PostgreSQL 16, incl. 11-test immutable seven-name golden fixture) · E2E: 5 browser flows passed (incl. dedicated seven-name+reference flow) · production smoke: 15/15 checks passed (local, corrected fixture) · GitHub Actions CI: VERIFIED_CI, run 32900447345 (current HEAD `a7e3858`) conclusion=success — 5 consecutive green runs — see RELEASE_EVIDENCE.md.
 
-## Golden Production Memory (this slice — Production Learning)
+## Font Capability (this slice)
+Advertised script coverage now equals renderable coverage. Nine OFL fonts, every feature discovered from the
+font binaries, every optional feature regression-shaped before exposure. The ranked-10 Golden Path and its
+immutable golden fixture are unchanged — new families sit in a separate on-demand pool.
+
+| Item | Status | Evidence |
+|---|---|---|
+| 6 fonts vendored with licences + recorded SHA256 | VERIFIED_LOCAL | `test_every_font_ships_its_licence_file`, `test_recorded_hash_matches_the_binary_on_disk` |
+| REAL coverage: Ruqaa, Kufi/geometric Kufi, Nastaliq, modern/minimal | VERIFIED_LOCAL | `test_newly_real_scripts_are_backed_by_a_real_font` |
+| True Thuluth/Diwani held at LICENSE_REQUIRED | VERIFIED_LOCAL | `test_true_thuluth_and_diwani_stay_license_required`; bridge fonts cannot satisfy them |
+| Unavailable style returns STYLE_NOT_AVAILABLE + alternative, never a silent Amiri substitution | VERIFIED_E2E | `test_diwani_request_is_never_silently_served_by_amiri`; `GET /api/fonts/resolve/diwani` over real HTTP |
+| 52 OT features discovered from GSUB/GPOS, 0 invented | VERIFIED_LOCAL | `test_every_registered_feature_exists_in_the_font_binary` |
+| 52/52 features passed HarfBuzz shaping regression over the Arabic golden corpus | VERIFIED_LOCAL | `scripts/discover_font_features.py`; `test_every_production_feature_passed_the_shaping_regression` |
+| Reem Kufi cv01-cv03 and Aref Ruqaa ss01-ss08/jalt selectable as real variant axes | VERIFIED_E2E | `GET /api/fonts/reem-kufi/variants` |
+| Golden Path + golden fixture unchanged | VERIFIED_LOCAL | full suite 276 passed; `font_index` made an explicit stable ordinal so vendoring never re-ranks existing designs |
+
+**Honest limitations:**
+- **Upstream commit SHA unresolved.** `api.github.com` is blocked by this environment's egress proxy, so each
+  new record carries `upstream_commit: null` / `upstream_commit_status: UNRESOLVED_GITHUB_API_BLOCKED`.
+  Integrity is anchored on our own recorded `file_sha256`, verified against the binary by test.
+- **True Diwani and Thuluth remain NOT IMPLEMENTED.** Katibeh and Lemonada are Naskh-based bridge faces
+  labelled THULUTH_INFLUENCED / DIWANI_INFLUENCED. No classical Diwani/Thuluth work is complete.
+- **New families are not in the default candidate pool.** They live in `app/data/script_recipes.json` and are
+  selected only on explicit script request, so the ranked-10 fixture stays byte-identical.
+- **Benchmark manufacturing failures remain on long text.** Every font passes shaping/identity/SVG/licence/
+  integrity on all five inputs; `OVERSIZE` on the seven-name string at fixed height is the documented
+  "blocked, not repaired" behaviour, which the pre-existing families show too.
+- Feature *safety* is proven; feature *aesthetics* are not — no visual review of the 52 variants has happened.
+
+## Golden Production Memory (previous slice — Production Learning)
 Two REAL Beyond Style orders — designed, manufactured, delivered and positively received — are now stored as the
 highest-weight design-memory tier (`golden_production_cases`, migration `c1a7f30b52d4`). The existing production
 Golden Path is untouched: no generation, validation, approval or export code changed.

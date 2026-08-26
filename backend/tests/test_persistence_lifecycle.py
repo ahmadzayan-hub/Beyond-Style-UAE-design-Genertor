@@ -162,9 +162,13 @@ def test_audit_events_record_lifecycle(clean_tables, db_session):
 
 
 def test_font_references_sync(clean_tables, db_session):
+    from app.fonts.registry import get_registry
+
     added = svc.sync_font_references(db_session)
     db_session.commit()
-    assert added == 3
+    # Tracks the registry rather than a magic number, so vendoring a font
+    # does not fail this test for the wrong reason.
+    assert added == len(get_registry().list())
     assert svc.sync_font_references(db_session) == 0  # idempotent
     rows = db_session.execute(select(m.FontReference)).scalars().all()
     for r in rows:

@@ -1,5 +1,5 @@
 {
-  "registry_version": "0.1.0",
+  "registry_version": "0.2.0",
   "note": "Fonts are design tools/sources for lettering, never the final product. Converting glyphs to outlines does not remove license obligations. UNKNOWN_RIGHTS fonts are preview/internal only and must never reach commercial production export.",
   "fonts": [
     {
@@ -12,9 +12,75 @@
       "source_url": "https://github.com/aliftype/amiri",
       "rights_status": "VERIFIED_OPEN_SOURCE",
       "redistribution_permitted": true,
-      "scripts": ["arab", "latn"],
+      "scripts": [
+        "arab",
+        "latn"
+      ],
       "supports_harakat": true,
-      "notes": "Classical Naskh revival; strong contextual shaping and ligatures."
+      "notes": "Classical Naskh revival; strong contextual shaping and ligatures.",
+      "script_family": "naskh",
+      "style_influence": null,
+      "production_capability": "NASKH",
+      "upstream_repo": "https://github.com/aliftype/amiri",
+      "upstream_path": "ofl/amiri/Amiri-Regular.ttf",
+      "style_tags": [
+        "classical",
+        "naskh",
+        "calligraphic",
+        "harakat"
+      ],
+      "version": "Version 1.002",
+      "file_sha256": "ab391c4147d054c48976e98322ad0eefe1427aa0e0502a12a4c75d80a70cfcd7",
+      "upstream_distribution": "https://github.com/google/fonts",
+      "upstream_ref": "main",
+      "upstream_commit": null,
+      "upstream_commit_status": "UNRESOLVED_GITHUB_API_BLOCKED",
+      "retrieved_at": "2026-08-26",
+      "script_coverage": {
+        "arabic_codepoints": 255,
+        "latin_basic": true
+      },
+      "diversity_index": 0
+    },
+    {
+      "font_id": "aref-ruqaa",
+      "family": "Aref Ruqaa",
+      "style_family": "ruqaa",
+      "file": "ArefRuqaa-Regular.ttf",
+      "license": "SIL OFL 1.1",
+      "license_file": "ArefRuqaa-OFL.txt",
+      "source_url": "https://github.com/google/fonts/tree/main/ofl/arefruqaa",
+      "rights_status": "VERIFIED_OPEN_SOURCE",
+      "redistribution_permitted": true,
+      "scripts": [
+        "arab",
+        "latn"
+      ],
+      "supports_harakat": true,
+      "notes": "True Ruqaa: the compact everyday Arabic hand. ss01-ss08 and jalt are real stylistic/justification alternates.",
+      "script_family": "ruqaa",
+      "style_influence": null,
+      "production_capability": "RUQAA",
+      "upstream_repo": "https://github.com/aliftype/aref-ruqaa",
+      "upstream_path": "ofl/arefruqaa/ArefRuqaa-Regular.ttf",
+      "style_tags": [
+        "classical",
+        "ruqaa",
+        "calligraphic",
+        "everyday-hand"
+      ],
+      "version": "Version 1.003",
+      "file_sha256": "ceb786d83ba92f35e96efcd8623c2858d288e0c543c8761ba35b1020989464f9",
+      "upstream_distribution": "https://github.com/google/fonts",
+      "upstream_ref": "main",
+      "upstream_commit": null,
+      "upstream_commit_status": "UNRESOLVED_GITHUB_API_BLOCKED",
+      "retrieved_at": "2026-08-26",
+      "script_coverage": {
+        "arabic_codepoints": 111,
+        "latin_basic": true
+      },
+      "diversity_index": 3
     },
     {
       "font_id": "cairo",
@@ -26,9 +92,195 @@
       "source_url": "https://github.com/Gue3bara/Cairo",
       "rights_status": "VERIFIED_OPEN_SOURCE",
       "redistribution_permitted": true,
-      "scripts": ["arab", "latn"],
+      "scripts": [
+        "arab",
+        "latn"
+      ],
       "supports_harakat": false,
-      "notes": "Contemporary low-contrast Kufi-influenced sans; variable font, default instance used."
+      "notes": "Contemporary low-contrast Kufi-influenced sans; variable font, default instance used.",
+      "script_family": "modern_arabic",
+      "style_influence": "kufi",
+      "production_capability": "MODERN_ARABIC",
+      "upstream_repo": "https://github.com/Gue3bara/Cairo",
+      "upstream_path": "ofl/cairo/Cairo[slnt,wght].ttf",
+      "style_tags": [
+        "modern",
+        "kufi-influenced",
+        "sans",
+        "low-contrast"
+      ],
+      "version": "Version 3.130;gftools[0.9.24]",
+      "file_sha256": "667c987182391c91f4e57a2f455b1794fb5e3ee6ca4ef3383e86bb690fa9c964",
+      "upstream_distribution": "https://github.com/google/fonts",
+      "upstream_ref": "main",
+      "upstream_commit": null,
+      "upstream_commit_status": "UNRESOLVED_GITHUB_API_BLOCKED",
+      "retrieved_at": "2026-08-26",
+      "script_coverage": {
+        "arabic_codepoints": 102,
+        "latin_basic": true
+      },
+      "diversity_index": 1
+    },
+    {
+      "font_id": "katibeh",
+      "family": "Katibeh",
+      "style_family": "naskh-display",
+      "file": "Katibeh-Regular.ttf",
+      "license": "SIL OFL 1.1",
+      "license_file": "Katibeh-OFL.txt",
+      "source_url": "https://github.com/google/fonts/tree/main/ofl/katibeh",
+      "rights_status": "VERIFIED_OPEN_SOURCE",
+      "redistribution_permitted": true,
+      "scripts": [
+        "arab",
+        "latn"
+      ],
+      "supports_harakat": true,
+      "notes": "BRIDGE FONT. Naskh-based display face with sweeping Thuluth-like strokes. This is NOT true Thuluth and must never be presented as such.",
+      "script_family": "naskh",
+      "style_influence": "thuluth",
+      "production_capability": "THULUTH_INFLUENCED",
+      "upstream_repo": "https://github.com/google/fonts",
+      "upstream_path": "ofl/katibeh/Katibeh-Regular.ttf",
+      "style_tags": [
+        "display",
+        "calligraphic",
+        "thuluth-influenced",
+        "sweeping"
+      ],
+      "version": "Version 1.0010g",
+      "file_sha256": "334eeadb58eb442734fe7dea87412cbbd8c3fd00294252723aadf19a850cf11f",
+      "upstream_distribution": "https://github.com/google/fonts",
+      "upstream_ref": "main",
+      "upstream_commit": null,
+      "upstream_commit_status": "UNRESOLVED_GITHUB_API_BLOCKED",
+      "retrieved_at": "2026-08-26",
+      "script_coverage": {
+        "arabic_codepoints": 243,
+        "latin_basic": true
+      },
+      "diversity_index": 7
+    },
+    {
+      "font_id": "lemonada",
+      "family": "Lemonada",
+      "style_family": "naskh-rounded",
+      "file": "Lemonada.ttf",
+      "license": "SIL OFL 1.1",
+      "license_file": "Lemonada-OFL.txt",
+      "source_url": "https://github.com/google/fonts/tree/main/ofl/lemonada",
+      "rights_status": "VERIFIED_OPEN_SOURCE",
+      "redistribution_permitted": true,
+      "scripts": [
+        "arab",
+        "latn"
+      ],
+      "supports_harakat": true,
+      "notes": "BRIDGE FONT. Rounded flowing Naskh with Diwani-like curvature. This is NOT true Diwani and must never be presented as such. Variable (wght), default instance used.",
+      "script_family": "naskh",
+      "style_influence": "diwani",
+      "production_capability": "DIWANI_INFLUENCED",
+      "upstream_repo": "https://github.com/google/fonts",
+      "upstream_path": "ofl/lemonada/Lemonada[wght].ttf",
+      "style_tags": [
+        "rounded",
+        "flowing",
+        "diwani-influenced",
+        "display"
+      ],
+      "version": "Version 4.005",
+      "file_sha256": "84134e9e1da7d593839073157980a4d38296d2be10b61469a8f3169204959ad9",
+      "upstream_distribution": "https://github.com/google/fonts",
+      "upstream_ref": "main",
+      "upstream_commit": null,
+      "upstream_commit_status": "UNRESOLVED_GITHUB_API_BLOCKED",
+      "retrieved_at": "2026-08-26",
+      "script_coverage": {
+        "arabic_codepoints": 101,
+        "latin_basic": true
+      },
+      "diversity_index": 8
+    },
+    {
+      "font_id": "noto-nastaliq-urdu",
+      "family": "Noto Nastaliq Urdu",
+      "style_family": "nastaliq",
+      "file": "NotoNastaliqUrdu.ttf",
+      "license": "SIL OFL 1.1",
+      "license_file": "NotoNastaliqUrdu-OFL.txt",
+      "source_url": "https://github.com/google/fonts/tree/main/ofl/notonastaliqurdu",
+      "rights_status": "VERIFIED_OPEN_SOURCE",
+      "redistribution_permitted": true,
+      "scripts": [
+        "arab",
+        "latn"
+      ],
+      "supports_harakat": true,
+      "notes": "True Nastaliq with the characteristic descending baseline. Variable (wght), default instance used.",
+      "script_family": "nastaliq",
+      "style_influence": null,
+      "production_capability": "NASTALIQ",
+      "upstream_repo": "https://github.com/notofonts/nastaliq",
+      "upstream_path": "ofl/notonastaliqurdu/NotoNastaliqUrdu[wght].ttf",
+      "style_tags": [
+        "nastaliq",
+        "calligraphic",
+        "steep-baseline",
+        "persian-urdu"
+      ],
+      "version": "Version 3.009",
+      "file_sha256": "98a4787f34eb6fde57fb9a1121a8f216301196ab0da98ea110cad581be8abbcd",
+      "upstream_distribution": "https://github.com/google/fonts",
+      "upstream_ref": "main",
+      "upstream_commit": null,
+      "upstream_commit_status": "UNRESOLVED_GITHUB_API_BLOCKED",
+      "retrieved_at": "2026-08-26",
+      "script_coverage": {
+        "arabic_codepoints": 214,
+        "latin_basic": true
+      },
+      "diversity_index": 5
+    },
+    {
+      "font_id": "reem-kufi",
+      "family": "Reem Kufi",
+      "style_family": "geometric-kufi",
+      "file": "ReemKufi.ttf",
+      "license": "SIL OFL 1.1",
+      "license_file": "ReemKufi-OFL.txt",
+      "source_url": "https://github.com/google/fonts/tree/main/ofl/reemkufi",
+      "rights_status": "VERIFIED_OPEN_SOURCE",
+      "redistribution_permitted": true,
+      "scripts": [
+        "arab",
+        "latn"
+      ],
+      "supports_harakat": true,
+      "notes": "True geometric Kufi display face; cv01-cv03 are real character variants. Variable (wght), default instance used.",
+      "script_family": "kufi",
+      "style_influence": null,
+      "production_capability": "KUFI",
+      "upstream_repo": "https://github.com/aliftype/reem-kufi",
+      "upstream_path": "ofl/reemkufi/ReemKufi[wght].ttf",
+      "style_tags": [
+        "kufi",
+        "geometric",
+        "display",
+        "logo"
+      ],
+      "version": "Version 2.000",
+      "file_sha256": "33ead1986cd48c138c4d906c9e5a6341877268461f97623409a2014de1cd4aa4",
+      "upstream_distribution": "https://github.com/google/fonts",
+      "upstream_ref": "main",
+      "upstream_commit": null,
+      "upstream_commit_status": "UNRESOLVED_GITHUB_API_BLOCKED",
+      "retrieved_at": "2026-08-26",
+      "script_coverage": {
+        "arabic_codepoints": 118,
+        "latin_basic": true
+      },
+      "diversity_index": 4
     },
     {
       "font_id": "scheherazade-new",
@@ -40,9 +292,75 @@
       "source_url": "https://software.sil.org/scheherazade/",
       "rights_status": "VERIFIED_OPEN_SOURCE",
       "redistribution_permitted": true,
-      "scripts": ["arab", "latn"],
+      "scripts": [
+        "arab",
+        "latn"
+      ],
       "supports_harakat": true,
-      "notes": "Traditional Naskh with wide Arabic coverage including Harakat."
+      "notes": "Traditional Naskh with wide Arabic coverage including Harakat.",
+      "script_family": "naskh",
+      "style_influence": null,
+      "production_capability": "NASKH",
+      "upstream_repo": "https://github.com/silnrsi/font-scheherazade",
+      "upstream_path": "ofl/scheherazadenew/ScheherazadeNew-Regular.ttf",
+      "style_tags": [
+        "traditional",
+        "naskh",
+        "wide-coverage",
+        "harakat"
+      ],
+      "version": "Version 4.500",
+      "file_sha256": "794bac8dc9e83d1d620bc471ea694f5f31d0965ce8006490a79dfc51a2d283b3",
+      "upstream_distribution": "https://github.com/google/fonts",
+      "upstream_ref": "main",
+      "upstream_commit": null,
+      "upstream_commit_status": "UNRESOLVED_GITHUB_API_BLOCKED",
+      "retrieved_at": "2026-08-26",
+      "script_coverage": {
+        "arabic_codepoints": 256,
+        "latin_basic": true
+      },
+      "diversity_index": 2
+    },
+    {
+      "font_id": "tajawal",
+      "family": "Tajawal",
+      "style_family": "modern-geometric",
+      "file": "Tajawal-Regular.ttf",
+      "license": "SIL OFL 1.1",
+      "license_file": "Tajawal-OFL.txt",
+      "source_url": "https://github.com/google/fonts/tree/main/ofl/tajawal",
+      "rights_status": "VERIFIED_OPEN_SOURCE",
+      "redistribution_permitted": true,
+      "scripts": [
+        "arab",
+        "latn"
+      ],
+      "supports_harakat": true,
+      "notes": "Modern geometric Arabic sans for minimal/contemporary pieces.",
+      "script_family": "modern_arabic",
+      "style_influence": null,
+      "production_capability": "MODERN_ARABIC",
+      "upstream_repo": "https://github.com/Boutros/Tajawal",
+      "upstream_path": "ofl/tajawal/Tajawal-Regular.ttf",
+      "style_tags": [
+        "modern",
+        "minimal",
+        "geometric",
+        "sans"
+      ],
+      "version": "Version 1.700",
+      "file_sha256": "6882892da3e03527d5db2bbab3b48bde6ef2e878a43f522d1a4eebda90010a19",
+      "upstream_distribution": "https://github.com/google/fonts",
+      "upstream_ref": "main",
+      "upstream_commit": null,
+      "upstream_commit_status": "UNRESOLVED_GITHUB_API_BLOCKED",
+      "retrieved_at": "2026-08-26",
+      "script_coverage": {
+        "arabic_codepoints": 67,
+        "latin_basic": true
+      },
+      "diversity_index": 6
     }
   ]
 }

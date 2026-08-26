@@ -315,7 +315,7 @@ def _create_version_row(
         schema_version=SCHEMA_VERSION,
         arabic_engine_version=ARABIC_ENGINE_VERSION,
         font_id=font.font_id,
-        font_version=font.file_sha256,
+        font_version=font.computed_sha256,
         recipe_id=recipe.recipe_id,
         recipe_version=lib["library_version"],
         recipe=recipe.model_dump(),
@@ -647,7 +647,7 @@ def sync_font_references(session: Session) -> int:
         exists = session.execute(
             select(m.FontReference).where(
                 m.FontReference.font_id == font.font_id,
-                m.FontReference.file_sha256 == font.file_sha256,
+                m.FontReference.file_sha256 == font.computed_sha256,
             )
         ).scalar_one_or_none()
         if exists is None:
@@ -657,7 +657,7 @@ def sync_font_references(session: Session) -> int:
                     family=font.family,
                     license=font.license,
                     rights_status=font.rights_status.value,
-                    file_sha256=font.file_sha256,
+                    file_sha256=font.computed_sha256,
                     registry_version=registry_version,
                 )
             )

@@ -1,0 +1,210 @@
+{
+ "library_version": "0.1.0",
+ "note": "On-demand recipes for the newly-vendored script families. Kept OUT of the default candidate pool so the ranked-10 Golden Path and its immutable golden fixture are unchanged; these are selected only when a customer explicitly asks for that script family (see app/fonts/capabilities.resolve_script_request). Parameters were chosen by a validator sweep, not by eye — see dna.manufacturing_validated on each entry.",
+ "recipes": [
+  {
+   "recipe_id": "ruqaa-compact-bar",
+   "name": "Ruqaa compact nameplate",
+   "font_id": "aref-ruqaa",
+   "composition": "plate_rect",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.45,
+   "dot_strategy": "merge",
+   "connector_height_mm": 1.2,
+   "loops": "left_right",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 20,
+   "dna": {
+    "family": "ruqaa-nameplate",
+    "visual_purpose": "compact everyday-hand nameplate",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 16,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "parameters selected by sweep; 4/4 golden names pass the validator"
+   },
+   "kashida_count": 2
+  },
+  {
+   "recipe_id": "kufi-geometric-plate",
+   "name": "Geometric Kufi plate",
+   "font_id": "reem-kufi",
+   "composition": "plate_rect",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.45,
+   "dot_strategy": "merge",
+   "connector_height_mm": 1.2,
+   "loops": "left_right",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 20,
+   "dna": {
+    "family": "kufi-geometric",
+    "visual_purpose": "geometric display block",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 16,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "parameters selected by sweep; 3/4 golden names pass the validator"
+   },
+   "kashida_count": 2
+  },
+  {
+   "recipe_id": "nastaliq-drop",
+   "name": "Nastaliq flowing drop",
+   "font_id": "noto-nastaliq-urdu",
+   "composition": "plate_rect",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.45,
+   "dot_strategy": "merge",
+   "connector_height_mm": 1.2,
+   "loops": "left_right",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 20,
+   "dna": {
+    "family": "nastaliq-flowing",
+    "visual_purpose": "steep descending calligraphic run",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 16,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "parameters selected by sweep; 4/4 golden names pass the validator"
+   },
+   "kashida_count": 2
+  },
+  {
+   "recipe_id": "tajawal-minimal-bar",
+   "name": "Minimal modern nameplate",
+   "font_id": "tajawal",
+   "composition": "plate_rect",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.45,
+   "dot_strategy": "merge",
+   "connector_height_mm": 1.2,
+   "loops": "left_right",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 20,
+   "dna": {
+    "family": "modern-minimal",
+    "visual_purpose": "clean geometric minimal nameplate",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 16,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "parameters selected by sweep; 3/4 golden names pass the validator"
+   },
+   "kashida_count": 2
+  },
+  {
+   "recipe_id": "katibeh-sweeping",
+   "name": "Thuluth-influenced sweeping display",
+   "font_id": "katibeh",
+   "composition": "plate_rect",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.45,
+   "dot_strategy": "merge",
+   "connector_height_mm": 1.2,
+   "loops": "left_right",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 20,
+   "dna": {
+    "family": "thuluth-influenced-display",
+    "visual_purpose": "sweeping display strokes (NOT true Thuluth)",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 16,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "parameters selected by sweep; 3/4 golden names pass the validator"
+   },
+   "kashida_count": 2
+  },
+  {
+   "recipe_id": "lemonada-flowing",
+   "name": "Diwani-influenced flowing nameplate",
+   "font_id": "lemonada",
+   "composition": "baseline_bar",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.45,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "left_right",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 20,
+   "dna": {
+    "family": "diwani-influenced-flowing",
+    "visual_purpose": "rounded flowing curves (NOT true Diwani)",
+    "products": [
+     "pendant",
+     "necklace"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 16,
+     "rules_profile": "TEST_DEFAULTS"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "parameters selected by sweep; 3/4 golden names pass the validator"
+   },
+   "kashida_count": 2
+  }
+ ]
+}

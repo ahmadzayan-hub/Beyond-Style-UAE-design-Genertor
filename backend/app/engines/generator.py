@@ -191,7 +191,7 @@ def build_candidate(
             complexity=round(perimeter**2 / area, 2) if area else 0,
             stroke_delta_mm=recipe.stroke_delta_mm,
             composition_class=COMPOSITION_CLASSES[recipe.composition],
-            font_index=sorted(f.font_id for f in registry.list()).index(recipe.font_id),
+            font_index=registry.get(recipe.font_id).diversity_index,
             loops_class=LOOPS_CLASSES[recipe.loops],
             occupancy_hex=grid_to_hex(occupancy_grid(geom)),
         )

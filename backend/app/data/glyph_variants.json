@@ -1,44 +1,949 @@
 {
-  "library_version": "0.1.0",
-  "note": "Deterministic glyph-variant registry. OT feature sets are real OpenType features shipped in the licensed fonts (positional forms init/medial/final/isolated are always on via HarfBuzz). Dot styles and swashes are parametric geometry recipes applied by the geometry engine — reusable assets, not ad-hoc logic. All variants preserve letter identity; the identity proof still gates production.",
-  "ot_feature_sets": {
-    "default": {"fonts": ["amiri-regular", "scheherazade-new", "cairo"], "features": {}, "label": "Standard forms"},
-    "amiri-ornate-1": {"fonts": ["amiri-regular"], "features": {"ss01": true, "ss05": true}, "label": "Amiri stylistic alternates I"},
-    "amiri-ornate-2": {"fonts": ["amiri-regular"], "features": {"ss02": true, "ss06": true}, "label": "Amiri stylistic alternates II"},
-    "amiri-ornate-3": {"fonts": ["amiri-regular"], "features": {"ss03": true, "ss07": true, "ss08": true}, "label": "Amiri stylistic alternates III"},
-    "sche-salt": {"fonts": ["scheherazade-new"], "features": {"salt": true}, "label": "Scheherazade stylistic alternates"},
-    "sche-cv-tails": {"fonts": ["scheherazade-new"], "features": {"cv44": 1, "cv48": 1, "cv49": 1}, "label": "Scheherazade alternate tails"},
-    "sche-cv-forms": {"fonts": ["scheherazade-new"], "features": {"cv51": 1, "cv62": 1, "cv78": 1}, "label": "Scheherazade alternate letterforms"},
-    "cairo-dlig": {"fonts": ["cairo"], "features": {"dlig": true}, "label": "Cairo discretionary ligatures"}
+ "library_version": "0.2.0",
+ "note": "Deterministic glyph-variant registry. OT feature sets are real OpenType features shipped in the licensed fonts (positional forms init/medial/final/isolated are always on via HarfBuzz). Dot styles and swashes are parametric geometry recipes applied by the geometry engine — reusable assets, not ad-hoc logic. All variants preserve letter identity; the identity proof still gates production.",
+ "ot_feature_sets": {
+  "default": {
+   "fonts": [
+    "amiri-regular",
+    "scheherazade-new",
+    "cairo"
+   ],
+   "features": {},
+   "label": "Standard forms",
+   "provenance": "CURATED_VERIFIED_AGAINST_FONT_TABLES",
+   "safe_for_production": true
   },
-  "dot_styles": {
-    "round": {"label": "Classic round dots", "shape": "circle", "scale": 1.0},
-    "diamond": {"label": "Diamond-cut dots", "shape": "diamond", "scale": 1.15},
-    "square": {"label": "Kufi square dots", "shape": "square", "scale": 1.0},
-    "petal": {"label": "Petal dots", "shape": "petal", "scale": 1.2}
+  "amiri-ornate-1": {
+   "fonts": [
+    "amiri-regular"
+   ],
+   "features": {
+    "ss01": true,
+    "ss05": true
+   },
+   "label": "Amiri stylistic alternates I",
+   "provenance": "CURATED_VERIFIED_AGAINST_FONT_TABLES",
+   "safe_for_production": true
   },
-  "swashes": {
-    "none": {"label": "No flourish"},
-    "underline_flourish": {
-      "label": "Underline flourish",
-      "kind": "underline_curve",
-      "depth_ratio": 0.22,
-      "thickness_ratio": 0.6,
-      "extend_ratio": 0.12
-    },
-    "tail_sweep": {
-      "label": "Trailing tail sweep",
-      "kind": "end_curve",
-      "depth_ratio": 0.35,
-      "thickness_ratio": 0.55,
-      "extend_ratio": 0.3
-    },
-    "double_flourish": {
-      "label": "Mirrored double flourish",
-      "kind": "double_curve",
-      "depth_ratio": 0.18,
-      "thickness_ratio": 0.55,
-      "extend_ratio": 0.1
-    }
+  "amiri-ornate-2": {
+   "fonts": [
+    "amiri-regular"
+   ],
+   "features": {
+    "ss02": true,
+    "ss06": true
+   },
+   "label": "Amiri stylistic alternates II",
+   "provenance": "CURATED_VERIFIED_AGAINST_FONT_TABLES",
+   "safe_for_production": true
+  },
+  "amiri-ornate-3": {
+   "fonts": [
+    "amiri-regular"
+   ],
+   "features": {
+    "ss03": true,
+    "ss07": true,
+    "ss08": true
+   },
+   "label": "Amiri stylistic alternates III",
+   "provenance": "CURATED_VERIFIED_AGAINST_FONT_TABLES",
+   "safe_for_production": true
+  },
+  "sche-salt": {
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "features": {
+    "salt": true
+   },
+   "label": "Scheherazade stylistic alternates",
+   "provenance": "CURATED_VERIFIED_AGAINST_FONT_TABLES",
+   "safe_for_production": true
+  },
+  "sche-cv-tails": {
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "features": {
+    "cv44": 1,
+    "cv48": 1,
+    "cv49": 1
+   },
+   "label": "Scheherazade alternate tails",
+   "provenance": "CURATED_VERIFIED_AGAINST_FONT_TABLES",
+   "safe_for_production": true
+  },
+  "sche-cv-forms": {
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "features": {
+    "cv51": 1,
+    "cv62": 1,
+    "cv78": 1
+   },
+   "label": "Scheherazade alternate letterforms",
+   "provenance": "CURATED_VERIFIED_AGAINST_FONT_TABLES",
+   "safe_for_production": true
+  },
+  "cairo-dlig": {
+   "fonts": [
+    "cairo"
+   ],
+   "features": {
+    "dlig": true
+   },
+   "label": "Cairo discretionary ligatures",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ]
+  },
+  "amiri-regular-liga": {
+   "fonts": [
+    "amiri-regular"
+   ],
+   "features": {
+    "liga": true
+   },
+   "label": "Amiri standard ligatures",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ]
+  },
+  "amiri-regular-ss01": {
+   "fonts": [
+    "amiri-regular"
+   ],
+   "features": {
+    "ss01": true
+   },
+   "label": "Amiri stylistic set 1",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ]
+  },
+  "amiri-regular-ss02": {
+   "fonts": [
+    "amiri-regular"
+   ],
+   "features": {
+    "ss02": true
+   },
+   "label": "Amiri stylistic set 2",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ]
+  },
+  "amiri-regular-ss03": {
+   "fonts": [
+    "amiri-regular"
+   ],
+   "features": {
+    "ss03": true
+   },
+   "label": "Amiri stylistic set 3",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ]
+  },
+  "amiri-regular-ss04": {
+   "fonts": [
+    "amiri-regular"
+   ],
+   "features": {
+    "ss04": true
+   },
+   "label": "Amiri stylistic set 4",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ]
+  },
+  "amiri-regular-ss05": {
+   "fonts": [
+    "amiri-regular"
+   ],
+   "features": {
+    "ss05": true
+   },
+   "label": "Amiri stylistic set 5",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ]
+  },
+  "amiri-regular-ss06": {
+   "fonts": [
+    "amiri-regular"
+   ],
+   "features": {
+    "ss06": true
+   },
+   "label": "Amiri stylistic set 6",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ]
+  },
+  "amiri-regular-ss07": {
+   "fonts": [
+    "amiri-regular"
+   ],
+   "features": {
+    "ss07": true
+   },
+   "label": "Amiri stylistic set 7",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ]
+  },
+  "amiri-regular-ss08": {
+   "fonts": [
+    "amiri-regular"
+   ],
+   "features": {
+    "ss08": true
+   },
+   "label": "Amiri stylistic set 8",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ]
+  },
+  "aref-ruqaa-calt": {
+   "fonts": [
+    "aref-ruqaa"
+   ],
+   "features": {
+    "calt": true
+   },
+   "label": "Aref Ruqaa contextual alternates",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ]
+  },
+  "aref-ruqaa-jalt": {
+   "fonts": [
+    "aref-ruqaa"
+   ],
+   "features": {
+    "jalt": true
+   },
+   "label": "Aref Ruqaa justification alternates",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ]
+  },
+  "aref-ruqaa-ss01": {
+   "fonts": [
+    "aref-ruqaa"
+   ],
+   "features": {
+    "ss01": true
+   },
+   "label": "Aref Ruqaa stylistic set 1",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ]
+  },
+  "aref-ruqaa-ss02": {
+   "fonts": [
+    "aref-ruqaa"
+   ],
+   "features": {
+    "ss02": true
+   },
+   "label": "Aref Ruqaa stylistic set 2",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ]
+  },
+  "aref-ruqaa-ss03": {
+   "fonts": [
+    "aref-ruqaa"
+   ],
+   "features": {
+    "ss03": true
+   },
+   "label": "Aref Ruqaa stylistic set 3",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ]
+  },
+  "aref-ruqaa-ss04": {
+   "fonts": [
+    "aref-ruqaa"
+   ],
+   "features": {
+    "ss04": true
+   },
+   "label": "Aref Ruqaa stylistic set 4",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ]
+  },
+  "aref-ruqaa-ss05": {
+   "fonts": [
+    "aref-ruqaa"
+   ],
+   "features": {
+    "ss05": true
+   },
+   "label": "Aref Ruqaa stylistic set 5",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ]
+  },
+  "aref-ruqaa-ss06": {
+   "fonts": [
+    "aref-ruqaa"
+   ],
+   "features": {
+    "ss06": true
+   },
+   "label": "Aref Ruqaa stylistic set 6",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ]
+  },
+  "aref-ruqaa-ss07": {
+   "fonts": [
+    "aref-ruqaa"
+   ],
+   "features": {
+    "ss07": true
+   },
+   "label": "Aref Ruqaa stylistic set 7",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ]
+  },
+  "aref-ruqaa-ss08": {
+   "fonts": [
+    "aref-ruqaa"
+   ],
+   "features": {
+    "ss08": true
+   },
+   "label": "Aref Ruqaa stylistic set 8",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ]
+  },
+  "katibeh-calt": {
+   "fonts": [
+    "katibeh"
+   ],
+   "features": {
+    "calt": true
+   },
+   "label": "Katibeh contextual alternates",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ]
+  },
+  "katibeh-dlig": {
+   "fonts": [
+    "katibeh"
+   ],
+   "features": {
+    "dlig": true
+   },
+   "label": "Katibeh discretionary ligatures",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ]
+  },
+  "katibeh-liga": {
+   "fonts": [
+    "katibeh"
+   ],
+   "features": {
+    "liga": true
+   },
+   "label": "Katibeh standard ligatures",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ]
+  },
+  "katibeh-ss01": {
+   "fonts": [
+    "katibeh"
+   ],
+   "features": {
+    "ss01": true
+   },
+   "label": "Katibeh stylistic set 1",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ]
+  },
+  "lemonada-dlig": {
+   "fonts": [
+    "lemonada"
+   ],
+   "features": {
+    "dlig": true
+   },
+   "label": "Lemonada discretionary ligatures",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ]
+  },
+  "reem-kufi-cv01": {
+   "fonts": [
+    "reem-kufi"
+   ],
+   "features": {
+    "cv01": true
+   },
+   "label": "Reem Kufi character variant 1",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ]
+  },
+  "reem-kufi-cv02": {
+   "fonts": [
+    "reem-kufi"
+   ],
+   "features": {
+    "cv02": true
+   },
+   "label": "Reem Kufi character variant 2",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ]
+  },
+  "reem-kufi-cv03": {
+   "fonts": [
+    "reem-kufi"
+   ],
+   "features": {
+    "cv03": true
+   },
+   "label": "Reem Kufi character variant 3",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ]
+  },
+  "scheherazade-new-calt": {
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "features": {
+    "calt": true
+   },
+   "label": "Scheherazade New contextual alternates",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "arab",
+    "latn"
+   ]
+  },
+  "scheherazade-new-cv12": {
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "features": {
+    "cv12": true
+   },
+   "label": "Scheherazade New cv12",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "arab",
+    "latn"
+   ]
+  },
+  "scheherazade-new-cv44": {
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "features": {
+    "cv44": true
+   },
+   "label": "Scheherazade New cv44",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "arab",
+    "latn"
+   ]
+  },
+  "scheherazade-new-cv48": {
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "features": {
+    "cv48": true
+   },
+   "label": "Scheherazade New cv48",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "arab",
+    "latn"
+   ]
+  },
+  "scheherazade-new-cv49": {
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "features": {
+    "cv49": true
+   },
+   "label": "Scheherazade New cv49",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "arab",
+    "latn"
+   ]
+  },
+  "scheherazade-new-cv51": {
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "features": {
+    "cv51": true
+   },
+   "label": "Scheherazade New cv51",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "arab",
+    "latn"
+   ]
+  },
+  "scheherazade-new-cv54": {
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "features": {
+    "cv54": true
+   },
+   "label": "Scheherazade New cv54",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "arab",
+    "latn"
+   ]
+  },
+  "scheherazade-new-cv60": {
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "features": {
+    "cv60": true
+   },
+   "label": "Scheherazade New cv60",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "arab",
+    "latn"
+   ]
+  },
+  "scheherazade-new-cv62": {
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "features": {
+    "cv62": true
+   },
+   "label": "Scheherazade New cv62",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "arab",
+    "latn"
+   ]
+  },
+  "scheherazade-new-cv70": {
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "features": {
+    "cv70": true
+   },
+   "label": "Scheherazade New cv70",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "arab",
+    "latn"
+   ]
+  },
+  "scheherazade-new-cv72": {
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "features": {
+    "cv72": true
+   },
+   "label": "Scheherazade New cv72",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "arab",
+    "latn"
+   ]
+  },
+  "scheherazade-new-cv74": {
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "features": {
+    "cv74": true
+   },
+   "label": "Scheherazade New cv74",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "arab",
+    "latn"
+   ]
+  },
+  "scheherazade-new-cv76": {
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "features": {
+    "cv76": true
+   },
+   "label": "Scheherazade New cv76",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "arab",
+    "latn"
+   ]
+  },
+  "scheherazade-new-cv78": {
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "features": {
+    "cv78": true
+   },
+   "label": "Scheherazade New cv78",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "arab",
+    "latn"
+   ]
+  },
+  "scheherazade-new-cv80": {
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "features": {
+    "cv80": true
+   },
+   "label": "Scheherazade New cv80",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "arab",
+    "latn"
+   ]
+  },
+  "scheherazade-new-cv81": {
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "features": {
+    "cv81": true
+   },
+   "label": "Scheherazade New cv81",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "arab",
+    "latn"
+   ]
+  },
+  "scheherazade-new-cv82": {
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "features": {
+    "cv82": true
+   },
+   "label": "Scheherazade New cv82",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "arab",
+    "latn"
+   ]
+  },
+  "scheherazade-new-cv84": {
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "features": {
+    "cv84": true
+   },
+   "label": "Scheherazade New cv84",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "arab",
+    "latn"
+   ]
+  },
+  "scheherazade-new-cv85": {
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "features": {
+    "cv85": true
+   },
+   "label": "Scheherazade New cv85",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "arab",
+    "latn"
+   ]
+  },
+  "scheherazade-new-cv88": {
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "features": {
+    "cv88": true
+   },
+   "label": "Scheherazade New cv88",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "arab",
+    "latn"
+   ]
+  },
+  "scheherazade-new-liga": {
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "features": {
+    "liga": true
+   },
+   "label": "Scheherazade New standard ligatures",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "arab",
+    "latn"
+   ]
+  },
+  "scheherazade-new-salt": {
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "features": {
+    "salt": true
+   },
+   "label": "Scheherazade New stylistic alternates",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "arab",
+    "latn"
+   ]
+  },
+  "tajawal-dlig": {
+   "fonts": [
+    "tajawal"
+   ],
+   "features": {
+    "dlig": true
+   },
+   "label": "Tajawal discretionary ligatures",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ]
+  },
+  "tajawal-liga": {
+   "fonts": [
+    "tajawal"
+   ],
+   "features": {
+    "liga": true
+   },
+   "label": "Tajawal standard ligatures",
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "safe_for_production": true,
+   "affected_scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ]
   }
+ },
+ "dot_styles": {
+  "round": {
+   "label": "Classic round dots",
+   "shape": "circle",
+   "scale": 1.0
+  },
+  "diamond": {
+   "label": "Diamond-cut dots",
+   "shape": "diamond",
+   "scale": 1.15
+  },
+  "square": {
+   "label": "Kufi square dots",
+   "shape": "square",
+   "scale": 1.0
+  },
+  "petal": {
+   "label": "Petal dots",
+   "shape": "petal",
+   "scale": 1.2
+  }
+ },
+ "swashes": {
+  "none": {
+   "label": "No flourish"
+  },
+  "underline_flourish": {
+   "label": "Underline flourish",
+   "kind": "underline_curve",
+   "depth_ratio": 0.22,
+   "thickness_ratio": 0.6,
+   "extend_ratio": 0.12
+  },
+  "tail_sweep": {
+   "label": "Trailing tail sweep",
+   "kind": "end_curve",
+   "depth_ratio": 0.35,
+   "thickness_ratio": 0.55,
+   "extend_ratio": 0.3
+  },
+  "double_flourish": {
+   "label": "Mirrored double flourish",
+   "kind": "double_curve",
+   "depth_ratio": 0.18,
+   "thickness_ratio": 0.55,
+   "extend_ratio": 0.1
+  }
+ }
 }

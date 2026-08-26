@@ -24,11 +24,40 @@ def load_variants() -> dict:
     return json.loads(VARIANTS_FILE.read_text(encoding="utf-8"))
 
 
-def feature_sets_for_font(font_id: str) -> list[str]:
+def feature_sets_for_font(font_id: str, production_only: bool = True) -> list[str]:
+    """Named feature sets applicable to a font. `production_only` keeps out
+    anything that did not survive the shaping regression."""
     lib = load_variants()
     return [
-        name for name, spec in lib["ot_feature_sets"].items() if font_id in spec["fonts"]
+        name
+        for name, spec in lib["ot_feature_sets"].items()
+        if font_id in spec["fonts"]
+        and (not production_only or spec.get("safe_for_production", True))
     ]
+
+
+def font_variant_capabilities(font_id: str) -> list[dict]:
+    """Full per-font variant descriptors for the Copilot/admin surfaces.
+
+    Every entry traces back to a real table in the font binary: `provenance`
+    says whether it was discovered by inspection or hand-curated and then
+    verified, and `safe_for_production` reflects the corpus regression."""
+    lib = load_variants()
+    out = []
+    for name, spec in lib["ot_feature_sets"].items():
+        if font_id not in spec["fonts"]:
+            continue
+        out.append({
+            "set_id": name,
+            "font_id": font_id,
+            "features": dict(spec["features"]),
+            "feature_tags": sorted(spec["features"]),
+            "label": spec["label"],
+            "provenance": spec.get("provenance", "CURATED_VERIFIED_AGAINST_FONT_TABLES"),
+            "safe_for_production": spec.get("safe_for_production", True),
+            "affected_scripts": spec.get("affected_scripts", []),
+        })
+    return sorted(out, key=lambda e: e["set_id"])
 
 
 def resolve_features(feature_set: str, font_id: str) -> dict:

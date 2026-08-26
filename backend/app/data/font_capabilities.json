@@ -1,0 +1,1293 @@
+{
+ "corpus": [
+  "ع",
+  "نورة",
+  "ميثة",
+  "محمد",
+  "سلطان",
+  "فاطمة",
+  "حامد",
+  "خالد",
+  "مهرة",
+  "بسم الله الرحمن الرحيم",
+  "حامد محمد سلطان ميثة حمد خالد مهرة"
+ ],
+ "fonts": {
+  "amiri-regular": {
+   "font_id": "amiri-regular",
+   "family": "Amiri",
+   "version": "Version 1.002",
+   "file_sha256": "ab391c4147d054c48976e98322ad0eefe1427aa0e0502a12a4c75d80a70cfcd7",
+   "gsub_features": [
+    "ccmp",
+    "dnom",
+    "fina",
+    "init",
+    "liga",
+    "locl",
+    "mark",
+    "medi",
+    "numr",
+    "pnum",
+    "rlig",
+    "rtlm",
+    "ss01",
+    "ss02",
+    "ss03",
+    "ss04",
+    "ss05",
+    "ss06",
+    "ss07",
+    "ss08"
+   ],
+   "gpos_features": [
+    "curs",
+    "kern",
+    "mark",
+    "mkmk",
+    "ss05"
+   ],
+   "variation_axes": [],
+   "scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ],
+   "languages": [
+    "ARA",
+    "KSH",
+    "MLY",
+    "SND",
+    "TRK",
+    "URD"
+   ],
+   "optional_features": [
+    "liga",
+    "ss01",
+    "ss02",
+    "ss03",
+    "ss04",
+    "ss05",
+    "ss06",
+    "ss07",
+    "ss08"
+   ],
+   "arabic_codepoints": 255,
+   "supports_harakat": true,
+   "script_family": "naskh",
+   "style_influence": null,
+   "production_capability": "NASKH",
+   "safe_features": [
+    "liga",
+    "ss01",
+    "ss02",
+    "ss03",
+    "ss04",
+    "ss05",
+    "ss06",
+    "ss07",
+    "ss08"
+   ],
+   "rejected_features": [],
+   "feature_verdicts": [
+    {
+     "font_id": "amiri-regular",
+     "feature": "liga",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "amiri-regular",
+     "feature": "ss01",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "amiri-regular",
+     "feature": "ss02",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "amiri-regular",
+     "feature": "ss03",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "amiri-regular",
+     "feature": "ss04",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "amiri-regular",
+     "feature": "ss05",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "amiri-regular",
+     "feature": "ss06",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "amiri-regular",
+     "feature": "ss07",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "amiri-regular",
+     "feature": "ss08",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    }
+   ]
+  },
+  "aref-ruqaa": {
+   "font_id": "aref-ruqaa",
+   "family": "Aref Ruqaa",
+   "version": "Version 1.003",
+   "file_sha256": "ceb786d83ba92f35e96efcd8623c2858d288e0c543c8761ba35b1020989464f9",
+   "gsub_features": [
+    "calt",
+    "ccmp",
+    "dnom",
+    "fina",
+    "init",
+    "isol",
+    "jalt",
+    "locl",
+    "medi",
+    "numr",
+    "ss01",
+    "ss02",
+    "ss03",
+    "ss04",
+    "ss05",
+    "ss06",
+    "ss07",
+    "ss08"
+   ],
+   "gpos_features": [
+    "curs",
+    "kern",
+    "mark",
+    "mkmk"
+   ],
+   "variation_axes": [],
+   "scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ],
+   "languages": [
+    "KSH",
+    "MLY",
+    "SND",
+    "URD"
+   ],
+   "optional_features": [
+    "calt",
+    "jalt",
+    "ss01",
+    "ss02",
+    "ss03",
+    "ss04",
+    "ss05",
+    "ss06",
+    "ss07",
+    "ss08"
+   ],
+   "arabic_codepoints": 111,
+   "supports_harakat": true,
+   "script_family": "ruqaa",
+   "style_influence": null,
+   "production_capability": "RUQAA",
+   "safe_features": [
+    "calt",
+    "jalt",
+    "ss01",
+    "ss02",
+    "ss03",
+    "ss04",
+    "ss05",
+    "ss06",
+    "ss07",
+    "ss08"
+   ],
+   "rejected_features": [],
+   "feature_verdicts": [
+    {
+     "font_id": "aref-ruqaa",
+     "feature": "calt",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "aref-ruqaa",
+     "feature": "jalt",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      1
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "aref-ruqaa",
+     "feature": "ss01",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "aref-ruqaa",
+     "feature": "ss02",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "aref-ruqaa",
+     "feature": "ss03",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "aref-ruqaa",
+     "feature": "ss04",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "aref-ruqaa",
+     "feature": "ss05",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "aref-ruqaa",
+     "feature": "ss06",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "aref-ruqaa",
+     "feature": "ss07",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "aref-ruqaa",
+     "feature": "ss08",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    }
+   ]
+  },
+  "cairo": {
+   "font_id": "cairo",
+   "family": "Cairo",
+   "version": "Version 3.130;gftools[0.9.24]",
+   "file_sha256": "667c987182391c91f4e57a2f455b1794fb5e3ee6ca4ef3383e86bb690fa9c964",
+   "gsub_features": [
+    "aalt",
+    "ccmp",
+    "dlig",
+    "dnom",
+    "fina",
+    "frac",
+    "init",
+    "locl",
+    "medi",
+    "numr",
+    "ordn",
+    "rlig",
+    "rvrn",
+    "sinf",
+    "subs",
+    "sups"
+   ],
+   "gpos_features": [
+    "kern",
+    "mark",
+    "mkmk"
+   ],
+   "variation_axes": [
+    {
+     "tag": "wght",
+     "min": 200.0,
+     "default": 400.0,
+     "max": 1000.0
+    },
+    {
+     "tag": "slnt",
+     "min": -11.0,
+     "default": 0.0,
+     "max": 11.0
+    }
+   ],
+   "scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ],
+   "languages": [
+    "MOL",
+    "ROM",
+    "URD"
+   ],
+   "optional_features": [
+    "dlig"
+   ],
+   "arabic_codepoints": 102,
+   "supports_harakat": true,
+   "script_family": "modern_arabic",
+   "style_influence": "kufi",
+   "production_capability": "MODERN_ARABIC",
+   "safe_features": [
+    "dlig"
+   ],
+   "rejected_features": [],
+   "feature_verdicts": [
+    {
+     "font_id": "cairo",
+     "feature": "dlig",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    }
+   ]
+  },
+  "katibeh": {
+   "font_id": "katibeh",
+   "family": "Katibeh",
+   "version": "Version 1.0010g",
+   "file_sha256": "334eeadb58eb442734fe7dea87412cbbd8c3fd00294252723aadf19a850cf11f",
+   "gsub_features": [
+    "calt",
+    "ccmp",
+    "dlig",
+    "dnom",
+    "fina",
+    "frac",
+    "init",
+    "isol",
+    "liga",
+    "lnum",
+    "locl",
+    "medi",
+    "numr",
+    "onum",
+    "ordn",
+    "rlig",
+    "ss01",
+    "sups"
+   ],
+   "gpos_features": [
+    "kern",
+    "mark",
+    "mkmk"
+   ],
+   "variation_axes": [],
+   "scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ],
+   "languages": [
+    "ARA",
+    "AZE",
+    "CAT",
+    "CRT",
+    "FAR",
+    "KAZ",
+    "MOL",
+    "ROM",
+    "TAT",
+    "TRK",
+    "URD"
+   ],
+   "optional_features": [
+    "calt",
+    "dlig",
+    "liga",
+    "ss01"
+   ],
+   "arabic_codepoints": 243,
+   "supports_harakat": true,
+   "script_family": "naskh",
+   "style_influence": "thuluth",
+   "production_capability": "THULUTH_INFLUENCED",
+   "safe_features": [
+    "calt",
+    "dlig",
+    "liga",
+    "ss01"
+   ],
+   "rejected_features": [],
+   "feature_verdicts": [
+    {
+     "font_id": "katibeh",
+     "feature": "calt",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "katibeh",
+     "feature": "dlig",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "katibeh",
+     "feature": "liga",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "katibeh",
+     "feature": "ss01",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    }
+   ]
+  },
+  "lemonada": {
+   "font_id": "lemonada",
+   "family": "Lemonada",
+   "version": "Version 4.005",
+   "file_sha256": "84134e9e1da7d593839073157980a4d38296d2be10b61469a8f3169204959ad9",
+   "gsub_features": [
+    "aalt",
+    "ccmp",
+    "dlig",
+    "dnom",
+    "fina",
+    "frac",
+    "init",
+    "locl",
+    "medi",
+    "numr",
+    "ordn",
+    "rlig",
+    "sups"
+   ],
+   "gpos_features": [
+    "kern",
+    "mark",
+    "mkmk"
+   ],
+   "variation_axes": [
+    {
+     "tag": "wght",
+     "min": 300.0,
+     "default": 400.0,
+     "max": 700.0
+    }
+   ],
+   "scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ],
+   "languages": [
+    "AZE",
+    "CAT",
+    "CRT",
+    "KAZ",
+    "MOL",
+    "ROM",
+    "TAT",
+    "TRK",
+    "URD"
+   ],
+   "optional_features": [
+    "dlig"
+   ],
+   "arabic_codepoints": 101,
+   "supports_harakat": true,
+   "script_family": "naskh",
+   "style_influence": "diwani",
+   "production_capability": "DIWANI_INFLUENCED",
+   "safe_features": [
+    "dlig"
+   ],
+   "rejected_features": [],
+   "feature_verdicts": [
+    {
+     "font_id": "lemonada",
+     "feature": "dlig",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    }
+   ]
+  },
+  "noto-nastaliq-urdu": {
+   "font_id": "noto-nastaliq-urdu",
+   "family": "Noto Nastaliq Urdu",
+   "version": "Version 3.009",
+   "file_sha256": "98a4787f34eb6fde57fb9a1121a8f216301196ab0da98ea110cad581be8abbcd",
+   "gsub_features": [
+    "aalt",
+    "ccmp",
+    "fina",
+    "init",
+    "isol",
+    "locl",
+    "medi",
+    "ordn",
+    "rlig"
+   ],
+   "gpos_features": [
+    "curs",
+    "kern",
+    "mark",
+    "mkmk"
+   ],
+   "variation_axes": [
+    {
+     "tag": "wght",
+     "min": 400.0,
+     "default": 400.0,
+     "max": 700.0
+    }
+   ],
+   "scripts": [
+    "DFLT",
+    "arab",
+    "cyrl",
+    "grek",
+    "latn"
+   ],
+   "languages": [
+    "APPH",
+    "ARA",
+    "CAT",
+    "FAR",
+    "IPPH",
+    "KSH",
+    "MAH",
+    "MKD",
+    "MOL",
+    "NAV",
+    "ROM",
+    "SND",
+    "SRB",
+    "URD"
+   ],
+   "optional_features": [],
+   "arabic_codepoints": 214,
+   "supports_harakat": true,
+   "script_family": "nastaliq",
+   "style_influence": null,
+   "production_capability": "NASTALIQ",
+   "safe_features": [],
+   "rejected_features": [],
+   "feature_verdicts": []
+  },
+  "reem-kufi": {
+   "font_id": "reem-kufi",
+   "family": "Reem Kufi",
+   "version": "Version 2.000",
+   "file_sha256": "33ead1986cd48c138c4d906c9e5a6341877268461f97623409a2014de1cd4aa4",
+   "gsub_features": [
+    "aalt",
+    "case",
+    "ccmp",
+    "cv01",
+    "cv02",
+    "cv03",
+    "fina",
+    "frac",
+    "init",
+    "locl",
+    "medi",
+    "ordn",
+    "rclt",
+    "rlig",
+    "sups",
+    "zero"
+   ],
+   "gpos_features": [
+    "kern",
+    "mark",
+    "mkmk",
+    "rclt"
+   ],
+   "variation_axes": [
+    {
+     "tag": "wght",
+     "min": 400.0,
+     "default": 400.0,
+     "max": 700.0
+    }
+   ],
+   "scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ],
+   "languages": [
+    "AZE",
+    "CAT",
+    "CRT",
+    "KAZ",
+    "KSH",
+    "MOL",
+    "ROM",
+    "SND",
+    "TAT",
+    "TRK",
+    "URD"
+   ],
+   "optional_features": [
+    "cv01",
+    "cv02",
+    "cv03"
+   ],
+   "arabic_codepoints": 118,
+   "supports_harakat": true,
+   "script_family": "kufi",
+   "style_influence": null,
+   "production_capability": "KUFI",
+   "safe_features": [
+    "cv01",
+    "cv02",
+    "cv03"
+   ],
+   "rejected_features": [],
+   "feature_verdicts": [
+    {
+     "font_id": "reem-kufi",
+     "feature": "cv01",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "reem-kufi",
+     "feature": "cv02",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "reem-kufi",
+     "feature": "cv03",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    }
+   ]
+  },
+  "scheherazade-new": {
+   "font_id": "scheherazade-new",
+   "family": "Scheherazade New",
+   "version": "Version 4.500",
+   "file_sha256": "794bac8dc9e83d1d620bc471ea694f5f31d0965ce8006490a79dfc51a2d283b3",
+   "gsub_features": [
+    "calt",
+    "ccmp",
+    "cv12",
+    "cv44",
+    "cv48",
+    "cv49",
+    "cv51",
+    "cv54",
+    "cv60",
+    "cv62",
+    "cv70",
+    "cv72",
+    "cv74",
+    "cv76",
+    "cv78",
+    "cv80",
+    "cv81",
+    "cv82",
+    "cv84",
+    "cv85",
+    "cv88",
+    "fina",
+    "init",
+    "liga",
+    "medi",
+    "rlig",
+    "rtlm",
+    "salt"
+   ],
+   "gpos_features": [
+    "kern",
+    "mark",
+    "mkmk"
+   ],
+   "variation_axes": [],
+   "scripts": [
+    "arab",
+    "latn"
+   ],
+   "languages": [
+    "KIR",
+    "KSH",
+    "KUR",
+    "MLY",
+    "RHG",
+    "SND",
+    "URD",
+    "WLF"
+   ],
+   "optional_features": [
+    "calt",
+    "cv12",
+    "cv44",
+    "cv48",
+    "cv49",
+    "cv51",
+    "cv54",
+    "cv60",
+    "cv62",
+    "cv70",
+    "cv72",
+    "cv74",
+    "cv76",
+    "cv78",
+    "cv80",
+    "cv81",
+    "cv82",
+    "cv84",
+    "cv85",
+    "cv88",
+    "liga",
+    "salt"
+   ],
+   "arabic_codepoints": 256,
+   "supports_harakat": true,
+   "script_family": "naskh",
+   "style_influence": null,
+   "production_capability": "NASKH",
+   "safe_features": [
+    "calt",
+    "cv12",
+    "cv44",
+    "cv48",
+    "cv49",
+    "cv51",
+    "cv54",
+    "cv60",
+    "cv62",
+    "cv70",
+    "cv72",
+    "cv74",
+    "cv76",
+    "cv78",
+    "cv80",
+    "cv81",
+    "cv82",
+    "cv84",
+    "cv85",
+    "cv88",
+    "liga",
+    "salt"
+   ],
+   "rejected_features": [],
+   "feature_verdicts": [
+    {
+     "font_id": "scheherazade-new",
+     "feature": "calt",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "scheherazade-new",
+     "feature": "cv12",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "scheherazade-new",
+     "feature": "cv44",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "scheherazade-new",
+     "feature": "cv48",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "scheherazade-new",
+     "feature": "cv49",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "scheherazade-new",
+     "feature": "cv51",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "scheherazade-new",
+     "feature": "cv54",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "scheherazade-new",
+     "feature": "cv60",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "scheherazade-new",
+     "feature": "cv62",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "scheherazade-new",
+     "feature": "cv70",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "scheherazade-new",
+     "feature": "cv72",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "scheherazade-new",
+     "feature": "cv74",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "scheherazade-new",
+     "feature": "cv76",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "scheherazade-new",
+     "feature": "cv78",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "scheherazade-new",
+     "feature": "cv80",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "scheherazade-new",
+     "feature": "cv81",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "scheherazade-new",
+     "feature": "cv82",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "scheherazade-new",
+     "feature": "cv84",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "scheherazade-new",
+     "feature": "cv85",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "scheherazade-new",
+     "feature": "cv88",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "scheherazade-new",
+     "feature": "liga",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "scheherazade-new",
+     "feature": "salt",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    }
+   ]
+  },
+  "tajawal": {
+   "font_id": "tajawal",
+   "family": "Tajawal",
+   "version": "Version 1.700",
+   "file_sha256": "6882892da3e03527d5db2bbab3b48bde6ef2e878a43f522d1a4eebda90010a19",
+   "gsub_features": [
+    "aalt",
+    "ccmp",
+    "dlig",
+    "fina",
+    "frac",
+    "init",
+    "liga",
+    "medi",
+    "rlig"
+   ],
+   "gpos_features": [
+    "kern",
+    "mark",
+    "mkmk"
+   ],
+   "variation_axes": [],
+   "scripts": [
+    "DFLT",
+    "arab",
+    "latn"
+   ],
+   "languages": [
+    "URD"
+   ],
+   "optional_features": [
+    "dlig",
+    "liga"
+   ],
+   "arabic_codepoints": 67,
+   "supports_harakat": true,
+   "script_family": "modern_arabic",
+   "style_influence": null,
+   "production_capability": "MODERN_ARABIC",
+   "safe_features": [
+    "dlig",
+    "liga"
+   ],
+   "rejected_features": [],
+   "feature_verdicts": [
+    {
+     "font_id": "tajawal",
+     "feature": "dlig",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    },
+    {
+     "font_id": "tajawal",
+     "feature": "liga",
+     "safe_for_production": true,
+     "corpus_size": 11,
+     "glyph_delta_range": [
+      0,
+      0
+     ],
+     "ligating": false,
+     "failures": []
+    }
+   ]
+  }
+ }
+}

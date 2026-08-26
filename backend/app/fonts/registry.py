@@ -33,6 +33,33 @@ class FontRecord(BaseModel):
     supports_harakat: bool
     notes: str = ""
 
+    # --- capability / provenance (registry_version >= 0.2.0) ---
+    #: The script system the font genuinely IS.
+    script_family: str = "unknown"
+    #: A classical style it merely leans toward, if any. A bridge font has
+    #: script_family=naskh with style_influence=thuluth|diwani — it must
+    #: never be offered as the true classical script.
+    style_influence: str | None = None
+    #: What may be promised to a customer: NASKH / RUQAA / KUFI / NASTALIQ /
+    #: MODERN_ARABIC / THULUTH_INFLUENCED / DIWANI_INFLUENCED.
+    production_capability: str = "UNKNOWN"
+    style_tags: list[str] = []
+    version: str = ""
+    #: Hash recorded at vendoring time; verified against the binary on disk.
+    file_sha256: str = ""
+    upstream_repo: str = ""
+    upstream_distribution: str = ""
+    upstream_path: str = ""
+    upstream_ref: str = ""
+    upstream_commit: str | None = None
+    upstream_commit_status: str = ""
+    retrieved_at: str = ""
+    script_coverage: dict = {}
+    #: Stable ordinal for the candidate diversity metric. Explicit so that
+    #: vendoring a font never renumbers the existing ones and re-ranks
+    #: previously generated designs.
+    diversity_index: int = 0
+
     @property
     def path(self) -> Path:
         return ASSETS_DIR / self.file
@@ -42,15 +69,21 @@ class FontRecord(BaseModel):
         return self.rights_status in COMMERCIAL_OK
 
     @property
-    def file_sha256(self) -> str:
-        """Font binary hash — used as the font version stamp on versions."""
+    def computed_sha256(self) -> str:
+        """Hash of the binary actually on disk — used as the font version
+        stamp on design versions, and checked against the recorded
+        `file_sha256` so a swapped font file cannot go unnoticed."""
         import hashlib
 
-        if not hasattr(self, "_file_sha256"):
+        if not hasattr(self, "_computed_sha256"):
             object.__setattr__(
-                self, "_file_sha256", hashlib.sha256(self.path.read_bytes()).hexdigest()
+                self, "_computed_sha256", hashlib.sha256(self.path.read_bytes()).hexdigest()
             )
-        return self._file_sha256
+        return self._computed_sha256
+
+    @property
+    def integrity_ok(self) -> bool:
+        return not self.file_sha256 or self.file_sha256 == self.computed_sha256
 
 
 class FontRegistry:
