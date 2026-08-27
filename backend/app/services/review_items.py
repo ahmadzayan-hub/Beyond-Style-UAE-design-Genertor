@@ -159,3 +159,114 @@ def generate_review_pack(max_per_product: int = 4) -> list[dict]:
                 break
         pack.extend(chosen)
     return pack
+
+
+# ---------------------------------------------------------------------------
+# Human Review Wave 1
+# ---------------------------------------------------------------------------
+
+WAVE_1 = "HUMAN_REVIEW_WAVE_1"
+#: Mirrors curation_analysis.MIN_FAMILIES_FOR_COMPARISON (imported lazily to
+#: avoid a circular import at module load).
+MIN_FAMILIES_FOR_COMPARISON_HINT = 3
+
+#: Wave 1 concentrates on the products the shop sells most, so the first
+#: real evidence lands where it changes decisions soonest.
+WAVE_1_PRODUCTS = ["necklace", "pendant", "bracelet", "single_letter_earring", "cufflink"]
+WAVE_1_MAX_PER_PRODUCT = 3
+WAVE_1_MAX_ITEMS = 15
+
+
+def build_wave_1(items: list[dict] | None = None) -> dict:
+    """Select up to three manufacturable candidates per Wave-1 product.
+
+    These are NOT curated winners — nobody has judged them. They are a
+    diverse, manufacturable slate chosen so that a product can actually
+    reach PRODUCT_COMPARISON_READY: three rival font families per product,
+    spread across compositions, with Golden and non-Golden both represented
+    where the corpus allows."""
+    pool = items if items is not None else generate_review_pack(max_per_product=4)
+    wave: list[dict] = []
+    per_product_notes = {}
+
+    for product in WAVE_1_PRODUCTS:
+        candidates = [
+            i for i in pool
+            if i["product"] == product and i["manufacturing_pass"]
+        ]
+        chosen: list[dict] = []
+        seen_fonts: set[str] = set()
+        seen_compositions: set[str] = set()
+        # Alternate Golden / non-Golden so the wave can later test whether
+        # Golden relevance predicts preference rather than assuming it.
+        want_golden = True
+        while candidates and len(chosen) < WAVE_1_MAX_PER_PRODUCT:
+            pick = None
+            for prefer_new_composition in (True, False):
+                for candidate in candidates:
+                    if candidate["technical"]["font_id"] in seen_fonts:
+                        continue
+                    if prefer_new_composition and candidate["composition"] in seen_compositions:
+                        continue
+                    is_golden = bool(candidate["golden_production_pattern"])
+                    if is_golden != want_golden and len(chosen) < 2:
+                        continue
+                    pick = candidate
+                    break
+                if pick:
+                    break
+            if pick is None:  # balance impossible — take the next new family
+                pick = next((c for c in candidates
+                             if c["technical"]["font_id"] not in seen_fonts), None)
+            if pick is None:
+                break
+            chosen.append(pick)
+            seen_fonts.add(pick["technical"]["font_id"])
+            seen_compositions.add(pick["composition"])
+            candidates.remove(pick)
+            want_golden = not want_golden
+
+        available = [i for i in pool if i["product"] == product]
+        manufacturable = [i for i in available if i["manufacturing_pass"]]
+        can_compare = len(seen_fonts) >= 3
+        per_product_notes[product] = {
+            "selected": len(chosen),
+            "font_families": sorted(seen_fonts),
+            "compositions": sorted(seen_compositions),
+            "golden_relevant": sum(1 for c in chosen if c["golden_production_pattern"]),
+            "can_reach_comparison_ready": can_compare,
+            "items_in_corpus": len(available),
+            "manufacturable_in_corpus": len(manufacturable),
+            # A product that cannot field three rival families will never be
+            # comparison-ready however many reviews are collected. Say so.
+            "blocker": None if can_compare else (
+                f"only {len(manufacturable)} of {len(available)} corpus items for this "
+                f"product pass manufacturing, giving {len(seen_fonts)} rival "
+                f"famil{'y' if len(seen_fonts) == 1 else 'ies'}; "
+                f"{MIN_FAMILIES_FOR_COMPARISON_HINT} are needed to name a winner"
+            ),
+            "composition_note": (
+                "the corpus holds one composition for this product, so composition "
+                "diversity within the product is not available without new generation"
+                if len(seen_compositions) <= 1 else None
+            ),
+        }
+        wave.extend(chosen)
+
+    wave = wave[:WAVE_1_MAX_ITEMS]
+    return {
+        "wave": WAVE_1,
+        "items": [{**i, "wave": WAVE_1} for i in wave],
+        "size": len(wave),
+        "products": WAVE_1_PRODUCTS,
+        "per_product": per_product_notes,
+        "status": "AWAITING_HUMAN_REVIEW",
+        "blocked_products": [
+            {"product": p, "blocker": n["blocker"]}
+            for p, n in per_product_notes.items() if n["blocker"]
+        ],
+        "note": (
+            "Not curated winners. A diverse manufacturable slate chosen so each "
+            "product can reach PRODUCT_COMPARISON_READY once reviewed."
+        ),
+    }

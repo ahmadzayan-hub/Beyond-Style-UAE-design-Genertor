@@ -96,7 +96,7 @@ def test_approve_with_all_gates_recommends(clean_tables, db_session):
 def test_weak_critical_score_downgrades_approve_to_allowed(clean_tables, db_session):
     """Beautiful but unreadable is not a recommendation."""
     scores = _full_scores(5)
-    scores["Readability"] = CRITICAL_SCORE_THRESHOLD - 1
+    scores["Legibility"] = CRITICAL_SCORE_THRESHOLD - 1
     item = _item()
     review = record_review(db_session, item=item, reviewer="AD", decision="APPROVE",
                            mode="deep", scores=scores)
@@ -104,7 +104,7 @@ def test_weak_critical_score_downgrades_approve_to_allowed(clean_tables, db_sess
     curation = curation_for_item(item, review)
     assert curation["state"] == "PRODUCTION_ALLOWED"
     assert curation["reason"] == "APPROVED_WITH_WEAK_CRITICAL_SCORES"
-    assert "Readability" in curation["weak_critical_dimensions"]
+    assert "Legibility" in curation["weak_critical_dimensions"]
 
 
 @pytest.mark.parametrize("decision,expected", [
@@ -120,7 +120,7 @@ def test_decisions_map_to_their_states(clean_tables, db_session, decision, expec
 
 
 def test_critical_dimensions_are_the_documented_three():
-    assert set(CRITICAL_DIMENSIONS) == {"Readability", "JewellerySuitability", "ProductFit"}
+    assert set(CRITICAL_DIMENSIONS) == {"ArabicCorrectness", "Legibility", "ProductFit"}
     assert set(CRITICAL_DIMENSIONS) <= set(HUMAN_DIMENSIONS)
     assert len(HUMAN_DIMENSIONS) == 12
 
@@ -136,7 +136,7 @@ def test_deep_review_requires_every_dimension(clean_tables, db_session):
 
 def test_scores_must_be_one_to_five(clean_tables, db_session):
     scores = _full_scores(4)
-    scores["Balance"] = 9
+    scores["VisualBalance"] = 9
     with pytest.raises(ReviewRejected, match="1-5"):
         record_review(db_session, item=_item(), reviewer="AD", decision="APPROVE",
                       mode="deep", scores=scores)

@@ -6,9 +6,9 @@ commercial number here is computed from `design_reviews` rows — what people
 actually said — and from nothing else. Engineering results appear only as
 GATES (pass/fail), never as inputs to an aesthetic average.
 
-When the evidence is thin, that is the answer. `best_family` returns
-INSUFFICIENT_HUMAN_REVIEW_EVIDENCE rather than a confident-looking number
-computed from two opinions.
+When the evidence is thin, that is the answer: the best-family functions
+return NOT_COMPARISON_READY or INSUFFICIENT_HUMAN_REVIEW_EVIDENCE rather
+than a confident-looking number computed from one opinion.
 """
 from __future__ import annotations
 
@@ -26,23 +26,46 @@ from .review_workflow import (
 
 INSUFFICIENT = "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE"
 
-#: Evidence thresholds for a defensible "best family" claim. Deliberately
-#: strict: a family claim shapes what the shop sells, so it should not rest
-#: on one person glancing at one item.
-MIN_DEEP_REVIEWS_FOR_CLAIM = 5      # scored reviews backing one (product, font)
-MIN_DISTINCT_ITEMS_FOR_CLAIM = 3    # across at least this many review items
-MIN_REVIEWERS_FOR_HIGH_CONFIDENCE = 2
+#: --- Evidence model (P3) ---------------------------------------------------
+#:
+#: The previous model required ">=5 scored reviews across >=3 distinct items
+#: per (product, family)". That was STRUCTURALLY IMPOSSIBLE: the review pack
+#: deliberately carries at most ONE item per font family per product for
+#: diversity, so the distinct-item clause could never be satisfied however
+#: many reviews were entered. It is replaced, not quietly relaxed.
+#:
+#: Confidence is now a property of an ITEM (how many independent people
+#: looked at it) and comparison readiness a property of a PRODUCT (are there
+#: enough rival families, each independently reviewed).
+
+ITEM_NO_CONFIDENCE = "ITEM_NO_REVIEW"
+ITEM_LOW_CONFIDENCE = "ITEM_LOW_CONFIDENCE"
+ITEM_MEDIUM_CONFIDENCE = "ITEM_MEDIUM_CONFIDENCE"
+ITEM_HIGH_CONFIDENCE = "ITEM_HIGH_CONFIDENCE"
+
+#: A product can only crown a winner when rivals exist AND each was seen by
+#: more than one person.
+MIN_FAMILIES_FOR_COMPARISON = 3
+MIN_REVIEWS_PER_CANDIDATE = 2
+
+#: A cross-product claim needs breadth as well as depth.
+MIN_PRODUCTS_FOR_OVERALL_CLAIM = 3
+MIN_TOTAL_REVIEWS_FOR_OVERALL_CLAIM = 6
+
+#: Commercial recommendation demands more than "not bad".
+COMMERCIAL_MIN_SCORES = {"CommercialAppeal": 4, "PremiumFeel": 4, "ProductFit": 4}
+
+STRUCTURALLY_IMPOSSIBLE = "STRUCTURALLY_IMPOSSIBLE_THRESHOLD"
+NOT_COMPARISON_READY = "NOT_COMPARISON_READY"
 
 #: Which human dimensions feed which derived signal. Each is a subset of the
 #: twelve a reviewer actually scored — no dimension is invented.
 SIGNAL_DIMENSIONS = {
-    "human_aesthetic_score": [
-        "CalligraphicGrace", "LetterformBeauty", "Balance", "Rhythm", "NegativeSpace",
-    ],
-    "commercial_appeal_score": ["CommercialAppeal", "Originality"],
-    "premium_feel_score": ["LuxuryFeel", "OrnamentalPotential"],
-    "readability_score": ["Readability"],
-    "product_fit_score": ["ProductFit", "JewellerySuitability"],
+    "human_aesthetic_score": ["Elegance", "VisualBalance", "OverallAestheticQuality"],
+    "commercial_appeal_score": ["CommercialAppeal", "WouldRecommend"],
+    "premium_feel_score": ["PremiumFeel", "Uniqueness"],
+    "readability_score": ["Legibility", "ArabicCorrectness"],
+    "product_fit_score": ["ProductFit", "Wearability"],
 }
 
 
@@ -55,14 +78,31 @@ def _text_category(text: str) -> str:
     return "single_letter" if len(text.strip()) <= 2 else "single_name"
 
 
+def item_confidence(independent_reviews: int, agreement_ok: bool = True) -> str:
+    """Confidence in ONE item, from how many independent people reviewed it.
+
+    Two reviewers is MEDIUM, not HIGH: two people agreeing is not yet a
+    consensus. HIGH needs three or more AND acceptable agreement."""
+    if independent_reviews <= 0:
+        return ITEM_NO_CONFIDENCE
+    if independent_reviews == 1:
+        return ITEM_LOW_CONFIDENCE
+    if independent_reviews == 2:
+        return ITEM_MEDIUM_CONFIDENCE
+    return ITEM_HIGH_CONFIDENCE if agreement_ok else ITEM_MEDIUM_CONFIDENCE
+
+
 def confidence_for(review_count: int, reviewer_count: int) -> str:
-    """Confidence is about how much was seen and by how many people —
-    never about how good the scores were."""
+    """Coverage confidence for a GROUP (a product, a font family).
+
+    Driven by how many DIFFERENT people looked, not by volume: one person
+    reviewing nine items is still one opinion. The earlier "a second
+    reviewer unlocks HIGH confidence" rule was wrong and is gone."""
     if review_count == 0:
         return "NONE"
-    if review_count < 3:
+    if reviewer_count <= 1:
         return "LOW"
-    if review_count < MIN_DEEP_REVIEWS_FOR_CLAIM or reviewer_count < MIN_REVIEWERS_FOR_HIGH_CONFIDENCE:
+    if reviewer_count == 2:
         return "MEDIUM"
     return "HIGH"
 
@@ -153,7 +193,7 @@ def review_quality_check(session: Session, items: list[dict]) -> dict:
     thin = [
         product for product, cov in
         load_review_evidence(session, items)["coverage_by_product"].items()
-        if cov["reviews"] < MIN_DEEP_REVIEWS_FOR_CLAIM
+        if cov["reviews"] < MIN_REVIEWS_PER_CANDIDATE
     ]
 
     # Integrity checks against the curation rules themselves.
@@ -297,77 +337,275 @@ def commercial_curation(session: Session, items: list[dict]) -> list[dict]:
 # 5. Best family — only with enough evidence
 # ---------------------------------------------------------------------------
 
-def best_family(session: Session, items: list[dict], signal: str) -> dict:
-    """Best font family per product for one human signal.
+def agreement_report(session: Session, item_id: str) -> dict:
+    """Spread between independent reviewers of one item.
 
-    Returns INSUFFICIENT_HUMAN_REVIEW_EVIDENCE per product wherever the
-    thresholds are not met, and says exactly what is missing."""
-    if signal not in SIGNAL_DIMENSIONS:
-        raise ValueError(f"Unknown signal '{signal}'")
-    reviews = [r for r in session.execute(select(m.DesignReview)).scalars() if r.scores]
-    dims = SIGNAL_DIMENSIONS[signal]
+    Disagreement is surfaced, never smoothed: a mean of 3 from scores of 2
+    and 4 hides exactly the thing a person needs to look at."""
+    from .review_workflow import DISAGREEMENT_DELTA, review_history
 
-    grouped: dict[tuple[str, str], list] = defaultdict(list)
-    for r in reviews:
-        grouped[(r.product, r.font_id)].append(r)
+    rows = [r for r in review_history(session, item_id) if r.scores]
+    # One review per reviewer — the newest — so a reviewer who revised their
+    # opinion is not counted twice as "independent".
+    newest: dict[str, object] = {}
+    for r in rows:
+        newest[r.reviewer] = r
+    independent = list(newest.values())
 
-    per_product: dict[str, list] = defaultdict(list)
-    for (product, font_id), rows in grouped.items():
-        values = [s for r in rows for d in dims if (s := (r.scores or {}).get(d)) is not None]
+    per_dimension = {}
+    disagreements = []
+    for dim in HUMAN_DIMENSIONS:
+        values = [r.scores[dim] for r in independent if dim in (r.scores or {})]
         if not values:
             continue
-        per_product[product].append({
-            "font_family": font_id,
-            "average_score": round(statistics.fmean(values), 3),
-            "review_count": len(rows),
-            "distinct_items": len({r.item_id for r in rows}),
-            "reviewers": sorted({r.reviewer for r in rows}),
-            "confidence": confidence_for(len(rows), len({r.reviewer for r in rows})),
-            "supporting_reviews": [
-                {"item_id": r.item_id, "reviewer": r.reviewer, "decision": r.decision}
-                for r in rows
-            ],
-        })
+        spread = max(values) - min(values)
+        per_dimension[dim] = {
+            "mean": round(statistics.fmean(values), 3),
+            "min": min(values), "max": max(values), "spread": spread,
+            "values": values,
+        }
+        if dim in CRITICAL_DIMENSIONS and spread >= DISAGREEMENT_DELTA:
+            disagreements.append({"dimension": dim, "spread": spread, "values": values})
 
-    products = sorted({i["product"] for i in items})
-    out = {}
-    for product in products:
-        candidates = per_product.get(product, [])
-        eligible = [
-            c for c in candidates
-            if c["review_count"] >= MIN_DEEP_REVIEWS_FOR_CLAIM
-            and c["distinct_items"] >= MIN_DISTINCT_ITEMS_FOR_CLAIM
-        ]
-        if not eligible:
-            out[product] = {
-                "status": INSUFFICIENT,
-                "signal": signal,
-                "reviews_available": sum(c["review_count"] for c in candidates),
-                "required": {
-                    "scored_reviews_per_family": MIN_DEEP_REVIEWS_FOR_CLAIM,
-                    "distinct_items_per_family": MIN_DISTINCT_ITEMS_FOR_CLAIM,
-                },
-                "exclusions": [
-                    {"font_family": c["font_family"], "reason": "below evidence threshold",
-                     "review_count": c["review_count"], "distinct_items": c["distinct_items"]}
-                    for c in candidates
-                ],
-            }
+    return {
+        "item_id": item_id,
+        "independent_reviews": len(independent),
+        "reviewers": sorted(newest),
+        "per_dimension": per_dimension,
+        "critical_disagreements": disagreements,
+        "flag": "REVIEWER_DISAGREEMENT" if disagreements else None,
+        "agreement_ok": not disagreements,
+        "confidence": item_confidence(len(independent), not disagreements),
+        "note": "Spread is reported alongside the mean so disagreement is visible.",
+    }
+
+
+def _candidate_stats(session: Session, items: list[dict], signal: str) -> dict:
+    """Per (product, font family): independent reviews and mean signal."""
+    from .review_workflow import review_history
+
+    dims = SIGNAL_DIMENSIONS[signal]
+    stats: dict[str, list] = defaultdict(list)
+    for item in items:
+        rows = [r for r in review_history(session, item["item_id"]) if r.scores]
+        newest = {}
+        for r in rows:
+            newest[r.reviewer] = r
+        independent = list(newest.values())
+        if not independent:
             continue
-        eligible.sort(key=lambda c: (-c["average_score"], c["font_family"]))
-        winner = eligible[0]
+        values = [s for r in independent for d in dims if (s := r.scores.get(d)) is not None]
+        agreement = agreement_report(session, item["item_id"])
+        critical_ok = all(
+            statistics.fmean([r.scores[d] for r in independent if d in r.scores])
+            >= CRITICAL_SCORE_THRESHOLD
+            for d in CRITICAL_DIMENSIONS
+            if any(d in (r.scores or {}) for r in independent)
+        )
+        stats[item["product"]].append({
+            "font_family": item["technical"]["font_id"],
+            "item_id": item["item_id"],
+            "independent_reviews": len(independent),
+            "reviewers": sorted(newest),
+            "mean_score": round(statistics.fmean(values), 3) if values else None,
+            "critical_scores_ok": critical_ok,
+            "agreement_ok": agreement["agreement_ok"],
+            "confidence": agreement["confidence"],
+            "gates_pass": all(item["engineering"].get(g) for g in HARD_GATES),
+            "commercial_means": {
+                d: round(statistics.fmean(
+                    [r.scores[d] for r in independent if d in r.scores]), 3)
+                for d in COMMERCIAL_MIN_SCORES
+                if any(d in (r.scores or {}) for r in independent)
+            },
+        })
+    return stats
+
+
+def product_comparison_readiness(session: Session, items: list[dict]) -> dict:
+    """Is a product ready for a winner to be named at all?
+
+    Requires at least three rival font families, each with at least two
+    independent reviews. Anything less and the honest answer is that we do
+    not know which is best — not a winner chosen from a field of one."""
+    stats = _candidate_stats(session, items, "human_aesthetic_score")
+    families_available = defaultdict(set)
+    for item in items:
+        families_available[item["product"]].add(item["technical"]["font_id"])
+
+    out = {}
+    for product in sorted({i["product"] for i in items}):
+        candidates = stats.get(product, [])
+        qualified = [c for c in candidates
+                     if c["independent_reviews"] >= MIN_REVIEWS_PER_CANDIDATE]
+        ready = len(qualified) >= MIN_FAMILIES_FOR_COMPARISON
         out[product] = {
-            "status": "DERIVED",
-            "signal": signal,
             "product": product,
-            **winner,
-            "exclusions": [
-                {"font_family": c["font_family"], "reason": "below evidence threshold",
-                 "review_count": c["review_count"], "distinct_items": c["distinct_items"]}
-                for c in candidates if c not in eligible
-            ],
+            "status": "PRODUCT_COMPARISON_READY" if ready else NOT_COMPARISON_READY,
+            "families_in_corpus": len(families_available[product]),
+            "families_reviewed": len(candidates),
+            "families_with_enough_reviews": len(qualified),
+            "required_families": MIN_FAMILIES_FOR_COMPARISON,
+            "required_reviews_per_family": MIN_REVIEWS_PER_CANDIDATE,
+            "corpus_can_support_comparison":
+                len(families_available[product]) >= MIN_FAMILIES_FOR_COMPARISON,
+            "shortfall": (
+                None if ready else
+                f"{MIN_FAMILIES_FOR_COMPARISON - len(qualified)} more font "
+                f"famil{'y' if MIN_FAMILIES_FOR_COMPARISON - len(qualified) == 1 else 'ies'} "
+                f"need >= {MIN_REVIEWS_PER_CANDIDATE} independent reviews"
+            ),
         }
     return out
+
+
+def best_aesthetic_family_for_product(session: Session, items: list[dict]) -> dict:
+    """Winner per product on the human aesthetic signal, or why not."""
+    readiness = product_comparison_readiness(session, items)
+    stats = _candidate_stats(session, items, "human_aesthetic_score")
+    out = {}
+    for product, ready in readiness.items():
+        readiness_detail = {k: v for k, v in ready.items() if k != "status"}
+        if ready["status"] != "PRODUCT_COMPARISON_READY":
+            out[product] = {"status": NOT_COMPARISON_READY, **readiness_detail}
+            continue
+        eligible = [
+            c for c in stats[product]
+            if c["independent_reviews"] >= MIN_REVIEWS_PER_CANDIDATE
+            and c["gates_pass"] and c["critical_scores_ok"] and c["mean_score"] is not None
+        ]
+        if not eligible:
+            out[product] = {"status": INSUFFICIENT,
+                            "reason": "no candidate passed gates and critical-score floor",
+                            **readiness_detail}
+            continue
+        eligible.sort(key=lambda c: (-c["mean_score"], c["font_family"]))
+        out[product] = {"status": "DERIVED", "signal": "human_aesthetic_score",
+                        "product": product, **eligible[0],
+                        "runners_up": eligible[1:]}
+    return out
+
+
+def best_commercial_family_for_product(session: Session, items: list[dict]) -> dict:
+    """As above, plus explicit commercial floors on CommercialAppeal,
+    PremiumFeel and ProductFit — a design can be beautiful and still not be
+    something to build a product line on."""
+    readiness = product_comparison_readiness(session, items)
+    stats = _candidate_stats(session, items, "commercial_appeal_score")
+    out = {}
+    for product, ready in readiness.items():
+        readiness_detail = {k: v for k, v in ready.items() if k != "status"}
+        if ready["status"] != "PRODUCT_COMPARISON_READY":
+            out[product] = {"status": NOT_COMPARISON_READY, **readiness_detail}
+            continue
+        eligible = []
+        for c in stats[product]:
+            if not (c["independent_reviews"] >= MIN_REVIEWS_PER_CANDIDATE
+                    and c["gates_pass"] and c["critical_scores_ok"]
+                    and c["mean_score"] is not None):
+                continue
+            below = {d: c["commercial_means"].get(d) for d, floor in COMMERCIAL_MIN_SCORES.items()
+                     if (c["commercial_means"].get(d) or 0) < floor}
+            if below:
+                c = {**c, "below_commercial_floor": below}
+            else:
+                eligible.append(c)
+        if not eligible:
+            out[product] = {"status": INSUFFICIENT,
+                            "reason": "no candidate met the commercial floors",
+                            "commercial_floors": COMMERCIAL_MIN_SCORES,
+                            **readiness_detail}
+            continue
+        eligible.sort(key=lambda c: (-c["mean_score"], c["font_family"]))
+        out[product] = {"status": "DERIVED", "signal": "commercial_appeal_score",
+                        "product": product, "commercial_floors": COMMERCIAL_MIN_SCORES,
+                        **eligible[0], "runners_up": eligible[1:]}
+    return out
+
+
+def overall_best_aesthetic_family(session: Session, items: list[dict]) -> dict:
+    """A cross-product claim: evidence across >=3 products and >=6
+    independent reviews in total, with no hard-gate failure."""
+    stats = _candidate_stats(session, items, "human_aesthetic_score")
+    by_family: dict[str, dict] = defaultdict(
+        lambda: {"products": set(), "reviews": 0, "scores": [], "gates_ok": True})
+    for product, candidates in stats.items():
+        for c in candidates:
+            entry = by_family[c["font_family"]]
+            entry["products"].add(product)
+            entry["reviews"] += c["independent_reviews"]
+            if c["mean_score"] is not None:
+                entry["scores"].append(c["mean_score"])
+            entry["gates_ok"] = entry["gates_ok"] and c["gates_pass"]
+
+    eligible = [
+        {"font_family": family, "products": sorted(e["products"]),
+         "product_count": len(e["products"]), "independent_reviews": e["reviews"],
+         "mean_score": round(statistics.fmean(e["scores"]), 3) if e["scores"] else None}
+        for family, e in by_family.items()
+        if len(e["products"]) >= MIN_PRODUCTS_FOR_OVERALL_CLAIM
+        and e["reviews"] >= MIN_TOTAL_REVIEWS_FOR_OVERALL_CLAIM
+        and e["gates_ok"] and e["scores"]
+    ]
+    if not eligible:
+        return {
+            "status": INSUFFICIENT,
+            "required": {
+                "products": MIN_PRODUCTS_FOR_OVERALL_CLAIM,
+                "independent_reviews": MIN_TOTAL_REVIEWS_FOR_OVERALL_CLAIM,
+            },
+            "candidates": [
+                {"font_family": f, "products": len(e["products"]), "reviews": e["reviews"]}
+                for f, e in by_family.items()
+            ],
+        }
+    eligible.sort(key=lambda c: (-c["mean_score"], c["font_family"]))
+    return {"status": "DERIVED", **eligible[0], "runners_up": eligible[1:]}
+
+
+def threshold_audit(items: list[dict]) -> dict:
+    """Can the corpus, in principle, satisfy each rule? A threshold nothing
+    could ever meet is a bug, not a high standard."""
+    families_per_product = defaultdict(set)
+    items_per_pair = Counter()
+    for item in items:
+        product, font_id = item["product"], item["technical"]["font_id"]
+        families_per_product[product].add(font_id)
+        items_per_pair[(product, font_id)] += 1
+
+    max_items_per_pair = max(items_per_pair.values()) if items_per_pair else 0
+    retired = {
+        "rule": ">=5 scored reviews across >=3 DISTINCT ITEMS per (product, family)",
+        "status": STRUCTURALLY_IMPOSSIBLE,
+        "reason": (
+            f"the corpus holds at most {max_items_per_pair} item(s) per "
+            "(product, family) by design — the review pack keeps one item per "
+            "font family per product for diversity — so the distinct-item "
+            "clause can never be satisfied."
+        ),
+        "replaced_by": "PRODUCT_COMPARISON_READY + per-item independent review counts",
+    }
+    comparable = {
+        p: {"families": len(f), "can_compare": len(f) >= MIN_FAMILIES_FOR_COMPARISON}
+        for p, f in sorted(families_per_product.items())
+    }
+    return {
+        "items": len(items),
+        "items_per_product": {p: sum(
+            1 for i in items if i["product"] == p) for p in sorted(families_per_product)},
+        "families_per_product": comparable,
+        "items_per_product_family": {f"{p}/{f}": n for (p, f), n in sorted(items_per_pair.items())},
+        "max_items_per_product_family": max_items_per_pair,
+        "retired_rule": retired,
+        "achievable_rules": [
+            f"PRODUCT_COMPARISON_READY (>={MIN_FAMILIES_FOR_COMPARISON} families, "
+            f">={MIN_REVIEWS_PER_CANDIDATE} independent reviews each)",
+            "ITEM_LOW/MEDIUM/HIGH_CONFIDENCE (1 / 2 / 3+ independent reviews)",
+            f"OVERALL_BEST_AESTHETIC_FAMILY (>={MIN_PRODUCTS_FOR_OVERALL_CLAIM} products, "
+            f">={MIN_TOTAL_REVIEWS_FOR_OVERALL_CLAIM} reviews)",
+        ],
+        "impossible_rules": [retired["rule"]],
+    }
 
 
 # ---------------------------------------------------------------------------

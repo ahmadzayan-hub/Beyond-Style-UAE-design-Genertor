@@ -10,9 +10,38 @@ Statuses (External AI / Real Tool Wiring sections, precise per-claim vocabulary)
   OPTIONAL_NOT_RUNNING — an optional runtime (isolated Hermes) is not configured/reachable; the deterministic path is unaffected.
   BLOCKED — implemented but intentionally refused (e.g. approve_design for agents).
   FAILED — a real call/round-trip was attempted and errored (never silently downgraded to a softer status).
-Updated: 2026-08-26 · Backend suite: 382 passed (357 + 25 Curation Analysis) (PostgreSQL 16, incl. 11-test immutable seven-name golden fixture) · E2E: 5 browser flows passed (incl. dedicated seven-name+reference flow) · production smoke: 15/15 checks passed (local, corrected fixture) · GitHub Actions CI: VERIFIED_CI, run 32900447345 (current HEAD `a7e3858`) conclusion=success — 5 consecutive green runs — see RELEASE_EVIDENCE.md.
+Updated: 2026-08-26 · Backend suite: 394 passed (382 + 12 Threshold Repair) (PostgreSQL 16, incl. 11-test immutable seven-name golden fixture) · E2E: 5 browser flows passed (incl. dedicated seven-name+reference flow) · production smoke: 15/15 checks passed (local, corrected fixture) · GitHub Actions CI: VERIFIED_CI, run 32900447345 (current HEAD `a7e3858`) conclusion=success — 5 consecutive green runs — see RELEASE_EVIDENCE.md.
 
-## P2 Curation Analysis + Customer Validation (this slice)
+## P3 Evidence Threshold Repair + Review Wave 1 (this slice)
+The P2 evidence rule was **unsatisfiable by construction** and is retired, not relaxed. New confidence model,
+corrected terminology, blinded review, agreement analysis, and HUMAN_REVIEW_WAVE_1 prepared. Still 0 human
+reviews — no winner is claimed. See CURATION_STATUS.md.
+
+| Item | Status | Evidence |
+|---|---|---|
+| Retired rule flagged STRUCTURALLY_IMPOSSIBLE_THRESHOLD | VERIFIED_LOCAL | `threshold-audit.json`: `max_items_per_product_family = 1`; `test_audit_detects_the_structurally_impossible_threshold` |
+| Item confidence 1/2/3+ replaces the old model | VERIFIED_LOCAL | `test_item_confidence_two_reviewers_is_medium_not_high` |
+| "Second reviewer = HIGH" terminology corrected everywhere | VERIFIED_LOCAL | `test_confidence_is_driven_by_reviewer_count_not_volume` (9 reviews/1 reviewer = LOW) |
+| PRODUCT_COMPARISON_READY gates every winner | VERIFIED_LOCAL | `test_product_not_comparison_ready_without_three_reviewed_families`, `test_one_reviewer_per_family_is_not_comparison_ready` |
+| Commercial floors (Appeal/Premium/Fit >= 4) enforced | VERIFIED_LOCAL | `test_commercial_family_needs_the_commercial_floors` |
+| Overall claim needs >=3 products, >=6 reviews | VERIFIED_LOCAL | `test_overall_claim_needs_breadth_across_products` |
+| Disagreement surfaced, never averaged away | VERIFIED_LOCAL | `test_disagreement_on_a_critical_dimension_is_flagged` (mean 3.5 shown WITH values [5,2]) |
+| A revised opinion is not a second reviewer | VERIFIED_LOCAL | `test_a_revised_opinion_does_not_count_as_a_second_reviewer` |
+| Review pack blinded until submission | VERIFIED_LOCAL | `_blind()` strips prior decision/reviewer/scores; engineering stays visible |
+| 12 review dimensions replaced per brief | VERIFIED_LOCAL | ArabicCorrectness…WouldRecommend; critical = ArabicCorrectness, Legibility, ProductFit |
+| HUMAN_REVIEW_WAVE_1 prepared, labelled not-a-winner | VERIFIED_LOCAL | `wave-1.json`: 13 items, `AWAITING_HUMAN_REVIEW`; `test_wave_1_is_labelled_and_not_called_a_winner` |
+
+**Honest status:**
+- **Still 0 human reviews and 0 customer responses.** 0/9 products comparison-ready; every family claim blocked.
+- **A real bug was found and fixed in my own P2 code**: `**ready` spread its own `status` key over the verdict,
+  so a product that passed readiness but had no qualifying candidate reported PRODUCT_COMPARISON_READY instead
+  of INSUFFICIENT. Caught by a new test.
+- **Bracelet cannot reach comparison-ready** from this corpus: only 1 of 4 items passes manufacturing, giving one
+  rival family. Fixing it needs more manufacturable candidates — new generation, out of scope here.
+- **Composition diversity within a product is 1** across the corpus; also a generation question.
+- Dimension names changed, which is safe only because zero reviews existed. Any future change would lose data.
+
+## P2 Curation Analysis + Customer Validation (previous slice)
 Machinery to turn human review decisions into aesthetic and commercial recommendations — built, tested, and
 reporting **INSUFFICIENT_HUMAN_REVIEW_EVIDENCE** because no human review decisions exist yet. See CURATION_STATUS.md.
 
@@ -35,8 +64,8 @@ reporting **INSUFFICIENT_HUMAN_REVIEW_EVIDENCE** because no human review decisio
 - **Golden predictiveness UNDETERMINED** — no reviewed items in both groups to compare.
 - **The customer pack (13 items) is NOT aesthetically curated**; basis is `MANUFACTURING_PASS_AND_DIVERSITY_ONLY`
   and the pack records that. It is usable for real customer testing today, before AD review.
-- Thresholds are deliberately strict (5 scored reviews across 3+ items per family; 2 reviewers for HIGH
-  confidence; 10 customer responses per family). They can be lowered, but not without weakening the claim.
+- ~~Thresholds: 5 scored reviews across 3+ items per family; 2 reviewers for HIGH confidence~~ — **RETIRED in P3**:
+  the distinct-item clause was structurally impossible and the HIGH-confidence rule was wrong. See CURATION_STATUS.md.
 
 ## Human Aesthetic Review Workflow (previous slice)
 The workflow, review pack and evidence exist. **No aesthetic decision has been made by anyone.** 52 features

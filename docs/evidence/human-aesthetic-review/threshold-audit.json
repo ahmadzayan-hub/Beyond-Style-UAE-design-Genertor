@@ -1,0 +1,208 @@
+{
+ "audit": {
+  "items": 36,
+  "items_per_product": {
+   "bracelet": 4,
+   "cufflink": 4,
+   "medallion": 4,
+   "multi_name": 4,
+   "necklace": 4,
+   "openwork": 4,
+   "pendant": 4,
+   "ring": 4,
+   "single_letter_earring": 4
+  },
+  "families_per_product": {
+   "bracelet": {
+    "families": 4,
+    "can_compare": true
+   },
+   "cufflink": {
+    "families": 4,
+    "can_compare": true
+   },
+   "medallion": {
+    "families": 4,
+    "can_compare": true
+   },
+   "multi_name": {
+    "families": 4,
+    "can_compare": true
+   },
+   "necklace": {
+    "families": 4,
+    "can_compare": true
+   },
+   "openwork": {
+    "families": 4,
+    "can_compare": true
+   },
+   "pendant": {
+    "families": 4,
+    "can_compare": true
+   },
+   "ring": {
+    "families": 4,
+    "can_compare": true
+   },
+   "single_letter_earring": {
+    "families": 4,
+    "can_compare": true
+   }
+  },
+  "items_per_product_family": {
+   "bracelet/cairo": 1,
+   "bracelet/katibeh": 1,
+   "bracelet/lemonada": 1,
+   "bracelet/scheherazade-new": 1,
+   "cufflink/amiri-regular": 1,
+   "cufflink/aref-ruqaa": 1,
+   "cufflink/cairo": 1,
+   "cufflink/katibeh": 1,
+   "medallion/amiri-regular": 1,
+   "medallion/cairo": 1,
+   "medallion/noto-nastaliq-urdu": 1,
+   "medallion/scheherazade-new": 1,
+   "multi_name/amiri-regular": 1,
+   "multi_name/aref-ruqaa": 1,
+   "multi_name/katibeh": 1,
+   "multi_name/lemonada": 1,
+   "necklace/amiri-regular": 1,
+   "necklace/aref-ruqaa": 1,
+   "necklace/katibeh": 1,
+   "necklace/scheherazade-new": 1,
+   "openwork/amiri-regular": 1,
+   "openwork/aref-ruqaa": 1,
+   "openwork/katibeh": 1,
+   "openwork/noto-nastaliq-urdu": 1,
+   "pendant/amiri-regular": 1,
+   "pendant/aref-ruqaa": 1,
+   "pendant/katibeh": 1,
+   "pendant/scheherazade-new": 1,
+   "ring/amiri-regular": 1,
+   "ring/aref-ruqaa": 1,
+   "ring/lemonada": 1,
+   "ring/reem-kufi": 1,
+   "single_letter_earring/aref-ruqaa": 1,
+   "single_letter_earring/katibeh": 1,
+   "single_letter_earring/noto-nastaliq-urdu": 1,
+   "single_letter_earring/reem-kufi": 1
+  },
+  "max_items_per_product_family": 1,
+  "retired_rule": {
+   "rule": ">=5 scored reviews across >=3 DISTINCT ITEMS per (product, family)",
+   "status": "STRUCTURALLY_IMPOSSIBLE_THRESHOLD",
+   "reason": "the corpus holds at most 1 item(s) per (product, family) by design — the review pack keeps one item per font family per product for diversity — so the distinct-item clause can never be satisfied.",
+   "replaced_by": "PRODUCT_COMPARISON_READY + per-item independent review counts"
+  },
+  "achievable_rules": [
+   "PRODUCT_COMPARISON_READY (>=3 families, >=2 independent reviews each)",
+   "ITEM_LOW/MEDIUM/HIGH_CONFIDENCE (1 / 2 / 3+ independent reviews)",
+   "OVERALL_BEST_AESTHETIC_FAMILY (>=3 products, >=6 reviews)"
+  ],
+  "impossible_rules": [
+   ">=5 scored reviews across >=3 DISTINCT ITEMS per (product, family)"
+  ]
+ },
+ "comparison_readiness": {
+  "bracelet": {
+   "product": "bracelet",
+   "status": "NOT_COMPARISON_READY",
+   "families_in_corpus": 4,
+   "families_reviewed": 0,
+   "families_with_enough_reviews": 0,
+   "required_families": 3,
+   "required_reviews_per_family": 2,
+   "corpus_can_support_comparison": true,
+   "shortfall": "3 more font families need >= 2 independent reviews"
+  },
+  "cufflink": {
+   "product": "cufflink",
+   "status": "NOT_COMPARISON_READY",
+   "families_in_corpus": 4,
+   "families_reviewed": 0,
+   "families_with_enough_reviews": 0,
+   "required_families": 3,
+   "required_reviews_per_family": 2,
+   "corpus_can_support_comparison": true,
+   "shortfall": "3 more font families need >= 2 independent reviews"
+  },
+  "medallion": {
+   "product": "medallion",
+   "status": "NOT_COMPARISON_READY",
+   "families_in_corpus": 4,
+   "families_reviewed": 0,
+   "families_with_enough_reviews": 0,
+   "required_families": 3,
+   "required_reviews_per_family": 2,
+   "corpus_can_support_comparison": true,
+   "shortfall": "3 more font families need >= 2 independent reviews"
+  },
+  "multi_name": {
+   "product": "multi_name",
+   "status": "NOT_COMPARISON_READY",
+   "families_in_corpus": 4,
+   "families_reviewed": 0,
+   "families_with_enough_reviews": 0,
+   "required_families": 3,
+   "required_reviews_per_family": 2,
+   "corpus_can_support_comparison": true,
+   "shortfall": "3 more font families need >= 2 independent reviews"
+  },
+  "necklace": {
+   "product": "necklace",
+   "status": "NOT_COMPARISON_READY",
+   "families_in_corpus": 4,
+   "families_reviewed": 0,
+   "families_with_enough_reviews": 0,
+   "required_families": 3,
+   "required_reviews_per_family": 2,
+   "corpus_can_support_comparison": true,
+   "shortfall": "3 more font families need >= 2 independent reviews"
+  },
+  "openwork": {
+   "product": "openwork",
+   "status": "NOT_COMPARISON_READY",
+   "families_in_corpus": 4,
+   "families_reviewed": 0,
+   "families_with_enough_reviews": 0,
+   "required_families": 3,
+   "required_reviews_per_family": 2,
+   "corpus_can_support_comparison": true,
+   "shortfall": "3 more font families need >= 2 independent reviews"
+  },
+  "pendant": {
+   "product": "pendant",
+   "status": "NOT_COMPARISON_READY",
+   "families_in_corpus": 4,
+   "families_reviewed": 0,
+   "families_with_enough_reviews": 0,
+   "required_families": 3,
+   "required_reviews_per_family": 2,
+   "corpus_can_support_comparison": true,
+   "shortfall": "3 more font families need >= 2 independent reviews"
+  },
+  "ring": {
+   "product": "ring",
+   "status": "NOT_COMPARISON_READY",
+   "families_in_corpus": 4,
+   "families_reviewed": 0,
+   "families_with_enough_reviews": 0,
+   "required_families": 3,
+   "required_reviews_per_family": 2,
+   "corpus_can_support_comparison": true,
+   "shortfall": "3 more font families need >= 2 independent reviews"
+  },
+  "single_letter_earring": {
+   "product": "single_letter_earring",
+   "status": "NOT_COMPARISON_READY",
+   "families_in_corpus": 4,
+   "families_reviewed": 0,
+   "families_with_enough_reviews": 0,
+   "required_families": 3,
+   "required_reviews_per_family": 2,
+   "corpus_can_support_comparison": true,
+   "shortfall": "3 more font families need >= 2 independent reviews"
+  }
+ }
+}

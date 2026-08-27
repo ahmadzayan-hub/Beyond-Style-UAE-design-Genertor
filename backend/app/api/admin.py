@@ -187,8 +187,25 @@ class ReviewSubmission(BaseModel):
     engineering: dict = Field(default_factory=dict)
 
 
+#: Fields that would tell a new reviewer what others already decided.
+_PRIOR_OPINION_FIELDS = ("human_decision", "reviewer", "reviewed_at", "review_mode",
+                         "weak_critical_dimensions")
+
+
+def _blind(curation: dict, reviewer: str) -> dict:
+    """Hide prior opinions from a reviewer who has not yet submitted.
+
+    Engineering state stays visible — that is fact, not opinion. What is
+    withheld is what other people concluded, so a second reviewer forms an
+    independent judgement rather than anchoring on the first."""
+    if not reviewer:
+        return {k: v for k, v in curation.items() if k not in _PRIOR_OPINION_FIELDS}
+    return curation
+
+
 @router.get("/review/pack", dependencies=[Depends(require_admin)])
-def review_pack(session: Session = Depends(get_session), max_per_product: int = 3):
+def review_pack(session: Session = Depends(get_session), max_per_product: int = 3,
+                reviewer: str = ""):
     """The prioritised review pack, each item carrying its rendered proof.
 
     Human decisions are read from the append-only review log; an item that
@@ -196,7 +213,8 @@ def review_pack(session: Session = Depends(get_session), max_per_product: int = 
     provisional verdict."""
     from ..services.review_items import generate_review_pack
     from ..services.review_workflow import (
-        HUMAN_DIMENSIONS, ai_advisory_status, curation_decisions, summarize,
+        DIMENSION_LABELS, HUMAN_DIMENSIONS, ai_advisory_status,
+        curation_decisions, summarize,
     )
 
     items = generate_review_pack(max_per_product=max_per_product)
@@ -204,8 +222,17 @@ def review_pack(session: Session = Depends(get_session), max_per_product: int = 
     by_item = {d["item_id"]: d for d in decisions}
     recorded = session.execute(select(m.DesignReview)).scalars().all()
     return {
-        "items": [{**item, "curation": by_item[item["item_id"]]} for item in items],
+        "items": [
+            {**item, "curation": _blind(by_item[item["item_id"]], reviewer)}
+            for item in items
+        ],
         "dimensions": HUMAN_DIMENSIONS,
+        "dimension_labels": DIMENSION_LABELS,
+        "blinded": True,
+        "blinding_note": (
+            "Prior reviewers' decisions and scores are withheld so each review "
+            "is independent. They become visible per item after you submit."
+        ),
         "summary": summarize(decisions, len(recorded)),
         "ai_advisory": ai_advisory_status(),
     }
@@ -276,8 +303,10 @@ def curation_analysis_report(session: Session = Depends(get_session)):
     Every family claim is INSUFFICIENT_HUMAN_REVIEW_EVIDENCE until enough
     genuine reviews exist; no engineering or AI value substitutes for one."""
     from ..services.curation_analysis import (
-        best_family, commercial_curation, derive_aesthetic_signals,
-        golden_pattern_validation, load_review_evidence, review_quality_check,
+        best_aesthetic_family_for_product, best_commercial_family_for_product,
+        commercial_curation, derive_aesthetic_signals, golden_pattern_validation,
+        load_review_evidence, overall_best_aesthetic_family,
+        product_comparison_readiness, review_quality_check, threshold_audit,
     )
     from ..services.customer_validation import best_customer_family
     from ..services.review_items import generate_review_pack
@@ -288,8 +317,11 @@ def curation_analysis_report(session: Session = Depends(get_session)):
         "quality_check": review_quality_check(session, items),
         "aesthetic_signals": derive_aesthetic_signals(session, items),
         "commercial_curation": commercial_curation(session, items),
-        "best_aesthetic_family": best_family(session, items, "human_aesthetic_score"),
-        "best_commercial_family": best_family(session, items, "commercial_appeal_score"),
+        "threshold_audit": threshold_audit(items),
+        "comparison_readiness": product_comparison_readiness(session, items),
+        "best_aesthetic_family": best_aesthetic_family_for_product(session, items),
+        "best_commercial_family": best_commercial_family_for_product(session, items),
+        "overall_best_aesthetic_family": overall_best_aesthetic_family(session, items),
         "best_customer_family": best_customer_family(session, items),
         "golden_pattern_validation": golden_pattern_validation(session, items),
     }
@@ -329,3 +361,47 @@ def submit_customer_response(
         raise HTTPException(422, str(exc))
     session.commit()
     return {"recorded": True, "response_id": str(row.id)}
+
+
+@router.get("/review/wave-1", dependencies=[Depends(require_admin)])
+def review_wave_1(session: Session = Depends(get_session), reviewer: str = ""):
+    """HUMAN_REVIEW_WAVE_1 — the prioritised first slate.
+
+    Blinded by default: prior reviewers' opinions are withheld until this
+    reviewer has submitted for an item."""
+    from ..services.curation_analysis import product_comparison_readiness
+    from ..services.review_items import build_wave_1
+    from ..services.review_workflow import (
+        DIMENSION_LABELS, HUMAN_DIMENSIONS, curation_decisions,
+    )
+
+    wave = build_wave_1()
+    decisions = curation_decisions(session, wave["items"])
+    by_item = {d["item_id"]: d for d in decisions}
+    reviewed = {
+        r.item_id for r in session.execute(
+            select(m.DesignReview).where(m.DesignReview.reviewer == reviewer)
+        ).scalars()
+    } if reviewer else set()
+    return {
+        **{k: v for k, v in wave.items() if k != "items"},
+        "items": [
+            {**item,
+             "curation": _blind(by_item[item["item_id"]],
+                                reviewer if item["item_id"] in reviewed else "")}
+            for item in wave["items"]
+        ],
+        "dimensions": HUMAN_DIMENSIONS,
+        "dimension_labels": DIMENSION_LABELS,
+        "comparison_readiness": product_comparison_readiness(session, wave["items"]),
+        "blinded": True,
+    }
+
+
+@router.get("/review/agreement/{item_id}", dependencies=[Depends(require_admin)])
+def review_agreement(item_id: str, session: Session = Depends(get_session)):
+    """Mean, spread and per-dimension disagreement across independent
+    reviewers. Available AFTER review — it is comparison, not anchoring."""
+    from ..services.curation_analysis import agreement_report
+
+    return agreement_report(session, item_id)

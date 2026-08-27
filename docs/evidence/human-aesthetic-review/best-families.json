@@ -71,189 +71,215 @@
   "basis": "HUMAN_REVIEW_ONLY",
   "by_product": {
    "bracelet": {
-    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
-    "signal": "human_aesthetic_score",
-    "reviews_available": 0,
-    "required": {
-     "scored_reviews_per_family": 5,
-     "distinct_items_per_family": 3
-    },
-    "exclusions": []
+    "status": "NOT_COMPARISON_READY",
+    "product": "bracelet",
+    "families_in_corpus": 4,
+    "families_reviewed": 0,
+    "families_with_enough_reviews": 0,
+    "required_families": 3,
+    "required_reviews_per_family": 2,
+    "corpus_can_support_comparison": true,
+    "shortfall": "3 more font families need >= 2 independent reviews"
    },
    "cufflink": {
-    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
-    "signal": "human_aesthetic_score",
-    "reviews_available": 0,
-    "required": {
-     "scored_reviews_per_family": 5,
-     "distinct_items_per_family": 3
-    },
-    "exclusions": []
+    "status": "NOT_COMPARISON_READY",
+    "product": "cufflink",
+    "families_in_corpus": 4,
+    "families_reviewed": 0,
+    "families_with_enough_reviews": 0,
+    "required_families": 3,
+    "required_reviews_per_family": 2,
+    "corpus_can_support_comparison": true,
+    "shortfall": "3 more font families need >= 2 independent reviews"
    },
    "medallion": {
-    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
-    "signal": "human_aesthetic_score",
-    "reviews_available": 0,
-    "required": {
-     "scored_reviews_per_family": 5,
-     "distinct_items_per_family": 3
-    },
-    "exclusions": []
+    "status": "NOT_COMPARISON_READY",
+    "product": "medallion",
+    "families_in_corpus": 4,
+    "families_reviewed": 0,
+    "families_with_enough_reviews": 0,
+    "required_families": 3,
+    "required_reviews_per_family": 2,
+    "corpus_can_support_comparison": true,
+    "shortfall": "3 more font families need >= 2 independent reviews"
    },
    "multi_name": {
-    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
-    "signal": "human_aesthetic_score",
-    "reviews_available": 0,
-    "required": {
-     "scored_reviews_per_family": 5,
-     "distinct_items_per_family": 3
-    },
-    "exclusions": []
+    "status": "NOT_COMPARISON_READY",
+    "product": "multi_name",
+    "families_in_corpus": 4,
+    "families_reviewed": 0,
+    "families_with_enough_reviews": 0,
+    "required_families": 3,
+    "required_reviews_per_family": 2,
+    "corpus_can_support_comparison": true,
+    "shortfall": "3 more font families need >= 2 independent reviews"
    },
    "necklace": {
-    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
-    "signal": "human_aesthetic_score",
-    "reviews_available": 0,
-    "required": {
-     "scored_reviews_per_family": 5,
-     "distinct_items_per_family": 3
-    },
-    "exclusions": []
+    "status": "NOT_COMPARISON_READY",
+    "product": "necklace",
+    "families_in_corpus": 4,
+    "families_reviewed": 0,
+    "families_with_enough_reviews": 0,
+    "required_families": 3,
+    "required_reviews_per_family": 2,
+    "corpus_can_support_comparison": true,
+    "shortfall": "3 more font families need >= 2 independent reviews"
    },
    "openwork": {
-    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
-    "signal": "human_aesthetic_score",
-    "reviews_available": 0,
-    "required": {
-     "scored_reviews_per_family": 5,
-     "distinct_items_per_family": 3
-    },
-    "exclusions": []
+    "status": "NOT_COMPARISON_READY",
+    "product": "openwork",
+    "families_in_corpus": 4,
+    "families_reviewed": 0,
+    "families_with_enough_reviews": 0,
+    "required_families": 3,
+    "required_reviews_per_family": 2,
+    "corpus_can_support_comparison": true,
+    "shortfall": "3 more font families need >= 2 independent reviews"
    },
    "pendant": {
-    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
-    "signal": "human_aesthetic_score",
-    "reviews_available": 0,
-    "required": {
-     "scored_reviews_per_family": 5,
-     "distinct_items_per_family": 3
-    },
-    "exclusions": []
+    "status": "NOT_COMPARISON_READY",
+    "product": "pendant",
+    "families_in_corpus": 4,
+    "families_reviewed": 0,
+    "families_with_enough_reviews": 0,
+    "required_families": 3,
+    "required_reviews_per_family": 2,
+    "corpus_can_support_comparison": true,
+    "shortfall": "3 more font families need >= 2 independent reviews"
    },
    "ring": {
-    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
-    "signal": "human_aesthetic_score",
-    "reviews_available": 0,
-    "required": {
-     "scored_reviews_per_family": 5,
-     "distinct_items_per_family": 3
-    },
-    "exclusions": []
+    "status": "NOT_COMPARISON_READY",
+    "product": "ring",
+    "families_in_corpus": 4,
+    "families_reviewed": 0,
+    "families_with_enough_reviews": 0,
+    "required_families": 3,
+    "required_reviews_per_family": 2,
+    "corpus_can_support_comparison": true,
+    "shortfall": "3 more font families need >= 2 independent reviews"
    },
    "single_letter_earring": {
-    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
-    "signal": "human_aesthetic_score",
-    "reviews_available": 0,
-    "required": {
-     "scored_reviews_per_family": 5,
-     "distinct_items_per_family": 3
-    },
-    "exclusions": []
+    "status": "NOT_COMPARISON_READY",
+    "product": "single_letter_earring",
+    "families_in_corpus": 4,
+    "families_reviewed": 0,
+    "families_with_enough_reviews": 0,
+    "required_families": 3,
+    "required_reviews_per_family": 2,
+    "corpus_can_support_comparison": true,
+    "shortfall": "3 more font families need >= 2 independent reviews"
    }
   }
+ },
+ "OVERALL_BEST_AESTHETIC_FAMILY": {
+  "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
+  "required": {
+   "products": 3,
+   "independent_reviews": 6
+  },
+  "candidates": []
  },
  "BEST_COMMERCIAL_FAMILY": {
   "basis": "HUMAN_REVIEW_ONLY",
   "by_product": {
    "bracelet": {
-    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
-    "signal": "commercial_appeal_score",
-    "reviews_available": 0,
-    "required": {
-     "scored_reviews_per_family": 5,
-     "distinct_items_per_family": 3
-    },
-    "exclusions": []
+    "status": "NOT_COMPARISON_READY",
+    "product": "bracelet",
+    "families_in_corpus": 4,
+    "families_reviewed": 0,
+    "families_with_enough_reviews": 0,
+    "required_families": 3,
+    "required_reviews_per_family": 2,
+    "corpus_can_support_comparison": true,
+    "shortfall": "3 more font families need >= 2 independent reviews"
    },
    "cufflink": {
-    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
-    "signal": "commercial_appeal_score",
-    "reviews_available": 0,
-    "required": {
-     "scored_reviews_per_family": 5,
-     "distinct_items_per_family": 3
-    },
-    "exclusions": []
+    "status": "NOT_COMPARISON_READY",
+    "product": "cufflink",
+    "families_in_corpus": 4,
+    "families_reviewed": 0,
+    "families_with_enough_reviews": 0,
+    "required_families": 3,
+    "required_reviews_per_family": 2,
+    "corpus_can_support_comparison": true,
+    "shortfall": "3 more font families need >= 2 independent reviews"
    },
    "medallion": {
-    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
-    "signal": "commercial_appeal_score",
-    "reviews_available": 0,
-    "required": {
-     "scored_reviews_per_family": 5,
-     "distinct_items_per_family": 3
-    },
-    "exclusions": []
+    "status": "NOT_COMPARISON_READY",
+    "product": "medallion",
+    "families_in_corpus": 4,
+    "families_reviewed": 0,
+    "families_with_enough_reviews": 0,
+    "required_families": 3,
+    "required_reviews_per_family": 2,
+    "corpus_can_support_comparison": true,
+    "shortfall": "3 more font families need >= 2 independent reviews"
    },
    "multi_name": {
-    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
-    "signal": "commercial_appeal_score",
-    "reviews_available": 0,
-    "required": {
-     "scored_reviews_per_family": 5,
-     "distinct_items_per_family": 3
-    },
-    "exclusions": []
+    "status": "NOT_COMPARISON_READY",
+    "product": "multi_name",
+    "families_in_corpus": 4,
+    "families_reviewed": 0,
+    "families_with_enough_reviews": 0,
+    "required_families": 3,
+    "required_reviews_per_family": 2,
+    "corpus_can_support_comparison": true,
+    "shortfall": "3 more font families need >= 2 independent reviews"
    },
    "necklace": {
-    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
-    "signal": "commercial_appeal_score",
-    "reviews_available": 0,
-    "required": {
-     "scored_reviews_per_family": 5,
-     "distinct_items_per_family": 3
-    },
-    "exclusions": []
+    "status": "NOT_COMPARISON_READY",
+    "product": "necklace",
+    "families_in_corpus": 4,
+    "families_reviewed": 0,
+    "families_with_enough_reviews": 0,
+    "required_families": 3,
+    "required_reviews_per_family": 2,
+    "corpus_can_support_comparison": true,
+    "shortfall": "3 more font families need >= 2 independent reviews"
    },
    "openwork": {
-    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
-    "signal": "commercial_appeal_score",
-    "reviews_available": 0,
-    "required": {
-     "scored_reviews_per_family": 5,
-     "distinct_items_per_family": 3
-    },
-    "exclusions": []
+    "status": "NOT_COMPARISON_READY",
+    "product": "openwork",
+    "families_in_corpus": 4,
+    "families_reviewed": 0,
+    "families_with_enough_reviews": 0,
+    "required_families": 3,
+    "required_reviews_per_family": 2,
+    "corpus_can_support_comparison": true,
+    "shortfall": "3 more font families need >= 2 independent reviews"
    },
    "pendant": {
-    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
-    "signal": "commercial_appeal_score",
-    "reviews_available": 0,
-    "required": {
-     "scored_reviews_per_family": 5,
-     "distinct_items_per_family": 3
-    },
-    "exclusions": []
+    "status": "NOT_COMPARISON_READY",
+    "product": "pendant",
+    "families_in_corpus": 4,
+    "families_reviewed": 0,
+    "families_with_enough_reviews": 0,
+    "required_families": 3,
+    "required_reviews_per_family": 2,
+    "corpus_can_support_comparison": true,
+    "shortfall": "3 more font families need >= 2 independent reviews"
    },
    "ring": {
-    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
-    "signal": "commercial_appeal_score",
-    "reviews_available": 0,
-    "required": {
-     "scored_reviews_per_family": 5,
-     "distinct_items_per_family": 3
-    },
-    "exclusions": []
+    "status": "NOT_COMPARISON_READY",
+    "product": "ring",
+    "families_in_corpus": 4,
+    "families_reviewed": 0,
+    "families_with_enough_reviews": 0,
+    "required_families": 3,
+    "required_reviews_per_family": 2,
+    "corpus_can_support_comparison": true,
+    "shortfall": "3 more font families need >= 2 independent reviews"
    },
    "single_letter_earring": {
-    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
-    "signal": "commercial_appeal_score",
-    "reviews_available": 0,
-    "required": {
-     "scored_reviews_per_family": 5,
-     "distinct_items_per_family": 3
-    },
-    "exclusions": []
+    "status": "NOT_COMPARISON_READY",
+    "product": "single_letter_earring",
+    "families_in_corpus": 4,
+    "families_reviewed": 0,
+    "families_with_enough_reviews": 0,
+    "required_families": 3,
+    "required_reviews_per_family": 2,
+    "corpus_can_support_comparison": true,
+    "shortfall": "3 more font families need >= 2 independent reviews"
    }
   }
  },

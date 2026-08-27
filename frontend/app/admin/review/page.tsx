@@ -39,7 +39,11 @@ interface ReviewItem {
   proof_view: [number, number];
   technical: { font_id: string; feature_set: string; font_axes: Record<string, number> };
   engineering: Engineering;
-  curation: { state: string; reason: string; human_review_status: string; failed_gates: string[] };
+  // Prior reviewers' opinions are withheld while blinded, so these are optional.
+  curation: {
+    state: string; reason: string; human_review_status: string; failed_gates: string[];
+    human_decision?: string | null; reviewer?: string;
+  };
 }
 
 const DECISIONS: Decision[] = ["APPROVE", "ALLOW", "EXPERIMENTAL", "HIDE"];
@@ -61,7 +65,15 @@ function Proof({ item }: { item: ReviewItem }) {
 
 export default function ReviewPage() {
   const [token, setToken] = useState("");
-  const [pack, setPack] = useState<{ items: ReviewItem[]; dimensions: string[]; summary: Record<string, unknown>; ai_advisory: Record<string, unknown> } | null>(null);
+  const [pack, setPack] = useState<{
+    items: ReviewItem[];
+    dimensions: string[];
+    dimension_labels?: Record<string, string>;
+    blinded?: boolean;
+    blinding_note?: string;
+    summary: Record<string, unknown>;
+    ai_advisory: Record<string, unknown>;
+  } | null>(null);
   const [reviewer, setReviewer] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
@@ -78,6 +90,8 @@ export default function ReviewPage() {
   const load = useCallback(async (t: string) => {
     setError(null);
     try {
+      // Blinded: the pack is requested without a reviewer identity, so the
+      // backend withholds what other people already decided.
       setPack(await api.getReviewPack(t));
       api.setAdminToken(t);
     } catch (e) {
@@ -173,6 +187,9 @@ export default function ReviewPage() {
             status <strong>{String(pack.summary.human_review_status)}</strong> ·{" "}
             {String(pack.summary.awaiting_human_review)} awaiting review ·{" "}
             AI advisory: {String((pack.ai_advisory as { status: string }).status)}
+            {pack.blinded && (
+              <p className="mt-1 text-gray-600">{pack.blinding_note}</p>
+            )}
           </div>
 
           <div className="flex flex-wrap gap-2 mb-6 text-sm">
@@ -270,7 +287,7 @@ export default function ReviewPage() {
                       <div className="grid grid-cols-2 gap-1 text-xs">
                         {pack.dimensions.map((dim) => (
                           <label key={dim} className="flex items-center justify-between gap-2">
-                            {dim}
+                            {pack.dimension_labels?.[dim] ?? dim}
                             <input type="number" min={1} max={5}
                               value={scores[dim] ?? ""}
                               onChange={(e) =>

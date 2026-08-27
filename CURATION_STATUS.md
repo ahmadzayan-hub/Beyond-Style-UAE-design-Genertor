@@ -3,101 +3,132 @@
 **Generated from the append-only review log, not from assumptions.**
 Regenerate: `python3 scripts/curation_analysis.py --write`
 
-## Headline
+## Threshold repair (P3)
+
+The P2 evidence rule was **unsatisfiable by construction** and has been
+retired, not quietly relaxed:
+
+> ~~≥5 scored reviews across ≥3 **distinct items** per (product, family)~~
+> → `STRUCTURALLY_IMPOSSIBLE_THRESHOLD`
+
+The review pack deliberately carries **at most one item per font family per
+product** for diversity. Measured: `max_items_per_product_family = 1` across
+all 36 items. The distinct-item clause could therefore never be met, however
+many reviews were entered — no aesthetic or commercial winner could ever have
+been derived. That was a bug in the rule, not a high standard.
+
+## Confidence model (replaces the old one)
+
+**Per item** — how many independent people looked at it:
+
+| reviews | verdict |
+|---|---|
+| 0 | `ITEM_NO_REVIEW` |
+| 1 | `ITEM_LOW_CONFIDENCE` |
+| 2 | `ITEM_MEDIUM_CONFIDENCE` |
+| ≥3 with acceptable agreement | `ITEM_HIGH_CONFIDENCE` |
+
+Three or more reviewers **who disagree on a critical dimension** stay at
+MEDIUM. A reviewer revising their own opinion is still one person — only the
+newest review per reviewer counts toward independence.
+
+**Terminology corrected.** The earlier claim that "a second reviewer unlocks
+HIGH confidence" was wrong and appeared in P2 docs and code. Two reviewers is
+**MEDIUM**. Group coverage confidence is now driven by *how many different
+people* looked, not by volume: nine reviews from one person is `LOW`.
+
+**Per product** — `PRODUCT_COMPARISON_READY` requires ≥3 rival font families,
+each with ≥2 independent reviews. Without rivals there is no comparison, only
+a field of one.
+
+`BEST_AESTHETIC_FAMILY_FOR_PRODUCT` = comparison ready · manufacturing pass ·
+no Arabic-correctness issue · no hard-gate failure · no critical dimension
+below 3 · highest human aesthetic score.
+
+`BEST_COMMERCIAL_FAMILY_FOR_PRODUCT` = the above **plus** CommercialAppeal ≥4,
+PremiumFeel ≥4, ProductFit ≥4.
+
+`OVERALL_BEST_AESTHETIC_FAMILY` = evidence across ≥3 products, ≥6 independent
+reviews total, no hard-gate failure.
+
+`BEST_ENGINEERING_FAMILY` stays separate and unchanged.
+
+## Review dimensions (12)
+
+Arabic correctness · Legibility · Elegance · Visual balance · Premium feel ·
+Uniqueness · Product fit · Commercial appeal · Wearability · Emotional appeal ·
+Overall aesthetic quality · Would recommend to customer.
+
+Critical: **Arabic correctness, Legibility, Product fit** — none may sit below
+3 in anything recommended. The human Arabic-correctness score sits *alongside*
+the deterministic identity proof; the hard gate still decides what may ship.
+
+## Reviewer independence and agreement
+
+The pack is **blinded**: prior reviewers' decisions, scores and names are
+withheld until you have submitted for that item. Engineering state stays
+visible — that is fact, not opinion. After submission, `GET
+/api/admin/review/agreement/{item_id}` shows mean, min, max, spread and raw
+values per dimension. A critical dimension differing by ≥2 points raises
+`REVIEWER_DISAGREEMENT`; the mean is never shown without its spread.
+
+Reviews remain append-only, timestamped, attributed internally, immutable.
+
+## HUMAN_REVIEW_WAVE_1
+
+13 items, awaiting review. **Not curated winners** — a diverse manufacturable
+slate chosen so each product can actually reach comparison-ready.
+
+| product | items | font families | can reach comparison-ready |
+|---|---|---|---|
+| necklace | 3 | amiri-regular, aref-ruqaa, scheherazade-new | yes |
+| pendant | 3 | amiri-regular, aref-ruqaa, scheherazade-new | yes |
+| single-letter earring | 3 | aref-ruqaa, noto-nastaliq-urdu, reem-kufi | yes |
+| cufflink | 3 | amiri-regular, aref-ruqaa, cairo | yes |
+| **bracelet** | **1** | cairo | **no** |
+
+**Bracelet is blocked**: only 1 of its 4 corpus items passes manufacturing, so
+it can field one family, not three. It cannot be made comparison-ready by
+reviewing harder — it needs more manufacturable bracelet candidates, which is
+new generation and out of scope for this slice.
+
+Composition diversity *within* a product is 1 across the corpus (each product
+carries a single composition). Also a generation question, not a review one.
+
+## Current evidence
 
 | claim | status |
 |---|---|
-| Human aesthetic reviews recorded | **0** |
-| Review items prepared | 36 across 9 products |
+| Human reviews recorded | **0** |
 | Customer responses recorded | **0** |
+| Products comparison-ready | **0 / 9** |
+| `BEST_AESTHETIC_FAMILY` | `NOT_COMPARISON_READY` (0/9) |
+| `BEST_COMMERCIAL_FAMILY` | `NOT_COMPARISON_READY` (0/9) |
+| `OVERALL_BEST_AESTHETIC_FAMILY` | `INSUFFICIENT_HUMAN_REVIEW_EVIDENCE` |
+| `BEST_CUSTOMER_FAMILY` | `INSUFFICIENT_HUMAN_REVIEW_EVIDENCE` (0/9) |
 | `BEST_ENGINEERING_FAMILY` | DERIVED (engineering only) |
-| `BEST_AESTHETIC_FAMILY` | `INSUFFICIENT_HUMAN_REVIEW_EVIDENCE` (0/9 products) |
-| `BEST_COMMERCIAL_FAMILY` | `INSUFFICIENT_HUMAN_REVIEW_EVIDENCE` (0/9 products) |
-| `BEST_CUSTOMER_FAMILY` | `INSUFFICIENT_HUMAN_REVIEW_EVIDENCE` (0/9 products) |
-| Golden pattern predictive? | `UNDETERMINED` — no reviewed items to compare |
+| Golden pattern predictive? | `UNDETERMINED` |
+| Commercial curation | 0 RECOMMENDED · 0 CANDIDATE · 25 DESIGN_EXPERIMENT · 11 HIDDEN |
 
-Nothing has been aesthetically approved. The machinery to derive these
-claims is built and tested; the evidence it needs does not exist yet.
+All 11 HIDDEN are blocked on engineering gates, not taste.
 
-## What the four claims mean
+## Customer validation
 
-They answer four different questions and are never collapsed into one
-ranking:
-
-- **BEST_ENGINEERING_FAMILY** — measured geometry. Says nothing about taste.
-- **BEST_AESTHETIC_FAMILY** — from Art Director scores only
-  (CalligraphicGrace, LetterformBeauty, Balance, Rhythm, NegativeSpace).
-- **BEST_COMMERCIAL_FAMILY** — from Art Director scores only
-  (CommercialAppeal, Originality).
-- **BEST_CUSTOMER_FAMILY** — from anonymous customer responses only
-  (would-buy rate, premium feel).
-
-Engineering values, font metrics and AI advisory scores are structurally
-excluded from the aesthetic and commercial signals — asserted by test, and
-recorded in each output as `excluded_inputs`.
-
-## Evidence thresholds
-
-A family claim is only made when, for one (product, font family):
-
-- at least **5** scored reviews, and
-- across at least **3** distinct review items.
-
-Confidence is `HIGH` only with two or more reviewers — one person's
-consistent opinion is not consensus. Below threshold the answer is
-`INSUFFICIENT_HUMAN_REVIEW_EVIDENCE` with the shortfall itemised, never a
-number computed from too little data.
-
-For customer claims: **10** responses per (product, family), **5** per item.
-
-## Commercial curation (current)
-
-| state | items |
-|---|---|
-| PRODUCTION_RECOMMENDED | 0 |
-| COMMERCIAL_CANDIDATE | 0 |
-| DESIGN_EXPERIMENT | 25 |
-| HIDDEN | 11 |
-
-All 11 HIDDEN are blocked on engineering grounds alone (hard gates), not on
-taste. All 25 DESIGN_EXPERIMENT are awaiting review.
-
-`PRODUCTION_RECOMMENDED` requires manufacturing pass, human APPROVE, no
-critical dimension (Readability, JewellerySuitability, ProductFit) below 3,
-Arabic identity pass and no hard-gate failure. Hard gates are read **before**
-the review, so an approval can never open one.
-
-## Customer validation pack
-
-13 items ready at `docs/evidence/customer-validation/`
-(`review-board.html`, printable `proofs/*.svg`, `pack.json`).
-
-**Selection basis: `MANUFACTURING_PASS_AND_DIVERSITY_ONLY`.** With no expert
-review recorded, this pack is *not* aesthetically curated — it is a
-manufacturable, diverse sample, and it says so. Spread: at most 2 per product
-across 7 products, at most 2 per font family across 7 families.
-
-The board shows customer style words only. Font ids, OpenType tags, axis
-values and manufacturing internals are absent — verified by test.
-
-Responses are anonymous by construction: the table has no name, email, phone
-or customer-id column, only an opaque grouping token, and it is append-only
-at the database.
-
-## Review quality
-
-No contradictions, incomplete reviews, or wrongly-promoted items — because
-there are no reviews. The checks run and report cleanly; they will become
-meaningful once decisions exist. No reviewer decision is ever modified by
-this analysis (`reviewer_decisions_modified: 0`).
+The 13-item customer board is **unchanged** from P2 and remains completely
+separate from expert review. `BEST_CUSTOMER_FAMILY` needs 10 genuine
+responses per product family. No test or synthetic response counts.
 
 ## Next human action
 
-1. Open `/admin/review` (needs `ADMIN_API_TOKEN`) or work through
-   `docs/evidence/human-aesthetic-review/review-pack/*.svg`.
-2. Aim for **5 scored reviews across 3+ items per (product, font family)**
-   you care about — start with the products you sell most.
-3. A second reviewer on the same items unlocks `HIGH` confidence.
-4. Run the customer board with real customers; 10 responses per product
-   family unlocks `BEST_CUSTOMER_FAMILY`.
-5. Re-run `python3 scripts/curation_analysis.py --write`.
+1. Open `/admin/review` (needs `ADMIN_API_TOKEN`) and work
+   **HUMAN_REVIEW_WAVE_1** — 13 items.
+2. Get **two independent reviewers** through the 12 items in the four
+   unblocked products. That makes necklace, pendant, single-letter earring
+   and cufflink comparison-ready and unlocks their aesthetic winners.
+3. A **third reviewer** raises those items to HIGH confidence, provided the
+   critical dimensions agree.
+4. For `OVERALL_BEST_AESTHETIC_FAMILY`, the same family needs coverage in ≥3
+   products with ≥6 independent reviews.
+5. Bracelet needs more manufacturable candidates before it can be compared —
+   a generation slice, not a review one.
+6. Re-run `python3 scripts/curation_analysis.py --write`.

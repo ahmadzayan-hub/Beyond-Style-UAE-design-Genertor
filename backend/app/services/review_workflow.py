@@ -31,17 +31,41 @@ from ..fonts.curation import CurationState
 
 #: The twelve human dimensions, scored 1-5. No deterministic proxy exists
 #: for any of them — that is precisely why a person is asked.
+#:
+#: `ArabicCorrectness` is the reviewer's VISUAL judgement that the letters
+#: read correctly. It sits alongside, and never replaces, the deterministic
+#: identity proof: the hard gate still decides what may ship.
 HUMAN_DIMENSIONS = [
-    "CalligraphicGrace", "LetterformBeauty", "LuxuryFeel", "OrnamentalPotential",
-    "Readability", "Balance", "Rhythm", "NegativeSpace",
-    "JewellerySuitability", "ProductFit", "Originality", "CommercialAppeal",
+    "ArabicCorrectness", "Legibility", "Elegance", "VisualBalance",
+    "PremiumFeel", "Uniqueness", "ProductFit", "CommercialAppeal",
+    "Wearability", "EmotionalAppeal", "OverallAestheticQuality", "WouldRecommend",
 ]
 
-#: Dimensions that may not be weak in a PRODUCTION_RECOMMENDED piece: a
-#: beautiful design that cannot be read, or does not suit the product, is
-#: not a jewellery recommendation.
-CRITICAL_DIMENSIONS = ["Readability", "JewellerySuitability", "ProductFit"]
+#: Human-readable labels for the review UI.
+DIMENSION_LABELS = {
+    "ArabicCorrectness": "Arabic correctness",
+    "Legibility": "Legibility",
+    "Elegance": "Elegance",
+    "VisualBalance": "Visual balance",
+    "PremiumFeel": "Premium feel",
+    "Uniqueness": "Uniqueness",
+    "ProductFit": "Product fit",
+    "CommercialAppeal": "Commercial appeal",
+    "Wearability": "Wearability",
+    "EmotionalAppeal": "Emotional appeal",
+    "OverallAestheticQuality": "Overall aesthetic quality",
+    "WouldRecommend": "Would recommend to customer",
+}
+
+#: Dimensions that may not be weak in anything recommended for production:
+#: letters that do not read, or a piece that does not suit its product, is
+#: not a recommendation however elegant it looks.
+CRITICAL_DIMENSIONS = ["ArabicCorrectness", "Legibility", "ProductFit"]
 CRITICAL_SCORE_THRESHOLD = 3
+
+#: A critical dimension where two reviewers differ by this much is a real
+#: disagreement, surfaced rather than averaged away.
+DISAGREEMENT_DELTA = 2
 
 DECISIONS = {"APPROVE", "ALLOW", "EXPERIMENTAL", "HIDE"}
 QUICK, DEEP = "quick", "deep"

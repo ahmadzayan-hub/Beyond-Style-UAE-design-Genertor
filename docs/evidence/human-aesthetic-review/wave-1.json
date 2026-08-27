@@ -1,0 +1,293 @@
+{
+ "wave": "HUMAN_REVIEW_WAVE_1",
+ "size": 13,
+ "products": [
+  "necklace",
+  "pendant",
+  "bracelet",
+  "single_letter_earring",
+  "cufflink"
+ ],
+ "per_product": {
+  "necklace": {
+   "selected": 3,
+   "font_families": [
+    "amiri-regular",
+    "aref-ruqaa",
+    "scheherazade-new"
+   ],
+   "compositions": [
+    "baseline_bar"
+   ],
+   "golden_relevant": 3,
+   "can_reach_comparison_ready": true,
+   "items_in_corpus": 4,
+   "manufacturable_in_corpus": 4,
+   "blocker": null,
+   "composition_note": "the corpus holds one composition for this product, so composition diversity within the product is not available without new generation"
+  },
+  "pendant": {
+   "selected": 3,
+   "font_families": [
+    "amiri-regular",
+    "aref-ruqaa",
+    "scheherazade-new"
+   ],
+   "compositions": [
+    "baseline_bar"
+   ],
+   "golden_relevant": 3,
+   "can_reach_comparison_ready": true,
+   "items_in_corpus": 4,
+   "manufacturable_in_corpus": 4,
+   "blocker": null,
+   "composition_note": "the corpus holds one composition for this product, so composition diversity within the product is not available without new generation"
+  },
+  "bracelet": {
+   "selected": 1,
+   "font_families": [
+    "cairo"
+   ],
+   "compositions": [
+    "baseline_bar"
+   ],
+   "golden_relevant": 0,
+   "can_reach_comparison_ready": false,
+   "items_in_corpus": 4,
+   "manufacturable_in_corpus": 1,
+   "blocker": "only 1 of 4 corpus items for this product pass manufacturing, giving 1 rival family; 3 are needed to name a winner",
+   "composition_note": "the corpus holds one composition for this product, so composition diversity within the product is not available without new generation"
+  },
+  "single_letter_earring": {
+   "selected": 3,
+   "font_families": [
+    "aref-ruqaa",
+    "noto-nastaliq-urdu",
+    "reem-kufi"
+   ],
+   "compositions": [
+    "bare"
+   ],
+   "golden_relevant": 3,
+   "can_reach_comparison_ready": true,
+   "items_in_corpus": 4,
+   "manufacturable_in_corpus": 4,
+   "blocker": null,
+   "composition_note": "the corpus holds one composition for this product, so composition diversity within the product is not available without new generation"
+  },
+  "cufflink": {
+   "selected": 3,
+   "font_families": [
+    "amiri-regular",
+    "aref-ruqaa",
+    "cairo"
+   ],
+   "compositions": [
+    "plate_rect"
+   ],
+   "golden_relevant": 0,
+   "can_reach_comparison_ready": true,
+   "items_in_corpus": 4,
+   "manufacturable_in_corpus": 4,
+   "blocker": null,
+   "composition_note": "the corpus holds one composition for this product, so composition diversity within the product is not available without new generation"
+  }
+ },
+ "status": "AWAITING_HUMAN_REVIEW",
+ "blocked_products": [
+  {
+   "product": "bracelet",
+   "blocker": "only 1 of 4 corpus items for this product pass manufacturing, giving 1 rival family; 3 are needed to name a winner"
+  }
+ ],
+ "note": "Not curated winners. A diverse manufacturable slate chosen so each product can reach PRODUCT_COMPARISON_READY once reviewed.",
+ "items": [
+  {
+   "item_id": "74019c039f3e642d051d363f9141261e",
+   "product": "necklace",
+   "font_family": "Aref Ruqaa",
+   "customer_style": "تراثي",
+   "source_text": "نورة",
+   "composition": "baseline_bar",
+   "width_mm": 34.565,
+   "height_mm": 16.699,
+   "manufacturing_pass": true,
+   "golden_production_pattern": [
+    "BS-GPC-0002-layered-name-necklace-adam-omar"
+   ],
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "fc400e2950c1629f2d95fe4bd6c6eb27",
+   "product": "necklace",
+   "font_family": "Scheherazade New",
+   "customer_style": "كلاسيكي",
+   "source_text": "نورة",
+   "composition": "baseline_bar",
+   "width_mm": 30.828,
+   "height_mm": 16.699,
+   "manufacturing_pass": true,
+   "golden_production_pattern": [
+    "BS-GPC-0002-layered-name-necklace-adam-omar"
+   ],
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "0e3d3edff02b6ba13ae7a19074e31d9c",
+   "product": "necklace",
+   "font_family": "Amiri",
+   "customer_style": "كلاسيكي",
+   "source_text": "نورة",
+   "composition": "baseline_bar",
+   "width_mm": 31.25,
+   "height_mm": 16.7,
+   "manufacturing_pass": true,
+   "golden_production_pattern": [
+    "BS-GPC-0002-layered-name-necklace-adam-omar"
+   ],
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "2a38ba71a56a737c011f03090a32a4b2",
+   "product": "pendant",
+   "font_family": "Aref Ruqaa",
+   "customer_style": "تراثي",
+   "source_text": "نورة",
+   "composition": "baseline_bar",
+   "width_mm": 34.565,
+   "height_mm": 16.699,
+   "manufacturing_pass": true,
+   "golden_production_pattern": [
+    "BS-GPC-0002-layered-name-necklace-adam-omar"
+   ],
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "e62dfd6d739020a47655063b1bfe2183",
+   "product": "pendant",
+   "font_family": "Scheherazade New",
+   "customer_style": "كلاسيكي",
+   "source_text": "نورة",
+   "composition": "baseline_bar",
+   "width_mm": 30.828,
+   "height_mm": 16.699,
+   "manufacturing_pass": true,
+   "golden_production_pattern": [
+    "BS-GPC-0002-layered-name-necklace-adam-omar"
+   ],
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "dddf1a431a5df8a5c4966c30b991ce7b",
+   "product": "pendant",
+   "font_family": "Amiri",
+   "customer_style": "كلاسيكي",
+   "source_text": "نورة",
+   "composition": "baseline_bar",
+   "width_mm": 31.25,
+   "height_mm": 16.7,
+   "manufacturing_pass": true,
+   "golden_production_pattern": [
+    "BS-GPC-0002-layered-name-necklace-adam-omar"
+   ],
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "d19e953129fa55547f015bdf30b6493f",
+   "product": "bracelet",
+   "font_family": "Cairo",
+   "customer_style": "حديث",
+   "source_text": "نورة",
+   "composition": "baseline_bar",
+   "width_mm": 28.945,
+   "height_mm": 11.7,
+   "manufacturing_pass": true,
+   "golden_production_pattern": [],
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "cd2e6450fd582a6247bbb6540f9857cc",
+   "product": "single_letter_earring",
+   "font_family": "Noto Nastaliq Urdu",
+   "customer_style": "انسيابي",
+   "source_text": "ع",
+   "composition": "bare",
+   "width_mm": 15.716,
+   "height_mm": 11.7,
+   "manufacturing_pass": true,
+   "golden_production_pattern": [
+    "BS-GPC-0001-arabic-letter-pearl-earrings"
+   ],
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "bc411a74b58e26bd0a7f53e343e8703b",
+   "product": "single_letter_earring",
+   "font_family": "Aref Ruqaa",
+   "customer_style": "تراثي",
+   "source_text": "نورة",
+   "composition": "bare",
+   "width_mm": 24.415,
+   "height_mm": 11.699,
+   "manufacturing_pass": true,
+   "golden_production_pattern": [
+    "BS-GPC-0001-arabic-letter-pearl-earrings"
+   ],
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "325988601516d587b12167ae43abf978",
+   "product": "single_letter_earring",
+   "font_family": "Reem Kufi",
+   "customer_style": "هندسي",
+   "source_text": "نورة",
+   "composition": "bare",
+   "width_mm": 19.878,
+   "height_mm": 11.7,
+   "manufacturing_pass": true,
+   "golden_production_pattern": [
+    "BS-GPC-0001-arabic-letter-pearl-earrings"
+   ],
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "ea7330d3d14c8e0fc30363df0b350d1e",
+   "product": "cufflink",
+   "font_family": "Amiri",
+   "customer_style": "كلاسيكي",
+   "source_text": "نورة",
+   "composition": "plate_rect",
+   "width_mm": 24.793,
+   "height_mm": 14.7,
+   "manufacturing_pass": true,
+   "golden_production_pattern": [],
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "7c5a5217f4326c0109dc1f2e6944592e",
+   "product": "cufflink",
+   "font_family": "Aref Ruqaa",
+   "customer_style": "تراثي",
+   "source_text": "نورة",
+   "composition": "plate_rect",
+   "width_mm": 26.865,
+   "height_mm": 14.699,
+   "manufacturing_pass": true,
+   "golden_production_pattern": [],
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "0b6acc8a2a72080d9305cfdf2187bc03",
+   "product": "cufflink",
+   "font_family": "Cairo",
+   "customer_style": "حديث",
+   "source_text": "نورة",
+   "composition": "plate_rect",
+   "width_mm": 28.801,
+   "height_mm": 14.7,
+   "manufacturing_pass": true,
+   "golden_production_pattern": [],
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  }
+ ]
+}

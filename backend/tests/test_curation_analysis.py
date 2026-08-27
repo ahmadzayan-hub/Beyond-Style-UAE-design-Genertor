@@ -10,10 +10,14 @@ import pytest
 from sqlalchemy import text
 
 from app.services.curation_analysis import (
-    INSUFFICIENT, MIN_DEEP_REVIEWS_FOR_CLAIM, MIN_DISTINCT_ITEMS_FOR_CLAIM,
-    SIGNAL_DIMENSIONS, best_family, commercial_class, commercial_curation,
+    INSUFFICIENT, ITEM_HIGH_CONFIDENCE, ITEM_LOW_CONFIDENCE,
+    ITEM_MEDIUM_CONFIDENCE, ITEM_NO_CONFIDENCE, MIN_FAMILIES_FOR_COMPARISON,
+    MIN_REVIEWS_PER_CANDIDATE, NOT_COMPARISON_READY, SIGNAL_DIMENSIONS,
+    STRUCTURALLY_IMPOSSIBLE, agreement_report, best_aesthetic_family_for_product,
+    best_commercial_family_for_product, commercial_class, commercial_curation,
     confidence_for, derive_aesthetic_signals, golden_pattern_validation,
-    load_review_evidence, review_quality_check,
+    item_confidence, load_review_evidence, overall_best_aesthetic_family,
+    product_comparison_readiness, review_quality_check, threshold_audit,
 )
 from app.services.customer_validation import (
     MIN_RESPONSES_FOR_FAMILY_CLAIM, ResponseRejected, best_customer_family,
@@ -74,11 +78,21 @@ def test_coverage_is_reported_per_product_and_font(clean_tables, db_session):
     assert evidence["coverage_by_font"]["cairo"]["reviews"] == 0
 
 
-def test_confidence_needs_volume_and_more_than_one_reviewer():
+def test_confidence_is_driven_by_reviewer_count_not_volume():
+    """One person reviewing nine items is still one opinion."""
     assert confidence_for(0, 0) == "NONE"
-    assert confidence_for(2, 1) == "LOW"
-    assert confidence_for(9, 1) == "MEDIUM", "one reviewer alone is never HIGH confidence"
-    assert confidence_for(MIN_DEEP_REVIEWS_FOR_CLAIM, 2) == "HIGH"
+    assert confidence_for(9, 1) == "LOW", "volume from one reviewer is not confidence"
+    assert confidence_for(4, 2) == "MEDIUM"
+    assert confidence_for(6, 3) == "HIGH"
+
+
+def test_item_confidence_two_reviewers_is_medium_not_high():
+    """The retired model claimed a second reviewer unlocked HIGH."""
+    assert item_confidence(0) == ITEM_NO_CONFIDENCE
+    assert item_confidence(1) == ITEM_LOW_CONFIDENCE
+    assert item_confidence(2) == ITEM_MEDIUM_CONFIDENCE
+    assert item_confidence(3) == ITEM_HIGH_CONFIDENCE
+    assert item_confidence(4, agreement_ok=False) == ITEM_MEDIUM_CONFIDENCE
 
 
 # --- 2. quality check --------------------------------------------------------
@@ -162,11 +176,11 @@ def test_unreviewed_item_is_a_design_experiment(clean_tables, db_session):
 
 def test_weak_critical_score_yields_commercial_candidate(clean_tables, db_session):
     item = _item()
-    _review(db_session, item, scores=_scores(5, Readability=2))
+    _review(db_session, item, scores=_scores(5, Legibility=2))
     db_session.flush()
     result = commercial_curation(db_session, [item])[0]
     assert result["state"] == "COMMERCIAL_CANDIDATE"
-    assert "Readability" in result["weak_critical_dimensions"]
+    assert "Legibility" in result["weak_critical_dimensions"]
 
 
 def test_full_approval_reaches_production_recommended(clean_tables, db_session):
@@ -176,36 +190,96 @@ def test_full_approval_reaches_production_recommended(clean_tables, db_session):
     assert commercial_curation(db_session, [item])[0]["state"] == "PRODUCTION_RECOMMENDED"
 
 
-# --- 5. best family requires real evidence ----------------------------------
+# --- 5. threshold audit + comparison readiness -------------------------------
 
-def test_best_family_refuses_to_guess_without_evidence(clean_tables, db_session):
-    items = [_item(f"i{n}") for n in range(3)]
-    result = best_family(db_session, items, "human_aesthetic_score")
-    assert result["pendant"]["status"] == INSUFFICIENT
-    assert result["pendant"]["required"]["scored_reviews_per_family"] == MIN_DEEP_REVIEWS_FOR_CLAIM
+def test_audit_detects_the_structurally_impossible_threshold():
+    """One item per (product, family) makes ">=3 distinct items" unmeetable."""
+    items = [_item(f"i{n}", font_id=f) for n, f in enumerate(
+        ["amiri-regular", "cairo", "reem-kufi"])]
+    audit = threshold_audit(items)
+    assert audit["max_items_per_product_family"] == 1
+    assert audit["retired_rule"]["status"] == STRUCTURALLY_IMPOSSIBLE
+    assert audit["impossible_rules"]
+    assert audit["achievable_rules"]
 
 
-def test_thin_evidence_is_excluded_with_a_reason(clean_tables, db_session):
-    items = [_item(f"i{n}") for n in range(2)]
+def test_product_not_comparison_ready_without_three_reviewed_families(
+    clean_tables, db_session
+):
+    items = [_item(f"i{n}", font_id=f) for n, f in enumerate(
+        ["amiri-regular", "cairo", "reem-kufi"])]
+    for item in items[:2]:
+        for reviewer in ("AD 1", "AD 2"):
+            _review(db_session, item, reviewer=reviewer, scores=_scores(5))
+    db_session.flush()
+    ready = product_comparison_readiness(db_session, items)["pendant"]
+    assert ready["status"] == NOT_COMPARISON_READY
+    assert ready["families_with_enough_reviews"] == 2
+    assert ready["required_families"] == MIN_FAMILIES_FOR_COMPARISON
+    assert "1 more font family" in ready["shortfall"]
+
+
+def test_one_reviewer_per_family_is_not_comparison_ready(clean_tables, db_session):
+    items = [_item(f"i{n}", font_id=f) for n, f in enumerate(
+        ["amiri-regular", "cairo", "reem-kufi"])]
     for item in items:
-        _review(db_session, item, scores=_scores(5))
+        _review(db_session, item, reviewer="AD 1", scores=_scores(5))
     db_session.flush()
-    result = best_family(db_session, items, "human_aesthetic_score")["pendant"]
-    assert result["status"] == INSUFFICIENT
-    assert result["exclusions"][0]["reason"] == "below evidence threshold"
+    ready = product_comparison_readiness(db_session, items)["pendant"]
+    assert ready["status"] == NOT_COMPARISON_READY
+    assert ready["required_reviews_per_family"] == MIN_REVIEWS_PER_CANDIDATE
 
 
-def test_best_family_derives_once_thresholds_are_met(clean_tables, db_session):
-    items = [_item(f"i{n}") for n in range(MIN_DEEP_REVIEWS_FOR_CLAIM)]
+def test_best_aesthetic_family_derives_when_comparison_ready(clean_tables, db_session):
+    items = [_item(f"i{n}", font_id=f) for n, f in enumerate(
+        ["amiri-regular", "cairo", "reem-kufi"])]
     for n, item in enumerate(items):
-        _review(db_session, item, reviewer=f"AD {n % 2}", scores=_scores(4))
+        for reviewer in ("AD 1", "AD 2"):
+            _review(db_session, item, reviewer=reviewer, scores=_scores(3 + n))
     db_session.flush()
-    result = best_family(db_session, items, "human_aesthetic_score")["pendant"]
+    result = best_aesthetic_family_for_product(db_session, items)["pendant"]
     assert result["status"] == "DERIVED"
-    assert result["font_family"] == "amiri-regular"
-    assert result["review_count"] >= MIN_DEEP_REVIEWS_FOR_CLAIM
-    assert result["distinct_items"] >= MIN_DISTINCT_ITEMS_FOR_CLAIM
-    assert result["supporting_reviews"]
+    assert result["font_family"] == "reem-kufi", "highest mean must win"
+    assert result["independent_reviews"] == 2
+    assert result["runners_up"]
+
+
+def test_weak_critical_score_excludes_a_candidate_from_winning(clean_tables, db_session):
+    items = [_item(f"i{n}", font_id=f) for n, f in enumerate(
+        ["amiri-regular", "cairo", "reem-kufi"])]
+    for n, item in enumerate(items):
+        # The otherwise-highest scorer is illegible.
+        scores = _scores(5, Legibility=2) if n == 2 else _scores(4)
+        for reviewer in ("AD 1", "AD 2"):
+            _review(db_session, item, reviewer=reviewer, scores=scores)
+    db_session.flush()
+    result = best_aesthetic_family_for_product(db_session, items)["pendant"]
+    assert result["status"] == "DERIVED"
+    assert result["font_family"] != "reem-kufi"
+
+
+def test_commercial_family_needs_the_commercial_floors(clean_tables, db_session):
+    items = [_item(f"i{n}", font_id=f) for n, f in enumerate(
+        ["amiri-regular", "cairo", "reem-kufi"])]
+    for item in items:  # good aesthetics, weak commercial appeal
+        for reviewer in ("AD 1", "AD 2"):
+            _review(db_session, item, reviewer=reviewer,
+                    scores=_scores(5, CommercialAppeal=2, PremiumFeel=2))
+    db_session.flush()
+    result = best_commercial_family_for_product(db_session, items)["pendant"]
+    assert result["status"] == INSUFFICIENT
+    assert result["commercial_floors"]["CommercialAppeal"] == 4
+
+
+def test_overall_claim_needs_breadth_across_products(clean_tables, db_session):
+    items = [_item("i1", product="pendant"), _item("i2", product="ring")]
+    for item in items:
+        for reviewer in ("AD 1", "AD 2"):
+            _review(db_session, item, reviewer=reviewer, scores=_scores(5))
+    db_session.flush()
+    result = overall_best_aesthetic_family(db_session, items)
+    assert result["status"] == INSUFFICIENT, "two products is not breadth"
+    assert result["required"]["products"] == 3
 
 
 # --- 6. golden validation is allowed to say "no" ----------------------------
@@ -321,11 +395,99 @@ def test_best_customer_family_needs_enough_responses(clean_tables, db_session):
 def test_the_four_family_claims_have_different_bases(clean_tables, db_session):
     """Collapsing them would be the misleading claim the brief forbids."""
     items = [_item()]
-    aesthetic = best_family(db_session, items, "human_aesthetic_score")
-    commercial = best_family(db_session, items, "commercial_appeal_score")
+    aesthetic = best_aesthetic_family_for_product(db_session, items)
+    commercial = best_commercial_family_for_product(db_session, items)
     customer = best_customer_family(db_session, items)
     assert SIGNAL_DIMENSIONS["human_aesthetic_score"] != SIGNAL_DIMENSIONS["commercial_appeal_score"]
-    for result in (aesthetic["pendant"], commercial["pendant"], customer["pendant"]):
-        assert result["status"] == INSUFFICIENT
+    assert aesthetic["pendant"]["status"] == NOT_COMPARISON_READY
+    assert commercial["pendant"]["status"] == NOT_COMPARISON_READY
+    assert customer["pendant"]["status"] == INSUFFICIENT
     signals = derive_aesthetic_signals(db_session, items)
     assert "AI advisory" in signals["excluded_inputs"]
+
+
+# --- agreement is surfaced, not averaged away -------------------------------
+
+def test_disagreement_on_a_critical_dimension_is_flagged(clean_tables, db_session):
+    item = _item()
+    _review(db_session, item, reviewer="AD 1", scores=_scores(5, Legibility=5))
+    _review(db_session, item, reviewer="AD 2", scores=_scores(5, Legibility=2))
+    db_session.flush()
+    report = agreement_report(db_session, item["item_id"])
+    assert report["flag"] == "REVIEWER_DISAGREEMENT"
+    assert report["agreement_ok"] is False
+    legibility = report["per_dimension"]["Legibility"]
+    assert legibility["spread"] == 3
+    # The mean is reported, but never on its own.
+    assert legibility["mean"] == 3.5 and legibility["values"] == [5, 2]
+
+
+def test_agreement_without_disagreement_is_clean(clean_tables, db_session):
+    item = _item()
+    for reviewer in ("AD 1", "AD 2", "AD 3"):
+        _review(db_session, item, reviewer=reviewer, scores=_scores(4))
+    db_session.flush()
+    report = agreement_report(db_session, item["item_id"])
+    assert report["flag"] is None
+    assert report["independent_reviews"] == 3
+    assert report["confidence"] == ITEM_HIGH_CONFIDENCE
+
+
+def test_a_revised_opinion_does_not_count_as_a_second_reviewer(clean_tables, db_session):
+    """Independence is about people, not rows."""
+    item = _item()
+    _review(db_session, item, reviewer="AD 1", scores=_scores(2))
+    _review(db_session, item, reviewer="AD 1", scores=_scores(5))
+    db_session.flush()
+    report = agreement_report(db_session, item["item_id"])
+    assert report["independent_reviews"] == 1
+    assert report["confidence"] == ITEM_LOW_CONFIDENCE
+    # The newest opinion is the one that counts for that reviewer.
+    assert report["per_dimension"]["Elegance"]["values"] == [5]
+
+
+def test_three_reviewers_who_disagree_do_not_reach_high_confidence(
+    clean_tables, db_session
+):
+    item = _item()
+    _review(db_session, item, reviewer="AD 1", scores=_scores(5, ProductFit=5))
+    _review(db_session, item, reviewer="AD 2", scores=_scores(5, ProductFit=2))
+    _review(db_session, item, reviewer="AD 3", scores=_scores(5, ProductFit=4))
+    db_session.flush()
+    report = agreement_report(db_session, item["item_id"])
+    assert report["independent_reviews"] == 3
+    assert report["flag"] == "REVIEWER_DISAGREEMENT"
+    assert report["confidence"] == ITEM_MEDIUM_CONFIDENCE
+
+
+# --- Wave 1 ------------------------------------------------------------------
+
+def test_wave_1_is_labelled_and_not_called_a_winner():
+    from app.services.review_items import WAVE_1, build_wave_1
+
+    wave = build_wave_1()
+    assert wave["wave"] == WAVE_1
+    assert wave["status"] == "AWAITING_HUMAN_REVIEW"
+    assert "Not curated winners" in wave["note"]
+    assert wave["size"] <= 15
+    assert all(i["wave"] == WAVE_1 for i in wave["items"])
+
+
+def test_wave_1_only_offers_manufacturable_candidates():
+    from app.services.review_items import build_wave_1
+
+    for item in build_wave_1()["items"]:
+        assert item["manufacturing_pass"] is True
+
+
+def test_wave_1_reports_products_that_cannot_reach_comparison():
+    """A product with too few rival families is flagged, not padded."""
+    from app.services.review_items import build_wave_1
+
+    wave = build_wave_1()
+    for product, notes in wave["per_product"].items():
+        if notes["can_reach_comparison_ready"]:
+            assert len(notes["font_families"]) >= 3
+            assert notes["blocker"] is None
+        else:
+            assert notes["blocker"], f"{product} blocked without a reason"

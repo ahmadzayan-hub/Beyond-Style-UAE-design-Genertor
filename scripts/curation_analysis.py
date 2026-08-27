@@ -20,9 +20,11 @@ sys.path.insert(0, str(ROOT / "backend"))
 
 from app.db.base import session_factory  # noqa: E402
 from app.services.curation_analysis import (  # noqa: E402
-    INSUFFICIENT, SIGNAL_DIMENSIONS, best_family, commercial_curation,
+    INSUFFICIENT, SIGNAL_DIMENSIONS, best_aesthetic_family_for_product,
+    best_commercial_family_for_product, commercial_curation,
     derive_aesthetic_signals, golden_pattern_validation, load_review_evidence,
-    review_quality_check,
+    overall_best_aesthetic_family, product_comparison_readiness,
+    review_quality_check, threshold_audit,
 )
 from app.services.customer_validation import (  # noqa: E402
     PRICE_BANDS, WOULD_BUY, best_customer_family, customer_signals,
@@ -131,8 +133,11 @@ def main(write: bool) -> int:
         quality = review_quality_check(session, items)
         signals = derive_aesthetic_signals(session, items)
         commercial = commercial_curation(session, items)
-        aesthetic_family = best_family(session, items, "human_aesthetic_score")
-        commercial_family = best_family(session, items, "commercial_appeal_score")
+        audit = threshold_audit(items)
+        readiness = product_comparison_readiness(session, items)
+        aesthetic_family = best_aesthetic_family_for_product(session, items)
+        commercial_family = best_commercial_family_for_product(session, items)
+        overall_aesthetic = overall_best_aesthetic_family(session, items)
         golden = golden_pattern_validation(session, items)
         pack = select_customer_pack(session, items)
         cust_signals = customer_signals(session, items)
@@ -149,6 +154,7 @@ def main(write: bool) -> int:
                 "never collapsed into one ranking.",
         "BEST_ENGINEERING_FAMILY": engineering_family,
         "BEST_AESTHETIC_FAMILY": {"basis": "HUMAN_REVIEW_ONLY", "by_product": aesthetic_family},
+        "OVERALL_BEST_AESTHETIC_FAMILY": overall_aesthetic,
         "BEST_COMMERCIAL_FAMILY": {"basis": "HUMAN_REVIEW_ONLY", "by_product": commercial_family},
         "BEST_CUSTOMER_FAMILY": {"basis": "CUSTOMER_RESPONSES_ONLY", "by_product": cust_family},
     }
@@ -165,6 +171,9 @@ def main(write: bool) -> int:
             json.dumps(signals, indent=1, ensure_ascii=False) + "\n")
         (REVIEW_OUT / "commercial-curation.json").write_text(json.dumps(
             {"states": dict(states), "decisions": commercial}, indent=1, ensure_ascii=False) + "\n")
+        (REVIEW_OUT / "threshold-audit.json").write_text(
+            json.dumps({"audit": audit, "comparison_readiness": readiness},
+                       indent=1, ensure_ascii=False) + "\n")
         (REVIEW_OUT / "best-families.json").write_text(
             json.dumps(families, indent=1, ensure_ascii=False) + "\n")
         (REVIEW_OUT / "golden-pattern-validation.json").write_text(
@@ -200,6 +209,10 @@ def main(write: bool) -> int:
     print(f"decisions:            {evidence['decisions']}")
     print(f"overall confidence:   {evidence['overall_confidence']}")
     print(f"commercial states:    {dict(states)}")
+    print(f"retired rule:         {audit['retired_rule']['status']}")
+    ready = sum(1 for v in readiness.values() if v['status'] == 'PRODUCT_COMPARISON_READY')
+    print(f"comparison ready:     {ready}/{len(readiness)} products")
+    print(f"overall aesthetic:    {overall_aesthetic['status']}")
     for name in ("BEST_AESTHETIC_FAMILY", "BEST_COMMERCIAL_FAMILY", "BEST_CUSTOMER_FAMILY"):
         derived = sum(1 for v in families[name]["by_product"].values()
                       if v.get("status") == "DERIVED")
