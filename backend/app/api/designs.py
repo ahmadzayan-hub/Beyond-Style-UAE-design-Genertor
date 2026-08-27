@@ -489,6 +489,38 @@ def font_variants(font_id: str):
     return {"font_id": font_id, "variants": font_variant_capabilities(font_id)}
 
 
+@fonts_router.get("/styles")
+def style_options():
+    """The customer style picker. Arabic labels only — raw OpenType tags
+    and internal feature-set ids are deliberately absent from this
+    payload; they are generation inputs, not customer data."""
+    from ..fonts.curation import customer_style_options
+
+    return {"styles": customer_style_options()}
+
+
+@fonts_router.get("/products/{product}/suitability")
+def product_suitability(product: str):
+    """Per-product font suitability. Ten dimensions are measured from real
+    geometry; three aesthetic dimensions stay NOT_ASSESSED until a human
+    reviews the proof sheets, so this is never a finished taste ranking."""
+    from ..fonts.curation import PRODUCTS
+    from ..fonts.suitability import measure
+
+    if product not in PRODUCTS:
+        raise HTTPException(404, "Unknown product.")
+    profile = PRODUCTS[product]
+    rows = [measure(f.font_id, profile) for f in get_registry().list()]
+    rows.sort(key=lambda r: (r.get("computed_suitability") or 0.0), reverse=True)
+    return {
+        "product": product,
+        "human_review_required": True,
+        "results": [
+            {k: v for k, v in r.items() if k != "attempts"} for r in rows
+        ],
+    }
+
+
 @fonts_router.get("/resolve/{script_family}")
 def resolve_script(script_family: str):
     """Customer-facing resolution of a requested script family."""

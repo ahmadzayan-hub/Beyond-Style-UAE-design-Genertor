@@ -131,3 +131,35 @@ def retrieve(query: dict, session: Session = Depends(get_session)):
     """Rank golden cases for a prospective request — the same retrieval
     the generator uses. Returns descriptors, never geometry."""
     return {"results": retrieve_golden_cases(session, query, top_k=int(query.get("top_k", 5)))}
+
+
+@router.get("/styles/{label_ar}", dependencies=[Depends(require_admin)])
+def resolve_style(label_ar: str):
+    """Internal resolution of a customer style label into the curated
+    font + feature-set + axis-range bundle. Staff-only precisely because
+    it exposes the raw OpenType layer the customer never sees."""
+    from ..fonts.curation import resolve_style_label
+
+    result = resolve_style_label(label_ar)
+    if result["outcome"] == "UNKNOWN_STYLE":
+        raise HTTPException(404, "Unknown style label.")
+    return result
+
+
+@router.get("/curation", dependencies=[Depends(require_admin)])
+def curation_report():
+    """Curation states across every variant set, with the count awaiting
+    human aesthetic review."""
+    from collections import Counter
+
+    from ..fonts.curation import load_curation
+
+    data = load_curation()
+    states = Counter(v["state"] for v in data.get("features", {}).values())
+    return {
+        "states": dict(states),
+        "awaiting_human_review": states.get("EXPERIMENTAL", 0),
+        "features": data.get("features", {}),
+        "axis_ranges": data.get("axis_ranges", {}),
+        "safe_combinations": data.get("safe_combinations", []),
+    }

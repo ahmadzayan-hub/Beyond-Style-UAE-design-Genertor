@@ -1,0 +1,1094 @@
+{
+ "note": "Curation states. Discovered OT features stay EXPERIMENTAL until a human at Beyond Style reviews the proof sheets — no aesthetic judgement is automated.",
+ "features": {
+  "default": {
+   "state": "PRODUCTION_RECOMMENDED",
+   "reason": "standard forms, in production use",
+   "fonts": [
+    "amiri-regular",
+    "scheherazade-new",
+    "cairo"
+   ],
+   "provenance": "CURATED_VERIFIED_AGAINST_FONT_TABLES",
+   "customer_visible": true
+  },
+  "amiri-ornate-1": {
+   "state": "PRODUCTION_ALLOWED",
+   "reason": "hand-curated before OT discovery and verified against the font tables",
+   "fonts": [
+    "amiri-regular"
+   ],
+   "provenance": "CURATED_VERIFIED_AGAINST_FONT_TABLES",
+   "customer_visible": true
+  },
+  "amiri-ornate-2": {
+   "state": "PRODUCTION_ALLOWED",
+   "reason": "hand-curated before OT discovery and verified against the font tables",
+   "fonts": [
+    "amiri-regular"
+   ],
+   "provenance": "CURATED_VERIFIED_AGAINST_FONT_TABLES",
+   "customer_visible": true
+  },
+  "amiri-ornate-3": {
+   "state": "PRODUCTION_ALLOWED",
+   "reason": "hand-curated before OT discovery and verified against the font tables",
+   "fonts": [
+    "amiri-regular"
+   ],
+   "provenance": "CURATED_VERIFIED_AGAINST_FONT_TABLES",
+   "customer_visible": true
+  },
+  "sche-salt": {
+   "state": "PRODUCTION_ALLOWED",
+   "reason": "hand-curated before OT discovery and verified against the font tables",
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "provenance": "CURATED_VERIFIED_AGAINST_FONT_TABLES",
+   "customer_visible": true
+  },
+  "sche-cv-tails": {
+   "state": "PRODUCTION_ALLOWED",
+   "reason": "hand-curated before OT discovery and verified against the font tables",
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "provenance": "CURATED_VERIFIED_AGAINST_FONT_TABLES",
+   "customer_visible": true
+  },
+  "sche-cv-forms": {
+   "state": "PRODUCTION_ALLOWED",
+   "reason": "hand-curated before OT discovery and verified against the font tables",
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "provenance": "CURATED_VERIFIED_AGAINST_FONT_TABLES",
+   "customer_visible": true
+  },
+  "cairo-dlig": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "cairo"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "amiri-regular-liga": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "amiri-regular"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "amiri-regular-ss01": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "amiri-regular"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "amiri-regular-ss02": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "amiri-regular"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "amiri-regular-ss03": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "amiri-regular"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "amiri-regular-ss04": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "amiri-regular"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "amiri-regular-ss05": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "amiri-regular"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "amiri-regular-ss06": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "amiri-regular"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "amiri-regular-ss07": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "amiri-regular"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "amiri-regular-ss08": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "amiri-regular"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "aref-ruqaa-calt": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "aref-ruqaa"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "aref-ruqaa-jalt": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "aref-ruqaa"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "aref-ruqaa-ss01": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "aref-ruqaa"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "aref-ruqaa-ss02": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "aref-ruqaa"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "aref-ruqaa-ss03": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "aref-ruqaa"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "aref-ruqaa-ss04": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "aref-ruqaa"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "aref-ruqaa-ss05": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "aref-ruqaa"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "aref-ruqaa-ss06": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "aref-ruqaa"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "aref-ruqaa-ss07": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "aref-ruqaa"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "aref-ruqaa-ss08": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "aref-ruqaa"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "katibeh-calt": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "katibeh"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "katibeh-dlig": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "katibeh"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "katibeh-liga": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "katibeh"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "katibeh-ss01": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "katibeh"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "lemonada-dlig": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "lemonada"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "reem-kufi-cv01": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "reem-kufi"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "reem-kufi-cv02": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "reem-kufi"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "reem-kufi-cv03": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "reem-kufi"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "scheherazade-new-calt": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "scheherazade-new-cv12": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "scheherazade-new-cv44": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "scheherazade-new-cv48": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "scheherazade-new-cv49": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "scheherazade-new-cv51": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "scheherazade-new-cv54": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "scheherazade-new-cv60": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "scheherazade-new-cv62": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "scheherazade-new-cv70": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "scheherazade-new-cv72": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "scheherazade-new-cv74": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "scheherazade-new-cv76": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "scheherazade-new-cv78": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "scheherazade-new-cv80": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "scheherazade-new-cv81": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "scheherazade-new-cv82": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "scheherazade-new-cv84": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "scheherazade-new-cv85": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "scheherazade-new-cv88": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "scheherazade-new-liga": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "scheherazade-new-salt": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "scheherazade-new"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "tajawal-dlig": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "tajawal"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  },
+  "tajawal-liga": {
+   "state": "EXPERIMENTAL",
+   "reason": "discovered by inspection; shaping-safe but not yet visually reviewed",
+   "fonts": [
+    "tajawal"
+   ],
+   "provenance": "DISCOVERED_FROM_FONT_TABLES",
+   "customer_visible": false
+  }
+ },
+ "axis_ranges": {
+  "cairo": {
+   "default": {
+    "wght": {
+     "min": 400.0,
+     "max": 600.0,
+     "status": "MEASURED"
+    },
+    "slnt": {
+     "min": -11.0,
+     "max": 11.0,
+     "status": "MEASURED"
+    }
+   },
+   "products": {
+    "single_letter_earring": {
+     "wght": {
+      "min": 400.0,
+      "max": 600.0,
+      "status": "MEASURED"
+     },
+     "slnt": {
+      "min": -11.0,
+      "max": 11.0,
+      "status": "MEASURED"
+     }
+    },
+    "drop_earring": {
+     "wght": {
+      "min": 400.0,
+      "max": 600.0,
+      "status": "MEASURED"
+     },
+     "slnt": {
+      "min": -11.0,
+      "max": 11.0,
+      "status": "MEASURED"
+     }
+    },
+    "pendant": {
+     "wght": {
+      "min": 400.0,
+      "max": 600.0,
+      "status": "MEASURED"
+     },
+     "slnt": {
+      "min": -11.0,
+      "max": 11.0,
+      "status": "MEASURED"
+     }
+    },
+    "necklace": {
+     "wght": {
+      "min": 400.0,
+      "max": 600.0,
+      "status": "MEASURED"
+     },
+     "slnt": {
+      "min": -11.0,
+      "max": 11.0,
+      "status": "MEASURED"
+     }
+    },
+    "ring": {
+     "wght": {
+      "min": 400.0,
+      "max": 600.0,
+      "status": "MEASURED"
+     },
+     "slnt": {
+      "min": -11.0,
+      "max": 11.0,
+      "status": "MEASURED"
+     }
+    },
+    "bracelet": {
+     "wght": {
+      "min": 400.0,
+      "max": 600.0,
+      "status": "MEASURED"
+     },
+     "slnt": {
+      "min": -11.0,
+      "max": 11.0,
+      "status": "MEASURED"
+     }
+    },
+    "cufflink": {
+     "wght": {
+      "min": 400.0,
+      "max": 600.0,
+      "status": "MEASURED"
+     },
+     "slnt": {
+      "min": -11.0,
+      "max": 11.0,
+      "status": "MEASURED"
+     }
+    },
+    "brooch": {
+     "wght": {
+      "min": 400.0,
+      "max": 600.0,
+      "status": "MEASURED"
+     },
+     "slnt": {
+      "min": -11.0,
+      "max": 11.0,
+      "status": "MEASURED"
+     }
+    },
+    "multi_name": {
+     "wght": {
+      "min": 400.0,
+      "max": 600.0,
+      "status": "MEASURED"
+     },
+     "slnt": {
+      "min": -11.0,
+      "max": 11.0,
+      "status": "MEASURED"
+     }
+    },
+    "medallion": {
+     "wght": {
+      "min": 400.0,
+      "max": 600.0,
+      "status": "MEASURED"
+     },
+     "slnt": {
+      "min": -11.0,
+      "max": 11.0,
+      "status": "MEASURED"
+     }
+    },
+    "engraving": {
+     "wght": {
+      "min": 400.0,
+      "max": 600.0,
+      "status": "MEASURED"
+     },
+     "slnt": {
+      "min": -11.0,
+      "max": 11.0,
+      "status": "MEASURED"
+     }
+    },
+    "openwork": {
+     "wght": {
+      "min": 400.0,
+      "max": 600.0,
+      "status": "MEASURED"
+     },
+     "slnt": {
+      "min": -11.0,
+      "max": 11.0,
+      "status": "MEASURED"
+     }
+    }
+   },
+   "generator_support": "NOT_YET_REACHABLE_BY_GENERATOR"
+  },
+  "lemonada": {
+   "default": {
+    "wght": {
+     "min": 400.0,
+     "max": 700.0,
+     "status": "MEASURED"
+    }
+   },
+   "products": {
+    "single_letter_earring": {
+     "wght": {
+      "min": 400.0,
+      "max": 500.0,
+      "status": "MEASURED"
+     }
+    },
+    "drop_earring": {
+     "wght": {
+      "min": 400.0,
+      "max": 500.0,
+      "status": "MEASURED"
+     }
+    },
+    "pendant": {
+     "wght": {
+      "min": 400.0,
+      "max": 700.0,
+      "status": "MEASURED"
+     }
+    },
+    "necklace": {
+     "wght": {
+      "min": 400.0,
+      "max": 700.0,
+      "status": "MEASURED"
+     }
+    },
+    "ring": {
+     "wght": {
+      "min": 400.0,
+      "max": 500.0,
+      "status": "MEASURED"
+     }
+    },
+    "bracelet": {
+     "wght": {
+      "min": 400.0,
+      "max": 700.0,
+      "status": "MEASURED"
+     }
+    },
+    "cufflink": {
+     "wght": {
+      "min": 400.0,
+      "max": 500.0,
+      "status": "MEASURED"
+     }
+    },
+    "brooch": {
+     "wght": {
+      "min": 400.0,
+      "max": 700.0,
+      "status": "MEASURED"
+     }
+    },
+    "multi_name": {
+     "wght": {
+      "min": 400.0,
+      "max": 700.0,
+      "status": "MEASURED"
+     }
+    },
+    "medallion": {
+     "wght": {
+      "min": 400.0,
+      "max": 700.0,
+      "status": "MEASURED"
+     }
+    },
+    "engraving": {
+     "wght": {
+      "min": 400.0,
+      "max": 700.0,
+      "status": "MEASURED"
+     }
+    },
+    "openwork": {
+     "wght": {
+      "min": 400.0,
+      "max": 700.0,
+      "status": "MEASURED"
+     }
+    }
+   },
+   "generator_support": "NOT_YET_REACHABLE_BY_GENERATOR"
+  },
+  "noto-nastaliq-urdu": {
+   "default": {
+    "wght": {
+     "min": 400.0,
+     "max": 700.0,
+     "status": "MEASURED"
+    }
+   },
+   "products": {
+    "single_letter_earring": {
+     "wght": {
+      "min": 400.0,
+      "max": 700.0,
+      "status": "MEASURED"
+     }
+    },
+    "drop_earring": {
+     "wght": {
+      "min": 400.0,
+      "max": 700.0,
+      "status": "MEASURED"
+     }
+    },
+    "pendant": {
+     "wght": {
+      "min": 400.0,
+      "max": 700.0,
+      "status": "MEASURED"
+     }
+    },
+    "necklace": {
+     "wght": {
+      "min": 400.0,
+      "max": 700.0,
+      "status": "MEASURED"
+     }
+    },
+    "ring": {
+     "wght": {
+      "min": 400.0,
+      "max": 700.0,
+      "status": "MEASURED"
+     }
+    },
+    "bracelet": {
+     "wght": {
+      "min": 400.0,
+      "max": 700.0,
+      "status": "MEASURED"
+     }
+    },
+    "cufflink": {
+     "wght": {
+      "min": 400.0,
+      "max": 700.0,
+      "status": "MEASURED"
+     }
+    },
+    "brooch": {
+     "wght": {
+      "min": 400.0,
+      "max": 700.0,
+      "status": "MEASURED"
+     }
+    },
+    "multi_name": {
+     "wght": {
+      "min": 400.0,
+      "max": 700.0,
+      "status": "MEASURED"
+     }
+    },
+    "medallion": {
+     "wght": {
+      "min": 400.0,
+      "max": 700.0,
+      "status": "MEASURED"
+     }
+    },
+    "engraving": {
+     "wght": {
+      "min": 400.0,
+      "max": 700.0,
+      "status": "MEASURED"
+     }
+    },
+    "openwork": {
+     "wght": {
+      "min": 400.0,
+      "max": 700.0,
+      "status": "MEASURED"
+     }
+    }
+   },
+   "generator_support": "NOT_YET_REACHABLE_BY_GENERATOR"
+  },
+  "reem-kufi": {
+   "default": {
+    "wght": {
+     "min": 400.0,
+     "max": 700.0,
+     "status": "MEASURED"
+    }
+   },
+   "products": {
+    "single_letter_earring": {
+     "wght": {
+      "min": 400.0,
+      "max": 400.0,
+      "status": "MEASURED"
+     }
+    },
+    "drop_earring": {
+     "wght": {
+      "min": 400.0,
+      "max": 400.0,
+      "status": "MEASURED"
+     }
+    },
+    "pendant": {
+     "wght": {
+      "min": 400.0,
+      "max": 700.0,
+      "status": "MEASURED"
+     }
+    },
+    "necklace": {
+     "wght": {
+      "min": 400.0,
+      "max": 700.0,
+      "status": "MEASURED"
+     }
+    },
+    "ring": {
+     "wght": {
+      "min": 400.0,
+      "max": 400.0,
+      "status": "MEASURED"
+     }
+    },
+    "bracelet": {
+     "wght": {
+      "min": 400.0,
+      "max": 700.0,
+      "status": "MEASURED"
+     }
+    },
+    "cufflink": {
+     "wght": {
+      "min": 400.0,
+      "max": 400.0,
+      "status": "MEASURED"
+     }
+    },
+    "brooch": {
+     "wght": {
+      "min": 400.0,
+      "max": 700.0,
+      "status": "MEASURED"
+     }
+    },
+    "multi_name": {
+     "wght": {
+      "min": 400.0,
+      "max": 700.0,
+      "status": "MEASURED"
+     }
+    },
+    "medallion": {
+     "wght": {
+      "min": 400.0,
+      "max": 700.0,
+      "status": "MEASURED"
+     }
+    },
+    "engraving": {
+     "wght": {
+      "min": 400.0,
+      "max": 700.0,
+      "status": "MEASURED"
+     }
+    },
+    "openwork": {
+     "wght": {
+      "min": 400.0,
+      "max": 700.0,
+      "status": "MEASURED"
+     }
+    }
+   },
+   "generator_support": "NOT_YET_REACHABLE_BY_GENERATOR"
+  }
+ },
+ "safe_combinations": [
+  {
+   "font_id": "aref-ruqaa",
+   "tags": [
+    "ss01",
+    "jalt"
+   ],
+   "kind": "ssXX+jalt"
+  },
+  {
+   "font_id": "aref-ruqaa",
+   "tags": [
+    "ss05",
+    "jalt"
+   ],
+   "kind": "ssXX+jalt"
+  },
+  {
+   "font_id": "scheherazade-new",
+   "tags": [
+    "salt",
+    "cv44"
+   ],
+   "kind": "salt+cvXX"
+  },
+  {
+   "font_id": "reem-kufi",
+   "tags": [
+    "cv01"
+   ],
+   "kind": "cvXX+weight"
+  },
+  {
+   "font_id": "reem-kufi",
+   "tags": [
+    "cv02"
+   ],
+   "kind": "cvXX+weight"
+  },
+  {
+   "font_id": "reem-kufi",
+   "tags": [
+    "cv01",
+    "cv02"
+   ],
+   "kind": "cvXX+cvXX"
+  },
+  {
+   "font_id": "amiri-regular",
+   "tags": [
+    "ss01"
+   ],
+   "kind": "variant+kashida"
+  },
+  {
+   "font_id": "aref-ruqaa",
+   "tags": [
+    "ss03"
+   ],
+   "kind": "variant+kashida"
+  },
+  {
+   "font_id": "amiri-regular",
+   "tags": [
+    "ss02"
+   ],
+   "kind": "variant+swash"
+  },
+  {
+   "font_id": "katibeh",
+   "tags": [
+    "ss01"
+   ],
+   "kind": "variant+swash"
+  },
+  {
+   "font_id": "lemonada",
+   "tags": [],
+   "kind": "weight+overlap"
+  },
+  {
+   "font_id": "reem-kufi",
+   "tags": [],
+   "kind": "weight+stacking"
+  },
+  {
+   "font_id": "noto-nastaliq-urdu",
+   "tags": [],
+   "kind": "weight+stacking"
+  },
+  {
+   "font_id": "scheherazade-new",
+   "tags": [
+    "cv48"
+   ],
+   "kind": "variant+dots"
+  },
+  {
+   "font_id": "amiri-regular",
+   "tags": [
+    "ss03"
+   ],
+   "kind": "variant+dots"
+  }
+ ]
+}

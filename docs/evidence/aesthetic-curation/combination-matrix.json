@@ -1,0 +1,319 @@
+{
+ "tested": 17,
+ "results": [
+  {
+   "font_id": "aref-ruqaa",
+   "tags": [
+    "ss01",
+    "jalt"
+   ],
+   "kind": "ssXX+jalt",
+   "rationale": "Ruqaa stylistic set with justification alternates",
+   "extra": {},
+   "verdict": "COMPATIBLE",
+   "shaping_safe": true,
+   "glyph_delta_range": [
+    0,
+    1
+   ],
+   "failures": [],
+   "corpus_size": 6
+  },
+  {
+   "font_id": "aref-ruqaa",
+   "tags": [
+    "ss05",
+    "jalt"
+   ],
+   "kind": "ssXX+jalt",
+   "rationale": "second stylistic set against the same justification axis",
+   "extra": {},
+   "verdict": "COMPATIBLE",
+   "shaping_safe": true,
+   "glyph_delta_range": [
+    0,
+    1
+   ],
+   "failures": [],
+   "corpus_size": 6
+  },
+  {
+   "font_id": "aref-ruqaa",
+   "tags": [
+    "ss01",
+    "ss02"
+   ],
+   "kind": "ssXX+ssXX",
+   "rationale": "two stylistic sets rewriting the same slots",
+   "extra": {},
+   "verdict": "REDUNDANT",
+   "shaping_safe": true,
+   "glyph_delta_range": [
+    0,
+    0
+   ],
+   "failures": [],
+   "corpus_size": 6
+  },
+  {
+   "font_id": "amiri-regular",
+   "tags": [
+    "ss01",
+    "ss05"
+   ],
+   "kind": "ssXX+ssXX",
+   "rationale": "Amiri stylistic sets stacked",
+   "extra": {},
+   "verdict": "REDUNDANT",
+   "shaping_safe": true,
+   "glyph_delta_range": [
+    0,
+    0
+   ],
+   "failures": [],
+   "corpus_size": 6
+  },
+  {
+   "font_id": "scheherazade-new",
+   "tags": [
+    "salt",
+    "cv44"
+   ],
+   "kind": "salt+cvXX",
+   "rationale": "blanket stylistic alternates against one character variant",
+   "extra": {},
+   "verdict": "COMPATIBLE",
+   "shaping_safe": true,
+   "glyph_delta_range": [
+    0,
+    0
+   ],
+   "failures": [],
+   "corpus_size": 6
+  },
+  {
+   "font_id": "reem-kufi",
+   "tags": [
+    "cv01"
+   ],
+   "kind": "cvXX+weight",
+   "rationale": "Kufi character variant at a heavier weight",
+   "extra": {
+    "wght": "max"
+   },
+   "verdict": "COMPATIBLE",
+   "shaping_safe": true,
+   "glyph_delta_range": [
+    0,
+    0
+   ],
+   "failures": [],
+   "corpus_size": 6
+  },
+  {
+   "font_id": "reem-kufi",
+   "tags": [
+    "cv02"
+   ],
+   "kind": "cvXX+weight",
+   "rationale": "Kufi character variant at the lightest weight",
+   "extra": {
+    "wght": "min"
+   },
+   "verdict": "COMPATIBLE",
+   "shaping_safe": true,
+   "glyph_delta_range": [
+    0,
+    0
+   ],
+   "failures": [],
+   "corpus_size": 6
+  },
+  {
+   "font_id": "reem-kufi",
+   "tags": [
+    "cv01",
+    "cv02"
+   ],
+   "kind": "cvXX+cvXX",
+   "rationale": "two independent character variants together",
+   "extra": {},
+   "verdict": "COMPATIBLE",
+   "shaping_safe": true,
+   "glyph_delta_range": [
+    0,
+    0
+   ],
+   "failures": [],
+   "corpus_size": 6
+  },
+  {
+   "font_id": "amiri-regular",
+   "tags": [
+    "ss01"
+   ],
+   "kind": "variant+kashida",
+   "rationale": "stylistic set with kashida elongation",
+   "extra": {
+    "kashida_count": 2
+   },
+   "verdict": "COMPATIBLE",
+   "shaping_safe": true,
+   "glyph_delta_range": [
+    0,
+    0
+   ],
+   "failures": [],
+   "corpus_size": 6
+  },
+  {
+   "font_id": "aref-ruqaa",
+   "tags": [
+    "ss03"
+   ],
+   "kind": "variant+kashida",
+   "rationale": "Ruqaa alternate with kashida elongation",
+   "extra": {
+    "kashida_count": 2
+   },
+   "verdict": "COMPATIBLE",
+   "shaping_safe": true,
+   "glyph_delta_range": [
+    0,
+    0
+   ],
+   "failures": [],
+   "corpus_size": 6
+  },
+  {
+   "font_id": "amiri-regular",
+   "tags": [
+    "ss02"
+   ],
+   "kind": "variant+swash",
+   "rationale": "stylistic set with a decorative swash",
+   "extra": {
+    "swash": "tail_sweep"
+   },
+   "verdict": "COMPATIBLE",
+   "shaping_safe": true,
+   "glyph_delta_range": [
+    0,
+    0
+   ],
+   "failures": [],
+   "corpus_size": 6
+  },
+  {
+   "font_id": "katibeh",
+   "tags": [
+    "ss01"
+   ],
+   "kind": "variant+swash",
+   "rationale": "bridge-face alternate with a swash",
+   "extra": {
+    "swash": "underline_flourish"
+   },
+   "verdict": "COMPATIBLE",
+   "shaping_safe": true,
+   "glyph_delta_range": [
+    0,
+    0
+   ],
+   "failures": [],
+   "corpus_size": 6
+  },
+  {
+   "font_id": "lemonada",
+   "tags": [],
+   "kind": "weight+overlap",
+   "rationale": "heaviest weight with tight letter spacing",
+   "extra": {
+    "wght": "max",
+    "letter_spacing_mm": -0.4
+   },
+   "verdict": "COMPATIBLE",
+   "shaping_safe": true,
+   "glyph_delta_range": [
+    0,
+    0
+   ],
+   "failures": [],
+   "corpus_size": 6
+  },
+  {
+   "font_id": "reem-kufi",
+   "tags": [],
+   "kind": "weight+stacking",
+   "rationale": "heaviest weight on stacked multi-line text",
+   "extra": {
+    "wght": "max",
+    "max_lines": 3
+   },
+   "verdict": "COMPATIBLE",
+   "shaping_safe": true,
+   "glyph_delta_range": [
+    0,
+    0
+   ],
+   "failures": [],
+   "corpus_size": 6
+  },
+  {
+   "font_id": "noto-nastaliq-urdu",
+   "tags": [],
+   "kind": "weight+stacking",
+   "rationale": "Nastaliq's steep baseline stacked at max weight",
+   "extra": {
+    "wght": "max",
+    "max_lines": 3
+   },
+   "verdict": "COMPATIBLE",
+   "shaping_safe": true,
+   "glyph_delta_range": [
+    0,
+    0
+   ],
+   "failures": [],
+   "corpus_size": 6
+  },
+  {
+   "font_id": "scheherazade-new",
+   "tags": [
+    "cv48"
+   ],
+   "kind": "variant+dots",
+   "rationale": "alternate tails with merged dots",
+   "extra": {
+    "dot_strategy": "merge"
+   },
+   "verdict": "COMPATIBLE",
+   "shaping_safe": true,
+   "glyph_delta_range": [
+    0,
+    0
+   ],
+   "failures": [],
+   "corpus_size": 6
+  },
+  {
+   "font_id": "amiri-regular",
+   "tags": [
+    "ss03"
+   ],
+   "kind": "variant+dots",
+   "rationale": "stylistic set with bridged dots",
+   "extra": {
+    "dot_strategy": "bridge"
+   },
+   "verdict": "COMPATIBLE",
+   "shaping_safe": true,
+   "glyph_delta_range": [
+    0,
+    0
+   ],
+   "failures": [],
+   "corpus_size": 6
+  }
+ ]
+}

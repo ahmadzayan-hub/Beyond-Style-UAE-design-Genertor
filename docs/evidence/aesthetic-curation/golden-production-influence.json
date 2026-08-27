@@ -1,0 +1,59 @@
+{
+ "evidence_priority": [
+  "MANUFACTURED_CUSTOMER_APPROVED",
+  "WORKSHOP_APPROVED",
+  "DESIGNER_APPROVED",
+  "AI_AESTHETIC_OPINION"
+ ],
+ "note": "AI aesthetic opinion ranks last and is advisory only.",
+ "cases": [
+  {
+   "case_id": "BS-GPC-0001-arabic-letter-pearl-earrings",
+   "evidence_tier": "MANUFACTURED_CUSTOMER_APPROVED",
+   "product_type": "ARABIC_LETTER_EARRINGS",
+   "influences": [
+    "LETTER_BODY",
+    "LOWER_ATTACHMENT_LOOP",
+    "HANGING_PEARL"
+   ],
+   "lessons": [
+    "An integrated lower loop drawn into the letter body removes a solder joint and survived manufacture intact.",
+    "A low-ornament, single-weight Arabic letter silhouette manufactures cleanly at earring scale.",
+    "One hanging teardrop pearl per piece adds perceived value without adding a manufacturing constraint.",
+    "An asymmetric letter pair is accepted by customers as a set — the two pieces need not mirror.",
+    "Letter identity must come from the order record: the photographic record alone cannot certify it."
+   ],
+   "geometry_copied": false,
+   "applies_to_products": [
+    "single_letter_earring",
+    "drop_earring"
+   ]
+  },
+  {
+   "case_id": "BS-GPC-0002-layered-name-necklace-adam-omar",
+   "evidence_tier": "MANUFACTURED_CUSTOMER_APPROVED",
+   "product_type": "LAYERED_NAME_NECKLACE",
+   "influences": [
+    "OUTER_CHAIN",
+    "INNER_CENTER_DROP",
+    "VERTICAL_NAME_ELEMENTS"
+   ],
+   "lessons": [
+    "A customer choosing from our own published catalogue removes third-party IP risk entirely — the starting point is already ours to reproduce.",
+    "Drawing by hand over the customer's chosen design is what fixed the construction intent; the sketch and the layout proof both descend from that markup.",
+    "Offering exactly two writing styles — not one, not ten — got a decision in a single round.",
+    "Splitting a name into per-letter elements on jump rings gives a vertical run that lies flat and reads cleanly.",
+    "A two-chain layered arrangement keeps two names independently readable; one chain would force them to compete.",
+    "Bold serif letterforms survive the size reduction to necklace scale better than thin or script forms.",
+    "Small bezel accents terminating each run add a finished look with no extra manufacturing constraint.",
+    "A vertical stacked layout proof shown before manufacture is what the customer approves against — keep it."
+   ],
+   "geometry_copied": false,
+   "applies_to_products": [
+    "necklace",
+    "pendant",
+    "multi_name"
+   ]
+  }
+ ]
+}

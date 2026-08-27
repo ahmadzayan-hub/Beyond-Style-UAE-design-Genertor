@@ -10,9 +10,40 @@ Statuses (External AI / Real Tool Wiring sections, precise per-claim vocabulary)
   OPTIONAL_NOT_RUNNING — an optional runtime (isolated Hermes) is not configured/reachable; the deterministic path is unaffected.
   BLOCKED — implemented but intentionally refused (e.g. approve_design for agents).
   FAILED — a real call/round-trip was attempted and errored (never silently downgraded to a softer status).
-Updated: 2026-08-26 · Backend suite: 276 passed (245 + 31 Font Capability) (PostgreSQL 16, incl. 11-test immutable seven-name golden fixture) · E2E: 5 browser flows passed (incl. dedicated seven-name+reference flow) · production smoke: 15/15 checks passed (local, corrected fixture) · GitHub Actions CI: VERIFIED_CI, run 32900447345 (current HEAD `a7e3858`) conclusion=success — 5 consecutive green runs — see RELEASE_EVIDENCE.md.
+Updated: 2026-08-26 · Backend suite: 303 passed (276 + 27 Aesthetic Curation) (PostgreSQL 16, incl. 11-test immutable seven-name golden fixture) · E2E: 5 browser flows passed (incl. dedicated seven-name+reference flow) · production smoke: 15/15 checks passed (local, corrected fixture) · GitHub Actions CI: VERIFIED_CI, run 32900447345 (current HEAD `a7e3858`) conclusion=success — 5 consecutive green runs — see RELEASE_EVIDENCE.md.
 
-## Font Capability (this slice)
+## Aesthetic Curation + Combination/Axis Safety (this slice)
+Machinery for aesthetic curation, with taste left to humans. 10 of 13 suitability dimensions are measured from
+real geometry; 3 are `NOT_ASSESSED` pending human review. All 52 discovered OT features stay EXPERIMENTAL and
+are hidden from customers. Golden Path and its immutable fixture unchanged.
+
+| Item | Status | Evidence |
+|---|---|---|
+| Product-specific suitability, 9 fonts × 12 products, never one universal score | VERIFIED_LOCAL | `test_suitability_is_product_specific_not_universal`; `scores.json` |
+| 3 aesthetic dimensions never auto-scored | VERIFIED_LOCAL | `test_aesthetic_dimensions_are_never_auto_scored` |
+| Aesthetic score cannot override manufacturing failure | VERIFIED_LOCAL | `test_aesthetic_score_cannot_override_manufacturing_failure`, `test_unmanufacturable_font_is_never_recommended` |
+| 17 curated combinations tested; only COMPATIBLE ships | VERIFIED_LOCAL | `combination-matrix.json`; 15 COMPATIBLE, 2 REDUNDANT, 0 UNSAFE |
+| Variable-axis safe ranges from real fontTools instancing | VERIFIED_LOCAL | `variable-axis-safety.json`; unsafe extremes excluded by test |
+| Experimental/hidden variants excluded from customer bundles | VERIFIED_E2E | `test_hidden_variant_is_excluded_from_customer_ranking`; `GET /api/admin/curation` → 52 awaiting review |
+| Customer style picker exposes no raw OT tags | VERIFIED_E2E | `test_customer_style_language_never_exposes_raw_ot_tags`; `GET /api/fonts/styles` |
+| Seven names resolved with no constraint weakened | VERIFIED_LOCAL | `seven-name-report.json`: 16/48 valid, stacked multi-line, source text unchanged |
+| Golden Production evidence outranks AI opinion and influences products | VERIFIED_LOCAL | `test_golden_case_influences_the_matching_products` |
+| Diwani/Thuluth cannot be selected via curation | VERIFIED_LOCAL | `test_classical_diwani_and_thuluth_cannot_be_selected_through_curation` |
+
+**Honest limitations:**
+- **No aesthetic review has happened.** 52 features EXPERIMENTAL, 3 dimensions NOT_ASSESSED. This slice built the
+  machinery and the proof sheets; a human at Beyond Style must still look at them. Nothing here is a taste verdict.
+- **Variable-axis ranges are measured but NOT renderable.** `arabic_engine`/`outline_extractor` load default
+  instances only; there is no axis plumbing. Ranges carry `NOT_YET_REACHABLE_BY_GENERATOR`.
+- **Combination geometry is shaping-verified, not built-geometry-verified, for `extra` axes.** Weight-bearing
+  combinations cannot be geometry-tested end-to-end for the reason above.
+- **The stroke figure is a relative proxy**, not a millimetre width — perimeter is summed over control points.
+  The real stroke gate stays the manufacturing validator.
+- **2 of 12 products (medallion, multi_name) have no manufacturable option under the fixed suitability probe** —
+  both are long-text products needing the production long-text adaptation the probe deliberately does not apply.
+  The seven-name case does resolve through the real production path.
+
+## Font Capability (previous slice)
 Advertised script coverage now equals renderable coverage. Nine OFL fonts, every feature discovered from the
 font binaries, every optional feature regression-shaped before exposure. The ranked-10 Golden Path and its
 immutable golden fixture are unchanged — new families sit in a separate on-demand pool.

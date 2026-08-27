@@ -1,0 +1,100 @@
+{
+ "source_text": "حامد محمد سلطان ميثة حمد خالد مهرة",
+ "path": "production generate_candidates (deterministic long-text adaptation)",
+ "constraints_weakened": false,
+ "internal_candidates": 48,
+ "valid_candidates": 16,
+ "shown_top_n": 10,
+ "successful_strategies": [
+  "stacked_multi_line"
+ ],
+ "all_source_text_unchanged": true,
+ "solutions": [
+  {
+   "recipe_id": "naskh-petite-charm",
+   "font_id": "amiri-regular",
+   "composition": "bare",
+   "max_lines": 3,
+   "strategy": "stacked_multi_line",
+   "width_mm": 44.11,
+   "height_mm": 40.43,
+   "source_text_unchanged": true
+  },
+  {
+   "recipe_id": "kufi-rect-tag",
+   "font_id": "cairo",
+   "composition": "plate_rect",
+   "max_lines": 3,
+   "strategy": "stacked_multi_line",
+   "width_mm": 59.75,
+   "height_mm": 35.97,
+   "source_text_unchanged": true
+  },
+  {
+   "recipe_id": "trad-suspended",
+   "font_id": "scheherazade-new",
+   "composition": "top_bar",
+   "max_lines": 4,
+   "strategy": "stacked_multi_line",
+   "width_mm": 58.59,
+   "height_mm": 46.35,
+   "source_text_unchanged": true
+  },
+  {
+   "recipe_id": "kufi-earring-drop",
+   "font_id": "cairo",
+   "composition": "bare",
+   "max_lines": 4,
+   "strategy": "stacked_multi_line",
+   "width_mm": 56.09,
+   "height_mm": 40.56,
+   "source_text_unchanged": true
+  },
+  {
+   "recipe_id": "naskh-oval-cameo",
+   "font_id": "amiri-regular",
+   "composition": "plate_oval",
+   "max_lines": 4,
+   "strategy": "stacked_multi_line",
+   "width_mm": 57.58,
+   "height_mm": 51.67,
+   "source_text_unchanged": true
+  }
+ ],
+ "blocked_examples": [
+  {
+   "recipe_id": "naskh-classic-bar",
+   "violations": [
+    "FLOATING_ISLAND",
+    "THIN_STROKE",
+    "WEAK_BRIDGE"
+   ]
+  },
+  {
+   "recipe_id": "naskh-flow-script",
+   "violations": [
+    "WEAK_BRIDGE"
+   ]
+  },
+  {
+   "recipe_id": "naskh-tall-elegant",
+   "violations": [
+    "OVERSIZE"
+   ]
+  },
+  {
+   "recipe_id": "naskh-condensed-luxury",
+   "violations": [
+    "WEAK_BRIDGE",
+    "OVERSIZE"
+   ]
+  },
+  {
+   "recipe_id": "naskh-medallion",
+   "violations": [
+    "OVERSIZE"
+   ]
+  }
+ ],
+ "outcome": "RESOLVED"
+}

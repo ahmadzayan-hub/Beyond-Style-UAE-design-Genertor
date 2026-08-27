@@ -1,0 +1,921 @@
+{
+ "cairo": {
+  "axes": [
+   {
+    "axis": {
+     "tag": "wght",
+     "min": 200.0,
+     "default": 400.0,
+     "max": 1000.0
+    },
+    "grid": [
+     {
+      "probe_glyphs": 10,
+      "stroke_proxy_mean": 113.84,
+      "stroke_proxy_min": 30.05,
+      "stroke_proxy_note": "relative across grid points only; NOT a millimetre width",
+      "mean_fill_ratio": 0.1693,
+      "negative_space": 0.8307,
+      "mean_contours": 1.1,
+      "max_contours": 2,
+      "mean_bbox_area": 0.39623,
+      "axis": "wght",
+      "value": 200.0,
+      "is_default": false,
+      "safe": false,
+      "reasons": [
+       "strokes 51% thinner than the default instance"
+      ]
+     },
+     {
+      "probe_glyphs": 10,
+      "stroke_proxy_mean": 255.33,
+      "stroke_proxy_min": 61.92,
+      "stroke_proxy_note": "relative across grid points only; NOT a millimetre width",
+      "mean_fill_ratio": 0.3366,
+      "negative_space": 0.6634,
+      "mean_contours": 1.1,
+      "max_contours": 2,
+      "mean_bbox_area": 0.41996,
+      "axis": "wght",
+      "value": 400.0,
+      "is_default": true,
+      "safe": true,
+      "reasons": []
+     },
+     {
+      "probe_glyphs": 10,
+      "stroke_proxy_mean": 307.2,
+      "stroke_proxy_min": 72.34,
+      "stroke_proxy_note": "relative across grid points only; NOT a millimetre width",
+      "mean_fill_ratio": 0.3849,
+      "negative_space": 0.6151,
+      "mean_contours": 1.1,
+      "max_contours": 2,
+      "mean_bbox_area": 0.43112,
+      "axis": "wght",
+      "value": 600.0,
+      "is_default": false,
+      "safe": true,
+      "reasons": []
+     },
+     {
+      "probe_glyphs": 10,
+      "stroke_proxy_mean": 508.78,
+      "stroke_proxy_min": 109.95,
+      "stroke_proxy_note": "relative across grid points only; NOT a millimetre width",
+      "mean_fill_ratio": 0.5384,
+      "negative_space": 0.4616,
+      "mean_contours": 1.1,
+      "max_contours": 2,
+      "mean_bbox_area": 0.47424,
+      "axis": "wght",
+      "value": 800.0,
+      "is_default": false,
+      "safe": false,
+      "reasons": [
+       "counters closing (fill 0.5384 > 0.52)"
+      ]
+     },
+     {
+      "probe_glyphs": 10,
+      "stroke_proxy_mean": 730.33,
+      "stroke_proxy_min": 149.24,
+      "stroke_proxy_note": "relative across grid points only; NOT a millimetre width",
+      "mean_fill_ratio": 0.6696,
+      "negative_space": 0.3304,
+      "mean_contours": 1.1,
+      "max_contours": 2,
+      "mean_bbox_area": 0.52742,
+      "axis": "wght",
+      "value": 1000.0,
+      "is_default": false,
+      "safe": false,
+      "reasons": [
+       "counters closing (fill 0.6696 > 0.52)"
+      ]
+     }
+    ]
+   },
+   {
+    "axis": {
+     "tag": "slnt",
+     "min": -11.0,
+     "default": 0.0,
+     "max": 11.0
+    },
+    "grid": [
+     {
+      "probe_glyphs": 10,
+      "stroke_proxy_mean": 242.31,
+      "stroke_proxy_min": 61.49,
+      "stroke_proxy_note": "relative across grid points only; NOT a millimetre width",
+      "mean_fill_ratio": 0.2845,
+      "negative_space": 0.7155,
+      "mean_contours": 1.1,
+      "max_contours": 2,
+      "mean_bbox_area": 0.48493,
+      "axis": "slnt",
+      "value": -11.0,
+      "is_default": false,
+      "safe": true,
+      "reasons": []
+     },
+     {
+      "probe_glyphs": 10,
+      "stroke_proxy_mean": 248.31,
+      "stroke_proxy_min": 61.67,
+      "stroke_proxy_note": "relative across grid points only; NOT a millimetre width",
+      "mean_fill_ratio": 0.3099,
+      "negative_space": 0.6901,
+      "mean_contours": 1.1,
+      "max_contours": 2,
+      "mean_bbox_area": 0.44936,
+      "axis": "slnt",
+      "value": -5.5,
+      "is_default": false,
+      "safe": true,
+      "reasons": []
+     },
+     {
+      "probe_glyphs": 10,
+      "stroke_proxy_mean": 255.33,
+      "stroke_proxy_min": 61.92,
+      "stroke_proxy_note": "relative across grid points only; NOT a millimetre width",
+      "mean_fill_ratio": 0.3366,
+      "negative_space": 0.6634,
+      "mean_contours": 1.1,
+      "max_contours": 2,
+      "mean_bbox_area": 0.41996,
+      "axis": "slnt",
+      "value": 0.0,
+      "is_default": true,
+      "safe": true,
+      "reasons": []
+     },
+     {
+      "probe_glyphs": 10,
+      "stroke_proxy_mean": 261.28,
+      "stroke_proxy_min": 61.65,
+      "stroke_proxy_note": "relative across grid points only; NOT a millimetre width",
+      "mean_fill_ratio": 0.3328,
+      "negative_space": 0.6672,
+      "mean_contours": 1.1,
+      "max_contours": 2,
+      "mean_bbox_area": 0.42386,
+      "axis": "slnt",
+      "value": 5.5,
+      "is_default": false,
+      "safe": true,
+      "reasons": []
+     },
+     {
+      "probe_glyphs": 10,
+      "stroke_proxy_mean": 268.5,
+      "stroke_proxy_min": 61.38,
+      "stroke_proxy_note": "relative across grid points only; NOT a millimetre width",
+      "mean_fill_ratio": 0.3199,
+      "negative_space": 0.6801,
+      "mean_contours": 1.1,
+      "max_contours": 2,
+      "mean_bbox_area": 0.44331,
+      "axis": "slnt",
+      "value": 11.0,
+      "is_default": false,
+      "safe": true,
+      "reasons": []
+     }
+    ]
+   }
+  ],
+  "default": {
+   "wght": {
+    "min": 400.0,
+    "max": 600.0,
+    "status": "MEASURED"
+   },
+   "slnt": {
+    "min": -11.0,
+    "max": 11.0,
+    "status": "MEASURED"
+   }
+  },
+  "products": {
+   "single_letter_earring": {
+    "wght": {
+     "min": 400.0,
+     "max": 600.0,
+     "status": "MEASURED"
+    },
+    "slnt": {
+     "min": -11.0,
+     "max": 11.0,
+     "status": "MEASURED"
+    }
+   },
+   "drop_earring": {
+    "wght": {
+     "min": 400.0,
+     "max": 600.0,
+     "status": "MEASURED"
+    },
+    "slnt": {
+     "min": -11.0,
+     "max": 11.0,
+     "status": "MEASURED"
+    }
+   },
+   "pendant": {
+    "wght": {
+     "min": 400.0,
+     "max": 600.0,
+     "status": "MEASURED"
+    },
+    "slnt": {
+     "min": -11.0,
+     "max": 11.0,
+     "status": "MEASURED"
+    }
+   },
+   "necklace": {
+    "wght": {
+     "min": 400.0,
+     "max": 600.0,
+     "status": "MEASURED"
+    },
+    "slnt": {
+     "min": -11.0,
+     "max": 11.0,
+     "status": "MEASURED"
+    }
+   },
+   "ring": {
+    "wght": {
+     "min": 400.0,
+     "max": 600.0,
+     "status": "MEASURED"
+    },
+    "slnt": {
+     "min": -11.0,
+     "max": 11.0,
+     "status": "MEASURED"
+    }
+   },
+   "bracelet": {
+    "wght": {
+     "min": 400.0,
+     "max": 600.0,
+     "status": "MEASURED"
+    },
+    "slnt": {
+     "min": -11.0,
+     "max": 11.0,
+     "status": "MEASURED"
+    }
+   },
+   "cufflink": {
+    "wght": {
+     "min": 400.0,
+     "max": 600.0,
+     "status": "MEASURED"
+    },
+    "slnt": {
+     "min": -11.0,
+     "max": 11.0,
+     "status": "MEASURED"
+    }
+   },
+   "brooch": {
+    "wght": {
+     "min": 400.0,
+     "max": 600.0,
+     "status": "MEASURED"
+    },
+    "slnt": {
+     "min": -11.0,
+     "max": 11.0,
+     "status": "MEASURED"
+    }
+   },
+   "multi_name": {
+    "wght": {
+     "min": 400.0,
+     "max": 600.0,
+     "status": "MEASURED"
+    },
+    "slnt": {
+     "min": -11.0,
+     "max": 11.0,
+     "status": "MEASURED"
+    }
+   },
+   "medallion": {
+    "wght": {
+     "min": 400.0,
+     "max": 600.0,
+     "status": "MEASURED"
+    },
+    "slnt": {
+     "min": -11.0,
+     "max": 11.0,
+     "status": "MEASURED"
+    }
+   },
+   "engraving": {
+    "wght": {
+     "min": 400.0,
+     "max": 600.0,
+     "status": "MEASURED"
+    },
+    "slnt": {
+     "min": -11.0,
+     "max": 11.0,
+     "status": "MEASURED"
+    }
+   },
+   "openwork": {
+    "wght": {
+     "min": 400.0,
+     "max": 600.0,
+     "status": "MEASURED"
+    },
+    "slnt": {
+     "min": -11.0,
+     "max": 11.0,
+     "status": "MEASURED"
+    }
+   }
+  },
+  "generator_support": "NOT_YET_REACHABLE_BY_GENERATOR",
+  "generator_note": "arabic_engine/outline_extractor load each font at its default instance; these ranges are measured but cannot yet be rendered."
+ },
+ "lemonada": {
+  "axes": [
+   {
+    "axis": {
+     "tag": "wght",
+     "min": 300.0,
+     "default": 400.0,
+     "max": 700.0
+    },
+    "grid": [
+     {
+      "probe_glyphs": 10,
+      "stroke_proxy_mean": 335.27,
+      "stroke_proxy_min": 76.28,
+      "stroke_proxy_note": "relative across grid points only; NOT a millimetre width",
+      "mean_fill_ratio": 0.2925,
+      "negative_space": 0.7075,
+      "mean_contours": 1.2,
+      "max_contours": 2,
+      "mean_bbox_area": 0.66503,
+      "axis": "wght",
+      "value": 300.0,
+      "is_default": false,
+      "safe": false,
+      "reasons": [
+       "strokes 16% thinner than the default instance"
+      ]
+     },
+     {
+      "probe_glyphs": 10,
+      "stroke_proxy_mean": 401.48,
+      "stroke_proxy_min": 90.31,
+      "stroke_proxy_note": "relative across grid points only; NOT a millimetre width",
+      "mean_fill_ratio": 0.3375,
+      "negative_space": 0.6625,
+      "mean_contours": 1.2,
+      "max_contours": 2,
+      "mean_bbox_area": 0.69236,
+      "axis": "wght",
+      "value": 400.0,
+      "is_default": true,
+      "safe": true,
+      "reasons": []
+     },
+     {
+      "probe_glyphs": 10,
+      "stroke_proxy_mean": 481.37,
+      "stroke_proxy_min": 106.45,
+      "stroke_proxy_note": "relative across grid points only; NOT a millimetre width",
+      "mean_fill_ratio": 0.3875,
+      "negative_space": 0.6125,
+      "mean_contours": 1.2,
+      "max_contours": 2,
+      "mean_bbox_area": 0.72575,
+      "axis": "wght",
+      "value": 500.0,
+      "is_default": false,
+      "safe": true,
+      "reasons": []
+     },
+     {
+      "probe_glyphs": 10,
+      "stroke_proxy_mean": 557.63,
+      "stroke_proxy_min": 121.5,
+      "stroke_proxy_note": "relative across grid points only; NOT a millimetre width",
+      "mean_fill_ratio": 0.4313,
+      "negative_space": 0.5687,
+      "mean_contours": 1.2,
+      "max_contours": 2,
+      "mean_bbox_area": 0.75992,
+      "axis": "wght",
+      "value": 600.0,
+      "is_default": false,
+      "safe": true,
+      "reasons": []
+     },
+     {
+      "probe_glyphs": 10,
+      "stroke_proxy_mean": 651.68,
+      "stroke_proxy_min": 140.19,
+      "stroke_proxy_note": "relative across grid points only; NOT a millimetre width",
+      "mean_fill_ratio": 0.4813,
+      "negative_space": 0.5187,
+      "mean_contours": 1.2,
+      "max_contours": 2,
+      "mean_bbox_area": 0.80311,
+      "axis": "wght",
+      "value": 700.0,
+      "is_default": false,
+      "safe": true,
+      "reasons": []
+     }
+    ]
+   }
+  ],
+  "default": {
+   "wght": {
+    "min": 400.0,
+    "max": 700.0,
+    "status": "MEASURED"
+   }
+  },
+  "products": {
+   "single_letter_earring": {
+    "wght": {
+     "min": 400.0,
+     "max": 500.0,
+     "status": "MEASURED"
+    }
+   },
+   "drop_earring": {
+    "wght": {
+     "min": 400.0,
+     "max": 500.0,
+     "status": "MEASURED"
+    }
+   },
+   "pendant": {
+    "wght": {
+     "min": 400.0,
+     "max": 700.0,
+     "status": "MEASURED"
+    }
+   },
+   "necklace": {
+    "wght": {
+     "min": 400.0,
+     "max": 700.0,
+     "status": "MEASURED"
+    }
+   },
+   "ring": {
+    "wght": {
+     "min": 400.0,
+     "max": 500.0,
+     "status": "MEASURED"
+    }
+   },
+   "bracelet": {
+    "wght": {
+     "min": 400.0,
+     "max": 700.0,
+     "status": "MEASURED"
+    }
+   },
+   "cufflink": {
+    "wght": {
+     "min": 400.0,
+     "max": 500.0,
+     "status": "MEASURED"
+    }
+   },
+   "brooch": {
+    "wght": {
+     "min": 400.0,
+     "max": 700.0,
+     "status": "MEASURED"
+    }
+   },
+   "multi_name": {
+    "wght": {
+     "min": 400.0,
+     "max": 700.0,
+     "status": "MEASURED"
+    }
+   },
+   "medallion": {
+    "wght": {
+     "min": 400.0,
+     "max": 700.0,
+     "status": "MEASURED"
+    }
+   },
+   "engraving": {
+    "wght": {
+     "min": 400.0,
+     "max": 700.0,
+     "status": "MEASURED"
+    }
+   },
+   "openwork": {
+    "wght": {
+     "min": 400.0,
+     "max": 700.0,
+     "status": "MEASURED"
+    }
+   }
+  },
+  "generator_support": "NOT_YET_REACHABLE_BY_GENERATOR",
+  "generator_note": "arabic_engine/outline_extractor load each font at its default instance; these ranges are measured but cannot yet be rendered."
+ },
+ "noto-nastaliq-urdu": {
+  "axes": [
+   {
+    "axis": {
+     "tag": "wght",
+     "min": 400.0,
+     "default": 400.0,
+     "max": 700.0
+    },
+    "grid": [
+     {
+      "probe_glyphs": 1,
+      "stroke_proxy_mean": 555.59,
+      "stroke_proxy_min": 555.59,
+      "stroke_proxy_note": "relative across grid points only; NOT a millimetre width",
+      "mean_fill_ratio": 0.2571,
+      "negative_space": 0.7429,
+      "mean_contours": 0.0,
+      "max_contours": 0,
+      "mean_bbox_area": 0.66885,
+      "axis": "wght",
+      "value": 400.0,
+      "is_default": true,
+      "safe": true,
+      "reasons": []
+     },
+     {
+      "probe_glyphs": 1,
+      "stroke_proxy_mean": 588.36,
+      "stroke_proxy_min": 588.36,
+      "stroke_proxy_note": "relative across grid points only; NOT a millimetre width",
+      "mean_fill_ratio": 0.2676,
+      "negative_space": 0.7324,
+      "mean_contours": 0.0,
+      "max_contours": 0,
+      "mean_bbox_area": 0.68041,
+      "axis": "wght",
+      "value": 475.0,
+      "is_default": false,
+      "safe": true,
+      "reasons": []
+     },
+     {
+      "probe_glyphs": 1,
+      "stroke_proxy_mean": 629.58,
+      "stroke_proxy_min": 629.58,
+      "stroke_proxy_note": "relative across grid points only; NOT a millimetre width",
+      "mean_fill_ratio": 0.2809,
+      "negative_space": 0.7191,
+      "mean_contours": 0.0,
+      "max_contours": 0,
+      "mean_bbox_area": 0.69375,
+      "axis": "wght",
+      "value": 550.0,
+      "is_default": false,
+      "safe": true,
+      "reasons": []
+     },
+     {
+      "probe_glyphs": 1,
+      "stroke_proxy_mean": 674.53,
+      "stroke_proxy_min": 674.53,
+      "stroke_proxy_note": "relative across grid points only; NOT a millimetre width",
+      "mean_fill_ratio": 0.2963,
+      "negative_space": 0.7037,
+      "mean_contours": 0.0,
+      "max_contours": 0,
+      "mean_bbox_area": 0.70459,
+      "axis": "wght",
+      "value": 625.0,
+      "is_default": false,
+      "safe": true,
+      "reasons": []
+     },
+     {
+      "probe_glyphs": 1,
+      "stroke_proxy_mean": 730.01,
+      "stroke_proxy_min": 730.01,
+      "stroke_proxy_note": "relative across grid points only; NOT a millimetre width",
+      "mean_fill_ratio": 0.3146,
+      "negative_space": 0.6854,
+      "mean_contours": 0.0,
+      "max_contours": 0,
+      "mean_bbox_area": 0.71816,
+      "axis": "wght",
+      "value": 700.0,
+      "is_default": false,
+      "safe": true,
+      "reasons": []
+     }
+    ]
+   }
+  ],
+  "default": {
+   "wght": {
+    "min": 400.0,
+    "max": 700.0,
+    "status": "MEASURED"
+   }
+  },
+  "products": {
+   "single_letter_earring": {
+    "wght": {
+     "min": 400.0,
+     "max": 700.0,
+     "status": "MEASURED"
+    }
+   },
+   "drop_earring": {
+    "wght": {
+     "min": 400.0,
+     "max": 700.0,
+     "status": "MEASURED"
+    }
+   },
+   "pendant": {
+    "wght": {
+     "min": 400.0,
+     "max": 700.0,
+     "status": "MEASURED"
+    }
+   },
+   "necklace": {
+    "wght": {
+     "min": 400.0,
+     "max": 700.0,
+     "status": "MEASURED"
+    }
+   },
+   "ring": {
+    "wght": {
+     "min": 400.0,
+     "max": 700.0,
+     "status": "MEASURED"
+    }
+   },
+   "bracelet": {
+    "wght": {
+     "min": 400.0,
+     "max": 700.0,
+     "status": "MEASURED"
+    }
+   },
+   "cufflink": {
+    "wght": {
+     "min": 400.0,
+     "max": 700.0,
+     "status": "MEASURED"
+    }
+   },
+   "brooch": {
+    "wght": {
+     "min": 400.0,
+     "max": 700.0,
+     "status": "MEASURED"
+    }
+   },
+   "multi_name": {
+    "wght": {
+     "min": 400.0,
+     "max": 700.0,
+     "status": "MEASURED"
+    }
+   },
+   "medallion": {
+    "wght": {
+     "min": 400.0,
+     "max": 700.0,
+     "status": "MEASURED"
+    }
+   },
+   "engraving": {
+    "wght": {
+     "min": 400.0,
+     "max": 700.0,
+     "status": "MEASURED"
+    }
+   },
+   "openwork": {
+    "wght": {
+     "min": 400.0,
+     "max": 700.0,
+     "status": "MEASURED"
+    }
+   }
+  },
+  "generator_support": "NOT_YET_REACHABLE_BY_GENERATOR",
+  "generator_note": "arabic_engine/outline_extractor load each font at its default instance; these ranges are measured but cannot yet be rendered."
+ },
+ "reem-kufi": {
+  "axes": [
+   {
+    "axis": {
+     "tag": "wght",
+     "min": 400.0,
+     "default": 400.0,
+     "max": 700.0
+    },
+    "grid": [
+     {
+      "probe_glyphs": 10,
+      "stroke_proxy_mean": 236917.53,
+      "stroke_proxy_min": 352.39,
+      "stroke_proxy_note": "relative across grid points only; NOT a millimetre width",
+      "mean_fill_ratio": 0.4165,
+      "negative_space": 0.5835,
+      "mean_contours": 0.0,
+      "max_contours": 0,
+      "mean_bbox_area": 0.3628,
+      "axis": "wght",
+      "value": 400.0,
+      "is_default": true,
+      "safe": true,
+      "reasons": []
+     },
+     {
+      "probe_glyphs": 10,
+      "stroke_proxy_mean": 258413.16,
+      "stroke_proxy_min": 369.95,
+      "stroke_proxy_note": "relative across grid points only; NOT a millimetre width",
+      "mean_fill_ratio": 0.4407,
+      "negative_space": 0.5593,
+      "mean_contours": 0.0,
+      "max_contours": 0,
+      "mean_bbox_area": 0.36918,
+      "axis": "wght",
+      "value": 475.0,
+      "is_default": false,
+      "safe": true,
+      "reasons": []
+     },
+     {
+      "probe_glyphs": 10,
+      "stroke_proxy_mean": 279910.7,
+      "stroke_proxy_min": 387.5,
+      "stroke_proxy_note": "relative across grid points only; NOT a millimetre width",
+      "mean_fill_ratio": 0.4636,
+      "negative_space": 0.5364,
+      "mean_contours": 0.0,
+      "max_contours": 0,
+      "mean_bbox_area": 0.37576,
+      "axis": "wght",
+      "value": 550.0,
+      "is_default": false,
+      "safe": true,
+      "reasons": []
+     },
+     {
+      "probe_glyphs": 10,
+      "stroke_proxy_mean": 300857.86,
+      "stroke_proxy_min": 404.15,
+      "stroke_proxy_note": "relative across grid points only; NOT a millimetre width",
+      "mean_fill_ratio": 0.4848,
+      "negative_space": 0.5152,
+      "mean_contours": 0.0,
+      "max_contours": 0,
+      "mean_bbox_area": 0.38205,
+      "axis": "wght",
+      "value": 625.0,
+      "is_default": false,
+      "safe": true,
+      "reasons": []
+     },
+     {
+      "probe_glyphs": 10,
+      "stroke_proxy_mean": 321966.44,
+      "stroke_proxy_min": 420.88,
+      "stroke_proxy_note": "relative across grid points only; NOT a millimetre width",
+      "mean_fill_ratio": 0.5054,
+      "negative_space": 0.4946,
+      "mean_contours": 0.0,
+      "max_contours": 0,
+      "mean_bbox_area": 0.3885,
+      "axis": "wght",
+      "value": 700.0,
+      "is_default": false,
+      "safe": true,
+      "reasons": []
+     }
+    ]
+   }
+  ],
+  "default": {
+   "wght": {
+    "min": 400.0,
+    "max": 700.0,
+    "status": "MEASURED"
+   }
+  },
+  "products": {
+   "single_letter_earring": {
+    "wght": {
+     "min": 400.0,
+     "max": 400.0,
+     "status": "MEASURED"
+    }
+   },
+   "drop_earring": {
+    "wght": {
+     "min": 400.0,
+     "max": 400.0,
+     "status": "MEASURED"
+    }
+   },
+   "pendant": {
+    "wght": {
+     "min": 400.0,
+     "max": 700.0,
+     "status": "MEASURED"
+    }
+   },
+   "necklace": {
+    "wght": {
+     "min": 400.0,
+     "max": 700.0,
+     "status": "MEASURED"
+    }
+   },
+   "ring": {
+    "wght": {
+     "min": 400.0,
+     "max": 400.0,
+     "status": "MEASURED"
+    }
+   },
+   "bracelet": {
+    "wght": {
+     "min": 400.0,
+     "max": 700.0,
+     "status": "MEASURED"
+    }
+   },
+   "cufflink": {
+    "wght": {
+     "min": 400.0,
+     "max": 400.0,
+     "status": "MEASURED"
+    }
+   },
+   "brooch": {
+    "wght": {
+     "min": 400.0,
+     "max": 700.0,
+     "status": "MEASURED"
+    }
+   },
+   "multi_name": {
+    "wght": {
+     "min": 400.0,
+     "max": 700.0,
+     "status": "MEASURED"
+    }
+   },
+   "medallion": {
+    "wght": {
+     "min": 400.0,
+     "max": 700.0,
+     "status": "MEASURED"
+    }
+   },
+   "engraving": {
+    "wght": {
+     "min": 400.0,
+     "max": 700.0,
+     "status": "MEASURED"
+    }
+   },
+   "openwork": {
+    "wght": {
+     "min": 400.0,
+     "max": 700.0,
+     "status": "MEASURED"
+    }
+   }
+  },
+  "generator_support": "NOT_YET_REACHABLE_BY_GENERATOR",
+  "generator_note": "arabic_engine/outline_extractor load each font at its default instance; these ranges are measured but cannot yet be rendered."
+ }
+}
