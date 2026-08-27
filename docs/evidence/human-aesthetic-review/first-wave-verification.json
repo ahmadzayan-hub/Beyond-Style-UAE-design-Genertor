@@ -1,0 +1,32 @@
+{
+ "total_review_rows": 0,
+ "distinct_reviewers": [],
+ "distinct_reviewed_items": 0,
+ "reviews_per_item": {},
+ "products_covered": [],
+ "font_families_covered": [],
+ "dimension_completeness": {
+  "scored_reviews": 0,
+  "incomplete_scored_reviews": []
+ },
+ "revised_reviews_same_reviewer": 0,
+ "items_with_one_independent_reviewer": [],
+ "items_with_two_or_more": [],
+ "items_with_three_or_more": [],
+ "unreviewed_items": [
+  "0b6acc8a2a72080d9305cfdf2187bc03",
+  "0e3d3edff02b6ba13ae7a19074e31d9c",
+  "2a38ba71a56a737c011f03090a32a4b2",
+  "325988601516d587b12167ae43abf978",
+  "74019c039f3e642d051d363f9141261e",
+  "7c5a5217f4326c0109dc1f2e6944592e",
+  "bc411a74b58e26bd0a7f53e343e8703b",
+  "cd2e6450fd582a6247bbb6540f9857cc",
+  "d19e953129fa55547f015bdf30b6493f",
+  "dddf1a431a5df8a5c4966c30b991ce7b",
+  "e62dfd6d739020a47655063b1bfe2183",
+  "ea7330d3d14c8e0fc30363df0b350d1e",
+  "fc400e2950c1629f2d95fe4bd6c6eb27"
+ ],
+ "status": "HUMAN_REVIEW_PENDING"
+}

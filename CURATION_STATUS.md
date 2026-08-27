@@ -3,6 +3,41 @@
 **Generated from the append-only review log, not from assumptions.**
 Regenerate: `python3 scripts/curation_analysis.py --write`
 
+## P4 — First-wave verification (latest run)
+
+**The first review wave has NOT been reviewed.** Verified against the
+append-only log before any derivation: 0 review rows, 0 reviewers, 0 customer
+responses. Every §5–§12 claim is therefore blocked, and the analysis pipeline
+(`python3 scripts/first_review_analysis.py --write`) emits that honestly:
+
+| P4 claim | result |
+|---|---|
+| Comparison-ready products | 0 / 5 |
+| `BEST_AESTHETIC_FAMILY_FOR_PRODUCT` | `NOT_COMPARISON_READY` everywhere |
+| `BEST_COMMERCIAL_FAMILY_FOR_PRODUCT` | `NOT_COMPARISON_READY` everywhere |
+| Engineering vs human | `NOT_COMPARABLE_NO_HUMAN_WINNER` everywhere |
+| Golden pattern | `UNDETERMINED` (preliminary vocabulary only) |
+| `OVERALL_BEST_AESTHETIC_FAMILY` | `INSUFFICIENT_HUMAN_REVIEW_EVIDENCE` |
+| `BEST_CUSTOMER_FAMILY` | `INSUFFICIENT_CUSTOMER_EVIDENCE` |
+| Bracelet | `BRACELET_COMPARISON_BLOCKED` (+2 manufacturable families needed) |
+| Composition scope | `FONT_FAMILY_COMPARISON_ONLY` for every product |
+
+P4 changes now in force:
+- Critical dimensions expanded to **5** (Arabic correctness, Legibility,
+  Product fit, Commercial appeal, Overall aesthetic quality) — done while zero
+  reviews existed, so no recorded score changed meaning.
+- Agreement reports now include the **median** and independent reviewer count
+  per dimension alongside mean/min/max/spread/raw values.
+- Golden analysis speaks only in preliminary-signal vocabulary
+  (`PRELIMINARY_POSITIVE/NEGATIVE_SIGNAL`, `NO_OBSERVED_SIGNAL`, `UNDETERMINED`).
+- The overall family claim is additionally blocked when family/product
+  coverage is structurally unfair, even past the numeric threshold.
+
+Deliverables: `docs/evidence/curation/FIRST_HUMAN_REVIEW_ANALYSIS.md`,
+`PRODUCT_COMPARISON_MATRIX.json`, `REVIEWER_AGREEMENT_REPORT.json`.
+Re-running the script after real reviews land produces the real analysis
+with no code change.
+
 ## Threshold repair (P3)
 
 The P2 evidence rule was **unsatisfiable by construction** and has been

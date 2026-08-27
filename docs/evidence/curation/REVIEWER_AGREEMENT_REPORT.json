@@ -1,0 +1,6 @@
+{
+ "note": "Mean is never reported without median/min/max/spread and raw values; critical disagreement is flagged, not averaged away.",
+ "reviewed_items": 0,
+ "disagreement_flags": 0,
+ "per_item": {}
+}

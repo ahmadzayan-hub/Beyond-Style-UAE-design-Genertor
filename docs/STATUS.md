@@ -10,9 +10,26 @@ Statuses (External AI / Real Tool Wiring sections, precise per-claim vocabulary)
   OPTIONAL_NOT_RUNNING — an optional runtime (isolated Hermes) is not configured/reachable; the deterministic path is unaffected.
   BLOCKED — implemented but intentionally refused (e.g. approve_design for agents).
   FAILED — a real call/round-trip was attempted and errored (never silently downgraded to a softer status).
-Updated: 2026-08-26 · Backend suite: 394 passed (382 + 12 Threshold Repair) (PostgreSQL 16, incl. 11-test immutable seven-name golden fixture) · E2E: 5 browser flows passed (incl. dedicated seven-name+reference flow) · production smoke: 15/15 checks passed (local, corrected fixture) · GitHub Actions CI: VERIFIED_CI, run 32900447345 (current HEAD `a7e3858`) conclusion=success — 5 consecutive green runs — see RELEASE_EVIDENCE.md.
+Updated: 2026-08-26 · Backend suite: 401 passed (394 + 7 First-Wave Analysis) (PostgreSQL 16, incl. 11-test immutable seven-name golden fixture) · E2E: 5 browser flows passed (incl. dedicated seven-name+reference flow) · production smoke: 15/15 checks passed (local, corrected fixture) · GitHub Actions CI: VERIFIED_CI, run 32900447345 (current HEAD `a7e3858`) conclusion=success — 5 consecutive green runs — see RELEASE_EVIDENCE.md.
 
-## P3 Evidence Threshold Repair + Review Wave 1 (this slice)
+## P4 First Human Review Analysis (this slice)
+**The wave has not been reviewed: 0 review rows, 0 customer responses — verified against the append-only log
+before any derivation.** No winner is claimed. The P4 analysis pipeline is built and emits every claim honestly
+blocked; re-running it after real reviews land produces the real analysis with no code change.
+
+| Item | Status | Evidence |
+|---|---|---|
+| Evidence verification counts independent reviewers, not rows | VERIFIED_LOCAL | `test_verification_counts_independent_reviewers_not_rows` (a revision never fakes a third reviewer) |
+| Critical dimensions expanded to the P4 five | VERIFIED_LOCAL | safe at zero reviews; disagreement + recommendation floor share the set |
+| Agreement adds median + reviewer count per dimension | VERIFIED_LOCAL | `REVIEWER_AGREEMENT_REPORT.json`; mean never shown without spread/values |
+| Engineering vs human kept as separate claims with observed verdicts | VERIFIED_LOCAL | `test_engineering_vs_human_verdicts` (AGREE/PARTIALLY_AGREE/CONFLICT/NOT_COMPARABLE) |
+| Golden analysis restricted to preliminary vocabulary | VERIFIED_LOCAL | `test_golden_signal_uses_preliminary_vocabulary` |
+| Bracelet gap reported, no winner manufactured | VERIFIED_LOCAL | `BRACELET_COMPARISON_BLOCKED`, +2 families needed; generation proposal documented, nothing generated |
+| Composition scope labelled FONT_FAMILY_COMPARISON_ONLY | VERIFIED_LOCAL | `test_single_composition_products_are_family_comparison_only` |
+| Overall claim blocked on structural unfairness even past thresholds | VERIFIED_LOCAL | `test_overall_claim_blocked_when_coverage_is_structurally_unfair` |
+| Pipeline derives real winners only from real reviews | VERIFIED_LOCAL | `test_full_pipeline_derives_winners_only_with_real_reviews` (test DB, never evidence) |
+
+## P3 Evidence Threshold Repair + Review Wave 1 (previous slice)
 The P2 evidence rule was **unsatisfiable by construction** and is retired, not relaxed. New confidence model,
 corrected terminology, blinded review, agreement analysis, and HUMAN_REVIEW_WAVE_1 prepared. Still 0 human
 reviews — no winner is claimed. See CURATION_STATUS.md.

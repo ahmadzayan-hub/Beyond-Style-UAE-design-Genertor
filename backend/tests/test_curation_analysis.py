@@ -491,3 +491,120 @@ def test_wave_1_reports_products_that_cannot_reach_comparison():
             assert notes["blocker"] is None
         else:
             assert notes["blocker"], f"{product} blocked without a reason"
+
+
+# --- P4: first-wave analysis machinery ---------------------------------------
+
+def test_verification_counts_independent_reviewers_not_rows(clean_tables, db_session):
+    from app.services.curation_analysis import verify_review_evidence
+
+    item = _item()
+    _review(db_session, item, reviewer="AD 1", scores=_scores(3))
+    _review(db_session, item, reviewer="AD 1", scores=_scores(5))  # revision
+    _review(db_session, item, reviewer="AD 2", scores=_scores(4))
+    db_session.flush()
+    v = verify_review_evidence(db_session, [item])
+    assert v["total_review_rows"] == 3
+    assert v["revised_reviews_same_reviewer"] == 1
+    assert item["item_id"] in v["items_with_two_or_more"]
+    assert item["item_id"] not in v["items_with_three_or_more"], (
+        "a revision must not fake a third reviewer")
+
+
+def test_engineering_vs_human_verdicts():
+    from app.services.curation_analysis import engineering_vs_human_comparison
+
+    eng = {"pendant": {"font_id": "katibeh"}, "ring": {"font_id": "aref-ruqaa"},
+           "necklace": {"font_id": "katibeh"}}
+    aes = {"pendant": {"status": "DERIVED", "font_family": "katibeh"},
+           "ring": {"status": "DERIVED", "font_family": "cairo"},
+           "necklace": {"status": "NOT_COMPARISON_READY"}}
+    com = {"pendant": {"status": "DERIVED", "font_family": "amiri-regular"},
+           "ring": {"status": "DERIVED", "font_family": "cairo"},
+           "necklace": {"status": "NOT_COMPARISON_READY"}}
+    out = engineering_vs_human_comparison(eng, aes, com)
+    assert out["pendant"]["verdict"] == "PARTIALLY_AGREE"
+    assert out["ring"]["verdict"] == "CONFLICT"
+    assert out["necklace"]["verdict"] == "NOT_COMPARABLE_NO_HUMAN_WINNER"
+
+
+def test_golden_signal_uses_preliminary_vocabulary(clean_tables, db_session):
+    from app.services.curation_analysis import golden_preliminary_signal
+
+    golden = _item("i-g", golden=["BS-GPC-0001"])
+    plain = _item("i-p", product="ring")
+    _review(db_session, golden, decision="APPROVE")
+    _review(db_session, plain, decision="HIDE")
+    db_session.flush()
+    out = golden_preliminary_signal(db_session, [golden, plain])
+    assert out["preliminary_signal"] == "PRELIMINARY_POSITIVE_SIGNAL"
+    assert "No statistical predictiveness" in out["caveat"]
+    assert golden_preliminary_signal(db_session, [])["preliminary_signal"] in (
+        "UNDETERMINED",)
+
+
+def test_bracelet_gap_reports_blockers_not_a_winner():
+    from app.services.curation_analysis import bracelet_coverage_gap
+
+    items = [
+        _item("b1", product="bracelet", font_id="cairo"),
+        _item("b2", product="bracelet", font_id="amiri-regular",
+              engineering={**GOOD, "manufacturing_pass": False}),
+    ]
+    items[1]["manufacturing_pass"] = False
+    items[0]["manufacturing_pass"] = True
+    gap = bracelet_coverage_gap(items)
+    assert gap["status"] == "BRACELET_COMPARISON_BLOCKED"
+    assert gap["additional_manufacturable_families_required"] == 2
+    assert gap["failing_candidates"][0]["failed_gates"] == ["manufacturing_pass"]
+
+
+def test_single_composition_products_are_family_comparison_only():
+    from app.services.curation_analysis import composition_diversity_audit
+
+    items = [_item("i1", composition="baseline_bar"),
+             _item("i2", font_id="cairo", composition="baseline_bar"),
+             _item("i3", product="ring", composition="bare"),
+             _item("i4", product="ring", font_id="cairo", composition="plate_rect")]
+    audit = composition_diversity_audit(items)
+    assert audit["pendant"]["scope"] == "FONT_FAMILY_COMPARISON_ONLY"
+    assert audit["ring"]["scope"] == "FAMILY_AND_COMPOSITION"
+
+
+def test_overall_claim_blocked_when_coverage_is_structurally_unfair(
+    clean_tables, db_session
+):
+    """One family covering three products vs a rival covering one is not a
+    fair cross-product comparison, even past the numeric threshold."""
+    from app.services.curation_analysis import overall_claim_fairness
+
+    items = [
+        _item(f"a{n}", product=p, font_id="amiri-regular")
+        for n, p in enumerate(["pendant", "ring", "necklace"])
+    ] + [_item("c1", product="pendant", font_id="cairo")]
+    for item in items:
+        for reviewer in ("AD 1", "AD 2"):
+            _review(db_session, item, reviewer=reviewer, scores=_scores(5))
+    db_session.flush()
+    out = overall_claim_fairness(db_session, items)
+    assert out["structurally_fair"] is False
+    assert out["status"] == INSUFFICIENT
+    assert "unfair" in out["reason"]
+
+
+def test_full_pipeline_derives_winners_only_with_real_reviews(clean_tables, db_session):
+    """End-to-end: once two reviewers cover three families, the winner
+    derives — and it is the family the humans scored highest."""
+    items = [_item(f"i{n}", font_id=f) for n, f in enumerate(
+        ["amiri-regular", "cairo", "reem-kufi"])]
+    for n, item in enumerate(items):
+        for reviewer in ("AD 1", "AD 2"):
+            _review(db_session, item, reviewer=reviewer,
+                    scores=_scores(3 + n, CommercialAppeal=4, PremiumFeel=4,
+                                   ProductFit=4))
+    db_session.flush()
+    aes = best_aesthetic_family_for_product(db_session, items)["pendant"]
+    com = best_commercial_family_for_product(db_session, items)["pendant"]
+    assert aes["status"] == com["status"] == "DERIVED"
+    assert aes["font_family"] == "reem-kufi"
+    assert com["font_family"] == "reem-kufi"

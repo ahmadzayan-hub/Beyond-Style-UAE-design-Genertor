@@ -120,7 +120,10 @@ def test_decisions_map_to_their_states(clean_tables, db_session, decision, expec
 
 
 def test_critical_dimensions_are_the_documented_three():
-    assert set(CRITICAL_DIMENSIONS) == {"ArabicCorrectness", "Legibility", "ProductFit"}
+    assert set(CRITICAL_DIMENSIONS) == {
+        "ArabicCorrectness", "Legibility", "ProductFit",
+        "CommercialAppeal", "OverallAestheticQuality",
+    }
     assert set(CRITICAL_DIMENSIONS) <= set(HUMAN_DIMENSIONS)
     assert len(HUMAN_DIMENSIONS) == 12
 

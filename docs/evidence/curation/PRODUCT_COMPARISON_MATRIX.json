@@ -1,0 +1,395 @@
+{
+ "wave": "HUMAN_REVIEW_WAVE_1",
+ "evidence": {
+  "total_review_rows": 0,
+  "distinct_reviewers": [],
+  "distinct_reviewed_items": 0,
+  "reviews_per_item": {},
+  "products_covered": [],
+  "font_families_covered": [],
+  "dimension_completeness": {
+   "scored_reviews": 0,
+   "incomplete_scored_reviews": []
+  },
+  "revised_reviews_same_reviewer": 0,
+  "items_with_one_independent_reviewer": [],
+  "items_with_two_or_more": [],
+  "items_with_three_or_more": [],
+  "unreviewed_items": [
+   "0b6acc8a2a72080d9305cfdf2187bc03",
+   "0e3d3edff02b6ba13ae7a19074e31d9c",
+   "2a38ba71a56a737c011f03090a32a4b2",
+   "325988601516d587b12167ae43abf978",
+   "74019c039f3e642d051d363f9141261e",
+   "7c5a5217f4326c0109dc1f2e6944592e",
+   "bc411a74b58e26bd0a7f53e343e8703b",
+   "cd2e6450fd582a6247bbb6540f9857cc",
+   "d19e953129fa55547f015bdf30b6493f",
+   "dddf1a431a5df8a5c4966c30b991ce7b",
+   "e62dfd6d739020a47655063b1bfe2183",
+   "ea7330d3d14c8e0fc30363df0b350d1e",
+   "fc400e2950c1629f2d95fe4bd6c6eb27"
+  ],
+  "status": "HUMAN_REVIEW_PENDING"
+ },
+ "comparison_readiness": {
+  "bracelet": {
+   "product": "bracelet",
+   "status": "NOT_COMPARISON_READY",
+   "families_in_corpus": 1,
+   "families_reviewed": 0,
+   "families_with_enough_reviews": 0,
+   "required_families": 3,
+   "required_reviews_per_family": 2,
+   "corpus_can_support_comparison": false,
+   "shortfall": "3 more font families need >= 2 independent reviews"
+  },
+  "cufflink": {
+   "product": "cufflink",
+   "status": "NOT_COMPARISON_READY",
+   "families_in_corpus": 3,
+   "families_reviewed": 0,
+   "families_with_enough_reviews": 0,
+   "required_families": 3,
+   "required_reviews_per_family": 2,
+   "corpus_can_support_comparison": true,
+   "shortfall": "3 more font families need >= 2 independent reviews"
+  },
+  "necklace": {
+   "product": "necklace",
+   "status": "NOT_COMPARISON_READY",
+   "families_in_corpus": 3,
+   "families_reviewed": 0,
+   "families_with_enough_reviews": 0,
+   "required_families": 3,
+   "required_reviews_per_family": 2,
+   "corpus_can_support_comparison": true,
+   "shortfall": "3 more font families need >= 2 independent reviews"
+  },
+  "pendant": {
+   "product": "pendant",
+   "status": "NOT_COMPARISON_READY",
+   "families_in_corpus": 3,
+   "families_reviewed": 0,
+   "families_with_enough_reviews": 0,
+   "required_families": 3,
+   "required_reviews_per_family": 2,
+   "corpus_can_support_comparison": true,
+   "shortfall": "3 more font families need >= 2 independent reviews"
+  },
+  "single_letter_earring": {
+   "product": "single_letter_earring",
+   "status": "NOT_COMPARISON_READY",
+   "families_in_corpus": 3,
+   "families_reviewed": 0,
+   "families_with_enough_reviews": 0,
+   "required_families": 3,
+   "required_reviews_per_family": 2,
+   "corpus_can_support_comparison": true,
+   "shortfall": "3 more font families need >= 2 independent reviews"
+  }
+ },
+ "aesthetic_winners": {
+  "bracelet": {
+   "status": "NOT_COMPARISON_READY",
+   "product": "bracelet",
+   "families_in_corpus": 1,
+   "families_reviewed": 0,
+   "families_with_enough_reviews": 0,
+   "required_families": 3,
+   "required_reviews_per_family": 2,
+   "corpus_can_support_comparison": false,
+   "shortfall": "3 more font families need >= 2 independent reviews"
+  },
+  "cufflink": {
+   "status": "NOT_COMPARISON_READY",
+   "product": "cufflink",
+   "families_in_corpus": 3,
+   "families_reviewed": 0,
+   "families_with_enough_reviews": 0,
+   "required_families": 3,
+   "required_reviews_per_family": 2,
+   "corpus_can_support_comparison": true,
+   "shortfall": "3 more font families need >= 2 independent reviews"
+  },
+  "necklace": {
+   "status": "NOT_COMPARISON_READY",
+   "product": "necklace",
+   "families_in_corpus": 3,
+   "families_reviewed": 0,
+   "families_with_enough_reviews": 0,
+   "required_families": 3,
+   "required_reviews_per_family": 2,
+   "corpus_can_support_comparison": true,
+   "shortfall": "3 more font families need >= 2 independent reviews"
+  },
+  "pendant": {
+   "status": "NOT_COMPARISON_READY",
+   "product": "pendant",
+   "families_in_corpus": 3,
+   "families_reviewed": 0,
+   "families_with_enough_reviews": 0,
+   "required_families": 3,
+   "required_reviews_per_family": 2,
+   "corpus_can_support_comparison": true,
+   "shortfall": "3 more font families need >= 2 independent reviews"
+  },
+  "single_letter_earring": {
+   "status": "NOT_COMPARISON_READY",
+   "product": "single_letter_earring",
+   "families_in_corpus": 3,
+   "families_reviewed": 0,
+   "families_with_enough_reviews": 0,
+   "required_families": 3,
+   "required_reviews_per_family": 2,
+   "corpus_can_support_comparison": true,
+   "shortfall": "3 more font families need >= 2 independent reviews"
+  }
+ },
+ "commercial_winners": {
+  "bracelet": {
+   "status": "NOT_COMPARISON_READY",
+   "product": "bracelet",
+   "families_in_corpus": 1,
+   "families_reviewed": 0,
+   "families_with_enough_reviews": 0,
+   "required_families": 3,
+   "required_reviews_per_family": 2,
+   "corpus_can_support_comparison": false,
+   "shortfall": "3 more font families need >= 2 independent reviews"
+  },
+  "cufflink": {
+   "status": "NOT_COMPARISON_READY",
+   "product": "cufflink",
+   "families_in_corpus": 3,
+   "families_reviewed": 0,
+   "families_with_enough_reviews": 0,
+   "required_families": 3,
+   "required_reviews_per_family": 2,
+   "corpus_can_support_comparison": true,
+   "shortfall": "3 more font families need >= 2 independent reviews"
+  },
+  "necklace": {
+   "status": "NOT_COMPARISON_READY",
+   "product": "necklace",
+   "families_in_corpus": 3,
+   "families_reviewed": 0,
+   "families_with_enough_reviews": 0,
+   "required_families": 3,
+   "required_reviews_per_family": 2,
+   "corpus_can_support_comparison": true,
+   "shortfall": "3 more font families need >= 2 independent reviews"
+  },
+  "pendant": {
+   "status": "NOT_COMPARISON_READY",
+   "product": "pendant",
+   "families_in_corpus": 3,
+   "families_reviewed": 0,
+   "families_with_enough_reviews": 0,
+   "required_families": 3,
+   "required_reviews_per_family": 2,
+   "corpus_can_support_comparison": true,
+   "shortfall": "3 more font families need >= 2 independent reviews"
+  },
+  "single_letter_earring": {
+   "status": "NOT_COMPARISON_READY",
+   "product": "single_letter_earring",
+   "families_in_corpus": 3,
+   "families_reviewed": 0,
+   "families_with_enough_reviews": 0,
+   "required_families": 3,
+   "required_reviews_per_family": 2,
+   "corpus_can_support_comparison": true,
+   "shortfall": "3 more font families need >= 2 independent reviews"
+  }
+ },
+ "engineering_vs_human": {
+  "bracelet": {
+   "engineering": "aref-ruqaa",
+   "aesthetic": null,
+   "commercial": null,
+   "verdict": "NOT_COMPARABLE_NO_HUMAN_WINNER",
+   "note": "Three separate claims; alignment is observed, never forced."
+  },
+  "brooch": {
+   "engineering": "noto-nastaliq-urdu",
+   "aesthetic": null,
+   "commercial": null,
+   "verdict": "NOT_COMPARABLE_NO_HUMAN_WINNER",
+   "note": "Three separate claims; alignment is observed, never forced."
+  },
+  "cufflink": {
+   "engineering": "cairo",
+   "aesthetic": null,
+   "commercial": null,
+   "verdict": "NOT_COMPARABLE_NO_HUMAN_WINNER",
+   "note": "Three separate claims; alignment is observed, never forced."
+  },
+  "drop_earring": {
+   "engineering": "scheherazade-new",
+   "aesthetic": null,
+   "commercial": null,
+   "verdict": "NOT_COMPARABLE_NO_HUMAN_WINNER",
+   "note": "Three separate claims; alignment is observed, never forced."
+  },
+  "engraving": {
+   "engineering": "noto-nastaliq-urdu",
+   "aesthetic": null,
+   "commercial": null,
+   "verdict": "NOT_COMPARABLE_NO_HUMAN_WINNER",
+   "note": "Three separate claims; alignment is observed, never forced."
+  },
+  "medallion": {
+   "engineering": "amiri-regular",
+   "aesthetic": null,
+   "commercial": null,
+   "verdict": "NOT_COMPARABLE_NO_HUMAN_WINNER",
+   "note": "Three separate claims; alignment is observed, never forced."
+  },
+  "multi_name": {
+   "engineering": "scheherazade-new",
+   "aesthetic": null,
+   "commercial": null,
+   "verdict": "NOT_COMPARABLE_NO_HUMAN_WINNER",
+   "note": "Three separate claims; alignment is observed, never forced."
+  },
+  "necklace": {
+   "engineering": "katibeh",
+   "aesthetic": null,
+   "commercial": null,
+   "verdict": "NOT_COMPARABLE_NO_HUMAN_WINNER",
+   "note": "Three separate claims; alignment is observed, never forced."
+  },
+  "openwork": {
+   "engineering": "noto-nastaliq-urdu",
+   "aesthetic": null,
+   "commercial": null,
+   "verdict": "NOT_COMPARABLE_NO_HUMAN_WINNER",
+   "note": "Three separate claims; alignment is observed, never forced."
+  },
+  "pendant": {
+   "engineering": "katibeh",
+   "aesthetic": null,
+   "commercial": null,
+   "verdict": "NOT_COMPARABLE_NO_HUMAN_WINNER",
+   "note": "Three separate claims; alignment is observed, never forced."
+  },
+  "ring": {
+   "engineering": "aref-ruqaa",
+   "aesthetic": null,
+   "commercial": null,
+   "verdict": "NOT_COMPARABLE_NO_HUMAN_WINNER",
+   "note": "Three separate claims; alignment is observed, never forced."
+  },
+  "single_letter_earring": {
+   "engineering": "scheherazade-new",
+   "aesthetic": null,
+   "commercial": null,
+   "verdict": "NOT_COMPARABLE_NO_HUMAN_WINNER",
+   "note": "Three separate claims; alignment is observed, never forced."
+  }
+ },
+ "overall_best_aesthetic_family": {
+  "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
+  "required": {
+   "products": 3,
+   "independent_reviews": 6
+  },
+  "candidates": [],
+  "family_product_coverage": {
+   "aref-ruqaa": [
+    "cufflink",
+    "necklace",
+    "pendant",
+    "single_letter_earring"
+   ],
+   "scheherazade-new": [
+    "necklace",
+    "pendant"
+   ],
+   "amiri-regular": [
+    "cufflink",
+    "necklace",
+    "pendant"
+   ],
+   "cairo": [
+    "bracelet",
+    "cufflink"
+   ],
+   "noto-nastaliq-urdu": [
+    "single_letter_earring"
+   ],
+   "reem-kufi": [
+    "single_letter_earring"
+   ]
+  },
+  "structurally_fair": false,
+  "fairness_note": "Coverage is unbalanced: some families appear in more products than others, so a cross-product mean is not a like-for-like comparison."
+ },
+ "golden_preliminary": {
+  "golden_relevant_reviewed": 0,
+  "non_golden_reviewed": 0,
+  "golden_preference_rate": null,
+  "non_golden_preference_rate": null,
+  "verdict": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
+  "predictive_or_historical": "UNDETERMINED",
+  "note": "Not enough reviewed items in both groups to say whether Golden relevance predicts human preference.",
+  "golden_cases_were_not_favoured": true,
+  "preliminary_signal": "UNDETERMINED",
+  "caveat": "First-wave sample only. No statistical predictiveness is claimed at this size regardless of direction."
+ },
+ "bracelet_gap": {
+  "status": "BRACELET_COMPARISON_BLOCKED",
+  "product": "bracelet",
+  "manufacturable_candidates": [
+   {
+    "item_id": "d19e953129fa55547f015bdf30b6493f",
+    "font_family": "cairo"
+   }
+  ],
+  "failing_candidates": [],
+  "families_passing": [
+   "cairo"
+  ],
+  "additional_manufacturable_families_required": 2,
+  "note": "Reviewing harder cannot fix this; it needs new manufacturable candidates from a future generation slice."
+ },
+ "composition_diversity": {
+  "bracelet": {
+   "compositions_in_corpus": [
+    "baseline_bar"
+   ],
+   "scope": "FONT_FAMILY_COMPARISON_ONLY",
+   "note": "All candidates share one composition; any winner is the best FONT FAMILY at this composition, not the best jewellery composition. Testing that needs composition variants (e.g. plate vs bare vs framed) in a future generation slice."
+  },
+  "cufflink": {
+   "compositions_in_corpus": [
+    "plate_rect"
+   ],
+   "scope": "FONT_FAMILY_COMPARISON_ONLY",
+   "note": "All candidates share one composition; any winner is the best FONT FAMILY at this composition, not the best jewellery composition. Testing that needs composition variants (e.g. plate vs bare vs framed) in a future generation slice."
+  },
+  "necklace": {
+   "compositions_in_corpus": [
+    "baseline_bar"
+   ],
+   "scope": "FONT_FAMILY_COMPARISON_ONLY",
+   "note": "All candidates share one composition; any winner is the best FONT FAMILY at this composition, not the best jewellery composition. Testing that needs composition variants (e.g. plate vs bare vs framed) in a future generation slice."
+  },
+  "pendant": {
+   "compositions_in_corpus": [
+    "baseline_bar"
+   ],
+   "scope": "FONT_FAMILY_COMPARISON_ONLY",
+   "note": "All candidates share one composition; any winner is the best FONT FAMILY at this composition, not the best jewellery composition. Testing that needs composition variants (e.g. plate vs bare vs framed) in a future generation slice."
+  },
+  "single_letter_earring": {
+   "compositions_in_corpus": [
+    "bare"
+   ],
+   "scope": "FONT_FAMILY_COMPARISON_ONLY",
+   "note": "All candidates share one composition; any winner is the best FONT FAMILY at this composition, not the best jewellery composition. Testing that needs composition variants (e.g. plate vs bare vs framed) in a future generation slice."
+  }
+ },
+ "best_customer_family": "INSUFFICIENT_CUSTOMER_EVIDENCE"
+}

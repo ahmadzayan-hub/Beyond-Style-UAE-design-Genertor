@@ -361,7 +361,9 @@ def agreement_report(session: Session, item_id: str) -> dict:
         spread = max(values) - min(values)
         per_dimension[dim] = {
             "mean": round(statistics.fmean(values), 3),
+            "median": statistics.median(values),
             "min": min(values), "max": max(values), "spread": spread,
+            "independent_reviewer_count": len(values),
             "values": values,
         }
         if dim in CRITICAL_DIMENSIONS and spread >= DISAGREEMENT_DELTA:
@@ -656,3 +658,184 @@ def golden_pattern_validation(session: Session, items: list[dict]) -> dict:
         "note": note,
         "golden_cases_were_not_favoured": True,
     }
+
+
+# ---------------------------------------------------------------------------
+# P4 — first-wave analysis
+# ---------------------------------------------------------------------------
+
+def verify_review_evidence(session: Session, items: list[dict]) -> dict:
+    """§1 — the pre-derivation evidence check. Everything below is counted
+    from the append-only log; a revised review still counts as ONE
+    independent reviewer."""
+    reviews = list(session.execute(
+        select(m.DesignReview).order_by(m.DesignReview.created_at)
+    ).scalars())
+    by_item: dict[str, dict[str, list]] = defaultdict(lambda: defaultdict(list))
+    for r in reviews:
+        by_item[r.item_id][r.reviewer].append(r)
+
+    revised = sum(
+        1 for per_reviewer in by_item.values()
+        for rows in per_reviewer.values() if len(rows) > 1
+    )
+    independent_counts = {i: len(per) for i, per in by_item.items()}
+    incomplete = []
+    for r in reviews:
+        if r.scores is not None:
+            missing = [d for d in HUMAN_DIMENSIONS if d not in r.scores]
+            if missing:
+                incomplete.append({"item_id": r.item_id, "reviewer": r.reviewer,
+                                   "missing": missing})
+
+    meta = {i["item_id"]: i for i in items}
+    return {
+        "total_review_rows": len(reviews),
+        "distinct_reviewers": sorted({r.reviewer for r in reviews}),
+        "distinct_reviewed_items": len(by_item),
+        "reviews_per_item": {i: sum(len(v) for v in per.values())
+                             for i, per in by_item.items()},
+        "products_covered": sorted({r.product for r in reviews}),
+        "font_families_covered": sorted({r.font_id for r in reviews}),
+        "dimension_completeness": {
+            "scored_reviews": sum(1 for r in reviews if r.scores),
+            "incomplete_scored_reviews": incomplete,
+        },
+        "revised_reviews_same_reviewer": revised,
+        "items_with_one_independent_reviewer": sorted(
+            i for i, n in independent_counts.items() if n == 1),
+        "items_with_two_or_more": sorted(
+            i for i, n in independent_counts.items() if n >= 2),
+        "items_with_three_or_more": sorted(
+            i for i, n in independent_counts.items() if n >= 3),
+        "unreviewed_items": sorted(
+            i["item_id"] for i in items if i["item_id"] not in by_item),
+        "status": PENDING if not reviews else "EVIDENCE_PRESENT",
+    }
+
+
+def engineering_vs_human_comparison(
+    engineering_by_product: dict, aesthetic: dict, commercial: dict
+) -> dict:
+    """§7 — three separate claims, compared but never forced to align."""
+    out = {}
+    for product in sorted(set(engineering_by_product) | set(aesthetic) | set(commercial)):
+        eng = (engineering_by_product.get(product) or {}).get("font_id")
+        aes_entry = aesthetic.get(product, {})
+        com_entry = commercial.get(product, {})
+        aes = aes_entry.get("font_family") if aes_entry.get("status") == "DERIVED" else None
+        com = com_entry.get("font_family") if com_entry.get("status") == "DERIVED" else None
+        human = [f for f in (aes, com) if f]
+        if not human:
+            verdict = "NOT_COMPARABLE_NO_HUMAN_WINNER"
+        elif eng and all(f == eng for f in human):
+            verdict = "AGREE"
+        elif eng and any(f == eng for f in human):
+            verdict = "PARTIALLY_AGREE"
+        elif eng:
+            verdict = "CONFLICT"
+        else:
+            verdict = "NOT_COMPARABLE_NO_ENGINEERING_WINNER"
+        out[product] = {
+            "engineering": eng, "aesthetic": aes, "commercial": com,
+            "verdict": verdict,
+            "note": "Three separate claims; alignment is observed, never forced.",
+        }
+    return out
+
+
+#: §8 — vocabulary for a small first wave. Never a statistical claim.
+GOLDEN_PRELIMINARY = {
+    "CORRELATED": "PRELIMINARY_POSITIVE_SIGNAL",
+    "NO_DIFFERENCE": "NO_OBSERVED_SIGNAL",
+    "NOT_CORRELATED": "PRELIMINARY_NEGATIVE_SIGNAL",
+    INSUFFICIENT: "UNDETERMINED",
+}
+
+
+def golden_preliminary_signal(session: Session, items: list[dict]) -> dict:
+    base = golden_pattern_validation(session, items)
+    return {
+        **base,
+        "preliminary_signal": GOLDEN_PRELIMINARY.get(base["verdict"], "UNDETERMINED"),
+        "caveat": ("First-wave sample only. No statistical predictiveness is "
+                   "claimed at this size regardless of direction."),
+    }
+
+
+def bracelet_coverage_gap(items: list[dict], product: str = "bracelet") -> dict:
+    """§9 — why the product cannot be compared, and what would fix it.
+    Reports only; generates nothing."""
+    rows = [i for i in items if i["product"] == product]
+    passing = [i for i in rows if i["manufacturing_pass"]]
+    failing = [
+        {"item_id": i["item_id"],
+         "font_family": i["technical"]["font_id"],
+         "failed_gates": [g for g in HARD_GATES if not i["engineering"].get(g)],
+         "mm_failures": i["engineering"].get("mm_failures", []),
+         "violations": i["engineering"].get("violations", [])}
+        for i in rows if not i["manufacturing_pass"]
+    ]
+    families_passing = {i["technical"]["font_id"] for i in passing}
+    needed = max(0, MIN_FAMILIES_FOR_COMPARISON - len(families_passing))
+    return {
+        "status": "BRACELET_COMPARISON_BLOCKED" if needed else "COMPARISON_POSSIBLE",
+        "product": product,
+        "manufacturable_candidates": [
+            {"item_id": i["item_id"], "font_family": i["technical"]["font_id"]}
+            for i in passing
+        ],
+        "failing_candidates": failing,
+        "families_passing": sorted(families_passing),
+        "additional_manufacturable_families_required": needed,
+        "note": "Reviewing harder cannot fix this; it needs new manufacturable "
+                "candidates from a future generation slice.",
+    }
+
+
+def composition_diversity_audit(items: list[dict]) -> dict:
+    """§10 — a comparison across one composition proves nothing about the
+    best composition. Say so per product."""
+    by_product: dict[str, set] = defaultdict(set)
+    for i in items:
+        by_product[i["product"]].add(i["composition"])
+    out = {}
+    for product, comps in sorted(by_product.items()):
+        single = len(comps) <= 1
+        out[product] = {
+            "compositions_in_corpus": sorted(comps),
+            "scope": "FONT_FAMILY_COMPARISON_ONLY" if single else "FAMILY_AND_COMPOSITION",
+            "note": (
+                "All candidates share one composition; any winner is the best "
+                "FONT FAMILY at this composition, not the best jewellery "
+                "composition. Testing that needs composition variants "
+                "(e.g. plate vs bare vs framed) in a future generation slice."
+                if single else None
+            ),
+        }
+    return out
+
+
+def overall_claim_fairness(session: Session, items: list[dict]) -> dict:
+    """§11 — even a numerically-met overall claim can be structurally
+    unfair if one family simply appeared in easier products."""
+    base = overall_best_aesthetic_family(session, items)
+    coverage: dict[str, set] = defaultdict(set)
+    for i in items:
+        coverage[i["technical"]["font_id"]].add(i["product"])
+    counts = {f: len(p) for f, p in coverage.items()}
+    max_cov, min_cov = (max(counts.values()), min(counts.values())) if counts else (0, 0)
+    unbalanced = max_cov - min_cov > 1
+    result = {**base,
+              "family_product_coverage": {f: sorted(p) for f, p in coverage.items()},
+              "structurally_fair": not unbalanced,
+              "fairness_note": (
+                  "Coverage is unbalanced: some families appear in more products "
+                  "than others, so a cross-product mean is not a like-for-like "
+                  "comparison." if unbalanced else
+                  "Family coverage across products is balanced enough to compare."
+              )}
+    if base["status"] == "DERIVED" and unbalanced:
+        result["status"] = INSUFFICIENT
+        result["reason"] = "numeric threshold met but coverage is structurally unfair"
+    return result

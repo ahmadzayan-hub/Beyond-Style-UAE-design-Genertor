@@ -57,10 +57,14 @@ DIMENSION_LABELS = {
     "WouldRecommend": "Would recommend to customer",
 }
 
-#: Dimensions that may not be weak in anything recommended for production:
-#: letters that do not read, or a piece that does not suit its product, is
-#: not a recommendation however elegant it looks.
-CRITICAL_DIMENSIONS = ["ArabicCorrectness", "Legibility", "ProductFit"]
+#: Dimensions that may not be weak in anything recommended for production,
+#: and whose disagreement between reviewers is a real dispute rather than a
+#: taste difference (P4 set — expanded from 3 to 5 while zero reviews
+#: existed, so no recorded score changed meaning).
+CRITICAL_DIMENSIONS = [
+    "ArabicCorrectness", "Legibility", "ProductFit",
+    "CommercialAppeal", "OverallAestheticQuality",
+]
 CRITICAL_SCORE_THRESHOLD = 3
 
 #: A critical dimension where two reviewers differ by this much is a real
