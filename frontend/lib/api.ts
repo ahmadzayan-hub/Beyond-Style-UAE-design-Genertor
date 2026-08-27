@@ -307,3 +307,31 @@ export async function getGoldenCase(token: string, caseId: string) {
     })
   );
 }
+
+// --- Art Director review (internal, admin-token gated) ---
+
+export async function getReviewPack(token: string, maxPerProduct = 3) {
+  return jsonOrThrow(
+    await doFetch(`/api/admin/review/pack?max_per_product=${maxPerProduct}`, {
+      headers: adminHeaders(token),
+    })
+  );
+}
+
+export async function submitReviewDecision(token: string, body: Record<string, unknown>) {
+  return jsonOrThrow(
+    await doFetch("/api/admin/review/decision", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...adminHeaders(token) },
+      body: JSON.stringify(body),
+    })
+  );
+}
+
+export async function getReviewHistory(token: string, itemId: string) {
+  return jsonOrThrow(
+    await doFetch(`/api/admin/review/history/${encodeURIComponent(itemId)}`, {
+      headers: adminHeaders(token),
+    })
+  );
+}

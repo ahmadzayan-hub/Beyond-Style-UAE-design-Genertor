@@ -10,9 +10,37 @@ Statuses (External AI / Real Tool Wiring sections, precise per-claim vocabulary)
   OPTIONAL_NOT_RUNNING — an optional runtime (isolated Hermes) is not configured/reachable; the deterministic path is unaffected.
   BLOCKED — implemented but intentionally refused (e.g. approve_design for agents).
   FAILED — a real call/round-trip was attempted and errored (never silently downgraded to a softer status).
-Updated: 2026-08-26 · Backend suite: 327 passed (303 + 24 Axis Plumbing) (PostgreSQL 16, incl. 11-test immutable seven-name golden fixture) · E2E: 5 browser flows passed (incl. dedicated seven-name+reference flow) · production smoke: 15/15 checks passed (local, corrected fixture) · GitHub Actions CI: VERIFIED_CI, run 32900447345 (current HEAD `a7e3858`) conclusion=success — 5 consecutive green runs — see RELEASE_EVIDENCE.md.
+Updated: 2026-08-26 · Backend suite: 357 passed (327 + 30 Human Aesthetic Review) (PostgreSQL 16, incl. 11-test immutable seven-name golden fixture) · E2E: 5 browser flows passed (incl. dedicated seven-name+reference flow) · production smoke: 15/15 checks passed (local, corrected fixture) · GitHub Actions CI: VERIFIED_CI, run 32900447345 (current HEAD `a7e3858`) conclusion=success — 5 consecutive green runs — see RELEASE_EVIDENCE.md.
 
-## Variable-Font Axis Plumbing + Real-mm Validation (this slice)
+## Human Aesthetic Review Workflow (this slice)
+The workflow, review pack and evidence exist. **No aesthetic decision has been made by anyone.** 52 features
+remain EXPERIMENTAL, every item is HUMAN_REVIEW_PENDING, and `human-scores.json` holds zero reviews.
+Golden Path and its immutable fixture byte-unchanged.
+
+| Item | Status | Evidence |
+|---|---|---|
+| Review unit is a combination (font+features+axes+product+composition+text+proof) | VERIFIED_LOCAL | `test_review_item_is_a_combination_not_a_font`; same font + different product = different item |
+| Human approval cannot open Arabic / manufacturing / rights gates | VERIFIED_E2E | `test_human_approval_cannot_open_a_hard_gate` (all 3); real HTTP APPROVE on a failing item → HIDDEN |
+| PRODUCTION_RECOMMENDED needs all gates + APPROVE + no critical score < 3 | VERIFIED_LOCAL | `test_weak_critical_score_downgrades_approve_to_allowed` |
+| Promotion is product-specific, never global | VERIFIED_LOCAL | `test_promotion_is_product_specific_not_global` (pendant RECOMMENDED / ring ALLOWED / cufflink EXPERIMENTAL) |
+| Review history append-only, enforced by DB triggers | VERIFIED_LOCAL | `test_reviews_cannot_be_updated_or_deleted`, `test_review_history_is_append_only` |
+| AI advisory cannot promote; never merged into human scores | VERIFIED_LOCAL | `test_ai_advisory_never_promotes_without_a_human`; status SKIPPED_NO_CREDENTIALS |
+| Customer sees friendly style words; OT tags stay internal | VERIFIED_LOCAL | `test_review_item_shows_customer_style_not_raw_tags` |
+| Art Director screen (`/admin/review`) | VERIFIED_E2E | 403 without token; 18-item pack with proofs over real HTTP; ships as a Next.js route |
+| Preparing a pack creates no review rows | VERIFIED_LOCAL | `test_no_review_rows_are_created_by_generating_a_pack` |
+| 52 features NOT marked reviewed by this slice | VERIFIED_LOCAL | `test_features_are_not_marked_reviewed_by_this_slice` |
+
+**Honest status:**
+- **HUMAN_REVIEW_PENDING. 0 human decisions recorded.** 36 items generated across 9 products; 25 EXPERIMENTAL
+  (awaiting review), 11 HIDDEN on engineering grounds alone. Zero RECOMMENDED, zero ALLOWED — correctly, since
+  no one has reviewed anything.
+- **AI advisory unavailable**: `SKIPPED_NO_CREDENTIALS`, no `ANTHROPIC_API_KEY`. No advisory scores were invented.
+- **BEST_AESTHETIC_FAMILY and BEST_COMMERCIAL_FAMILY do not exist yet** and are deliberately absent. The existing
+  best-family table remains labelled ENGINEERING_ONLY.
+- The review pack samples the space (≤1 item per font family per product); it is a prioritised starting set, not
+  exhaustive coverage of every safe variant.
+
+## Variable-Font Axis Plumbing + Real-mm Validation (previous slice)
 Variable-font coordinates are now first-class production inputs: validated, carried identically through shaping
 AND outline extraction from one shared instance, part of design identity, traceable in exports, and gated on
 real millimetres. Golden Path and its immutable fixture byte-unchanged.

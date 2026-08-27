@@ -344,6 +344,44 @@ class GoldenProductionCase(TimestampMixin, Base):
     evidence: Mapped[list] = mapped_column(JSONB, nullable=False)
 
 
+class DesignReview(TimestampMixin, Base):
+    """One human aesthetic review of one review item. APPEND-ONLY.
+
+    A review is evidence of what a named person judged at a moment in time,
+    so a later review never overwrites an earlier one — it is a new row, and
+    the current verdict is the newest row for that item. `recipe_hash` pins
+    the review to the exact technical recipe that was looked at, so a review
+    cannot silently transfer to a different design.
+
+    Human scores live here and ONLY here. Deterministic engineering scores
+    and any AI advisory score are stored separately and never merged in.
+    """
+
+    __tablename__ = "design_reviews"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=_uuid)
+    #: Deterministic id of the reviewed (font, features, axes, product,
+    #: composition, text) combination.
+    item_id: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    recipe_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    product: Mapped[str] = mapped_column(String(48), nullable=False, index=True)
+    font_id: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    feature_set: Mapped[str] = mapped_column(String(64), nullable=False)
+    font_axes: Mapped[dict | None] = mapped_column(JSONB)
+    source_text: Mapped[str] = mapped_column(Text, nullable=False)
+
+    reviewer: Mapped[str] = mapped_column(String(120), nullable=False)
+    decision: Mapped[str] = mapped_column(String(32), nullable=False)
+    review_mode: Mapped[str] = mapped_column(String(24), nullable=False)  # quick | deep
+    #: 1-5 per aesthetic dimension. Absent in quick curation.
+    scores: Mapped[dict | None] = mapped_column(JSONB)
+    note: Mapped[str | None] = mapped_column(Text)
+    #: Engineering state at review time — recorded so a later reader can see
+    #: what the reviewer was actually looking at.
+    engineering_snapshot: Mapped[dict] = mapped_column(JSONB, nullable=False)
+    superseded: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+
+
 class AIGeneration(TimestampMixin, Base):
     """One AI image generation (DESIGN → IMAGE). Display artifact only:
     kind is always an ai_* value and the production export path refuses

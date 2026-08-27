@@ -12,6 +12,8 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from pydantic import BaseModel, Field
+
 from ..db import models as m
 from ..db.base import get_session
 from ..services.golden_memory import EVIDENCE_TIER_WEIGHTS, retrieve_golden_cases
@@ -162,4 +164,89 @@ def curation_report():
         "features": data.get("features", {}),
         "axis_ranges": data.get("axis_ranges", {}),
         "safe_combinations": data.get("safe_combinations", []),
+    }
+
+
+# ---------------------------------------------------------------------------
+# Human Aesthetic Review (internal Art Director screen)
+# ---------------------------------------------------------------------------
+
+class ReviewSubmission(BaseModel):
+    item_id: str
+    recipe_hash: str
+    product: str
+    font_id: str
+    source_text: str
+    reviewer: str
+    decision: str
+    mode: str = "quick"
+    feature_set: str = "default"
+    font_axes: dict = Field(default_factory=dict)
+    scores: dict | None = None
+    note: str | None = None
+    engineering: dict = Field(default_factory=dict)
+
+
+@router.get("/review/pack", dependencies=[Depends(require_admin)])
+def review_pack(session: Session = Depends(get_session), max_per_product: int = 3):
+    """The prioritised review pack, each item carrying its rendered proof.
+
+    Human decisions are read from the append-only review log; an item that
+    nobody has reviewed reports HUMAN_REVIEW_PENDING rather than any
+    provisional verdict."""
+    from ..services.review_items import generate_review_pack
+    from ..services.review_workflow import (
+        HUMAN_DIMENSIONS, ai_advisory_status, curation_decisions, summarize,
+    )
+
+    items = generate_review_pack(max_per_product=max_per_product)
+    decisions = curation_decisions(session, items)
+    by_item = {d["item_id"]: d for d in decisions}
+    recorded = session.execute(select(m.DesignReview)).scalars().all()
+    return {
+        "items": [{**item, "curation": by_item[item["item_id"]]} for item in items],
+        "dimensions": HUMAN_DIMENSIONS,
+        "summary": summarize(decisions, len(recorded)),
+        "ai_advisory": ai_advisory_status(),
+    }
+
+
+@router.post("/review/decision", dependencies=[Depends(require_admin)])
+def submit_review(body: ReviewSubmission, session: Session = Depends(get_session)):
+    """Record one human decision. Append-only: a revised opinion is a new
+    record, and the previous one stays readable."""
+    from ..services.review_workflow import (
+        ReviewRejected, curation_for_item, record_review,
+    )
+
+    item = body.model_dump()
+    try:
+        review = record_review(
+            session, item=item, reviewer=body.reviewer, decision=body.decision,
+            mode=body.mode, scores=body.scores, note=body.note,
+        )
+    except ReviewRejected as exc:
+        raise HTTPException(422, str(exc))
+    session.commit()
+    return {
+        "recorded": True,
+        "review_id": str(review.id),
+        "curation": curation_for_item(item, review),
+    }
+
+
+@router.get("/review/history/{item_id}", dependencies=[Depends(require_admin)])
+def review_item_history(item_id: str, session: Session = Depends(get_session)):
+    from ..services.review_workflow import review_history
+
+    rows = review_history(session, item_id)
+    return {
+        "item_id": item_id,
+        "review_count": len(rows),
+        "history": [
+            {"review_id": str(r.id), "reviewer": r.reviewer, "decision": r.decision,
+             "mode": r.review_mode, "scores": r.scores, "note": r.note,
+             "recipe_hash": r.recipe_hash, "created_at": r.created_at.isoformat()}
+            for r in rows
+        ],
     }

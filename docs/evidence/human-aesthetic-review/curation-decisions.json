@@ -1,0 +1,373 @@
+{
+ "note": "Derived from hard gates first, then the newest human review. An item with no review stays EXPERIMENTAL / HUMAN_REVIEW_PENDING.",
+ "summary": {
+  "review_items": 36,
+  "human_reviews_recorded": 0,
+  "human_review_status": "HUMAN_REVIEW_PENDING",
+  "states": {
+   "EXPERIMENTAL": 25,
+   "HIDDEN": 11
+  },
+  "awaiting_human_review": 36,
+  "blocked_by_hard_gate": 11
+ },
+ "decisions": [
+  {
+   "item_id": "cd2e6450fd582a6247bbb6540f9857cc",
+   "product": "single_letter_earring",
+   "state": "EXPERIMENTAL",
+   "reason": "HUMAN_REVIEW_PENDING",
+   "failed_gates": [],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "bc411a74b58e26bd0a7f53e343e8703b",
+   "product": "single_letter_earring",
+   "state": "EXPERIMENTAL",
+   "reason": "HUMAN_REVIEW_PENDING",
+   "failed_gates": [],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "325988601516d587b12167ae43abf978",
+   "product": "single_letter_earring",
+   "state": "EXPERIMENTAL",
+   "reason": "HUMAN_REVIEW_PENDING",
+   "failed_gates": [],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "234a4fad13f7c06b5e9a48dd37416a10",
+   "product": "single_letter_earring",
+   "state": "EXPERIMENTAL",
+   "reason": "HUMAN_REVIEW_PENDING",
+   "failed_gates": [],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "2a38ba71a56a737c011f03090a32a4b2",
+   "product": "pendant",
+   "state": "EXPERIMENTAL",
+   "reason": "HUMAN_REVIEW_PENDING",
+   "failed_gates": [],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "e62dfd6d739020a47655063b1bfe2183",
+   "product": "pendant",
+   "state": "EXPERIMENTAL",
+   "reason": "HUMAN_REVIEW_PENDING",
+   "failed_gates": [],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "dddf1a431a5df8a5c4966c30b991ce7b",
+   "product": "pendant",
+   "state": "EXPERIMENTAL",
+   "reason": "HUMAN_REVIEW_PENDING",
+   "failed_gates": [],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "962d4e19ee31901c8f6017fe336c3289",
+   "product": "pendant",
+   "state": "EXPERIMENTAL",
+   "reason": "HUMAN_REVIEW_PENDING",
+   "failed_gates": [],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "74019c039f3e642d051d363f9141261e",
+   "product": "necklace",
+   "state": "EXPERIMENTAL",
+   "reason": "HUMAN_REVIEW_PENDING",
+   "failed_gates": [],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "fc400e2950c1629f2d95fe4bd6c6eb27",
+   "product": "necklace",
+   "state": "EXPERIMENTAL",
+   "reason": "HUMAN_REVIEW_PENDING",
+   "failed_gates": [],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "0e3d3edff02b6ba13ae7a19074e31d9c",
+   "product": "necklace",
+   "state": "EXPERIMENTAL",
+   "reason": "HUMAN_REVIEW_PENDING",
+   "failed_gates": [],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "1f2b2408291229fe694884b83a470306",
+   "product": "necklace",
+   "state": "EXPERIMENTAL",
+   "reason": "HUMAN_REVIEW_PENDING",
+   "failed_gates": [],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "ea7330d3d14c8e0fc30363df0b350d1e",
+   "product": "cufflink",
+   "state": "EXPERIMENTAL",
+   "reason": "HUMAN_REVIEW_PENDING",
+   "failed_gates": [],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "7c5a5217f4326c0109dc1f2e6944592e",
+   "product": "cufflink",
+   "state": "EXPERIMENTAL",
+   "reason": "HUMAN_REVIEW_PENDING",
+   "failed_gates": [],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "0b6acc8a2a72080d9305cfdf2187bc03",
+   "product": "cufflink",
+   "state": "EXPERIMENTAL",
+   "reason": "HUMAN_REVIEW_PENDING",
+   "failed_gates": [],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "a95ec990322f77025b8fb4d558d3880c",
+   "product": "cufflink",
+   "state": "EXPERIMENTAL",
+   "reason": "HUMAN_REVIEW_PENDING",
+   "failed_gates": [],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "c38eb5d773013c7a5d7949b5d9d97243",
+   "product": "ring",
+   "state": "EXPERIMENTAL",
+   "reason": "HUMAN_REVIEW_PENDING",
+   "failed_gates": [],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "3b684cb067048313eadf4bbf2e244efc",
+   "product": "ring",
+   "state": "EXPERIMENTAL",
+   "reason": "HUMAN_REVIEW_PENDING",
+   "failed_gates": [],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "01db50a443dad9090b8c542a07f1e274",
+   "product": "ring",
+   "state": "EXPERIMENTAL",
+   "reason": "HUMAN_REVIEW_PENDING",
+   "failed_gates": [],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "57857e0f4dffbdb8bc80e8f6781a076f",
+   "product": "ring",
+   "state": "EXPERIMENTAL",
+   "reason": "HUMAN_REVIEW_PENDING",
+   "failed_gates": [],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "d19e953129fa55547f015bdf30b6493f",
+   "product": "bracelet",
+   "state": "EXPERIMENTAL",
+   "reason": "HUMAN_REVIEW_PENDING",
+   "failed_gates": [],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "f51dcef5ab2def0e0079b56604f217ae",
+   "product": "bracelet",
+   "state": "HIDDEN",
+   "reason": "BLOCKED_BY_HARD_GATE",
+   "failed_gates": [
+    "manufacturing_pass"
+   ],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING",
+   "note": "Human aesthetic approval cannot open a safety, identity or rights gate."
+  },
+  {
+   "item_id": "2745c8ac59b35bfd78342433b67c6440",
+   "product": "bracelet",
+   "state": "HIDDEN",
+   "reason": "BLOCKED_BY_HARD_GATE",
+   "failed_gates": [
+    "manufacturing_pass"
+   ],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING",
+   "note": "Human aesthetic approval cannot open a safety, identity or rights gate."
+  },
+  {
+   "item_id": "bd7e57705f8009a95cdf82f486720de3",
+   "product": "bracelet",
+   "state": "HIDDEN",
+   "reason": "BLOCKED_BY_HARD_GATE",
+   "failed_gates": [
+    "manufacturing_pass"
+   ],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING",
+   "note": "Human aesthetic approval cannot open a safety, identity or rights gate."
+  },
+  {
+   "item_id": "2a72a97809b67914b01dfad0aca41350",
+   "product": "multi_name",
+   "state": "HIDDEN",
+   "reason": "BLOCKED_BY_HARD_GATE",
+   "failed_gates": [
+    "manufacturing_pass"
+   ],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING",
+   "note": "Human aesthetic approval cannot open a safety, identity or rights gate."
+  },
+  {
+   "item_id": "a556576ab1032af7d3ccf84a4ff0cdc4",
+   "product": "multi_name",
+   "state": "HIDDEN",
+   "reason": "BLOCKED_BY_HARD_GATE",
+   "failed_gates": [
+    "manufacturing_pass"
+   ],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING",
+   "note": "Human aesthetic approval cannot open a safety, identity or rights gate."
+  },
+  {
+   "item_id": "79f7ff05231de9babbcf83de2ea6e150",
+   "product": "multi_name",
+   "state": "HIDDEN",
+   "reason": "BLOCKED_BY_HARD_GATE",
+   "failed_gates": [
+    "manufacturing_pass"
+   ],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING",
+   "note": "Human aesthetic approval cannot open a safety, identity or rights gate."
+  },
+  {
+   "item_id": "8851d48b706086ec47cb9197aac2cc0c",
+   "product": "multi_name",
+   "state": "HIDDEN",
+   "reason": "BLOCKED_BY_HARD_GATE",
+   "failed_gates": [
+    "manufacturing_pass"
+   ],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING",
+   "note": "Human aesthetic approval cannot open a safety, identity or rights gate."
+  },
+  {
+   "item_id": "a2c761141ef80667eb735915afd63d32",
+   "product": "medallion",
+   "state": "HIDDEN",
+   "reason": "BLOCKED_BY_HARD_GATE",
+   "failed_gates": [
+    "manufacturing_pass"
+   ],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING",
+   "note": "Human aesthetic approval cannot open a safety, identity or rights gate."
+  },
+  {
+   "item_id": "24e09f545c1177466ce12480ec934572",
+   "product": "medallion",
+   "state": "HIDDEN",
+   "reason": "BLOCKED_BY_HARD_GATE",
+   "failed_gates": [
+    "manufacturing_pass"
+   ],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING",
+   "note": "Human aesthetic approval cannot open a safety, identity or rights gate."
+  },
+  {
+   "item_id": "0a08bcb035cd244644c829a072bdece5",
+   "product": "medallion",
+   "state": "HIDDEN",
+   "reason": "BLOCKED_BY_HARD_GATE",
+   "failed_gates": [
+    "manufacturing_pass"
+   ],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING",
+   "note": "Human aesthetic approval cannot open a safety, identity or rights gate."
+  },
+  {
+   "item_id": "9a928ba82aaf992847be6ee6fb92e129",
+   "product": "medallion",
+   "state": "HIDDEN",
+   "reason": "BLOCKED_BY_HARD_GATE",
+   "failed_gates": [
+    "manufacturing_pass"
+   ],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING",
+   "note": "Human aesthetic approval cannot open a safety, identity or rights gate."
+  },
+  {
+   "item_id": "9a083a82704a6bef5ec31bc3c27baf1b",
+   "product": "openwork",
+   "state": "EXPERIMENTAL",
+   "reason": "HUMAN_REVIEW_PENDING",
+   "failed_gates": [],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "9dc51800fe532304fb3c66b38e280071",
+   "product": "openwork",
+   "state": "EXPERIMENTAL",
+   "reason": "HUMAN_REVIEW_PENDING",
+   "failed_gates": [],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "467a221fdc05c5c0e55fe6a13698ddbb",
+   "product": "openwork",
+   "state": "EXPERIMENTAL",
+   "reason": "HUMAN_REVIEW_PENDING",
+   "failed_gates": [],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  },
+  {
+   "item_id": "e52333483e58dd8b31d01f6df079097f",
+   "product": "openwork",
+   "state": "EXPERIMENTAL",
+   "reason": "HUMAN_REVIEW_PENDING",
+   "failed_gates": [],
+   "human_decision": null,
+   "human_review_status": "HUMAN_REVIEW_PENDING"
+  }
+ ]
+}

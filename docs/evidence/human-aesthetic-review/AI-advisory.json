@@ -1,0 +1,6 @@
+{
+ "available": false,
+ "status": "SKIPPED_NO_CREDENTIALS",
+ "note": "No ANTHROPIC_API_KEY configured; no advisory scores were produced.",
+ "scores": []
+}
