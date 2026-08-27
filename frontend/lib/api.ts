@@ -74,17 +74,28 @@ async function jsonOrThrow(res: Response) {
     let detail = `HTTP ${res.status}`;
     let code: ApiErrorCode = "UNKNOWN";
     let requestId: string | undefined = res.headers.get(REQUEST_ID_HEADER) || undefined;
+    // Our backend ALWAYS answers errors with structured JSON carrying
+    // error_code. A non-JSON error body therefore means the response came
+    // from something that is NOT our backend (Vercel's proxy, a CDN, a
+    // misconfigured NEXT_PUBLIC_API_URL) — and must never be dressed up as
+    // an application state like "session expired".
+    let fromBackend = false;
     try {
       const body = await res.json();
+      fromBackend = true;
       if (typeof body.detail === "string") detail = body.detail;
       if (typeof body.error_code === "string") code = body.error_code as ApiErrorCode;
       if (typeof body.request_id === "string") requestId = body.request_id;
     } catch {
-      // Non-JSON error body (e.g. an intermediary/proxy 502/504) — status
-      // code alone still tells us enough to classify it below.
+      // Non-JSON error body — an intermediary answered, not the backend.
     }
     if (code === "UNKNOWN") {
-      if (res.status === 503) code = "BACKEND_UNAVAILABLE";
+      if (!fromBackend) {
+        // The request never reached a working backend. Seen in production
+        // when NEXT_PUBLIC_API_URL is unset and /api/* falls into the
+        // dev-only rewrite (Vercel: DNS_HOSTNAME_RESOLVED_PRIVATE → 404).
+        code = "BACKEND_UNAVAILABLE";
+      } else if (res.status === 503) code = "BACKEND_UNAVAILABLE";
       else if (res.status === 429) code = "RATE_LIMITED";
       else if (res.status === 404) code = "SESSION_EXPIRED";
       else code = "GENERATION_FAILED";

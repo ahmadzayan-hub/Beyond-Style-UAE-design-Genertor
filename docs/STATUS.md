@@ -12,6 +12,26 @@ Statuses (External AI / Real Tool Wiring sections, precise per-claim vocabulary)
   FAILED — a real call/round-trip was attempted and errored (never silently downgraded to a softer status).
 Updated: 2026-08-26 · Backend suite: 401 passed (394 + 7 First-Wave Analysis) (PostgreSQL 16, incl. 11-test immutable seven-name golden fixture) · E2E: 5 browser flows passed (incl. dedicated seven-name+reference flow) · production smoke: 15/15 checks passed (local, corrected fixture) · GitHub Actions CI: VERIFIED_CI, run 32900447345 (current HEAD `a7e3858`) conclusion=success — 5 consecutive green runs — see RELEASE_EVIDENCE.md.
 
+## Production frontend failure diagnosed (2026-08-27, real device report)
+Owner tested the live Vercel deployment on mobile: UI loads, every action fails with "انتهت صلاحية الجلسة".
+Diagnosed against the real deployment (`web_fetch_vercel_url` on `/api/fonts`): **404 with
+`x-vercel-error: DNS_HOSTNAME_RESOLVED_PRIVATE`** — `NEXT_PUBLIC_API_URL` is unset, so the app fell back to
+relative `/api/*`, the dev-only rewrite (baked into the build) proxied to `localhost:8000`, and Vercel refused
+the private hostname. The frontend then mislabelled that non-backend 404 as SESSION_EXPIRED.
+
+Fixed in code (this commit):
+- `lib/api.ts`: a non-JSON error body means the response did NOT come from our backend (which always sends
+  structured `error_code` JSON) → classified `BACKEND_UNAVAILABLE`, never `SESSION_EXPIRED`.
+- `next.config.mjs`: the localhost rewrite is no longer emitted on Vercel builds (unless `BACKEND_URL` is
+  explicitly set). Local dev path re-verified: 200 via the rewrite.
+
+NOT fixed by code, unchanged release blockers (owner actions, per RELEASE_EVIDENCE.md):
+1. **No backend is deployed** — the Replit deployment contract is documented and waiting.
+2. **`NEXT_PUBLIC_API_URL` is not set** on the Vercel project — no env-var tool exists in this session.
+The site cannot work for customers until both are done; after this commit it at least reports the true
+condition ("الخدمة غير متاحة حالياً") instead of a fake session expiry. Vercel auto-deploys this branch, so
+the corrected message ships with this push.
+
 ## P4 First Human Review Analysis (this slice)
 **The wave has not been reviewed: 0 review rows, 0 customer responses — verified against the append-only log
 before any derivation.** No winner is claimed. The P4 analysis pipeline is built and emits every claim honestly
