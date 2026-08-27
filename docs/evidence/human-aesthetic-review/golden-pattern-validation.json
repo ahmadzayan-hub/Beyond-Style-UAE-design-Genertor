@@ -1,0 +1,10 @@
+{
+ "golden_relevant_reviewed": 0,
+ "non_golden_reviewed": 0,
+ "golden_preference_rate": null,
+ "non_golden_preference_rate": null,
+ "verdict": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
+ "predictive_or_historical": "UNDETERMINED",
+ "note": "Not enough reviewed items in both groups to say whether Golden relevance predicts human preference.",
+ "golden_cases_were_not_favoured": true
+}

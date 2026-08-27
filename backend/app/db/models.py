@@ -382,6 +382,36 @@ class DesignReview(TimestampMixin, Base):
     superseded: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 
 
+class CustomerValidationResponse(TimestampMixin, Base):
+    """An anonymous customer's reaction to a proof, from the validation pack.
+
+    Stored in its own table on purpose. Customer reactions answer a
+    different question from an Art Director's review — would I buy this,
+    versus is this well made — and averaging the two would destroy both.
+    Nothing here is ever merged into `design_reviews`.
+
+    Anonymous by construction: there is no name, contact or device field,
+    only an opaque per-session token so one person's answers can be grouped
+    without identifying them.
+    """
+
+    __tablename__ = "customer_validation_responses"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=_uuid)
+    item_id: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    pack_id: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    #: Opaque, self-generated; never linked to a customer record.
+    respondent_token: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+
+    would_buy: Mapped[str] = mapped_column(String(16), nullable=False)  # yes | maybe | no
+    premium_feel: Mapped[int] = mapped_column(Integer, nullable=False)  # 1-5
+    readability: Mapped[int] = mapped_column(Integer, nullable=False)  # 1-5
+    uniqueness: Mapped[int] = mapped_column(Integer, nullable=False)  # 1-5
+    preferred_product: Mapped[str | None] = mapped_column(String(48))
+    price_band: Mapped[str | None] = mapped_column(String(32))
+    comment: Mapped[str | None] = mapped_column(Text)
+
+
 class AIGeneration(TimestampMixin, Base):
     """One AI image generation (DESIGN → IMAGE). Display artifact only:
     kind is always an ai_* value and the production export path refuses

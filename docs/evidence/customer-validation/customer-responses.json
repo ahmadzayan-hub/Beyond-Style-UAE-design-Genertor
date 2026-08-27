@@ -1,0 +1,30 @@
+{
+ "status": "NO_CUSTOMER_RESPONSES_RECORDED",
+ "question_model": {
+  "would_buy": [
+   "yes",
+   "maybe",
+   "no"
+  ],
+  "premium_feel": "1-5",
+  "readability": "1-5",
+  "uniqueness": "1-5",
+  "preferred_product": "free text",
+  "price_band": [
+   "under_300_aed",
+   "300_600_aed",
+   "600_1200_aed",
+   "over_1200_aed",
+   "unsure"
+  ]
+ },
+ "basis": "CUSTOMER_RESPONSES_ONLY",
+ "excluded_inputs": [
+  "expert human review scores",
+  "engineering",
+  "AI advisory"
+ ],
+ "total_responses": 0,
+ "per_item": {},
+ "per_product_family": {}
+}

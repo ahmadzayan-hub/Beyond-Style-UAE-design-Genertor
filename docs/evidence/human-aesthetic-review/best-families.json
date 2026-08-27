@@ -1,0 +1,310 @@
+{
+ "note": "Four distinct claims. They answer different questions and are never collapsed into one ranking.",
+ "BEST_ENGINEERING_FAMILY": {
+  "status": "DERIVED",
+  "basis": "ENGINEERING_ONLY",
+  "note": "Measured geometry only. Carries no aesthetic or commercial meaning.",
+  "by_product": {
+   "single_letter_earring": {
+    "font_id": "scheherazade-new",
+    "computed_suitability": 0.8574,
+    "human_review_required": true
+   },
+   "drop_earring": {
+    "font_id": "scheherazade-new",
+    "computed_suitability": 0.7975,
+    "human_review_required": true
+   },
+   "pendant": {
+    "font_id": "katibeh",
+    "computed_suitability": 0.8083,
+    "human_review_required": true
+   },
+   "necklace": {
+    "font_id": "katibeh",
+    "computed_suitability": 0.7915,
+    "human_review_required": true
+   },
+   "ring": {
+    "font_id": "aref-ruqaa",
+    "computed_suitability": 0.8679,
+    "human_review_required": true
+   },
+   "bracelet": {
+    "font_id": "aref-ruqaa",
+    "computed_suitability": 0.7988,
+    "human_review_required": true
+   },
+   "cufflink": {
+    "font_id": "cairo",
+    "computed_suitability": 0.6865,
+    "human_review_required": true
+   },
+   "brooch": {
+    "font_id": "noto-nastaliq-urdu",
+    "computed_suitability": 0.708,
+    "human_review_required": true
+   },
+   "multi_name": {
+    "font_id": "scheherazade-new",
+    "computed_suitability": 0.792,
+    "human_review_required": true
+   },
+   "medallion": {
+    "font_id": "amiri-regular",
+    "computed_suitability": 0.7402,
+    "human_review_required": true
+   },
+   "engraving": {
+    "font_id": "noto-nastaliq-urdu",
+    "computed_suitability": 0.6451,
+    "human_review_required": true
+   },
+   "openwork": {
+    "font_id": "noto-nastaliq-urdu",
+    "computed_suitability": 0.7506,
+    "human_review_required": true
+   }
+  }
+ },
+ "BEST_AESTHETIC_FAMILY": {
+  "basis": "HUMAN_REVIEW_ONLY",
+  "by_product": {
+   "bracelet": {
+    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
+    "signal": "human_aesthetic_score",
+    "reviews_available": 0,
+    "required": {
+     "scored_reviews_per_family": 5,
+     "distinct_items_per_family": 3
+    },
+    "exclusions": []
+   },
+   "cufflink": {
+    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
+    "signal": "human_aesthetic_score",
+    "reviews_available": 0,
+    "required": {
+     "scored_reviews_per_family": 5,
+     "distinct_items_per_family": 3
+    },
+    "exclusions": []
+   },
+   "medallion": {
+    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
+    "signal": "human_aesthetic_score",
+    "reviews_available": 0,
+    "required": {
+     "scored_reviews_per_family": 5,
+     "distinct_items_per_family": 3
+    },
+    "exclusions": []
+   },
+   "multi_name": {
+    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
+    "signal": "human_aesthetic_score",
+    "reviews_available": 0,
+    "required": {
+     "scored_reviews_per_family": 5,
+     "distinct_items_per_family": 3
+    },
+    "exclusions": []
+   },
+   "necklace": {
+    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
+    "signal": "human_aesthetic_score",
+    "reviews_available": 0,
+    "required": {
+     "scored_reviews_per_family": 5,
+     "distinct_items_per_family": 3
+    },
+    "exclusions": []
+   },
+   "openwork": {
+    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
+    "signal": "human_aesthetic_score",
+    "reviews_available": 0,
+    "required": {
+     "scored_reviews_per_family": 5,
+     "distinct_items_per_family": 3
+    },
+    "exclusions": []
+   },
+   "pendant": {
+    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
+    "signal": "human_aesthetic_score",
+    "reviews_available": 0,
+    "required": {
+     "scored_reviews_per_family": 5,
+     "distinct_items_per_family": 3
+    },
+    "exclusions": []
+   },
+   "ring": {
+    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
+    "signal": "human_aesthetic_score",
+    "reviews_available": 0,
+    "required": {
+     "scored_reviews_per_family": 5,
+     "distinct_items_per_family": 3
+    },
+    "exclusions": []
+   },
+   "single_letter_earring": {
+    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
+    "signal": "human_aesthetic_score",
+    "reviews_available": 0,
+    "required": {
+     "scored_reviews_per_family": 5,
+     "distinct_items_per_family": 3
+    },
+    "exclusions": []
+   }
+  }
+ },
+ "BEST_COMMERCIAL_FAMILY": {
+  "basis": "HUMAN_REVIEW_ONLY",
+  "by_product": {
+   "bracelet": {
+    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
+    "signal": "commercial_appeal_score",
+    "reviews_available": 0,
+    "required": {
+     "scored_reviews_per_family": 5,
+     "distinct_items_per_family": 3
+    },
+    "exclusions": []
+   },
+   "cufflink": {
+    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
+    "signal": "commercial_appeal_score",
+    "reviews_available": 0,
+    "required": {
+     "scored_reviews_per_family": 5,
+     "distinct_items_per_family": 3
+    },
+    "exclusions": []
+   },
+   "medallion": {
+    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
+    "signal": "commercial_appeal_score",
+    "reviews_available": 0,
+    "required": {
+     "scored_reviews_per_family": 5,
+     "distinct_items_per_family": 3
+    },
+    "exclusions": []
+   },
+   "multi_name": {
+    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
+    "signal": "commercial_appeal_score",
+    "reviews_available": 0,
+    "required": {
+     "scored_reviews_per_family": 5,
+     "distinct_items_per_family": 3
+    },
+    "exclusions": []
+   },
+   "necklace": {
+    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
+    "signal": "commercial_appeal_score",
+    "reviews_available": 0,
+    "required": {
+     "scored_reviews_per_family": 5,
+     "distinct_items_per_family": 3
+    },
+    "exclusions": []
+   },
+   "openwork": {
+    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
+    "signal": "commercial_appeal_score",
+    "reviews_available": 0,
+    "required": {
+     "scored_reviews_per_family": 5,
+     "distinct_items_per_family": 3
+    },
+    "exclusions": []
+   },
+   "pendant": {
+    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
+    "signal": "commercial_appeal_score",
+    "reviews_available": 0,
+    "required": {
+     "scored_reviews_per_family": 5,
+     "distinct_items_per_family": 3
+    },
+    "exclusions": []
+   },
+   "ring": {
+    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
+    "signal": "commercial_appeal_score",
+    "reviews_available": 0,
+    "required": {
+     "scored_reviews_per_family": 5,
+     "distinct_items_per_family": 3
+    },
+    "exclusions": []
+   },
+   "single_letter_earring": {
+    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
+    "signal": "commercial_appeal_score",
+    "reviews_available": 0,
+    "required": {
+     "scored_reviews_per_family": 5,
+     "distinct_items_per_family": 3
+    },
+    "exclusions": []
+   }
+  }
+ },
+ "BEST_CUSTOMER_FAMILY": {
+  "basis": "CUSTOMER_RESPONSES_ONLY",
+  "by_product": {
+   "bracelet": {
+    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
+    "responses_available": 0,
+    "required_responses_per_family": 10
+   },
+   "cufflink": {
+    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
+    "responses_available": 0,
+    "required_responses_per_family": 10
+   },
+   "medallion": {
+    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
+    "responses_available": 0,
+    "required_responses_per_family": 10
+   },
+   "multi_name": {
+    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
+    "responses_available": 0,
+    "required_responses_per_family": 10
+   },
+   "necklace": {
+    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
+    "responses_available": 0,
+    "required_responses_per_family": 10
+   },
+   "openwork": {
+    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
+    "responses_available": 0,
+    "required_responses_per_family": 10
+   },
+   "pendant": {
+    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
+    "responses_available": 0,
+    "required_responses_per_family": 10
+   },
+   "ring": {
+    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
+    "responses_available": 0,
+    "required_responses_per_family": 10
+   },
+   "single_letter_earring": {
+    "status": "INSUFFICIENT_HUMAN_REVIEW_EVIDENCE",
+    "responses_available": 0,
+    "required_responses_per_family": 10
+   }
+  }
+ }
+}

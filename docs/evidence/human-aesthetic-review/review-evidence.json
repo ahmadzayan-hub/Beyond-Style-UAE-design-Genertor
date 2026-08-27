@@ -1,0 +1,131 @@
+{
+ "total_reviews": 0,
+ "reviewed_items": 0,
+ "unreviewed_items": 36,
+ "distinct_reviewers": [],
+ "decisions": {
+  "APPROVE": 0,
+  "ALLOW": 0,
+  "EXPERIMENTAL": 0,
+  "HIDE": 0
+ },
+ "coverage_by_product": {
+  "bracelet": {
+   "reviews": 0,
+   "reviewers": [],
+   "items_reviewed": 0,
+   "confidence": "NONE"
+  },
+  "cufflink": {
+   "reviews": 0,
+   "reviewers": [],
+   "items_reviewed": 0,
+   "confidence": "NONE"
+  },
+  "medallion": {
+   "reviews": 0,
+   "reviewers": [],
+   "items_reviewed": 0,
+   "confidence": "NONE"
+  },
+  "multi_name": {
+   "reviews": 0,
+   "reviewers": [],
+   "items_reviewed": 0,
+   "confidence": "NONE"
+  },
+  "necklace": {
+   "reviews": 0,
+   "reviewers": [],
+   "items_reviewed": 0,
+   "confidence": "NONE"
+  },
+  "openwork": {
+   "reviews": 0,
+   "reviewers": [],
+   "items_reviewed": 0,
+   "confidence": "NONE"
+  },
+  "pendant": {
+   "reviews": 0,
+   "reviewers": [],
+   "items_reviewed": 0,
+   "confidence": "NONE"
+  },
+  "ring": {
+   "reviews": 0,
+   "reviewers": [],
+   "items_reviewed": 0,
+   "confidence": "NONE"
+  },
+  "single_letter_earring": {
+   "reviews": 0,
+   "reviewers": [],
+   "items_reviewed": 0,
+   "confidence": "NONE"
+  }
+ },
+ "coverage_by_font": {
+  "amiri-regular": {
+   "reviews": 0,
+   "reviewers": [],
+   "items_reviewed": 0,
+   "confidence": "NONE"
+  },
+  "aref-ruqaa": {
+   "reviews": 0,
+   "reviewers": [],
+   "items_reviewed": 0,
+   "confidence": "NONE"
+  },
+  "cairo": {
+   "reviews": 0,
+   "reviewers": [],
+   "items_reviewed": 0,
+   "confidence": "NONE"
+  },
+  "katibeh": {
+   "reviews": 0,
+   "reviewers": [],
+   "items_reviewed": 0,
+   "confidence": "NONE"
+  },
+  "lemonada": {
+   "reviews": 0,
+   "reviewers": [],
+   "items_reviewed": 0,
+   "confidence": "NONE"
+  },
+  "noto-nastaliq-urdu": {
+   "reviews": 0,
+   "reviewers": [],
+   "items_reviewed": 0,
+   "confidence": "NONE"
+  },
+  "reem-kufi": {
+   "reviews": 0,
+   "reviewers": [],
+   "items_reviewed": 0,
+   "confidence": "NONE"
+  },
+  "scheherazade-new": {
+   "reviews": 0,
+   "reviewers": [],
+   "items_reviewed": 0,
+   "confidence": "NONE"
+  }
+ },
+ "overall_confidence": "NONE",
+ "missing_areas": [
+  "bracelet",
+  "cufflink",
+  "medallion",
+  "multi_name",
+  "necklace",
+  "openwork",
+  "pendant",
+  "ring",
+  "single_letter_earring"
+ ],
+ "status": "HUMAN_REVIEW_PENDING"
+}

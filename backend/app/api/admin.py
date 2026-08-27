@@ -250,3 +250,82 @@ def review_item_history(item_id: str, session: Session = Depends(get_session)):
             for r in rows
         ],
     }
+
+
+# ---------------------------------------------------------------------------
+# P2 — curation analysis and customer validation
+# ---------------------------------------------------------------------------
+
+class CustomerResponseSubmission(BaseModel):
+    item_id: str
+    pack_id: str
+    respondent_token: str
+    would_buy: str
+    premium_feel: int
+    readability: int
+    uniqueness: int
+    preferred_product: str | None = None
+    price_band: str | None = None
+    comment: str | None = None
+
+
+@router.get("/curation/analysis", dependencies=[Depends(require_admin)])
+def curation_analysis_report(session: Session = Depends(get_session)):
+    """Aesthetic and commercial curation derived from human review evidence.
+
+    Every family claim is INSUFFICIENT_HUMAN_REVIEW_EVIDENCE until enough
+    genuine reviews exist; no engineering or AI value substitutes for one."""
+    from ..services.curation_analysis import (
+        best_family, commercial_curation, derive_aesthetic_signals,
+        golden_pattern_validation, load_review_evidence, review_quality_check,
+    )
+    from ..services.customer_validation import best_customer_family
+    from ..services.review_items import generate_review_pack
+
+    items = generate_review_pack(max_per_product=3)
+    return {
+        "evidence": load_review_evidence(session, items),
+        "quality_check": review_quality_check(session, items),
+        "aesthetic_signals": derive_aesthetic_signals(session, items),
+        "commercial_curation": commercial_curation(session, items),
+        "best_aesthetic_family": best_family(session, items, "human_aesthetic_score"),
+        "best_commercial_family": best_family(session, items, "commercial_appeal_score"),
+        "best_customer_family": best_customer_family(session, items),
+        "golden_pattern_validation": golden_pattern_validation(session, items),
+    }
+
+
+@router.get("/customer-validation/pack", dependencies=[Depends(require_admin)])
+def customer_pack(session: Session = Depends(get_session)):
+    """The customer test pack. Engineering metadata is stripped: a customer
+    reacts to the piece, not to its manufacturing report."""
+    from ..services.customer_validation import select_customer_pack
+    from ..services.review_items import generate_review_pack
+
+    pack = select_customer_pack(session, generate_review_pack(max_per_product=4))
+    return {
+        **{k: v for k, v in pack.items() if k != "items"},
+        "items": [
+            {"item_id": i["item_id"], "product": i["product"],
+             "customer_style": i["customer_style"], "source_text": i["source_text"],
+             "width_mm": i["width_mm"], "height_mm": i["height_mm"],
+             "proof_path_d": i["proof_path_d"], "proof_view": i["proof_view"]}
+            for i in pack["items"]
+        ],
+    }
+
+
+@router.post("/customer-validation/response", dependencies=[Depends(require_admin)])
+def submit_customer_response(
+    body: CustomerResponseSubmission, session: Session = Depends(get_session)
+):
+    """Record one anonymous customer response. Stored in its own table and
+    never merged into expert review scores."""
+    from ..services.customer_validation import ResponseRejected, record_customer_response
+
+    try:
+        row = record_customer_response(session, **body.model_dump())
+    except ResponseRejected as exc:
+        raise HTTPException(422, str(exc))
+    session.commit()
+    return {"recorded": True, "response_id": str(row.id)}

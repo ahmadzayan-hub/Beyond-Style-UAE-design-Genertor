@@ -1,0 +1,144 @@
+{
+ "pack_id": "e506d037aa554c53",
+ "size": 13,
+ "selection_basis": "MANUFACTURING_PASS_AND_DIVERSITY_ONLY",
+ "note": "No expert aesthetic review exists yet, so this pack is NOT aesthetically curated. It is a manufacturable, diverse sample.",
+ "expert_reviewed_items": 0,
+ "product_spread": {
+  "single_letter_earring": 2,
+  "pendant": 2,
+  "necklace": 2,
+  "cufflink": 2,
+  "ring": 2,
+  "openwork": 2,
+  "bracelet": 1
+ },
+ "font_spread": {
+  "noto-nastaliq-urdu": 2,
+  "aref-ruqaa": 2,
+  "scheherazade-new": 2,
+  "amiri-regular": 2,
+  "cairo": 2,
+  "katibeh": 2,
+  "reem-kufi": 1
+ },
+ "items": [
+  {
+   "n": 1,
+   "item_id": "cd2e6450fd582a6247bbb6540f9857cc",
+   "product": "single_letter_earring",
+   "customer_style": "انسيابي",
+   "source_text": "ع",
+   "width_mm": 15.716,
+   "height_mm": 11.7
+  },
+  {
+   "n": 2,
+   "item_id": "bc411a74b58e26bd0a7f53e343e8703b",
+   "product": "single_letter_earring",
+   "customer_style": "تراثي",
+   "source_text": "نورة",
+   "width_mm": 24.415,
+   "height_mm": 11.699
+  },
+  {
+   "n": 3,
+   "item_id": "2a38ba71a56a737c011f03090a32a4b2",
+   "product": "pendant",
+   "customer_style": "تراثي",
+   "source_text": "نورة",
+   "width_mm": 34.565,
+   "height_mm": 16.699
+  },
+  {
+   "n": 4,
+   "item_id": "e62dfd6d739020a47655063b1bfe2183",
+   "product": "pendant",
+   "customer_style": "كلاسيكي",
+   "source_text": "نورة",
+   "width_mm": 30.828,
+   "height_mm": 16.699
+  },
+  {
+   "n": 5,
+   "item_id": "fc400e2950c1629f2d95fe4bd6c6eb27",
+   "product": "necklace",
+   "customer_style": "كلاسيكي",
+   "source_text": "نورة",
+   "width_mm": 30.828,
+   "height_mm": 16.699
+  },
+  {
+   "n": 6,
+   "item_id": "0e3d3edff02b6ba13ae7a19074e31d9c",
+   "product": "necklace",
+   "customer_style": "كلاسيكي",
+   "source_text": "نورة",
+   "width_mm": 31.25,
+   "height_mm": 16.7
+  },
+  {
+   "n": 7,
+   "item_id": "0b6acc8a2a72080d9305cfdf2187bc03",
+   "product": "cufflink",
+   "customer_style": "حديث",
+   "source_text": "نورة",
+   "width_mm": 28.801,
+   "height_mm": 14.7
+  },
+  {
+   "n": 8,
+   "item_id": "a95ec990322f77025b8fb4d558d3880c",
+   "product": "cufflink",
+   "customer_style": "فاخر",
+   "source_text": "نورة",
+   "width_mm": 25.859,
+   "height_mm": 14.699
+  },
+  {
+   "n": 9,
+   "item_id": "c38eb5d773013c7a5d7949b5d9d97243",
+   "product": "ring",
+   "customer_style": "كلاسيكي",
+   "source_text": "ع",
+   "width_mm": 14.73,
+   "height_mm": 7.7
+  },
+  {
+   "n": 10,
+   "item_id": "3b684cb067048313eadf4bbf2e244efc",
+   "product": "ring",
+   "customer_style": "هندسي",
+   "source_text": "ع",
+   "width_mm": 14.533,
+   "height_mm": 7.7
+  },
+  {
+   "n": 11,
+   "item_id": "467a221fdc05c5c0e55fe6a13698ddbb",
+   "product": "openwork",
+   "customer_style": "انسيابي",
+   "source_text": "نورة",
+   "width_mm": 31.605,
+   "height_mm": 18.699
+  },
+  {
+   "n": 12,
+   "item_id": "e52333483e58dd8b31d01f6df079097f",
+   "product": "openwork",
+   "customer_style": "فاخر",
+   "source_text": "نورة",
+   "width_mm": 35.854,
+   "height_mm": 18.699
+  },
+  {
+   "n": 13,
+   "item_id": "d19e953129fa55547f015bdf30b6493f",
+   "product": "bracelet",
+   "customer_style": "حديث",
+   "source_text": "نورة",
+   "width_mm": 28.945,
+   "height_mm": 11.7
+  }
+ ]
+}

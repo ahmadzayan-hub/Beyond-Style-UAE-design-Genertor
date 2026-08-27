@@ -1,0 +1,14 @@
+{
+ "product": {},
+ "font_family": {},
+ "composition": {},
+ "feature_set": {},
+ "source_text_category": {},
+ "basis": "HUMAN_REVIEW_SCORES_ONLY",
+ "excluded_inputs": [
+  "engineering suitability",
+  "geometry metrics",
+  "font metrics",
+  "AI advisory"
+ ]
+}

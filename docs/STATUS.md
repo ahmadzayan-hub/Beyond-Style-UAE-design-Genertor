@@ -10,9 +10,35 @@ Statuses (External AI / Real Tool Wiring sections, precise per-claim vocabulary)
   OPTIONAL_NOT_RUNNING — an optional runtime (isolated Hermes) is not configured/reachable; the deterministic path is unaffected.
   BLOCKED — implemented but intentionally refused (e.g. approve_design for agents).
   FAILED — a real call/round-trip was attempted and errored (never silently downgraded to a softer status).
-Updated: 2026-08-26 · Backend suite: 357 passed (327 + 30 Human Aesthetic Review) (PostgreSQL 16, incl. 11-test immutable seven-name golden fixture) · E2E: 5 browser flows passed (incl. dedicated seven-name+reference flow) · production smoke: 15/15 checks passed (local, corrected fixture) · GitHub Actions CI: VERIFIED_CI, run 32900447345 (current HEAD `a7e3858`) conclusion=success — 5 consecutive green runs — see RELEASE_EVIDENCE.md.
+Updated: 2026-08-26 · Backend suite: 382 passed (357 + 25 Curation Analysis) (PostgreSQL 16, incl. 11-test immutable seven-name golden fixture) · E2E: 5 browser flows passed (incl. dedicated seven-name+reference flow) · production smoke: 15/15 checks passed (local, corrected fixture) · GitHub Actions CI: VERIFIED_CI, run 32900447345 (current HEAD `a7e3858`) conclusion=success — 5 consecutive green runs — see RELEASE_EVIDENCE.md.
 
-## Human Aesthetic Review Workflow (this slice)
+## P2 Curation Analysis + Customer Validation (this slice)
+Machinery to turn human review decisions into aesthetic and commercial recommendations — built, tested, and
+reporting **INSUFFICIENT_HUMAN_REVIEW_EVIDENCE** because no human review decisions exist yet. See CURATION_STATUS.md.
+
+| Item | Status | Evidence |
+|---|---|---|
+| Aesthetic/commercial signals derive from human scores only | VERIFIED_LOCAL | `test_engineering_values_never_move_an_aesthetic_signal`; `excluded_inputs` recorded in every output |
+| Customer responses stored separately, never merged with expert scores | VERIFIED_LOCAL | `test_customer_scores_never_enter_expert_signals`; own table + own migration |
+| Customer responses anonymous + append-only | VERIFIED_LOCAL | `test_customer_responses_are_anonymous_and_append_only` (no name/email/phone column; DB triggers) |
+| Family claims refuse to guess below threshold | VERIFIED_LOCAL | `test_best_family_refuses_to_guess_without_evidence`, `test_thin_evidence_is_excluded_with_a_reason` |
+| Four family claims stay distinct | VERIFIED_LOCAL | `test_the_four_family_claims_have_different_bases` |
+| Hard gates beat approval in commercial class | VERIFIED_LOCAL | `test_hard_gate_beats_approval_in_commercial_class` |
+| Golden relevance may be reported as NOT predictive | VERIFIED_LOCAL | `test_golden_can_be_reported_as_not_predictive` |
+| Quality check flags but never edits reviewer decisions | VERIFIED_LOCAL | `test_contradictory_reviews_are_flagged_not_resolved`; `reviewer_decisions_modified: 0` |
+| Customer board leaks no engineering metadata | VERIFIED_LOCAL | leak scan over `review-board.html`: 0 tokens |
+
+**Honest status:**
+- **0 human reviews, 0 customer responses.** BEST_AESTHETIC / BEST_COMMERCIAL / BEST_CUSTOMER_FAMILY are all
+  `INSUFFICIENT_HUMAN_REVIEW_EVIDENCE` (0/9 products). BEST_ENGINEERING_FAMILY unchanged and still ENGINEERING_ONLY.
+- **Commercial curation**: 0 RECOMMENDED, 0 CANDIDATE, 25 DESIGN_EXPERIMENT, 11 HIDDEN (all 11 on hard gates).
+- **Golden predictiveness UNDETERMINED** — no reviewed items in both groups to compare.
+- **The customer pack (13 items) is NOT aesthetically curated**; basis is `MANUFACTURING_PASS_AND_DIVERSITY_ONLY`
+  and the pack records that. It is usable for real customer testing today, before AD review.
+- Thresholds are deliberately strict (5 scored reviews across 3+ items per family; 2 reviewers for HIGH
+  confidence; 10 customer responses per family). They can be lowered, but not without weakening the claim.
+
+## Human Aesthetic Review Workflow (previous slice)
 The workflow, review pack and evidence exist. **No aesthetic decision has been made by anyone.** 52 features
 remain EXPERIMENTAL, every item is HUMAN_REVIEW_PENDING, and `human-scores.json` holds zero reviews.
 Golden Path and its immutable fixture byte-unchanged.

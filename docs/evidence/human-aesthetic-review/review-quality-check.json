@@ -1,0 +1,19 @@
+{
+ "contradictory_reviews": [],
+ "incomplete_reviews": [],
+ "products_with_thin_evidence": [
+  "bracelet",
+  "cufflink",
+  "medallion",
+  "multi_name",
+  "necklace",
+  "openwork",
+  "pendant",
+  "ring",
+  "single_letter_earring"
+ ],
+ "promoted_without_human_approval": [],
+ "manufacturing_failing_but_allowed": [],
+ "reviewer_decisions_modified": 0,
+ "note": "Observations only. No reviewer decision was altered."
+}
