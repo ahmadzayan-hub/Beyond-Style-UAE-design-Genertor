@@ -10,9 +10,39 @@ Statuses (External AI / Real Tool Wiring sections, precise per-claim vocabulary)
   OPTIONAL_NOT_RUNNING — an optional runtime (isolated Hermes) is not configured/reachable; the deterministic path is unaffected.
   BLOCKED — implemented but intentionally refused (e.g. approve_design for agents).
   FAILED — a real call/round-trip was attempted and errored (never silently downgraded to a softer status).
-Updated: 2026-08-26 · Backend suite: 303 passed (276 + 27 Aesthetic Curation) (PostgreSQL 16, incl. 11-test immutable seven-name golden fixture) · E2E: 5 browser flows passed (incl. dedicated seven-name+reference flow) · production smoke: 15/15 checks passed (local, corrected fixture) · GitHub Actions CI: VERIFIED_CI, run 32900447345 (current HEAD `a7e3858`) conclusion=success — 5 consecutive green runs — see RELEASE_EVIDENCE.md.
+Updated: 2026-08-26 · Backend suite: 327 passed (303 + 24 Axis Plumbing) (PostgreSQL 16, incl. 11-test immutable seven-name golden fixture) · E2E: 5 browser flows passed (incl. dedicated seven-name+reference flow) · production smoke: 15/15 checks passed (local, corrected fixture) · GitHub Actions CI: VERIFIED_CI, run 32900447345 (current HEAD `a7e3858`) conclusion=success — 5 consecutive green runs — see RELEASE_EVIDENCE.md.
 
-## Aesthetic Curation + Combination/Axis Safety (this slice)
+## Variable-Font Axis Plumbing + Real-mm Validation (this slice)
+Variable-font coordinates are now first-class production inputs: validated, carried identically through shaping
+AND outline extraction from one shared instance, part of design identity, traceable in exports, and gated on
+real millimetres. Golden Path and its immutable fixture byte-unchanged.
+
+| Item | Status | Evidence |
+|---|---|---|
+| Shaping + outlines share one instance (`app/fonts/instances.py`) | VERIFIED_LOCAL | `test_shaping_and_outlines_use_the_same_instance`; weight visibly thickens built geometry |
+| Invalid / unsupported axis refused, never clamped | VERIFIED_LOCAL | `AXIS_VALUE_OUT_OF_RANGE`, `UNSUPPORTED_AXIS`; validated in the shared build path so designer edits are covered |
+| Axes in design identity; empty axes leave pre-axis hashes untouched | VERIFIED_LOCAL | `test_empty_axes_do_not_change_pre_axis_candidate_ids`; golden fixture unchanged |
+| Weight change creates a NEW version; approved version untouched | VERIFIED_LOCAL | `test_changing_axes_creates_a_new_version_never_mutates_approved` |
+| Export metadata carries font_id + axes + features + font binary sha256 | VERIFIED_LOCAL | `test_export_metadata_carries_axes_and_font_binary`; DXF custom vars too |
+| Real-mm measurements drive manufacturing decisions | VERIFIED_LOCAL | `app/engines/geometry_metrics.py`, basis `REAL_MM_FROM_BUILT_GEOMETRY`; proxy asserted absent |
+| Axis ranges revalidated on real geometry, per product | VERIFIED_LOCAL | `geometry-mm-validation.json`, `product-axis-ranges.json`: wght 400–700 GEOMETRY_VERIFIED_SAFE on 8/8 products × 3 fonts |
+| Weight combinations revalidated through real geometry | VERIFIED_LOCAL | `combination-revalidation.json`: 4/5 PRODUCTION_CAPABLE |
+| Long-text probe uses the real production adaptation | VERIFIED_LOCAL | multi_name + medallion now manufacturable → 12/12 products covered |
+| Seven names preserved at 16/48 | VERIFIED_LOCAL | unchanged, stacked multi-line, source text preserved |
+| Designer slider bounded to verified range; customer sees no numbers | VERIFIED_LOCAL | `designer_axis_bounds`, `test_customer_never_receives_numeric_axis_values` |
+
+**Honest limitations and one corrected claim:**
+- **The earlier font-unit axis ranges were WRONG and are not promoted.** The proxy flagged small-size Reem Kufi
+  unsafe above wght=400 on a fill-ratio ceiling; real built geometry shows 2.4–2.5mm counter clearance holding
+  across the full range, with material only increasing. The proxy measured raw glyph fill, not the manufactured
+  piece. Real-geometry verdicts supersede it.
+- **8/8 products safe reads permissive but is gate-limited, not gate-free**: only 1–2 of 4 configurations pass at
+  each grid point, and Nastaliq weight+stacking is NOT_PRODUCTION_CAPABLE — both gates are genuinely binding.
+- **Aesthetics unchanged**: 52 features EXPERIMENTAL, 3 dimensions NOT_ASSESSED. No aesthetic approval happened.
+- **Axis coverage is `wght` only** — the three variable fonts expose no other axis.
+- **Safe ranges are for one workshop profile** (pendant / silver-925); other materials are NOT_TESTED.
+
+## Aesthetic Curation + Combination/Axis Safety (previous slice)
 Machinery for aesthetic curation, with taste left to humans. 10 of 13 suitability dimensions are measured from
 real geometry; 3 are `NOT_ASSESSED` pending human review. All 52 discovered OT features stay EXPERIMENTAL and
 are hidden from customers. Golden Path and its immutable fixture unchanged.
@@ -33,15 +63,14 @@ are hidden from customers. Golden Path and its immutable fixture unchanged.
 **Honest limitations:**
 - **No aesthetic review has happened.** 52 features EXPERIMENTAL, 3 dimensions NOT_ASSESSED. This slice built the
   machinery and the proof sheets; a human at Beyond Style must still look at them. Nothing here is a taste verdict.
-- **Variable-axis ranges are measured but NOT renderable.** `arabic_engine`/`outline_extractor` load default
-  instances only; there is no axis plumbing. Ranges carry `NOT_YET_REACHABLE_BY_GENERATOR`.
-- **Combination geometry is shaping-verified, not built-geometry-verified, for `extra` axes.** Weight-bearing
-  combinations cannot be geometry-tested end-to-end for the reason above.
-- **The stroke figure is a relative proxy**, not a millimetre width — perimeter is summed over control points.
-  The real stroke gate stays the manufacturing validator.
-- **2 of 12 products (medallion, multi_name) have no manufacturable option under the fixed suitability probe** —
-  both are long-text products needing the production long-text adaptation the probe deliberately does not apply.
-  The seven-name case does resolve through the real production path.
+- ~~Variable-axis ranges measured but NOT renderable~~ — **RESOLVED** by the axis-plumbing slice; those font-unit
+  ranges were also contradicted by real geometry and are now marked `SUPERSEDED_BY_GEOMETRY_VERIFIED_RANGES`.
+- ~~Combination geometry shaping-verified only~~ — **RESOLVED**: weight-bearing combinations revalidated through
+  real built geometry (4/5 PRODUCTION_CAPABLE).
+- **The stroke figure in `app/fonts/axes.py` is still a relative proxy**, not a millimetre width. It is now
+  explicitly excluded from the manufacturing surface, which uses `geometry_metrics` real mm.
+- ~~2 of 12 products have no manufacturable option~~ — **RESOLVED**: the probe now uses the production long-text
+  adaptation; 12/12 products covered.
 
 ## Font Capability (previous slice)
 Advertised script coverage now equals renderable coverage. Nine OFL fonts, every feature discovered from the

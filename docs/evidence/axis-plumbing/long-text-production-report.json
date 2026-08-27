@@ -1,0 +1,116 @@
+{
+ "multi_name": {
+  "source_text": "حامد محمد سلطان ميثة حمد خالد مهرة",
+  "source_text_preserved": true,
+  "internal_candidates": 48,
+  "valid_candidates": 16,
+  "shown_top_n": 10,
+  "mm_gate_passing_sample": [
+   {
+    "recipe_id": "naskh-bold-tag",
+    "font_id": "amiri-regular",
+    "max_lines": 4,
+    "width_mm": 53.213,
+    "height_mm": 47.781,
+    "min_material_width_mm": 11.988
+   },
+   {
+    "recipe_id": "naskh-petite-charm",
+    "font_id": "amiri-regular",
+    "max_lines": 3,
+    "width_mm": 44.108,
+    "height_mm": 40.431,
+    "min_material_width_mm": 6.527
+   },
+   {
+    "recipe_id": "trad-suspended",
+    "font_id": "scheherazade-new",
+    "max_lines": 4,
+    "width_mm": 58.595,
+    "height_mm": 46.354,
+    "min_material_width_mm": 9.879
+   },
+   {
+    "recipe_id": "trad-compact-bold",
+    "font_id": "scheherazade-new",
+    "max_lines": 4,
+    "width_mm": 56.262,
+    "height_mm": 45.86,
+    "min_material_width_mm": 3.867
+   },
+   {
+    "recipe_id": "kufi-rect-tag",
+    "font_id": "cairo",
+    "max_lines": 3,
+    "width_mm": 59.75,
+    "height_mm": 35.972,
+    "min_material_width_mm": 11.988
+   }
+  ],
+  "strategies": [
+   "stacked_multi_line"
+  ],
+  "outcome": "HAS_VALID_PRODUCTION_CANDIDATES"
+ },
+ "medallion": {
+  "source_text": "كن ما تبحث عنه في عيون الآخرين",
+  "source_text_preserved": true,
+  "internal_candidates": 48,
+  "valid_candidates": 18,
+  "shown_top_n": 10,
+  "mm_gate_passing_sample": [
+   {
+    "recipe_id": "naskh-tall-elegant",
+    "font_id": "amiri-regular",
+    "max_lines": 3,
+    "width_mm": 58.592,
+    "height_mm": 54.8,
+    "min_material_width_mm": 2.93
+   },
+   {
+    "recipe_id": "naskh-bold-tag",
+    "font_id": "amiri-regular",
+    "max_lines": 4,
+    "width_mm": 34.682,
+    "height_mm": 47.782,
+    "min_material_width_mm": 11.988
+   },
+   {
+    "recipe_id": "naskh-petite-charm",
+    "font_id": "amiri-regular",
+    "max_lines": 3,
+    "width_mm": 37.632,
+    "height_mm": 40.432,
+    "min_material_width_mm": 3.305
+   },
+   {
+    "recipe_id": "trad-oval-relief",
+    "font_id": "scheherazade-new",
+    "max_lines": 3,
+    "width_mm": 42.252,
+    "height_mm": 39.789,
+    "min_material_width_mm": 11.988
+   },
+   {
+    "recipe_id": "kufi-oval-relief",
+    "font_id": "cairo",
+    "max_lines": 4,
+    "width_mm": 53.306,
+    "height_mm": 50.872,
+    "min_material_width_mm": 11.988
+   }
+  ],
+  "strategies": [
+   "stacked_multi_line"
+  ],
+  "outcome": "HAS_VALID_PRODUCTION_CANDIDATES"
+ },
+ "openwork": {
+  "source_text": "خالد",
+  "source_text_preserved": true,
+  "internal_candidates": 48,
+  "valid_candidates": 32,
+  "shown_top_n": 10,
+  "outcome": "HAS_VALID_PRODUCTION_CANDIDATES"
+ }
+}

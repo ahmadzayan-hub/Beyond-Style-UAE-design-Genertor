@@ -75,6 +75,28 @@ def measure(font_id: str, profile: ProductProfile) -> dict:
     # bad stroke". Long text also gets the same stacking the production
     # generator applies, so multi-name products are measured fairly.
     words = len(profile.representative_text.split())
+    # Long-text products (multi-name, medallion phrase) go through the REAL
+    # production long-text adaptation rather than a hand-built recipe, so
+    # the benchmark measures what production would actually produce.
+    if words > 2:
+        from ..engines.generator import generate_candidates
+
+        everything, _ = generate_candidates(f"suit-{font_id}", source, rules)
+        same_font = [c for c in everything if c.recipe.font_id == font_id]
+        attempts = [{
+            "path": "production_long_text_adaptation",
+            "recipe_id": c.recipe.recipe_id,
+            "composition": c.recipe.composition,
+            "max_lines": c.recipe.max_lines,
+            "validation_passed": bool(c.validation and c.validation.passed),
+            "violations": [v.code for v in (c.validation.violations if c.validation else [])][:4],
+            "width_mm": round(c.features.width_mm, 2) if c.features else None,
+            "height_mm": round(c.features.height_mm, 2) if c.features else None,
+        } for c in same_font]
+        built_ok = [(c, bool(c.validation and c.validation.passed)) for c in same_font]
+        if built_ok:
+            return _score(font_id, profile, attempts, built_ok)
+
     lines = 3 if words > 2 else 1
     # Connector strategy matters more than stroke: letters left unjoined
     # fail DISCONNECTED_COMPONENT regardless of the face. Both the product's
@@ -106,6 +128,12 @@ def measure(font_id: str, profile: ProductProfile) -> dict:
                 })
                 built_ok.append((cand, passed))
 
+    return _score(font_id, profile, attempts, built_ok)
+
+
+def _score(font_id: str, profile: ProductProfile, attempts: list, built_ok: list) -> dict:
+    """Shared scoring for both the parametric sweep and the production
+    long-text path, so neither can drift into its own definition."""
     if not built_ok:
         return {
             "font_id": font_id, "product": profile.product,

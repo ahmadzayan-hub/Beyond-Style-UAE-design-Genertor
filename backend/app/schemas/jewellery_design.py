@@ -154,6 +154,10 @@ class RecipeParams(BaseModel):
     swash: str = "none"  # none | underline_flourish | tail_sweep | double_flourish
     kashida_count: int = 0  # baseline elongation units before final letter
     # Long-text composition.
+    #: Explicit variable-font coordinates, e.g. {"wght": 600}. Empty means
+    #: the font's default instance — which is what every pre-axis design
+    #: used, so an empty dict must never change an existing geometry hash.
+    font_axes: dict[str, float] = Field(default_factory=dict)
     max_lines: int = 1  # 1 = single line; >1 = stacked multi-line
     line_spacing_ratio: float = 0.22
     # Curated archetype metadata (Design DNA, products, text-length fit,

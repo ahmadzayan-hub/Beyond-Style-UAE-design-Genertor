@@ -244,3 +244,69 @@ EVIDENCE_PRIORITY = [
     "DESIGNER_APPROVED",
     "AI_AESTHETIC_OPINION",
 ]
+
+
+def designer_axis_bounds(font_id: str, product: str) -> dict:
+    """Bounds for the designer's weight slider.
+
+    Only ranges whose evidence_level is GEOMETRY_VERIFIED_SAFE are offered.
+    An untested or unsafe combination returns `available: False` with the
+    reason, so the control is visibly unavailable rather than silently
+    permissive."""
+    from .instances import font_axis_specs
+
+    specs = font_axis_specs(font_id)
+    if not specs:
+        return {"font_id": font_id, "product": product, "available": False,
+                "reason": "STATIC_FONT_NO_AXES", "axes": {}}
+    ranges = load_curation().get("product_axis_ranges", {}).get(font_id, {})
+    axes = {}
+    for tag, spec in specs.items():
+        entry = ranges.get(tag, {}).get(product)
+        if not entry or entry.get("min_safe") is None:
+            axes[tag] = {
+                "available": False,
+                "reason": "NOT_GEOMETRY_VERIFIED_FOR_THIS_PRODUCT",
+                "font_min": spec["min"], "font_max": spec["max"],
+                "default": spec["default"],
+            }
+            continue
+        axes[tag] = {
+            "available": True,
+            "min": entry["min_safe"], "max": entry["max_safe"],
+            "default": spec["default"],
+            "font_min": spec["min"], "font_max": spec["max"],
+            "evidence_level": entry["evidence_level"],
+            "tested_values": entry.get("tested_values", []),
+            "manufacturing_profile": entry.get("manufacturing_profile"),
+        }
+    return {
+        "font_id": font_id, "product": product,
+        "available": any(a["available"] for a in axes.values()),
+        "axes": axes,
+        "note": "Designer-mode control. Customers never see numeric axis values.",
+    }
+
+
+def customer_axis_for_style(label_ar: str, font_id: str, product: str) -> dict:
+    """What a CUSTOMER's style choice resolves to internally.
+
+    The customer picks a word; this returns the curated coordinate. The
+    value is clamped to nothing — if the style's intent falls outside the
+    verified range, the safe bound is used and that substitution is
+    reported, never hidden."""
+    bounds = designer_axis_bounds(font_id, product)
+    wght = bounds["axes"].get("wght")
+    if not wght or not wght["available"]:
+        return {"font_axes": {}, "reason": "NO_VERIFIED_AXIS_RANGE", "style": label_ar}
+    #: Style intent as a fraction of the verified safe span.
+    intent = {"ناعم": 0.0, "كلاسيكي": 0.25, "تراثي": 0.25, "حديث": 0.4,
+              "هندسي": 0.5, "انسيابي": 0.4, "فاخر": 0.6, "جريء": 1.0}
+    fraction = intent.get(label_ar, 0.25)
+    value = wght["min"] + fraction * (wght["max"] - wght["min"])
+    return {
+        "style": label_ar,
+        "font_axes": {"wght": round(value, 1)},
+        "within_verified_range": [wght["min"], wght["max"]],
+        "evidence_level": wght["evidence_level"],
+    }

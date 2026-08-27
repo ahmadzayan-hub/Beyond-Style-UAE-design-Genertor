@@ -70,6 +70,10 @@ def build_text_body(runs: list[ShapedRun], recipe: RecipeParams) -> tuple[Polygo
     """
     font = get_registry().get(recipe.font_id)
     units = upem(font)
+    # Outlines are pulled at the SAME coordinates the runs were shaped at.
+    from ..fonts.instances import normalize_axes
+
+    axes = normalize_axes(recipe.font_axes)
     issues: list[str] = []
     glyph_polys = []
     pen_x = 0.0
@@ -77,7 +81,7 @@ def build_text_body(runs: list[ShapedRun], recipe: RecipeParams) -> tuple[Polygo
     spacing_units = recipe.letter_spacing_mm / recipe.target_height_mm * units if recipe.target_height_mm else 0
     for run in runs:
         for g in run.glyphs:
-            contours, gi = extract_contours(str(font.path), g.glyph_id)
+            contours, gi = extract_contours(str(font.path), g.glyph_id, axes)
             issues.extend(gi)
             poly = _contours_to_polygon(contours)
             if poly is not None:

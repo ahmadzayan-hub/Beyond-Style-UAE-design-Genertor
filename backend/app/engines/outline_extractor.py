@@ -18,10 +18,14 @@ from fontTools.ttLib import TTFont
 CURVE_STEPS = 12  # fixed for determinism
 
 
-@lru_cache(maxsize=8)
-def _glyphset(font_path: str):
-    tt = TTFont(font_path, lazy=True)
-    return tt.getGlyphSet(), tt.getGlyphOrder()
+def _glyphset(font_path: str, font_axes: tuple | None = None):
+    """Glyph set at the given variation coordinates — routed through
+    app.fonts.instances so it is byte-identical to the instance HarfBuzz
+    shaped with. Default instance when no coordinates are given."""
+    from ..fonts.instances import FontInstance, glyphset_for, normalize_axes
+
+    axes = font_axes if isinstance(font_axes, tuple) else normalize_axes(font_axes)
+    return glyphset_for(FontInstance("", font_path, axes))
 
 
 def _lerp(a, b, t):
@@ -51,10 +55,12 @@ def _cubic_points(p0, p1, p2, p3, steps=CURVE_STEPS):
     return pts
 
 
-def extract_contours(font_path: str, glyph_id: int) -> tuple[list[list[tuple[float, float]]], list[str]]:
+def extract_contours(
+    font_path: str, glyph_id: int, font_axes: tuple | None = None
+) -> tuple[list[list[tuple[float, float]]], list[str]]:
     """Return (closed_contours, issues). Each contour is a list of (x, y)
     points in font units. Issues lists structural problems (open paths)."""
-    glyphset, order = _glyphset(font_path)
+    glyphset, order = _glyphset(font_path, font_axes)
     if glyph_id >= len(order):
         return [], [f"glyph id {glyph_id} out of range"]
     glyph = glyphset[order[glyph_id]]

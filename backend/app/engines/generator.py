@@ -112,7 +112,16 @@ def _adapt_for_text_length(recipes: list[RecipeParams], text: str) -> list[Recip
 
 
 def _candidate_id(design_id: str, recipe: RecipeParams, source_sha: str) -> str:
-    payload = f"{design_id}|{recipe.model_dump_json()}|{source_sha}|{GENERATOR_VERSION}"
+    """Deterministic identity. `font_axes` is omitted from the payload when
+    empty so that adding the field did not renumber every pre-axis design;
+    once coordinates ARE set they are part of identity, so a different
+    weight is a different candidate rather than a silent restyle."""
+    dumped = (
+        recipe.model_dump_json()
+        if recipe.font_axes
+        else recipe.model_dump_json(exclude={"font_axes"})
+    )
+    payload = f"{design_id}|{dumped}|{source_sha}|{GENERATOR_VERSION}"
     return hashlib.sha256(payload.encode()).hexdigest()[:16]
 
 
@@ -122,6 +131,13 @@ def build_geometry_for_recipe(source_text: str, recipe: RecipeParams, rules: Wor
     index remapping) and multi-line composition. Returns (runs, proof, built).
     """
     from ..fonts.glyph_variants import resolve_features
+    from ..fonts.instances import validate_axes
+
+    # Single choke point: generation and designer edits both come through
+    # here, so an unsupported or out-of-range coordinate is refused with a
+    # structured error rather than crashing inside the font library.
+    if recipe.font_axes:
+        validate_axes(recipe.font_id, recipe.font_axes)
 
     features = None
     if recipe.ot_feature_set != "default":

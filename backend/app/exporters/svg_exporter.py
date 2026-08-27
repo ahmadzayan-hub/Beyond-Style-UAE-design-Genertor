@@ -87,6 +87,12 @@ def export_proof_svg(candidate: DesignCandidate, source: ImmutableSourceText) ->
     )
 
 
+def _font_sha(font_id: str) -> str:
+    from ..fonts.registry import get_registry
+
+    return get_registry().get(font_id).computed_sha256
+
+
 def export_svg(candidate: DesignCandidate, source: ImmutableSourceText) -> str:
     if not candidate.geometry_wkt:
         raise ValueError("Candidate has no geometry to export.")
@@ -108,6 +114,11 @@ def export_svg(candidate: DesignCandidate, source: ImmutableSourceText) -> str:
         "candidate_id": candidate.candidate_id,
         "recipe_id": candidate.recipe.recipe_id,
         "font_id": candidate.recipe.font_id,
+        # Everything needed to reconstruct this exact geometry later: the
+        # font binary, the variation coordinates and the OT feature set.
+        "font_axes": dict(candidate.recipe.font_axes),
+        "ot_feature_set": candidate.recipe.ot_feature_set,
+        "font_binary_sha256": _font_sha(candidate.recipe.font_id),
         "units": "mm",
         "source_text": source.normalized_text,
         "source_text_sha256": source.sha256,

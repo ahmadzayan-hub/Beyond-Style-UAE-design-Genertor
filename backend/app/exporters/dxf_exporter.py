@@ -52,6 +52,12 @@ def export_dxf(
     doc.header.custom_vars.append("CANDIDATE_ID", candidate.candidate_id)
     doc.header.custom_vars.append("RECIPE_ID", candidate.recipe.recipe_id)
     doc.header.custom_vars.append("SOURCE_TEXT_SHA256", source.sha256)
+    doc.header.custom_vars.append("FONT_ID", candidate.recipe.font_id)
+    doc.header.custom_vars.append(
+        "FONT_AXES",
+        ",".join(f"{t}={v:g}" for t, v in sorted(candidate.recipe.font_axes.items())) or "default",
+    )
+    doc.header.custom_vars.append("OT_FEATURE_SET", candidate.recipe.ot_feature_set)
     doc.header.custom_vars.append("UNITS", "mm")
     doc.header.custom_vars.append(
         "RULES_PROFILE", validation.rules_profile if validation else "none"

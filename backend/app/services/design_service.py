@@ -63,6 +63,10 @@ EDITABLE_RECIPE_FIELDS = {
     "target_height_mm",
     "dot_strategy",
     "font_id",
+    # A weight change is a real design edit: it re-renders the geometry and
+    # therefore creates a NEW immutable version, never mutating an approved
+    # one. Coordinates are validated against the font before use.
+    "font_axes",
     "ot_feature_set",
     "dot_style",
     "swash",

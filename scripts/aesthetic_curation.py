@@ -301,6 +301,12 @@ def main(write: bool) -> int:
     }
 
     if write:
+        # Axis ranges are produced by scripts/axis_plumbing.py from real
+        # geometry; preserve them rather than dropping them on regeneration.
+        if CURATION_FILE.is_file():
+            existing = json.loads(CURATION_FILE.read_text())
+            if "product_axis_ranges" in existing:
+                curation["product_axis_ranges"] = existing["product_axis_ranges"]
         (OUT / "scores.json").write_text(json.dumps(scores, indent=1, ensure_ascii=False) + "\n")
         (OUT / "curation.json").write_text(json.dumps(curation, indent=1, ensure_ascii=False) + "\n")
         (OUT / "combination-matrix.json").write_text(

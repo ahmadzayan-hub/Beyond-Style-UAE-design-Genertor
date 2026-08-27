@@ -695,7 +695,9 @@
      }
     }
    },
-   "generator_support": "NOT_YET_REACHABLE_BY_GENERATOR"
+   "generator_support": "RENDERABLE_SINCE_AXIS_PLUMBING",
+   "status": "SUPERSEDED_BY_GEOMETRY_VERIFIED_RANGES",
+   "superseded_note": "Font-unit proxy measurement. Superseded by product_axis_ranges, which are measured on real built geometry in millimetres. Do not use for decisions."
   },
   "lemonada": {
    "default": {
@@ -791,7 +793,9 @@
      }
     }
    },
-   "generator_support": "NOT_YET_REACHABLE_BY_GENERATOR"
+   "generator_support": "RENDERABLE_SINCE_AXIS_PLUMBING",
+   "status": "SUPERSEDED_BY_GEOMETRY_VERIFIED_RANGES",
+   "superseded_note": "Font-unit proxy measurement. Superseded by product_axis_ranges, which are measured on real built geometry in millimetres. Do not use for decisions."
   },
   "noto-nastaliq-urdu": {
    "default": {
@@ -887,7 +891,9 @@
      }
     }
    },
-   "generator_support": "NOT_YET_REACHABLE_BY_GENERATOR"
+   "generator_support": "RENDERABLE_SINCE_AXIS_PLUMBING",
+   "status": "SUPERSEDED_BY_GEOMETRY_VERIFIED_RANGES",
+   "superseded_note": "Font-unit proxy measurement. Superseded by product_axis_ranges, which are measured on real built geometry in millimetres. Do not use for decisions."
   },
   "reem-kufi": {
    "default": {
@@ -983,7 +989,9 @@
      }
     }
    },
-   "generator_support": "NOT_YET_REACHABLE_BY_GENERATOR"
+   "generator_support": "RENDERABLE_SINCE_AXIS_PLUMBING",
+   "status": "SUPERSEDED_BY_GEOMETRY_VERIFIED_RANGES",
+   "superseded_note": "Font-unit proxy measurement. Superseded by product_axis_ranges, which are measured on real built geometry in millimetres. Do not use for decisions."
   }
  },
  "safe_combinations": [
@@ -1090,5 +1098,594 @@
    ],
    "kind": "variant+dots"
   }
- ]
+ ],
+ "product_axis_ranges": {
+  "reem-kufi": {
+   "wght": {
+    "single_letter_earring": {
+     "font_id": "reem-kufi",
+     "axis": "wght",
+     "product_type": "single_letter_earring",
+     "min_safe": 400.0,
+     "max_safe": 700.0,
+     "evidence_level": "GEOMETRY_VERIFIED_SAFE",
+     "tested_values": [
+      400.0,
+      475.0,
+      550.0,
+      625.0,
+      700.0
+     ],
+     "safe_values": [
+      400.0,
+      475.0,
+      550.0,
+      625.0,
+      700.0
+     ],
+     "manufacturing_profile": "pendant/silver-925",
+     "reason": "real geometry built and measured in mm at every grid point"
+    },
+    "pendant": {
+     "font_id": "reem-kufi",
+     "axis": "wght",
+     "product_type": "pendant",
+     "min_safe": 400.0,
+     "max_safe": 700.0,
+     "evidence_level": "GEOMETRY_VERIFIED_SAFE",
+     "tested_values": [
+      400.0,
+      475.0,
+      550.0,
+      625.0,
+      700.0
+     ],
+     "safe_values": [
+      400.0,
+      475.0,
+      550.0,
+      625.0,
+      700.0
+     ],
+     "manufacturing_profile": "pendant/silver-925",
+     "reason": "real geometry built and measured in mm at every grid point"
+    },
+    "necklace": {
+     "font_id": "reem-kufi",
+     "axis": "wght",
+     "product_type": "necklace",
+     "min_safe": 400.0,
+     "max_safe": 700.0,
+     "evidence_level": "GEOMETRY_VERIFIED_SAFE",
+     "tested_values": [
+      400.0,
+      475.0,
+      550.0,
+      625.0,
+      700.0
+     ],
+     "safe_values": [
+      400.0,
+      475.0,
+      550.0,
+      625.0,
+      700.0
+     ],
+     "manufacturing_profile": "pendant/silver-925",
+     "reason": "real geometry built and measured in mm at every grid point"
+    },
+    "ring": {
+     "font_id": "reem-kufi",
+     "axis": "wght",
+     "product_type": "ring",
+     "min_safe": 400.0,
+     "max_safe": 700.0,
+     "evidence_level": "GEOMETRY_VERIFIED_SAFE",
+     "tested_values": [
+      400.0,
+      475.0,
+      550.0,
+      625.0,
+      700.0
+     ],
+     "safe_values": [
+      400.0,
+      475.0,
+      550.0,
+      625.0,
+      700.0
+     ],
+     "manufacturing_profile": "pendant/silver-925",
+     "reason": "real geometry built and measured in mm at every grid point"
+    },
+    "bracelet": {
+     "font_id": "reem-kufi",
+     "axis": "wght",
+     "product_type": "bracelet",
+     "min_safe": 400.0,
+     "max_safe": 700.0,
+     "evidence_level": "GEOMETRY_VERIFIED_SAFE",
+     "tested_values": [
+      400.0,
+      475.0,
+      550.0,
+      625.0,
+      700.0
+     ],
+     "safe_values": [
+      400.0,
+      475.0,
+      550.0,
+      625.0,
+      700.0
+     ],
+     "manufacturing_profile": "pendant/silver-925",
+     "reason": "real geometry built and measured in mm at every grid point"
+    },
+    "cufflink": {
+     "font_id": "reem-kufi",
+     "axis": "wght",
+     "product_type": "cufflink",
+     "min_safe": 400.0,
+     "max_safe": 700.0,
+     "evidence_level": "GEOMETRY_VERIFIED_SAFE",
+     "tested_values": [
+      400.0,
+      475.0,
+      550.0,
+      625.0,
+      700.0
+     ],
+     "safe_values": [
+      400.0,
+      475.0,
+      550.0,
+      625.0,
+      700.0
+     ],
+     "manufacturing_profile": "pendant/silver-925",
+     "reason": "real geometry built and measured in mm at every grid point"
+    },
+    "engraving": {
+     "font_id": "reem-kufi",
+     "axis": "wght",
+     "product_type": "engraving",
+     "min_safe": 400.0,
+     "max_safe": 700.0,
+     "evidence_level": "GEOMETRY_VERIFIED_SAFE",
+     "tested_values": [
+      400.0,
+      475.0,
+      550.0,
+      625.0,
+      700.0
+     ],
+     "safe_values": [
+      400.0,
+      475.0,
+      550.0,
+      625.0,
+      700.0
+     ],
+     "manufacturing_profile": "pendant/silver-925",
+     "reason": "real geometry built and measured in mm at every grid point"
+    },
+    "openwork": {
+     "font_id": "reem-kufi",
+     "axis": "wght",
+     "product_type": "openwork",
+     "min_safe": 400.0,
+     "max_safe": 700.0,
+     "evidence_level": "GEOMETRY_VERIFIED_SAFE",
+     "tested_values": [
+      400.0,
+      475.0,
+      550.0,
+      625.0,
+      700.0
+     ],
+     "safe_values": [
+      400.0,
+      475.0,
+      550.0,
+      625.0,
+      700.0
+     ],
+     "manufacturing_profile": "pendant/silver-925",
+     "reason": "real geometry built and measured in mm at every grid point"
+    }
+   }
+  },
+  "noto-nastaliq-urdu": {
+   "wght": {
+    "single_letter_earring": {
+     "font_id": "noto-nastaliq-urdu",
+     "axis": "wght",
+     "product_type": "single_letter_earring",
+     "min_safe": 400.0,
+     "max_safe": 700.0,
+     "evidence_level": "GEOMETRY_VERIFIED_SAFE",
+     "tested_values": [
+      400.0,
+      475.0,
+      550.0,
+      625.0,
+      700.0
+     ],
+     "safe_values": [
+      400.0,
+      475.0,
+      550.0,
+      625.0,
+      700.0
+     ],
+     "manufacturing_profile": "pendant/silver-925",
+     "reason": "real geometry built and measured in mm at every grid point"
+    },
+    "pendant": {
+     "font_id": "noto-nastaliq-urdu",
+     "axis": "wght",
+     "product_type": "pendant",
+     "min_safe": 400.0,
+     "max_safe": 700.0,
+     "evidence_level": "GEOMETRY_VERIFIED_SAFE",
+     "tested_values": [
+      400.0,
+      475.0,
+      550.0,
+      625.0,
+      700.0
+     ],
+     "safe_values": [
+      400.0,
+      475.0,
+      550.0,
+      625.0,
+      700.0
+     ],
+     "manufacturing_profile": "pendant/silver-925",
+     "reason": "real geometry built and measured in mm at every grid point"
+    },
+    "necklace": {
+     "font_id": "noto-nastaliq-urdu",
+     "axis": "wght",
+     "product_type": "necklace",
+     "min_safe": 400.0,
+     "max_safe": 625.0,
+     "evidence_level": "GEOMETRY_VERIFIED_SAFE",
+     "tested_values": [
+      400.0,
+      475.0,
+      550.0,
+      625.0,
+      700.0
+     ],
+     "safe_values": [
+      400.0,
+      475.0,
+      550.0,
+      625.0
+     ],
+     "manufacturing_profile": "pendant/silver-925",
+     "reason": "real geometry built and measured in mm at every grid point"
+    },
+    "ring": {
+     "font_id": "noto-nastaliq-urdu",
+     "axis": "wght",
+     "product_type": "ring",
+     "min_safe": 400.0,
+     "max_safe": 700.0,
+     "evidence_level": "GEOMETRY_VERIFIED_SAFE",
+     "tested_values": [
+      400.0,
+      475.0,
+      550.0,
+      625.0,
+      700.0
+     ],
+     "safe_values": [
+      400.0,
+      475.0,
+      550.0,
+      625.0,
+      700.0
+     ],
+     "manufacturing_profile": "pendant/silver-925",
+     "reason": "real geometry built and measured in mm at every grid point"
+    },
+    "bracelet": {
+     "font_id": "noto-nastaliq-urdu",
+     "axis": "wght",
+     "product_type": "bracelet",
+     "min_safe": 400.0,
+     "max_safe": 700.0,
+     "evidence_level": "GEOMETRY_VERIFIED_SAFE",
+     "tested_values": [
+      400.0,
+      475.0,
+      550.0,
+      625.0,
+      700.0
+     ],
+     "safe_values": [
+      400.0,
+      475.0,
+      550.0,
+      625.0,
+      700.0
+     ],
+     "manufacturing_profile": "pendant/silver-925",
+     "reason": "real geometry built and measured in mm at every grid point"
+    },
+    "cufflink": {
+     "font_id": "noto-nastaliq-urdu",
+     "axis": "wght",
+     "product_type": "cufflink",
+     "min_safe": 400.0,
+     "max_safe": 700.0,
+     "evidence_level": "GEOMETRY_VERIFIED_SAFE",
+     "tested_values": [
+      400.0,
+      475.0,
+      550.0,
+      625.0,
+      700.0
+     ],
+     "safe_values": [
+      400.0,
+      475.0,
+      550.0,
+      625.0,
+      700.0
+     ],
+     "manufacturing_profile": "pendant/silver-925",
+     "reason": "real geometry built and measured in mm at every grid point"
+    },
+    "engraving": {
+     "font_id": "noto-nastaliq-urdu",
+     "axis": "wght",
+     "product_type": "engraving",
+     "min_safe": 400.0,
+     "max_safe": 700.0,
+     "evidence_level": "GEOMETRY_VERIFIED_SAFE",
+     "tested_values": [
+      400.0,
+      475.0,
+      550.0,
+      625.0,
+      700.0
+     ],
+     "safe_values": [
+      400.0,
+      475.0,
+      550.0,
+      625.0,
+      700.0
+     ],
+     "manufacturing_profile": "pendant/silver-925",
+     "reason": "real geometry built and measured in mm at every grid point"
+    },
+    "openwork": {
+     "font_id": "noto-nastaliq-urdu",
+     "axis": "wght",
+     "product_type": "openwork",
+     "min_safe": 400.0,
+     "max_safe": 700.0,
+     "evidence_level": "GEOMETRY_VERIFIED_SAFE",
+     "tested_values": [
+      400.0,
+      475.0,
+      550.0,
+      625.0,
+      700.0
+     ],
+     "safe_values": [
+      400.0,
+      475.0,
+      550.0,
+      625.0,
+      700.0
+     ],
+     "manufacturing_profile": "pendant/silver-925",
+     "reason": "real geometry built and measured in mm at every grid point"
+    }
+   }
+  },
+  "lemonada": {
+   "wght": {
+    "single_letter_earring": {
+     "font_id": "lemonada",
+     "axis": "wght",
+     "product_type": "single_letter_earring",
+     "min_safe": 300.0,
+     "max_safe": 700.0,
+     "evidence_level": "GEOMETRY_VERIFIED_SAFE",
+     "tested_values": [
+      300.0,
+      400.0,
+      500.0,
+      600.0,
+      700.0
+     ],
+     "safe_values": [
+      300.0,
+      400.0,
+      500.0,
+      600.0,
+      700.0
+     ],
+     "manufacturing_profile": "pendant/silver-925",
+     "reason": "real geometry built and measured in mm at every grid point"
+    },
+    "pendant": {
+     "font_id": "lemonada",
+     "axis": "wght",
+     "product_type": "pendant",
+     "min_safe": 300.0,
+     "max_safe": 700.0,
+     "evidence_level": "GEOMETRY_VERIFIED_SAFE",
+     "tested_values": [
+      300.0,
+      400.0,
+      500.0,
+      600.0,
+      700.0
+     ],
+     "safe_values": [
+      300.0,
+      400.0,
+      500.0,
+      600.0,
+      700.0
+     ],
+     "manufacturing_profile": "pendant/silver-925",
+     "reason": "real geometry built and measured in mm at every grid point"
+    },
+    "necklace": {
+     "font_id": "lemonada",
+     "axis": "wght",
+     "product_type": "necklace",
+     "min_safe": 300.0,
+     "max_safe": 700.0,
+     "evidence_level": "GEOMETRY_VERIFIED_SAFE",
+     "tested_values": [
+      300.0,
+      400.0,
+      500.0,
+      600.0,
+      700.0
+     ],
+     "safe_values": [
+      300.0,
+      400.0,
+      500.0,
+      600.0,
+      700.0
+     ],
+     "manufacturing_profile": "pendant/silver-925",
+     "reason": "real geometry built and measured in mm at every grid point"
+    },
+    "ring": {
+     "font_id": "lemonada",
+     "axis": "wght",
+     "product_type": "ring",
+     "min_safe": 300.0,
+     "max_safe": 700.0,
+     "evidence_level": "GEOMETRY_VERIFIED_SAFE",
+     "tested_values": [
+      300.0,
+      400.0,
+      500.0,
+      600.0,
+      700.0
+     ],
+     "safe_values": [
+      300.0,
+      400.0,
+      500.0,
+      600.0,
+      700.0
+     ],
+     "manufacturing_profile": "pendant/silver-925",
+     "reason": "real geometry built and measured in mm at every grid point"
+    },
+    "bracelet": {
+     "font_id": "lemonada",
+     "axis": "wght",
+     "product_type": "bracelet",
+     "min_safe": 300.0,
+     "max_safe": 700.0,
+     "evidence_level": "GEOMETRY_VERIFIED_SAFE",
+     "tested_values": [
+      300.0,
+      400.0,
+      500.0,
+      600.0,
+      700.0
+     ],
+     "safe_values": [
+      300.0,
+      400.0,
+      500.0,
+      600.0,
+      700.0
+     ],
+     "manufacturing_profile": "pendant/silver-925",
+     "reason": "real geometry built and measured in mm at every grid point"
+    },
+    "cufflink": {
+     "font_id": "lemonada",
+     "axis": "wght",
+     "product_type": "cufflink",
+     "min_safe": 300.0,
+     "max_safe": 700.0,
+     "evidence_level": "GEOMETRY_VERIFIED_SAFE",
+     "tested_values": [
+      300.0,
+      400.0,
+      500.0,
+      600.0,
+      700.0
+     ],
+     "safe_values": [
+      300.0,
+      400.0,
+      500.0,
+      600.0,
+      700.0
+     ],
+     "manufacturing_profile": "pendant/silver-925",
+     "reason": "real geometry built and measured in mm at every grid point"
+    },
+    "engraving": {
+     "font_id": "lemonada",
+     "axis": "wght",
+     "product_type": "engraving",
+     "min_safe": 300.0,
+     "max_safe": 700.0,
+     "evidence_level": "GEOMETRY_VERIFIED_SAFE",
+     "tested_values": [
+      300.0,
+      400.0,
+      500.0,
+      600.0,
+      700.0
+     ],
+     "safe_values": [
+      300.0,
+      400.0,
+      500.0,
+      600.0,
+      700.0
+     ],
+     "manufacturing_profile": "pendant/silver-925",
+     "reason": "real geometry built and measured in mm at every grid point"
+    },
+    "openwork": {
+     "font_id": "lemonada",
+     "axis": "wght",
+     "product_type": "openwork",
+     "min_safe": 300.0,
+     "max_safe": 700.0,
+     "evidence_level": "GEOMETRY_VERIFIED_SAFE",
+     "tested_values": [
+      300.0,
+      400.0,
+      500.0,
+      600.0,
+      700.0
+     ],
+     "safe_values": [
+      300.0,
+      400.0,
+      500.0,
+      600.0,
+      700.0
+     ],
+     "manufacturing_profile": "pendant/silver-925",
+     "reason": "real geometry built and measured in mm at every grid point"
+    }
+   }
+  }
+ }
 }

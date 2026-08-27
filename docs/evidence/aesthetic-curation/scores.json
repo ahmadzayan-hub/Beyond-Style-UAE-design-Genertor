@@ -58,6 +58,16 @@
    "computed_suitability": 0.708,
    "human_review_required": true
   },
+  "multi_name": {
+   "font_id": "scheherazade-new",
+   "computed_suitability": 0.792,
+   "human_review_required": true
+  },
+  "medallion": {
+   "font_id": "amiri-regular",
+   "computed_suitability": 0.7402,
+   "human_review_required": true
+  },
   "engraving": {
    "font_id": "noto-nastaliq-urdu",
    "computed_suitability": 0.6451,
@@ -1774,170 +1784,313 @@
    "font_id": "amiri-regular",
    "product": "multi_name",
    "buildable": true,
-   "manufacturable": false,
+   "manufacturable": true,
    "within_envelope": false,
    "attempts": [
     {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-classic-bar",
      "composition": "baseline_bar",
-     "stroke_delta_mm": 0.35,
-     "loops": "none",
-     "dot_strategy": "merge",
      "max_lines": 3,
      "validation_passed": false,
      "violations": [
-      "DISCONNECTED_COMPONENT",
-      "DISCONNECTED_COMPONENT",
-      "DISCONNECTED_COMPONENT",
-      "DISCONNECTED_COMPONENT"
+      "FLOATING_ISLAND",
+      "THIN_STROKE",
+      "WEAK_BRIDGE",
+      "OVERSIZE"
      ],
-     "width_mm": 58.71,
-     "height_mm": 46.37
+     "width_mm": 61.52,
+     "height_mm": 43.08
     },
     {
-     "composition": "baseline_bar",
-     "stroke_delta_mm": 0.35,
-     "loops": "left_right",
-     "dot_strategy": "bridge",
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-flow-script",
+     "composition": "bare",
+     "max_lines": 4,
+     "validation_passed": false,
+     "violations": [
+      "WEAK_BRIDGE"
+     ],
+     "width_mm": 56.23,
+     "height_mm": 50.47
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-tall-elegant",
+     "composition": "underline_bar",
+     "max_lines": 3,
+     "validation_passed": false,
+     "violations": [
+      "OVERSIZE"
+     ],
+     "width_mm": 67.04,
+     "height_mm": 54.8
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-condensed-luxury",
+     "composition": "bare",
+     "max_lines": 4,
+     "validation_passed": false,
+     "violations": [
+      "WEAK_BRIDGE",
+      "OVERSIZE"
+     ],
+     "width_mm": 69.42,
+     "height_mm": 66.51
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-medallion",
+     "composition": "frame_circle",
+     "max_lines": 3,
+     "validation_passed": false,
+     "violations": [
+      "OVERSIZE"
+     ],
+     "width_mm": 64.01,
+     "height_mm": 67.34
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-oval-cameo",
+     "composition": "plate_oval",
+     "max_lines": 4,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 57.58,
+     "height_mm": 51.67
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-open-frame",
+     "composition": "frame_rect",
+     "max_lines": 3,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 52.03,
+     "height_mm": 47.43
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-suspended",
+     "composition": "top_bar",
+     "max_lines": 4,
+     "validation_passed": false,
+     "violations": [
+      "WEAK_BRIDGE"
+     ],
+     "width_mm": 58.39,
+     "height_mm": 51.41
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-wide-airy",
+     "composition": "bare",
      "max_lines": 3,
      "validation_passed": false,
      "violations": [
       "WEAK_BRIDGE",
       "OVERSIZE"
      ],
-     "width_mm": 65.38,
-     "height_mm": 46.37
+     "width_mm": 63.26,
+     "height_mm": 36.68
     },
     {
-     "composition": "baseline_bar",
-     "stroke_delta_mm": 0.45,
-     "loops": "none",
-     "dot_strategy": "merge",
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-bold-tag",
+     "composition": "plate_rect",
+     "max_lines": 4,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 53.21,
+     "height_mm": 47.78
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-petite-charm",
+     "composition": "bare",
+     "max_lines": 3,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 44.11,
+     "height_mm": 40.43
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-kashida-royal",
+     "composition": "underline_bar",
      "max_lines": 3,
      "validation_passed": false,
      "violations": [
-      "DISCONNECTED_COMPONENT",
-      "DISCONNECTED_COMPONENT",
-      "DISCONNECTED_COMPONENT",
-      "DISCONNECTED_COMPONENT"
+      "OVERSIZE"
      ],
-     "width_mm": 58.78,
-     "height_mm": 46.87
+     "width_mm": 77.39,
+     "height_mm": 50.93
     },
     {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-flourish-crest",
+     "composition": "bare",
+     "max_lines": 4,
+     "validation_passed": false,
+     "violations": [
+      "WEAK_BRIDGE"
+     ],
+     "width_mm": 56.2,
+     "height_mm": 50.85
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "stacked-emblem",
+     "composition": "bare",
+     "max_lines": 3,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 48.43,
+     "height_mm": 43.87
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-classic-bar.v0",
      "composition": "baseline_bar",
-     "stroke_delta_mm": 0.45,
-     "loops": "left_right",
-     "dot_strategy": "bridge",
      "max_lines": 3,
      "validation_passed": false,
      "violations": [
       "WEAK_BRIDGE",
       "OVERSIZE"
      ],
-     "width_mm": 65.44,
-     "height_mm": 46.87
+     "width_mm": 61.67,
+     "height_mm": 43.56
     },
     {
-     "composition": "plate_rect",
-     "stroke_delta_mm": 0.35,
-     "loops": "none",
-     "dot_strategy": "merge",
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-flow-script.v1",
+     "composition": "bare",
+     "max_lines": 4,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 56.27,
+     "height_mm": 51.01
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-tall-elegant.v2",
+     "composition": "underline_bar",
      "max_lines": 3,
      "validation_passed": false,
      "violations": [
       "OVERSIZE"
      ],
-     "width_mm": 60.31,
-     "height_mm": 50.37
+     "width_mm": 67.2,
+     "height_mm": 55.28
     },
     {
-     "composition": "plate_rect",
-     "stroke_delta_mm": 0.35,
-     "loops": "left_right",
-     "dot_strategy": "bridge",
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-condensed-luxury.v3",
+     "composition": "bare",
+     "max_lines": 4,
+     "validation_passed": false,
+     "violations": [
+      "WEAK_BRIDGE",
+      "OVERSIZE"
+     ],
+     "width_mm": 69.47,
+     "height_mm": 67.05
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-medallion.v4",
+     "composition": "frame_circle",
      "max_lines": 3,
      "validation_passed": false,
      "violations": [
       "OVERSIZE"
      ],
-     "width_mm": 66.97,
-     "height_mm": 50.37
+     "width_mm": 64.44,
+     "height_mm": 67.77
     },
     {
-     "composition": "plate_rect",
-     "stroke_delta_mm": 0.45,
-     "loops": "none",
-     "dot_strategy": "merge",
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-oval-cameo.v5",
+     "composition": "plate_oval",
+     "max_lines": 4,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 57.74,
+     "height_mm": 52.31
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-open-frame.v6",
+     "composition": "frame_rect",
      "max_lines": 3,
      "validation_passed": false,
      "violations": [
-      "OVERSIZE"
+      "WEAK_BRIDGE"
      ],
-     "width_mm": 60.38,
-     "height_mm": 50.87
+     "width_mm": 52.19,
+     "height_mm": 47.91
     },
     {
-     "composition": "plate_rect",
-     "stroke_delta_mm": 0.45,
-     "loops": "left_right",
-     "dot_strategy": "bridge",
-     "max_lines": 3,
-     "validation_passed": false,
-     "violations": [
-      "OVERSIZE"
-     ],
-     "width_mm": 67.05,
-     "height_mm": 50.87
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-suspended.v7",
+     "composition": "top_bar",
+     "max_lines": 4,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 58.43,
+     "height_mm": 51.95
     }
    ],
    "dimensions": {
     "Readability": {
-     "score": 0.8891,
+     "score": 0.6249,
      "status": "MEASURED",
      "method": "min effective gap + identity proof (geometry)"
     },
     "Rhythm": {
-     "score": 0.6099,
+     "score": 0.6072,
      "status": "MEASURED",
      "method": "variance of glyph advances (shaping)"
     },
     "Balance": {
-     "score": 0.9568,
+     "score": 0.9619,
      "status": "MEASURED",
      "method": "centroid offset from bounding-box centre (geometry)"
     },
     "NegativeSpace": {
-     "score": 0.7781,
+     "score": 0.2498,
      "status": "MEASURED",
      "method": "1 - fill ratio (geometry)"
     },
     "StrokeRobustness": {
-     "score": 0.0,
+     "score": 1.0,
      "status": "MEASURED",
      "method": "stroke slack above the workshop minimum (validator)"
     },
     "DotIslandRisk": {
-     "score": 0.04,
+     "score": 1.0,
      "status": "MEASURED",
      "method": "disconnected component + hole count (geometry)"
     },
     "Compactness": {
-     "score": 0.7719,
+     "score": 0.6998,
      "status": "MEASURED",
      "method": "fill ratio within the product envelope (geometry)"
     },
     "SmallSizeSuitability": {
-     "score": 0.0,
+     "score": 0.75,
      "status": "MEASURED",
      "method": "validator pass at the product's target height"
     },
     "MultiNameSuitability": {
-     "score": 0.0,
+     "score": 1.0,
      "status": "MEASURED",
      "method": "validator pass on the seven-name string"
     },
     "ManufacturingHarmony": {
-     "score": 0.0,
+     "score": 0.2182,
      "status": "MEASURED",
      "method": "validator pass rate across the product's compositions"
     },
@@ -1959,193 +2112,270 @@
    },
    "measured_dimension_count": 10,
    "unassessed_dimension_count": 3,
-   "computed_suitability": 0.4046,
+   "computed_suitability": 0.7112,
    "human_review_required": true
   },
   {
    "font_id": "amiri-regular",
    "product": "medallion",
    "buildable": true,
-   "manufacturable": false,
+   "manufacturable": true,
    "within_envelope": false,
    "attempts": [
     {
-     "composition": "frame_circle",
-     "stroke_delta_mm": 0.35,
-     "loops": "none",
-     "dot_strategy": "merge",
-     "max_lines": 3,
-     "validation_passed": false,
-     "violations": [
-      "DISCONNECTED_COMPONENT",
-      "DISCONNECTED_COMPONENT",
-      "FLOATING_ISLAND",
-      "FLOATING_ISLAND"
-     ],
-     "width_mm": 86.05,
-     "height_mm": 86.05
-    },
-    {
-     "composition": "frame_circle",
-     "stroke_delta_mm": 0.35,
-     "loops": "left_right",
-     "dot_strategy": "bridge",
-     "max_lines": 3,
-     "validation_passed": false,
-     "violations": [
-      "OVERSIZE"
-     ],
-     "width_mm": 92.72,
-     "height_mm": 86.05
-    },
-    {
-     "composition": "frame_circle",
-     "stroke_delta_mm": 0.45,
-     "loops": "none",
-     "dot_strategy": "merge",
-     "max_lines": 3,
-     "validation_passed": false,
-     "violations": [
-      "DISCONNECTED_COMPONENT",
-      "DISCONNECTED_COMPONENT",
-      "FLOATING_ISLAND",
-      "FLOATING_ISLAND"
-     ],
-     "width_mm": 86.46,
-     "height_mm": 86.46
-    },
-    {
-     "composition": "frame_circle",
-     "stroke_delta_mm": 0.45,
-     "loops": "left_right",
-     "dot_strategy": "bridge",
-     "max_lines": 3,
-     "validation_passed": false,
-     "violations": [
-      "OVERSIZE"
-     ],
-     "width_mm": 93.12,
-     "height_mm": 86.46
-    },
-    {
-     "composition": "plate_oval",
-     "stroke_delta_mm": 0.35,
-     "loops": "none",
-     "dot_strategy": "merge",
-     "max_lines": 3,
-     "validation_passed": false,
-     "violations": [
-      "FLOATING_ISLAND",
-      "FLOATING_ISLAND",
-      "OVERSIZE"
-     ],
-     "width_mm": 60.2,
-     "height_mm": 58.08
-    },
-    {
-     "composition": "plate_oval",
-     "stroke_delta_mm": 0.35,
-     "loops": "left_right",
-     "dot_strategy": "bridge",
-     "max_lines": 3,
-     "validation_passed": false,
-     "violations": [
-      "OVERSIZE"
-     ],
-     "width_mm": 66.87,
-     "height_mm": 58.08
-    },
-    {
-     "composition": "plate_oval",
-     "stroke_delta_mm": 0.45,
-     "loops": "none",
-     "dot_strategy": "merge",
-     "max_lines": 3,
-     "validation_passed": false,
-     "violations": [
-      "FLOATING_ISLAND",
-      "OVERSIZE"
-     ],
-     "width_mm": 60.29,
-     "height_mm": 58.58
-    },
-    {
-     "composition": "plate_oval",
-     "stroke_delta_mm": 0.45,
-     "loops": "left_right",
-     "dot_strategy": "bridge",
-     "max_lines": 3,
-     "validation_passed": false,
-     "violations": [
-      "OVERSIZE"
-     ],
-     "width_mm": 66.96,
-     "height_mm": 58.58
-    },
-    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-classic-bar",
      "composition": "baseline_bar",
-     "stroke_delta_mm": 0.35,
-     "loops": "none",
-     "dot_strategy": "merge",
      "max_lines": 3,
      "validation_passed": false,
      "violations": [
-      "DISCONNECTED_COMPONENT",
-      "DISCONNECTED_COMPONENT",
-      "DISCONNECTED_COMPONENT",
-      "FLOATING_ISLAND"
+      "WEAK_BRIDGE"
      ],
-     "width_mm": 58.6,
-     "height_mm": 54.08
+     "width_mm": 53.74,
+     "height_mm": 43.08
     },
     {
-     "composition": "baseline_bar",
-     "stroke_delta_mm": 0.35,
-     "loops": "left_right",
-     "dot_strategy": "bridge",
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-flow-script",
+     "composition": "bare",
+     "max_lines": 4,
+     "validation_passed": false,
+     "violations": [
+      "OVERSIZE"
+     ],
+     "width_mm": 52.16,
+     "height_mm": 71.53
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-tall-elegant",
+     "composition": "underline_bar",
      "max_lines": 3,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 58.59,
+     "height_mm": 54.8
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-condensed-luxury",
+     "composition": "bare",
+     "max_lines": 4,
      "validation_passed": false,
      "violations": [
       "WEAK_BRIDGE",
       "OVERSIZE"
      ],
-     "width_mm": 65.27,
-     "height_mm": 54.08
+     "width_mm": 67.22,
+     "height_mm": 97.42
     },
     {
-     "composition": "baseline_bar",
-     "stroke_delta_mm": 0.45,
-     "loops": "none",
-     "dot_strategy": "merge",
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-medallion",
+     "composition": "frame_circle",
      "max_lines": 3,
      "validation_passed": false,
      "violations": [
-      "DISCONNECTED_COMPONENT",
-      "DISCONNECTED_COMPONENT",
-      "DISCONNECTED_COMPONENT",
-      "FLOATING_ISLAND"
+      "OVERSIZE"
      ],
-     "width_mm": 58.69,
-     "height_mm": 54.58
+     "width_mm": 59.21,
+     "height_mm": 62.54
     },
     {
-     "composition": "baseline_bar",
-     "stroke_delta_mm": 0.45,
-     "loops": "left_right",
-     "dot_strategy": "bridge",
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-oval-cameo",
+     "composition": "plate_oval",
+     "max_lines": 4,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 37.96,
+     "height_mm": 51.67
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-open-frame",
+     "composition": "frame_rect",
      "max_lines": 3,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 45.23,
+     "height_mm": 47.43
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-suspended",
+     "composition": "top_bar",
+     "max_lines": 4,
      "validation_passed": false,
      "violations": [
       "WEAK_BRIDGE",
       "OVERSIZE"
      ],
-     "width_mm": 65.36,
-     "height_mm": 54.58
+     "width_mm": 48.81,
+     "height_mm": 65.48
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-wide-airy",
+     "composition": "bare",
+     "max_lines": 3,
+     "validation_passed": false,
+     "violations": [
+      "WEAK_BRIDGE"
+     ],
+     "width_mm": 57.87,
+     "height_mm": 39.64
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-bold-tag",
+     "composition": "plate_rect",
+     "max_lines": 4,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 34.68,
+     "height_mm": 47.78
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-petite-charm",
+     "composition": "bare",
+     "max_lines": 3,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 37.63,
+     "height_mm": 40.43
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-kashida-royal",
+     "composition": "underline_bar",
+     "max_lines": 3,
+     "validation_passed": false,
+     "violations": [
+      "OVERSIZE"
+     ],
+     "width_mm": 67.76,
+     "height_mm": 50.93
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-flourish-crest",
+     "composition": "bare",
+     "max_lines": 4,
+     "validation_passed": false,
+     "violations": [
+      "WEAK_BRIDGE",
+      "OVERSIZE"
+     ],
+     "width_mm": 48.61,
+     "height_mm": 67.35
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "stacked-emblem",
+     "composition": "bare",
+     "max_lines": 3,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 41.3,
+     "height_mm": 43.87
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-classic-bar.v0",
+     "composition": "baseline_bar",
+     "max_lines": 3,
+     "validation_passed": false,
+     "violations": [
+      "WEAK_BRIDGE"
+     ],
+     "width_mm": 53.9,
+     "height_mm": 43.56
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-flow-script.v1",
+     "composition": "bare",
+     "max_lines": 4,
+     "validation_passed": false,
+     "violations": [
+      "OVERSIZE"
+     ],
+     "width_mm": 52.33,
+     "height_mm": 72.17
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-tall-elegant.v2",
+     "composition": "underline_bar",
+     "max_lines": 3,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 58.75,
+     "height_mm": 55.28
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-condensed-luxury.v3",
+     "composition": "bare",
+     "max_lines": 4,
+     "validation_passed": false,
+     "violations": [
+      "WEAK_BRIDGE",
+      "OVERSIZE"
+     ],
+     "width_mm": 67.42,
+     "height_mm": 98.08
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-medallion.v4",
+     "composition": "frame_circle",
+     "max_lines": 3,
+     "validation_passed": false,
+     "violations": [
+      "OVERSIZE"
+     ],
+     "width_mm": 59.66,
+     "height_mm": 62.99
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-oval-cameo.v5",
+     "composition": "plate_oval",
+     "max_lines": 4,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 38.12,
+     "height_mm": 52.31
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-open-frame.v6",
+     "composition": "frame_rect",
+     "max_lines": 3,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 45.39,
+     "height_mm": 47.91
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "naskh-suspended.v7",
+     "composition": "top_bar",
+     "max_lines": 4,
+     "validation_passed": false,
+     "violations": [
+      "OVERSIZE"
+     ],
+     "width_mm": 48.98,
+     "height_mm": 66.12
     }
    ],
    "dimensions": {
     "Readability": {
-     "score": 0.9477,
+     "score": 0.9173,
      "status": "MEASURED",
      "method": "min effective gap + identity proof (geometry)"
     },
@@ -2155,42 +2385,42 @@
      "method": "variance of glyph advances (shaping)"
     },
     "Balance": {
-     "score": 0.9863,
+     "score": 0.9072,
      "status": "MEASURED",
      "method": "centroid offset from bounding-box centre (geometry)"
     },
     "NegativeSpace": {
-     "score": 0.8955,
+     "score": 0.8347,
      "status": "MEASURED",
      "method": "1 - fill ratio (geometry)"
     },
     "StrokeRobustness": {
-     "score": 0.0,
+     "score": 1.0,
      "status": "MEASURED",
      "method": "stroke slack above the workshop minimum (validator)"
     },
     "DotIslandRisk": {
-     "score": 0.0,
+     "score": 1.0,
      "status": "MEASURED",
      "method": "disconnected component + hole count (geometry)"
     },
     "Compactness": {
-     "score": 0.6545,
+     "score": 0.7153,
      "status": "MEASURED",
      "method": "fill ratio within the product envelope (geometry)"
     },
     "SmallSizeSuitability": {
-     "score": 0.0,
+     "score": 0.75,
      "status": "MEASURED",
      "method": "validator pass at the product's target height"
     },
     "MultiNameSuitability": {
-     "score": 0.0,
+     "score": 0.5,
      "status": "MEASURED",
      "method": "validator pass on the seven-name string"
     },
     "ManufacturingHarmony": {
-     "score": 0.0,
+     "score": 0.2455,
      "status": "MEASURED",
      "method": "validator pass rate across the product's compositions"
     },
@@ -2212,7 +2442,7 @@
    },
    "measured_dimension_count": 10,
    "unassessed_dimension_count": 3,
-   "computed_suitability": 0.4016,
+   "computed_suitability": 0.7402,
    "human_review_required": true
   },
   {
@@ -6993,123 +7223,163 @@
    "font_id": "cairo",
    "product": "multi_name",
    "buildable": true,
-   "manufacturable": false,
+   "manufacturable": true,
    "within_envelope": false,
    "attempts": [
     {
-     "composition": "baseline_bar",
-     "stroke_delta_mm": 0.35,
-     "loops": "none",
-     "dot_strategy": "merge",
-     "max_lines": 3,
+     "path": "production_long_text_adaptation",
+     "recipe_id": "kufi-bold-silhouette",
+     "composition": "bare",
+     "max_lines": 4,
      "validation_passed": false,
      "violations": [
-      "DISCONNECTED_COMPONENT",
-      "DISCONNECTED_COMPONENT",
-      "DISCONNECTED_COMPONENT",
-      "DISCONNECTED_COMPONENT"
+      "WEAK_BRIDGE"
      ],
-     "width_mm": 58.81,
-     "height_mm": 31.96
+     "width_mm": 57.15,
+     "height_mm": 40.0
     },
     {
-     "composition": "baseline_bar",
-     "stroke_delta_mm": 0.35,
-     "loops": "left_right",
-     "dot_strategy": "bridge",
+     "path": "production_long_text_adaptation",
+     "recipe_id": "kufi-minimal-line",
+     "composition": "underline_bar",
      "max_lines": 3,
      "validation_passed": false,
      "violations": [
       "OVERSIZE"
      ],
-     "width_mm": 65.48,
-     "height_mm": 31.96
+     "width_mm": 69.69,
+     "height_mm": 24.96
     },
     {
-     "composition": "baseline_bar",
-     "stroke_delta_mm": 0.45,
-     "loops": "none",
-     "dot_strategy": "merge",
-     "max_lines": 3,
+     "path": "production_long_text_adaptation",
+     "recipe_id": "kufi-oval-relief",
+     "composition": "plate_oval",
+     "max_lines": 4,
      "validation_passed": false,
      "violations": [
-      "DISCONNECTED_COMPONENT",
-      "DISCONNECTED_COMPONENT",
-      "DISCONNECTED_COMPONENT",
-      "DISCONNECTED_COMPONENT"
-     ],
-     "width_mm": 58.95,
-     "height_mm": 32.52
-    },
-    {
-     "composition": "baseline_bar",
-     "stroke_delta_mm": 0.45,
-     "loops": "left_right",
-     "dot_strategy": "bridge",
-     "max_lines": 3,
-     "validation_passed": false,
-     "violations": [
+      "WEAK_BRIDGE",
       "OVERSIZE"
      ],
-     "width_mm": 65.61,
-     "height_mm": 32.52
+     "width_mm": 61.2,
+     "height_mm": 41.78
     },
     {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "kufi-rect-tag",
      "composition": "plate_rect",
-     "stroke_delta_mm": 0.35,
-     "loops": "none",
-     "dot_strategy": "merge",
      "max_lines": 3,
-     "validation_passed": false,
-     "violations": [
-      "OVERSIZE"
-     ],
-     "width_mm": 60.41,
-     "height_mm": 35.96
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 59.75,
+     "height_mm": 35.97
     },
     {
-     "composition": "plate_rect",
-     "stroke_delta_mm": 0.35,
-     "loops": "left_right",
-     "dot_strategy": "bridge",
-     "max_lines": 3,
+     "path": "production_long_text_adaptation",
+     "recipe_id": "kufi-open-frame",
+     "composition": "frame_rect",
+     "max_lines": 4,
      "validation_passed": false,
      "violations": [
       "OVERSIZE"
      ],
-     "width_mm": 67.08,
-     "height_mm": 35.96
+     "width_mm": 63.09,
+     "height_mm": 44.59
     },
     {
-     "composition": "plate_rect",
-     "stroke_delta_mm": 0.45,
-     "loops": "none",
-     "dot_strategy": "merge",
+     "path": "production_long_text_adaptation",
+     "recipe_id": "kufi-circle-badge",
+     "composition": "frame_circle",
      "max_lines": 3,
      "validation_passed": false,
      "violations": [
       "OVERSIZE"
      ],
-     "width_mm": 60.55,
-     "height_mm": 36.52
+     "width_mm": 70.81,
+     "height_mm": 74.14
     },
     {
-     "composition": "plate_rect",
-     "stroke_delta_mm": 0.45,
-     "loops": "left_right",
-     "dot_strategy": "bridge",
+     "path": "production_long_text_adaptation",
+     "recipe_id": "kufi-suspended",
+     "composition": "top_bar",
+     "max_lines": 4,
+     "validation_passed": false,
+     "violations": [
+      "OVERSIZE"
+     ],
+     "width_mm": 60.25,
+     "height_mm": 40.09
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "kufi-wide-tracking",
+     "composition": "bare",
      "max_lines": 3,
      "validation_passed": false,
      "violations": [
       "OVERSIZE"
      ],
-     "width_mm": 67.21,
-     "height_mm": 36.52
+     "width_mm": 66.67,
+     "height_mm": 26.61
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "kufi-tall-monolith",
+     "composition": "bare",
+     "max_lines": 4,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 56.3,
+     "height_mm": 53.2
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "kufi-petite-charm",
+     "composition": "bare",
+     "max_lines": 3,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 56.06,
+     "height_mm": 35.35
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "kufi-classic-bar",
+     "composition": "baseline_bar",
+     "max_lines": 4,
+     "validation_passed": false,
+     "violations": [
+      "WEAK_BRIDGE",
+      "OVERSIZE"
+     ],
+     "width_mm": 66.31,
+     "height_mm": 35.35
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "stacked-plate-badge",
+     "composition": "plate_rect",
+     "max_lines": 4,
+     "validation_passed": false,
+     "violations": [
+      "OVERSIZE"
+     ],
+     "width_mm": 60.06,
+     "height_mm": 42.92
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "kufi-earring-drop",
+     "composition": "bare",
+     "max_lines": 4,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 56.09,
+     "height_mm": 40.56
     }
    ],
    "dimensions": {
     "Readability": {
-     "score": 0.8443,
+     "score": 0.5447,
      "status": "MEASURED",
      "method": "min effective gap + identity proof (geometry)"
     },
@@ -7119,42 +7389,42 @@
      "method": "variance of glyph advances (shaping)"
     },
     "Balance": {
-     "score": 0.955,
+     "score": 0.9555,
      "status": "MEASURED",
      "method": "centroid offset from bounding-box centre (geometry)"
     },
     "NegativeSpace": {
-     "score": 0.6886,
+     "score": 0.0893,
      "status": "MEASURED",
      "method": "1 - fill ratio (geometry)"
     },
     "StrokeRobustness": {
-     "score": 0.0,
+     "score": 1.0,
      "status": "MEASURED",
      "method": "stroke slack above the workshop minimum (validator)"
     },
     "DotIslandRisk": {
-     "score": 0.2,
+     "score": 1.0,
      "status": "MEASURED",
      "method": "disconnected component + hole count (geometry)"
     },
     "Compactness": {
-     "score": 0.8614,
+     "score": 0.5393,
      "status": "MEASURED",
      "method": "fill ratio within the product envelope (geometry)"
     },
     "SmallSizeSuitability": {
-     "score": 0.0,
+     "score": 0.75,
      "status": "MEASURED",
      "method": "validator pass at the product's target height"
     },
     "MultiNameSuitability": {
-     "score": 0.0,
+     "score": 1.0,
      "status": "MEASURED",
      "method": "validator pass on the seven-name string"
     },
     "ManufacturingHarmony": {
-     "score": 0.0,
+     "score": 0.1846,
      "status": "MEASURED",
      "method": "validator pass rate across the product's compositions"
     },
@@ -7176,239 +7446,212 @@
    },
    "measured_dimension_count": 10,
    "unassessed_dimension_count": 3,
-   "computed_suitability": 0.4178,
+   "computed_suitability": 0.6693,
    "human_review_required": true
   },
   {
    "font_id": "cairo",
    "product": "medallion",
    "buildable": true,
-   "manufacturable": false,
+   "manufacturable": true,
    "within_envelope": false,
    "attempts": [
     {
-     "composition": "frame_circle",
-     "stroke_delta_mm": 0.35,
-     "loops": "none",
-     "dot_strategy": "merge",
-     "max_lines": 3,
+     "path": "production_long_text_adaptation",
+     "recipe_id": "kufi-bold-silhouette",
+     "composition": "bare",
+     "max_lines": 4,
      "validation_passed": false,
      "violations": [
-      "DISCONNECTED_COMPONENT",
-      "DISCONNECTED_COMPONENT",
-      "FLOATING_ISLAND",
-      "FLOATING_ISLAND"
+      "WEAK_BRIDGE"
      ],
-     "width_mm": 76.57,
-     "height_mm": 76.57
+     "width_mm": 56.14,
+     "height_mm": 55.19
     },
     {
-     "composition": "frame_circle",
-     "stroke_delta_mm": 0.35,
-     "loops": "left_right",
-     "dot_strategy": "bridge",
+     "path": "production_long_text_adaptation",
+     "recipe_id": "kufi-minimal-line",
+     "composition": "underline_bar",
      "max_lines": 3,
      "validation_passed": false,
      "violations": [
       "OVERSIZE"
      ],
-     "width_mm": 83.24,
-     "height_mm": 76.57
+     "width_mm": 67.85,
+     "height_mm": 29.9
     },
     {
-     "composition": "frame_circle",
-     "stroke_delta_mm": 0.45,
-     "loops": "none",
-     "dot_strategy": "merge",
-     "max_lines": 3,
-     "validation_passed": false,
-     "violations": [
-      "DISCONNECTED_COMPONENT",
-      "DISCONNECTED_COMPONENT",
-      "FLOATING_ISLAND",
-      "FLOATING_ISLAND"
-     ],
-     "width_mm": 76.96,
-     "height_mm": 76.96
-    },
-    {
-     "composition": "frame_circle",
-     "stroke_delta_mm": 0.45,
-     "loops": "left_right",
-     "dot_strategy": "bridge",
-     "max_lines": 3,
-     "validation_passed": false,
-     "violations": [
-      "OVERSIZE"
-     ],
-     "width_mm": 83.63,
-     "height_mm": 76.96
-    },
-    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "kufi-oval-relief",
      "composition": "plate_oval",
-     "stroke_delta_mm": 0.35,
-     "loops": "none",
-     "dot_strategy": "merge",
-     "max_lines": 3,
-     "validation_passed": false,
-     "violations": [
-      "FLOATING_ISLAND",
-      "FLOATING_ISLAND",
-      "OVERSIZE"
-     ],
-     "width_mm": 60.36,
-     "height_mm": 43.11
+     "max_lines": 4,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 53.31,
+     "height_mm": 50.87
     },
     {
-     "composition": "plate_oval",
-     "stroke_delta_mm": 0.35,
-     "loops": "left_right",
-     "dot_strategy": "bridge",
+     "path": "production_long_text_adaptation",
+     "recipe_id": "kufi-rect-tag",
+     "composition": "plate_rect",
      "max_lines": 3,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 50.95,
+     "height_mm": 37.07
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "kufi-open-frame",
+     "composition": "frame_rect",
+     "max_lines": 4,
      "validation_passed": false,
      "violations": [
       "OVERSIZE"
      ],
-     "width_mm": 67.02,
-     "height_mm": 43.11
+     "width_mm": 60.38,
+     "height_mm": 58.33
     },
     {
-     "composition": "plate_oval",
-     "stroke_delta_mm": 0.45,
-     "loops": "none",
-     "dot_strategy": "merge",
-     "max_lines": 3,
-     "validation_passed": false,
-     "violations": [
-      "FLOATING_ISLAND",
-      "FLOATING_ISLAND",
-      "OVERSIZE"
-     ],
-     "width_mm": 60.45,
-     "height_mm": 43.65
-    },
-    {
-     "composition": "plate_oval",
-     "stroke_delta_mm": 0.45,
-     "loops": "left_right",
-     "dot_strategy": "bridge",
+     "path": "production_long_text_adaptation",
+     "recipe_id": "kufi-circle-badge",
+     "composition": "frame_circle",
      "max_lines": 3,
      "validation_passed": false,
      "violations": [
       "OVERSIZE"
      ],
-     "width_mm": 67.12,
-     "height_mm": 43.65
+     "width_mm": 67.1,
+     "height_mm": 70.43
     },
     {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "kufi-suspended",
+     "composition": "top_bar",
+     "max_lines": 4,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 58.74,
+     "height_mm": 55.14
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "kufi-wide-tracking",
+     "composition": "bare",
+     "max_lines": 3,
+     "validation_passed": false,
+     "violations": [
+      "OVERSIZE"
+     ],
+     "width_mm": 64.39,
+     "height_mm": 31.73
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "kufi-tall-monolith",
+     "composition": "bare",
+     "max_lines": 4,
+     "validation_passed": false,
+     "violations": [
+      "OVERSIZE"
+     ],
+     "width_mm": 56.17,
+     "height_mm": 74.65
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "kufi-petite-charm",
+     "composition": "bare",
+     "max_lines": 3,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 47.35,
+     "height_mm": 36.69
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "kufi-classic-bar",
      "composition": "baseline_bar",
-     "stroke_delta_mm": 0.35,
-     "loops": "none",
-     "dot_strategy": "merge",
-     "max_lines": 3,
-     "validation_passed": false,
-     "violations": [
-      "DISCONNECTED_COMPONENT",
-      "FLOATING_ISLAND",
-      "FLOATING_ISLAND",
-      "DISCONNECTED_COMPONENT"
-     ],
-     "width_mm": 58.76,
-     "height_mm": 39.11
-    },
-    {
-     "composition": "baseline_bar",
-     "stroke_delta_mm": 0.35,
-     "loops": "left_right",
-     "dot_strategy": "bridge",
-     "max_lines": 3,
+     "max_lines": 4,
      "validation_passed": false,
      "violations": [
       "WEAK_BRIDGE",
       "OVERSIZE"
      ],
-     "width_mm": 65.42,
-     "height_mm": 39.11
+     "width_mm": 65.1,
+     "height_mm": 50.49
     },
     {
-     "composition": "baseline_bar",
-     "stroke_delta_mm": 0.45,
-     "loops": "none",
-     "dot_strategy": "merge",
-     "max_lines": 3,
-     "validation_passed": false,
-     "violations": [
-      "DISCONNECTED_COMPONENT",
-      "FLOATING_ISLAND",
-      "FLOATING_ISLAND",
-      "DISCONNECTED_COMPONENT"
-     ],
-     "width_mm": 58.85,
-     "height_mm": 39.65
+     "path": "production_long_text_adaptation",
+     "recipe_id": "stacked-plate-badge",
+     "composition": "plate_rect",
+     "max_lines": 4,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 48.27,
+     "height_mm": 48.14
     },
     {
-     "composition": "baseline_bar",
-     "stroke_delta_mm": 0.45,
-     "loops": "left_right",
-     "dot_strategy": "bridge",
-     "max_lines": 3,
+     "path": "production_long_text_adaptation",
+     "recipe_id": "kufi-earring-drop",
+     "composition": "bare",
+     "max_lines": 4,
      "validation_passed": false,
      "violations": [
-      "WEAK_BRIDGE",
-      "OVERSIZE"
+      "WEAK_BRIDGE"
      ],
-     "width_mm": 65.52,
-     "height_mm": 39.65
+     "width_mm": 42.16,
+     "height_mm": 43.73
     }
    ],
    "dimensions": {
     "Readability": {
-     "score": 0.9325,
+     "score": 0.6242,
      "status": "MEASURED",
      "method": "min effective gap + identity proof (geometry)"
     },
     "Rhythm": {
-     "score": 0.5741,
+     "score": 0.5879,
      "status": "MEASURED",
      "method": "variance of glyph advances (shaping)"
     },
     "Balance": {
-     "score": 0.9855,
+     "score": 0.9616,
      "status": "MEASURED",
      "method": "centroid offset from bounding-box centre (geometry)"
     },
     "NegativeSpace": {
-     "score": 0.865,
+     "score": 0.2485,
      "status": "MEASURED",
      "method": "1 - fill ratio (geometry)"
     },
     "StrokeRobustness": {
-     "score": 0.0,
+     "score": 1.0,
      "status": "MEASURED",
      "method": "stroke slack above the workshop minimum (validator)"
     },
     "DotIslandRisk": {
-     "score": 0.0,
+     "score": 1.0,
      "status": "MEASURED",
      "method": "disconnected component + hole count (geometry)"
     },
     "Compactness": {
-     "score": 0.685,
+     "score": 0.6985,
      "status": "MEASURED",
      "method": "fill ratio within the product envelope (geometry)"
     },
     "SmallSizeSuitability": {
-     "score": 0.0,
+     "score": 0.75,
      "status": "MEASURED",
      "method": "validator pass at the product's target height"
     },
     "MultiNameSuitability": {
-     "score": 0.0,
+     "score": 0.5,
      "status": "MEASURED",
      "method": "validator pass on the seven-name string"
     },
     "ManufacturingHarmony": {
-     "score": 0.0,
+     "score": 0.2308,
      "status": "MEASURED",
      "method": "validator pass rate across the product's compositions"
     },
@@ -7430,7 +7673,7 @@
    },
    "measured_dimension_count": 10,
    "unassessed_dimension_count": 3,
-   "computed_suitability": 0.4042,
+   "computed_suitability": 0.6602,
    "human_review_required": true
   },
   {
@@ -20042,170 +20285,209 @@
    "font_id": "scheherazade-new",
    "product": "multi_name",
    "buildable": true,
-   "manufacturable": false,
+   "manufacturable": true,
    "within_envelope": false,
    "attempts": [
     {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "trad-nameplate",
      "composition": "baseline_bar",
-     "stroke_delta_mm": 0.35,
-     "loops": "none",
-     "dot_strategy": "merge",
+     "max_lines": 4,
+     "validation_passed": false,
+     "violations": [
+      "WEAK_BRIDGE",
+      "OVERSIZE"
+     ],
+     "width_mm": 66.54,
+     "height_mm": 38.31
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "trad-medallion",
+     "composition": "frame_circle",
      "max_lines": 3,
      "validation_passed": false,
      "violations": [
-      "DISCONNECTED_COMPONENT",
-      "DISCONNECTED_COMPONENT",
-      "DISCONNECTED_COMPONENT",
-      "DISCONNECTED_COMPONENT"
+      "OVERSIZE"
      ],
-     "width_mm": 58.82,
-     "height_mm": 34.02
+     "width_mm": 72.24,
+     "height_mm": 75.57
     },
     {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "trad-flow",
+     "composition": "bare",
+     "max_lines": 4,
+     "validation_passed": false,
+     "violations": [
+      "WEAK_BRIDGE"
+     ],
+     "width_mm": 56.29,
+     "height_mm": 45.09
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "trad-underline",
+     "composition": "underline_bar",
+     "max_lines": 3,
+     "validation_passed": false,
+     "violations": [
+      "OVERSIZE"
+     ],
+     "width_mm": 61.53,
+     "height_mm": 37.45
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "trad-tall",
+     "composition": "bare",
+     "max_lines": 4,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 56.32,
+     "height_mm": 53.79
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "trad-oval-relief",
+     "composition": "plate_oval",
+     "max_lines": 3,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 58.54,
+     "height_mm": 39.79
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "trad-suspended",
+     "composition": "top_bar",
+     "max_lines": 4,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 58.59,
+     "height_mm": 46.35
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "trad-frame-tag",
+     "composition": "frame_rect",
+     "max_lines": 3,
+     "validation_passed": false,
+     "violations": [
+      "OVERSIZE"
+     ],
+     "width_mm": 61.86,
+     "height_mm": 42.95
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "trad-compact-bold",
+     "composition": "bare",
+     "max_lines": 4,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 56.26,
+     "height_mm": 45.86
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "trad-wide-classic",
      "composition": "baseline_bar",
-     "stroke_delta_mm": 0.35,
-     "loops": "left_right",
-     "dot_strategy": "bridge",
+     "max_lines": 3,
+     "validation_passed": false,
+     "violations": [
+      "OVERSIZE"
+     ],
+     "width_mm": 60.06,
+     "height_mm": 32.35
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "sche-ornate-tails",
+     "composition": "bare",
      "max_lines": 3,
      "validation_passed": false,
      "violations": [
       "WEAK_BRIDGE",
       "OVERSIZE"
      ],
-     "width_mm": 65.48,
-     "height_mm": 34.02
+     "width_mm": 70.02,
+     "height_mm": 39.18
     },
     {
-     "composition": "baseline_bar",
-     "stroke_delta_mm": 0.45,
-     "loops": "none",
-     "dot_strategy": "merge",
-     "max_lines": 3,
+     "path": "production_long_text_adaptation",
+     "recipe_id": "sche-kashida-medallion",
+     "composition": "frame_circle",
+     "max_lines": 4,
      "validation_passed": false,
      "violations": [
-      "DISCONNECTED_COMPONENT",
-      "DISCONNECTED_COMPONENT",
-      "DISCONNECTED_COMPONENT",
-      "DISCONNECTED_COMPONENT"
+      "OVERSIZE"
      ],
-     "width_mm": 58.9,
-     "height_mm": 34.55
+     "width_mm": 76.72,
+     "height_mm": 80.05
     },
     {
-     "composition": "baseline_bar",
-     "stroke_delta_mm": 0.45,
-     "loops": "left_right",
-     "dot_strategy": "bridge",
+     "path": "production_long_text_adaptation",
+     "recipe_id": "stacked-medallion-phrase",
+     "composition": "frame_circle",
      "max_lines": 3,
      "validation_passed": false,
      "violations": [
       "WEAK_BRIDGE",
       "OVERSIZE"
      ],
-     "width_mm": 65.56,
-     "height_mm": 34.55
-    },
-    {
-     "composition": "plate_rect",
-     "stroke_delta_mm": 0.35,
-     "loops": "none",
-     "dot_strategy": "merge",
-     "max_lines": 3,
-     "validation_passed": false,
-     "violations": [
-      "OVERSIZE"
-     ],
-     "width_mm": 60.42,
-     "height_mm": 38.02
-    },
-    {
-     "composition": "plate_rect",
-     "stroke_delta_mm": 0.35,
-     "loops": "left_right",
-     "dot_strategy": "bridge",
-     "max_lines": 3,
-     "validation_passed": false,
-     "violations": [
-      "OVERSIZE"
-     ],
-     "width_mm": 67.08,
-     "height_mm": 38.02
-    },
-    {
-     "composition": "plate_rect",
-     "stroke_delta_mm": 0.45,
-     "loops": "none",
-     "dot_strategy": "merge",
-     "max_lines": 3,
-     "validation_passed": false,
-     "violations": [
-      "OVERSIZE"
-     ],
-     "width_mm": 60.5,
-     "height_mm": 38.55
-    },
-    {
-     "composition": "plate_rect",
-     "stroke_delta_mm": 0.45,
-     "loops": "left_right",
-     "dot_strategy": "bridge",
-     "max_lines": 3,
-     "validation_passed": false,
-     "violations": [
-      "OVERSIZE"
-     ],
-     "width_mm": 67.16,
-     "height_mm": 38.55
+     "width_mm": 68.04,
+     "height_mm": 71.37
     }
    ],
    "dimensions": {
     "Readability": {
-     "score": 0.8899,
+     "score": 0.9223,
      "status": "MEASURED",
      "method": "min effective gap + identity proof (geometry)"
     },
     "Rhythm": {
-     "score": 0.6281,
+     "score": 0.6332,
      "status": "MEASURED",
      "method": "variance of glyph advances (shaping)"
     },
     "Balance": {
-     "score": 0.9413,
+     "score": 0.8801,
      "status": "MEASURED",
      "method": "centroid offset from bounding-box centre (geometry)"
     },
     "NegativeSpace": {
-     "score": 0.7797,
+     "score": 0.8446,
      "status": "MEASURED",
      "method": "1 - fill ratio (geometry)"
     },
     "StrokeRobustness": {
-     "score": 0.0,
+     "score": 1.0,
      "status": "MEASURED",
      "method": "stroke slack above the workshop minimum (validator)"
     },
     "DotIslandRisk": {
-     "score": 0.12,
+     "score": 1.0,
      "status": "MEASURED",
      "method": "disconnected component + hole count (geometry)"
     },
     "Compactness": {
-     "score": 0.7703,
+     "score": 0.7054,
      "status": "MEASURED",
      "method": "fill ratio within the product envelope (geometry)"
     },
     "SmallSizeSuitability": {
-     "score": 0.0,
+     "score": 0.75,
      "status": "MEASURED",
      "method": "validator pass at the product's target height"
     },
     "MultiNameSuitability": {
-     "score": 0.0,
+     "score": 1.0,
      "status": "MEASURED",
      "method": "validator pass on the seven-name string"
     },
     "ManufacturingHarmony": {
-     "score": 0.0,
+     "score": 0.1846,
      "status": "MEASURED",
      "method": "validator pass rate across the product's compositions"
     },
@@ -20227,191 +20509,172 @@
    },
    "measured_dimension_count": 10,
    "unassessed_dimension_count": 3,
-   "computed_suitability": 0.4129,
+   "computed_suitability": 0.792,
    "human_review_required": true
   },
   {
    "font_id": "scheherazade-new",
    "product": "medallion",
    "buildable": true,
-   "manufacturable": false,
+   "manufacturable": true,
    "within_envelope": false,
    "attempts": [
     {
-     "composition": "frame_circle",
-     "stroke_delta_mm": 0.35,
-     "loops": "none",
-     "dot_strategy": "merge",
-     "max_lines": 3,
+     "path": "production_long_text_adaptation",
+     "recipe_id": "trad-nameplate",
+     "composition": "baseline_bar",
+     "max_lines": 4,
      "validation_passed": false,
      "violations": [
-      "DISCONNECTED_COMPONENT",
-      "DISCONNECTED_COMPONENT",
-      "FLOATING_ISLAND",
-      "FLOATING_ISLAND"
+      "WEAK_BRIDGE"
      ],
-     "width_mm": 81.8,
-     "height_mm": 81.8
+     "width_mm": 51.63,
+     "height_mm": 54.05
     },
     {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "trad-medallion",
      "composition": "frame_circle",
-     "stroke_delta_mm": 0.35,
-     "loops": "left_right",
-     "dot_strategy": "bridge",
-     "max_lines": 3,
-     "validation_passed": false,
-     "violations": [
-      "OVERSIZE"
-     ],
-     "width_mm": 88.46,
-     "height_mm": 81.8
-    },
-    {
-     "composition": "frame_circle",
-     "stroke_delta_mm": 0.45,
-     "loops": "none",
-     "dot_strategy": "merge",
-     "max_lines": 3,
-     "validation_passed": false,
-     "violations": [
-      "DISCONNECTED_COMPONENT",
-      "DISCONNECTED_COMPONENT",
-      "FLOATING_ISLAND",
-      "DISCONNECTED_COMPONENT"
-     ],
-     "width_mm": 82.18,
-     "height_mm": 82.18
-    },
-    {
-     "composition": "frame_circle",
-     "stroke_delta_mm": 0.45,
-     "loops": "left_right",
-     "dot_strategy": "bridge",
      "max_lines": 3,
      "validation_passed": false,
      "violations": [
       "WEAK_BRIDGE",
       "OVERSIZE"
      ],
-     "width_mm": 88.84,
-     "height_mm": 82.18
+     "width_mm": 62.93,
+     "height_mm": 66.27
     },
     {
-     "composition": "plate_oval",
-     "stroke_delta_mm": 0.35,
-     "loops": "none",
-     "dot_strategy": "merge",
-     "max_lines": 3,
+     "path": "production_long_text_adaptation",
+     "recipe_id": "trad-flow",
+     "composition": "bare",
+     "max_lines": 4,
      "validation_passed": false,
      "violations": [
       "OVERSIZE"
      ],
-     "width_mm": 60.28,
-     "height_mm": 51.67
+     "width_mm": 47.38,
+     "height_mm": 69.03
     },
     {
-     "composition": "plate_oval",
-     "stroke_delta_mm": 0.35,
-     "loops": "left_right",
-     "dot_strategy": "bridge",
+     "path": "production_long_text_adaptation",
+     "recipe_id": "trad-underline",
+     "composition": "underline_bar",
      "max_lines": 3,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 57.47,
+     "height_mm": 47.91
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "trad-tall",
+     "composition": "bare",
+     "max_lines": 4,
      "validation_passed": false,
      "violations": [
       "OVERSIZE"
      ],
-     "width_mm": 66.94,
-     "height_mm": 51.67
+     "width_mm": 49.21,
+     "height_mm": 85.77
     },
     {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "trad-oval-relief",
      "composition": "plate_oval",
-     "stroke_delta_mm": 0.45,
-     "loops": "none",
-     "dot_strategy": "merge",
+     "max_lines": 3,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 42.25,
+     "height_mm": 39.79
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "trad-suspended",
+     "composition": "top_bar",
+     "max_lines": 4,
+     "validation_passed": false,
+     "violations": [
+      "WEAK_BRIDGE",
+      "OVERSIZE"
+     ],
+     "width_mm": 44.63,
+     "height_mm": 63.4
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "trad-frame-tag",
+     "composition": "frame_rect",
      "max_lines": 3,
      "validation_passed": false,
      "violations": [
-      "OVERSIZE"
+      "WEAK_BRIDGE"
      ],
-     "width_mm": 60.35,
-     "height_mm": 52.17
+     "width_mm": 48.45,
+     "height_mm": 45.63
     },
     {
-     "composition": "plate_oval",
-     "stroke_delta_mm": 0.45,
-     "loops": "left_right",
-     "dot_strategy": "bridge",
-     "max_lines": 3,
-     "validation_passed": false,
-     "violations": [
-      "OVERSIZE"
-     ],
-     "width_mm": 67.02,
-     "height_mm": 52.17
+     "path": "production_long_text_adaptation",
+     "recipe_id": "trad-compact-bold",
+     "composition": "bare",
+     "max_lines": 4,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 38.98,
+     "height_mm": 58.34
     },
     {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "trad-wide-classic",
      "composition": "baseline_bar",
-     "stroke_delta_mm": 0.35,
-     "loops": "none",
-     "dot_strategy": "merge",
      "max_lines": 3,
      "validation_passed": false,
      "violations": [
-      "DISCONNECTED_COMPONENT",
-      "DISCONNECTED_COMPONENT",
-      "FLOATING_ISLAND",
-      "FLOATING_ISLAND"
+      "WEAK_BRIDGE"
      ],
-     "width_mm": 58.68,
-     "height_mm": 47.67
+     "width_mm": 55.04,
+     "height_mm": 41.43
     },
     {
-     "composition": "baseline_bar",
-     "stroke_delta_mm": 0.35,
-     "loops": "left_right",
-     "dot_strategy": "bridge",
+     "path": "production_long_text_adaptation",
+     "recipe_id": "sche-ornate-tails",
+     "composition": "bare",
      "max_lines": 3,
      "validation_passed": false,
      "violations": [
       "WEAK_BRIDGE",
       "OVERSIZE"
      ],
-     "width_mm": 65.34,
-     "height_mm": 47.67
+     "width_mm": 69.75,
+     "height_mm": 53.21
     },
     {
-     "composition": "baseline_bar",
-     "stroke_delta_mm": 0.45,
-     "loops": "none",
-     "dot_strategy": "merge",
-     "max_lines": 3,
-     "validation_passed": false,
-     "violations": [
-      "DISCONNECTED_COMPONENT",
-      "DISCONNECTED_COMPONENT",
-      "FLOATING_ISLAND",
-      "DISCONNECTED_COMPONENT"
-     ],
-     "width_mm": 58.75,
-     "height_mm": 48.17
-    },
-    {
-     "composition": "baseline_bar",
-     "stroke_delta_mm": 0.45,
-     "loops": "left_right",
-     "dot_strategy": "bridge",
-     "max_lines": 3,
+     "path": "production_long_text_adaptation",
+     "recipe_id": "sche-kashida-medallion",
+     "composition": "frame_circle",
+     "max_lines": 4,
      "validation_passed": false,
      "violations": [
       "WEAK_BRIDGE",
       "OVERSIZE"
      ],
-     "width_mm": 65.42,
-     "height_mm": 48.17
+     "width_mm": 64.66,
+     "height_mm": 68.0
+    },
+    {
+     "path": "production_long_text_adaptation",
+     "recipe_id": "stacked-medallion-phrase",
+     "composition": "frame_circle",
+     "max_lines": 3,
+     "validation_passed": true,
+     "violations": [],
+     "width_mm": 55.69,
+     "height_mm": 59.02
     }
    ],
    "dimensions": {
     "Readability": {
-     "score": 0.9494,
+     "score": 0.9176,
      "status": "MEASURED",
      "method": "min effective gap + identity proof (geometry)"
     },
@@ -20421,42 +20684,42 @@
      "method": "variance of glyph advances (shaping)"
     },
     "Balance": {
-     "score": 0.9964,
+     "score": 0.8894,
      "status": "MEASURED",
      "method": "centroid offset from bounding-box centre (geometry)"
     },
     "NegativeSpace": {
-     "score": 0.8988,
+     "score": 0.8352,
      "status": "MEASURED",
      "method": "1 - fill ratio (geometry)"
     },
     "StrokeRobustness": {
-     "score": 0.0,
+     "score": 1.0,
      "status": "MEASURED",
      "method": "stroke slack above the workshop minimum (validator)"
     },
     "DotIslandRisk": {
-     "score": 0.0,
+     "score": 1.0,
      "status": "MEASURED",
      "method": "disconnected component + hole count (geometry)"
     },
     "Compactness": {
-     "score": 0.6512,
+     "score": 0.7148,
      "status": "MEASURED",
      "method": "fill ratio within the product envelope (geometry)"
     },
     "SmallSizeSuitability": {
-     "score": 0.0,
+     "score": 0.75,
      "status": "MEASURED",
      "method": "validator pass at the product's target height"
     },
     "MultiNameSuitability": {
-     "score": 0.0,
+     "score": 0.5,
      "status": "MEASURED",
      "method": "validator pass on the seven-name string"
     },
     "ManufacturingHarmony": {
-     "score": 0.0,
+     "score": 0.1846,
      "status": "MEASURED",
      "method": "validator pass rate across the product's compositions"
     },
@@ -20478,7 +20741,7 @@
    },
    "measured_dimension_count": 10,
    "unassessed_dimension_count": 3,
-   "computed_suitability": 0.4036,
+   "computed_suitability": 0.7332,
    "human_review_required": true
   },
   {

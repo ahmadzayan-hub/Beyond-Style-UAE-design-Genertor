@@ -92,28 +92,31 @@ def _make_run(text: str, start: int, end: int, direction: str) -> DirectionalRun
     return DirectionalRun(start=start, end=end, text=slice_, direction=direction, script=script)
 
 
-@lru_cache(maxsize=8)
-def _hb_font(font_path: str) -> hb.Font:
-    blob = hb.Blob.from_file_path(font_path)
-    face = hb.Face(blob)
-    return hb.Font(face)
+def _hb_font(font_path: str, font_axes: dict | None = None) -> hb.Font:
+    """HarfBuzz font, at variation coordinates when given. Delegates to
+    app.fonts.instances so outline extraction gets the SAME instance."""
+    from ..fonts.instances import FontInstance, hb_font_for, normalize_axes
+
+    return hb_font_for(FontInstance("", font_path, normalize_axes(font_axes)))
 
 
-@lru_cache(maxsize=8)
-def _glyph_order(font_path: str) -> list[str]:
-    return TTFont(font_path, lazy=True).getGlyphOrder()
+def _glyph_order(font_path: str, font_axes: dict | None = None) -> list[str]:
+    from ..fonts.instances import FontInstance, glyphset_for, normalize_axes
+
+    return glyphset_for(FontInstance("", font_path, normalize_axes(font_axes)))[1]
 
 
 def upem(font: FontRecord) -> int:
     return _hb_font(str(font.path)).face.upem
 
 
-def shape_run(run: DirectionalRun, font: FontRecord, extra_features: dict | None = None) -> ShapedRun:
+def shape_run(run: DirectionalRun, font: FontRecord, extra_features: dict | None = None,
+              font_axes: dict | None = None) -> ShapedRun:
     """Shape one directional run; cluster values are codepoint indices
     relative to the full normalized text (run.start offset applied).
     `extra_features` enables OpenType stylistic variants (Glyph Variant
     Library) — shaping/joining correctness is unaffected."""
-    hb_font = _hb_font(str(font.path))
+    hb_font = _hb_font(str(font.path), font_axes)
     buf = hb.Buffer()
     buf.add_str(run.text)
     buf.direction = run.direction
@@ -124,7 +127,7 @@ def shape_run(run: DirectionalRun, font: FontRecord, extra_features: dict | None
         features.update(extra_features)
     hb.shape(hb_font, buf, features)
 
-    order = _glyph_order(str(font.path))
+    order = _glyph_order(str(font.path), font_axes)
     infos = buf.glyph_infos
     positions = buf.glyph_positions
     scale = 1.0  # font units; mm conversion happens in geometry engine
@@ -160,7 +163,8 @@ def shape_run(run: DirectionalRun, font: FontRecord, extra_features: dict | None
     )
 
 
-def shape_text(text: str, font_id: str, extra_features: dict | None = None) -> list[ShapedRun]:
+def shape_text(text: str, font_id: str, extra_features: dict | None = None,
+               font_axes: dict | None = None) -> list[ShapedRun]:
     """Shape full normalized text into visually ordered shaped runs."""
     font = get_registry().get(font_id)
     normalized = normalize(text)
@@ -168,7 +172,7 @@ def shape_text(text: str, font_id: str, extra_features: dict | None = None) -> l
     base = paragraph_direction(normalized)
     # Visual order: RTL base reverses run order.
     visual_runs = list(reversed(runs)) if base == "rtl" else runs
-    return [shape_run(r, font, extra_features) for r in visual_runs]
+    return [shape_run(r, font, extra_features, font_axes) for r in visual_runs]
 
 
 # Letters that do not join to the following (left-side) letter — no kashida
@@ -261,7 +265,8 @@ def break_lines(text: str, max_lines: int) -> list[str]:
 
 
 def shape_multiline(
-    text: str, font_id: str, max_lines: int, extra_features: dict | None = None
+    text: str, font_id: str, max_lines: int, extra_features: dict | None = None,
+    font_axes: dict | None = None,
 ) -> tuple[list[list[ShapedRun]], TextIdentityProof]:
     """Shape text as stacked lines. Identity is proven per line and merged;
     the separator spaces consumed by line breaks count as covered by the
@@ -273,7 +278,7 @@ def shape_multiline(
     notdef = 0
     offset = 0
     for line in lines:
-        runs = shape_text(line, font_id, extra_features)
+        runs = shape_text(line, font_id, extra_features, font_axes)
         line_runs.append(runs)
         proof = verify_identity(line, runs)
         notdef += proof.notdef_glyph_count

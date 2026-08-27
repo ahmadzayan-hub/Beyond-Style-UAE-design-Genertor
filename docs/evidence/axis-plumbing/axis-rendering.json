@@ -1,0 +1,8 @@
+{
+ "note": "Axis coordinates flow through shaping AND outline extraction from one shared instance (app/fonts/instances.py).",
+ "variable_fonts": [
+  "reem-kufi",
+  "noto-nastaliq-urdu",
+  "lemonada"
+ ]
+}

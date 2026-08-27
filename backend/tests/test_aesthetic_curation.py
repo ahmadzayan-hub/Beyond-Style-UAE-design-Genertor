@@ -132,13 +132,27 @@ def test_a_sweep_with_no_safe_point_offers_nothing():
     assert result["min"] is None and result["max"] is None
 
 
-def test_axis_ranges_are_recorded_as_not_yet_renderable():
-    """The engine loads default instances only — the ranges must say so
-    rather than implying the generator can render them."""
-    axis_ranges = load_curation().get("axis_ranges", {})
-    assert axis_ranges, "axis report not generated"
-    for font_id, entry in axis_ranges.items():
-        assert entry["generator_support"] == "NOT_YET_REACHABLE_BY_GENERATOR"
+def test_font_unit_axis_ranges_are_marked_superseded():
+    """The font-unit proxy ranges were measured before axis plumbing and
+    were contradicted by real geometry. They must stay in the record marked
+    superseded, never used for a decision."""
+    data = load_curation()
+    for font_id, entry in data.get("axis_ranges", {}).items():
+        assert entry["status"] == "SUPERSEDED_BY_GEOMETRY_VERIFIED_RANGES", font_id
+        assert "product_axis_ranges" in data, "the superseding ranges must exist"
+
+
+def test_geometry_verified_ranges_carry_their_evidence_level():
+    data = load_curation()
+    ranges = data.get("product_axis_ranges", {})
+    assert ranges, "geometry-verified axis ranges not generated"
+    for font_id, per_axis in ranges.items():
+        for axis, per_product in per_axis.items():
+            for product, entry in per_product.items():
+                assert entry["evidence_level"] in (
+                    "GEOMETRY_VERIFIED_SAFE", "GEOMETRY_VERIFIED_UNSAFE")
+                assert entry["tested_values"]
+                assert entry["manufacturing_profile"]
 
 
 # --- curation states --------------------------------------------------------

@@ -1,0 +1,84 @@
+{
+ "tested": 5,
+ "results": [
+  {
+   "font_id": "reem-kufi",
+   "tags": [
+    "cv01"
+   ],
+   "kind": "cvXX+weight",
+   "wght": 700.0,
+   "shaping_safe": true,
+   "source_identity_safe": true,
+   "outline_generated": true,
+   "geometry_valid": true,
+   "manufacturing_mm_pass": true,
+   "status": "PRODUCTION_CAPABLE",
+   "min_material_width_mm": 6.07,
+   "failures": [],
+   "error": null
+  },
+  {
+   "font_id": "reem-kufi",
+   "tags": [
+    "cv02"
+   ],
+   "kind": "cvXX+weight",
+   "wght": 400.0,
+   "shaping_safe": true,
+   "source_identity_safe": true,
+   "outline_generated": true,
+   "geometry_valid": true,
+   "manufacturing_mm_pass": true,
+   "status": "PRODUCTION_CAPABLE",
+   "min_material_width_mm": 3.352,
+   "failures": [],
+   "error": null
+  },
+  {
+   "font_id": "lemonada",
+   "tags": [],
+   "kind": "weight+overlap",
+   "wght": 700.0,
+   "shaping_safe": true,
+   "source_identity_safe": true,
+   "outline_generated": true,
+   "geometry_valid": true,
+   "manufacturing_mm_pass": true,
+   "status": "PRODUCTION_CAPABLE",
+   "min_material_width_mm": 5.332,
+   "failures": [],
+   "error": null
+  },
+  {
+   "font_id": "reem-kufi",
+   "tags": [],
+   "kind": "weight+stacking",
+   "wght": 700.0,
+   "shaping_safe": true,
+   "source_identity_safe": true,
+   "outline_generated": true,
+   "geometry_valid": true,
+   "manufacturing_mm_pass": true,
+   "status": "PRODUCTION_CAPABLE",
+   "min_material_width_mm": 6.07,
+   "failures": [],
+   "error": null
+  },
+  {
+   "font_id": "noto-nastaliq-urdu",
+   "tags": [],
+   "kind": "weight+stacking",
+   "wght": 700.0,
+   "shaping_safe": true,
+   "source_identity_safe": true,
+   "outline_generated": true,
+   "geometry_valid": false,
+   "manufacturing_mm_pass": true,
+   "status": "NOT_PRODUCTION_CAPABLE",
+   "min_material_width_mm": 4.77,
+   "failures": [],
+   "error": null
+  }
+ ]
+}
