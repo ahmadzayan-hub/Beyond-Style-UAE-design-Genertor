@@ -72,7 +72,7 @@ Full list with local defaults: `backend/.env.example`.
 
 | Variable | Required | Notes |
 |---|---|---|
-| `NEXT_PUBLIC_API_URL` | yes | The real Replit backend origin, e.g. `https://beyond-style-uae.your-username.repl.co`. Bundled into client JS — **never put a secret in a `NEXT_PUBLIC_*` variable.** |
+| `NEXT_PUBLIC_API_URL` | optional override | The real Replit backend origin. Since 2026-08-28 `next.config.mjs` defaults Vercel builds to the published production backend (`https://beyond-style-uae-design-genertor.replit.app`), so this variable is only needed to point at a *different* backend. Bundled into client JS — **never put a secret in a `NEXT_PUBLIC_*` variable.** |
 | `NEXT_PUBLIC_APP_ENV` | recommended | `production` |
 
 This app has **no Next.js API routes** — nothing on Vercel executes

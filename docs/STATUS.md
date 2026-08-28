@@ -12,6 +12,23 @@ Statuses (External AI / Real Tool Wiring sections, precise per-claim vocabulary)
   FAILED — a real call/round-trip was attempted and errored (never silently downgraded to a softer status).
 Updated: 2026-08-26 · Backend suite: 401 passed (394 + 7 First-Wave Analysis) (PostgreSQL 16, incl. 11-test immutable seven-name golden fixture) · E2E: 5 browser flows passed (incl. dedicated seven-name+reference flow) · production smoke: 15/15 checks passed (local, corrected fixture) · GitHub Actions CI: VERIFIED_CI, run 32900447345 (current HEAD `a7e3858`) conclusion=success — 5 consecutive green runs — see RELEASE_EVIDENCE.md.
 
+## Backend published — frontend wired to it by default (2026-08-28)
+Owner published the Replit deployment: `https://beyond-style-uae-design-genertor.replit.app`
+(URL supplied by owner; unreachable from this session — the sandbox egress proxy blocks all
+Replit domains, re-verified, so backend liveness is owner-verified via `/health` in a browser,
+not by this session).
+
+Change: `next.config.mjs` now defaults `NEXT_PUBLIC_API_URL` to that published backend on
+Vercel builds (`env` key, baked at build time). An explicit `NEXT_PUBLIC_API_URL` in the Vercel
+dashboard still overrides it; local dev (no `VERCEL`) keeps the empty base + localhost rewrite.
+This removes the last manual dashboard step that kept production dead. Verified locally:
+`VERCEL=1 next build` inlines the URL into all three page chunks; plain build keeps `""` and
+the dev rewrite. `docs/DEPLOYMENT.md` env table updated (var is now an optional override).
+
+Remaining to VERIFIED_E2E (production): owner confirms `/health` returns JSON on the published
+URL, `ALLOWED_ORIGINS` secret on Replit includes `https://frontend-sigma-sable-22.vercel.app`
+(without it the browser is CORS-blocked), then run the Golden Path on the live site.
+
 ## Production frontend failure diagnosed (2026-08-27, real device report)
 Owner tested the live Vercel deployment on mobile: UI loads, every action fails with "انتهت صلاحية الجلسة".
 Diagnosed against the real deployment (`web_fetch_vercel_url` on `/api/fonts`): **404 with
