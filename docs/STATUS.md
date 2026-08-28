@@ -12,6 +12,16 @@ Statuses (External AI / Real Tool Wiring sections, precise per-claim vocabulary)
   FAILED — a real call/round-trip was attempted and errored (never silently downgraded to a softer status).
 Updated: 2026-08-26 · Backend suite: 401 passed (394 + 7 First-Wave Analysis) (PostgreSQL 16, incl. 11-test immutable seven-name golden fixture) · E2E: 5 browser flows passed (incl. dedicated seven-name+reference flow) · production smoke: 15/15 checks passed (local, corrected fixture) · GitHub Actions CI: VERIFIED_CI, run 32900447345 (current HEAD `a7e3858`) conclusion=success — 5 consecutive green runs — see RELEASE_EVIDENCE.md.
 
+## Live CORS failure fixed: first-party origins now built in (2026-08-28, real device report)
+With the frontend wired (below), the owner's phone showed CONNECTION_FAILED on the live site —
+the browser's fetch threw, the CORS signature: the deployed backend was missing the
+`ALLOWED_ORIGINS` secret, so it only allowed `http://localhost:3000`. Fix: `app/main.py` now
+always allows the first-party origins (localhost:3000, frontend-sigma-sable-22.vercel.app,
+beyondstyle.ae, www.beyondstyle.ae); `ALLOWED_ORIGINS` extends the set instead of being the
+only gate. Regression test added (`test_cors_allows_production_frontend_without_the_secret`);
+`test_deployment_readiness.py` 12/12 passed. Owner action to pick this up: pull latest in the
+Replit workspace and republish the deployment.
+
 ## Backend published — frontend wired to it by default (2026-08-28)
 Owner published the Replit deployment: `https://beyond-style-uae-design-genertor.replit.app`
 (URL supplied by owner; unreachable from this session — the sandbox egress proxy blocks all

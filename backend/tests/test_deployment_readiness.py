@@ -72,6 +72,22 @@ def test_cors_allows_configured_origin_only(client, monkeypatch):
     assert r2.headers.get("access-control-allow-origin") != "https://evil.example.com"
 
 
+def test_cors_allows_production_frontend_without_the_secret(client):
+    """Missing ALLOWED_ORIGINS stranded the live product behind CORS
+    (real device, 2026-08-28): first-party origins must always pass."""
+    r = client.options(
+        "/api/designs",
+        headers={
+            "Origin": "https://frontend-sigma-sable-22.vercel.app",
+            "Access-Control-Request-Method": "POST",
+        },
+    )
+    assert (
+        r.headers.get("access-control-allow-origin")
+        == "https://frontend-sigma-sable-22.vercel.app"
+    )
+
+
 def test_cors_never_combines_wildcard_with_credentials():
     from app.main import app as fastapi_app
 

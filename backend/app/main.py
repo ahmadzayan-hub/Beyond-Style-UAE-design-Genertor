@@ -27,10 +27,19 @@ app = FastAPI(
 # --- CORS: exact configured origins only. Never "*" together with
 # credentials (session tokens travel as a header, not a cookie, but
 # credentials=False keeps this rule true regardless). ---
-_allowed_origins = [o.strip() for o in os.environ.get("ALLOWED_ORIGINS", "").split(",") if o.strip()]
-if not _allowed_origins:
-    # Honest local-dev default only — production MUST set ALLOWED_ORIGINS.
-    _allowed_origins = ["http://localhost:3000"]
+# First-party origins are always allowed so a deployment without the
+# ALLOWED_ORIGINS secret still serves the real product (credentials are
+# off and these are our own domains, so the union is safe). The env var
+# extends the list (e.g. preview URLs); it can no longer silently strand
+# production behind a missing secret.
+_FIRST_PARTY_ORIGINS = [
+    "http://localhost:3000",
+    "https://frontend-sigma-sable-22.vercel.app",
+    "https://beyondstyle.ae",
+    "https://www.beyondstyle.ae",
+]
+_env_origins = [o.strip() for o in os.environ.get("ALLOWED_ORIGINS", "").split(",") if o.strip()]
+_allowed_origins = _FIRST_PARTY_ORIGINS + [o for o in _env_origins if o not in _FIRST_PARTY_ORIGINS]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_allowed_origins,

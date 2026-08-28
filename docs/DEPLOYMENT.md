@@ -90,24 +90,23 @@ Do not add them to the Vercel project.
 
 ## CORS
 
-`ALLOWED_ORIGINS` is a comma-separated exact-origin list
-(`app/main.py`). No wildcard is ever combined with credentials
+Since 2026-08-28 the first-party origins are **always allowed**
+(`_FIRST_PARTY_ORIGINS` in `app/main.py`): `http://localhost:3000`,
+`https://frontend-sigma-sable-22.vercel.app`, `https://beyondstyle.ae`
+and `https://www.beyondstyle.ae`. A deployment without the
+`ALLOWED_ORIGINS` secret therefore still serves the live product — a
+missing secret stranded the real site behind CORS on 2026-08-28
+(regression-tested in `test_deployment_readiness.py`).
+
+`ALLOWED_ORIGINS` is a comma-separated exact-origin list that
+**extends** that built-in set (e.g. a Vercel preview origin you
+explicitly want to call the production backend — usually you don't).
+No wildcard is ever combined with credentials
 (`allow_credentials=False` — the session token travels as an
 `X-Session-Token` header, not a cookie, so credentialed CORS was never
-needed). Local dev default (only used when `ALLOWED_ORIGINS` is unset):
-`http://localhost:3000`.
-
-Production example — the exact HTTPS origins required for the P1
-release gate (see RELEASE_EVIDENCE.md): the current live Vercel
-deployment origin (needed until the custom domain is attached) plus
-the two target custom-domain origins:
-```
-ALLOWED_ORIGINS=https://frontend-sigma-sable-22.vercel.app,https://beyondstyle.ae,https://www.beyondstyle.ae
-```
-Drop the `frontend-sigma-sable-22.vercel.app` entry once
-`beyondstyle.ae`/`www.beyondstyle.ae` is the site's only production
-origin. Add a Vercel preview domain only if you explicitly want
-previews to call the production backend (usually you don't).
+needed). Remove `frontend-sigma-sable-22.vercel.app` from
+`_FIRST_PARTY_ORIGINS` in code once `beyondstyle.ae` is the site's
+only production origin.
 
 ## Health / readiness
 
