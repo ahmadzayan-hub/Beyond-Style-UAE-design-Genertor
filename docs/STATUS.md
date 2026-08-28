@@ -10,7 +10,8 @@ Statuses (External AI / Real Tool Wiring sections, precise per-claim vocabulary)
   OPTIONAL_NOT_RUNNING — an optional runtime (isolated Hermes) is not configured/reachable; the deterministic path is unaffected.
   BLOCKED — implemented but intentionally refused (e.g. approve_design for agents).
   FAILED — a real call/round-trip was attempted and errored (never silently downgraded to a softer status).
-Updated: 2026-08-26 · Backend suite: 401 passed (394 + 7 First-Wave Analysis) (PostgreSQL 16, incl. 11-test immutable seven-name golden fixture) · E2E: 5 browser flows passed (incl. dedicated seven-name+reference flow) · production smoke: 15/15 checks passed (local, corrected fixture) · GitHub Actions CI: VERIFIED_CI, run 32900447345 (current HEAD `a7e3858`) conclusion=success — 5 consecutive green runs — see RELEASE_EVIDENCE.md.
+Updated: 2026-08-28 · GitHub Actions CI: VERIFIED_CI, run 33204109378 (HEAD `5954693`) — all 4 jobs green (secret-scan, backend full suite on the corrected fonttools 4.60.2 + uharfbuzz 0.56.0 pins, frontend build, Golden Path + Copilot browser E2E); local full suite also exit 0 on the same pins. Note: CI was red for the 8 commits between `a7e3858` and this fix (see "CI red since 49c4ceb" below) — the previous "5 consecutive green runs" claim ended at `a7e3858`.
+Previous (2026-08-26): Backend suite: 401 passed (394 + 7 First-Wave Analysis) (PostgreSQL 16, incl. 11-test immutable seven-name golden fixture) · E2E: 5 browser flows passed (incl. dedicated seven-name+reference flow) · production smoke: 15/15 checks passed (local, corrected fixture) · CI run 32900447345 (`a7e3858`) conclusion=success — see RELEASE_EVIDENCE.md.
 
 ## CI red since 49c4ceb — broken pin combo fixed (2026-08-28)
 Discovered while verifying the branch for the owner's Replit pull: GitHub Actions CI had been
