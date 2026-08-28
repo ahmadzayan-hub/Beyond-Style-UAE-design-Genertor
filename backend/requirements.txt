@@ -1,7 +1,12 @@
 # Pinned dependencies — P0 backend Golden Path slice.
 # Native shaping stack (HarfBuzz via uharfbuzz wheels; FreeType-equivalent
 # outline access via fontTools glyf/CFF parsing).
-uharfbuzz==0.42.0
+# 0.56.0: fontTools 4.60.2's HarfBuzz repacker calls
+# hb.serialize_with_tag, which 0.42.0 lacked — the 4.60.2+0.42.0 combo
+# crashed every variable-font instancer path (broke CI while local envs
+# still ran fontTools 4.53.1). Seven-name immutable golden fixture
+# re-verified byte-identical on this version: shaping did not drift.
+uharfbuzz==0.56.0
 # 4.60.2: patches CVE-2025-66034 (arbitrary file write via the
 # `fontTools.varLib` CLI merge script — not invoked anywhere in this
 # app, which only does glyf/CFF parsing, but patched anyway since the

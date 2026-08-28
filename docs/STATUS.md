@@ -12,6 +12,22 @@ Statuses (External AI / Real Tool Wiring sections, precise per-claim vocabulary)
   FAILED — a real call/round-trip was attempted and errored (never silently downgraded to a softer status).
 Updated: 2026-08-26 · Backend suite: 401 passed (394 + 7 First-Wave Analysis) (PostgreSQL 16, incl. 11-test immutable seven-name golden fixture) · E2E: 5 browser flows passed (incl. dedicated seven-name+reference flow) · production smoke: 15/15 checks passed (local, corrected fixture) · GitHub Actions CI: VERIFIED_CI, run 32900447345 (current HEAD `a7e3858`) conclusion=success — 5 consecutive green runs — see RELEASE_EVIDENCE.md.
 
+## CI red since 49c4ceb — broken pin combo fixed (2026-08-28)
+Discovered while verifying the branch for the owner's Replit pull: GitHub Actions CI had been
+failing for the last 8 commits (backend job only; frontend + secret-scan green). Root cause:
+the security bump to `fonttools==4.60.2` (RELEASE_EVIDENCE.md dependency table) was pinned but
+never installed in the local environment, which still ran fontTools 4.53.1 — so every local
+"suite green" since that bump ran a different fontTools than CI. fontTools 4.60.2's HarfBuzz
+repacker calls `uharfbuzz.serialize_with_tag`, absent from the pinned `uharfbuzz==0.42.0`, so
+all 24 axis-plumbing (variable-font instancer) tests crashed in CI. Fix: `uharfbuzz==0.56.0`.
+Evidence: CI failure reproduced locally on the exact pinned combo, then on 4.60.2+0.56.0 the
+24 axis tests, the 11-test immutable seven-name golden fixture and the quality gate all pass
+(59/59 — shaping and geometry hashes did NOT drift across the HarfBuzz upgrade). Full-suite
+confirmation is CI's own run on this commit; local full suite also running. Secondary CI
+finding, not code: the artifact-upload step hit the GitHub artifact storage quota
+("Artifact storage quota has been hit") — old CI artifacts need pruning or the step made
+non-blocking; it did not cause the test failures.
+
 ## Live CORS failure fixed: first-party origins now built in (2026-08-28, real device report)
 With the frontend wired (below), the owner's phone showed CONNECTION_FAILED on the live site —
 the browser's fetch threw, the CORS signature: the deployed backend was missing the
