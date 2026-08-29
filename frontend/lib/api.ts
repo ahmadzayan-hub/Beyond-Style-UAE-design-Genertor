@@ -196,6 +196,14 @@ export async function versionSvg(versionId: string): Promise<string> {
   return res.text();
 }
 
+export async function mesh3dPayload(versionId: string) {
+  // Canonical 2D polygons + real thickness/dimensions/weight for the
+  // client-side Three.js extrusion. Visualization only.
+  return jsonOrThrow(
+    await doFetch(`/api/versions/${versionId}/mesh3d`, { headers: authHeaders() })
+  );
+}
+
 export async function agreementProofSvg(versionId: string): Promise<string> {
   // Dimensioned approval artifact: the design with its real mm dimensions
   // and spec block drawn on — what the customer actually agrees to.

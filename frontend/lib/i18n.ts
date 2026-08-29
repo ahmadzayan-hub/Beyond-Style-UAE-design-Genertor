@@ -62,6 +62,10 @@ export const STRINGS = {
     after: "بعد",
     studio_title: "استوديو المعاينة",
     tab_2d: "التصميم 2D",
+    tab_3d: "عرض ثلاثي الأبعاد",
+    weight_estimate: "الوزن التقريبي",
+    viewer3d_note:
+      "عرض ثلاثي الأبعاد بالأبعاد الحقيقية للتوضيح فقط — ملف التصنيع هو التصميم المتجهي 2D.",
     tab_photoreal: "معاينة واقعية",
     tab_materials: "الخامات",
     studio_material: "الخامة",
@@ -162,6 +166,10 @@ export const STRINGS = {
     after: "After",
     studio_title: "Preview studio",
     tab_2d: "2D design",
+    tab_3d: "3D view",
+    weight_estimate: "Estimated weight",
+    viewer3d_note:
+      "3D view at real dimensions, for visualization only — the 2D vector design is the manufacturing file.",
     tab_photoreal: "Photoreal",
     tab_materials: "Materials",
     studio_material: "Material",

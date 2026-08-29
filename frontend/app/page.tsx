@@ -1,8 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import * as api from "@/lib/api";
 import { Lang, STRINGS } from "@/lib/i18n";
+
+// Three.js is heavy — load the 3D viewer only when its tab is opened.
+const Viewer3D = dynamic(() => import("@/components/Viewer3D"), { ssr: false });
 
 type Step =
   | "start"
@@ -62,8 +66,9 @@ export default function GoldenPathPage() {
     setHistory((h) => [...h.slice(0, histIdx + 1), v]);
     setHistIdx((i) => i + 1);
   }
-  const [studioTab, setStudioTab] = useState<"2d" | "photoreal">("2d");
+  const [studioTab, setStudioTab] = useState<"2d" | "3d" | "photoreal">("2d");
   const [previewMaterial, setPreviewMaterial] = useState("silver-925");
+  const [mesh3d, setMesh3d] = useState<import("@/components/Viewer3D").Mesh3DPayload | null>(null);
   const [previewScene, setPreviewScene] = useState("studio_white");
   const [previewQuality, setPreviewQuality] = useState("DRAFT");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -654,22 +659,67 @@ export default function GoldenPathPage() {
         <section className="flex flex-col gap-4">
           <h2 className="text-xl font-bold">{t.selected_title}</h2>
           <div className="flex gap-2 text-xs" data-testid="studio-tabs">
-            {(["2d", "photoreal"] as const).map((tab) => (
+            {(["2d", "3d", "photoreal"] as const).map((tab) => (
               <button
                 key={tab}
                 data-testid={`tab-${tab}`}
-                onClick={() => setStudioTab(tab)}
+                onClick={async () => {
+                  setStudioTab(tab);
+                  if (tab === "3d" && !mesh3d) {
+                    try {
+                      setMesh3d(await api.mesh3dPayload(selected.version_id));
+                    } catch {
+                      setMesh3d(null);
+                    }
+                  }
+                }}
                 className={`rounded-full border px-3 py-1 ${
                   studioTab === tab ? "border-brand-gold bg-brand-gold text-white" : "border-stone-300 bg-white"
                 }`}
               >
-                {tab === "2d" ? t.tab_2d : t.tab_photoreal}
+                {tab === "2d" ? t.tab_2d : tab === "3d" ? t.tab_3d : t.tab_photoreal}
               </button>
             ))}
           </div>
           {studioTab === "2d" ? (
             <div className="proof-svg-large rounded-xl border border-stone-200 bg-white p-4" data-testid="selected-preview">
               {selected.svg && <div dangerouslySetInnerHTML={{ __html: selected.svg }} />}
+            </div>
+          ) : studioTab === "3d" ? (
+            <div className="flex flex-col gap-3 rounded-xl border border-stone-200 bg-white p-4" data-testid="viewer3d-panel">
+              {mesh3d ? (
+                <>
+                  <Viewer3D payload={mesh3d} material={previewMaterial} />
+                  <p className="text-sm font-medium" data-testid="viewer3d-dims">
+                    {mesh3d.ring
+                      ? `${t.ring_size_label}: ${mesh3d.ring.size_eu} · ${t.band_height_label}: ${mesh3d.ring.band_height_mm}`
+                      : `${mesh3d.width_mm.toFixed(1)} × ${mesh3d.height_mm.toFixed(1)} mm`}
+                    {" · "}
+                    {t.weight_estimate}:{" "}
+                    {mesh3d.weight_estimate_g[previewMaterial] != null
+                      ? `${mesh3d.weight_estimate_g[previewMaterial].toFixed(2)} g`
+                      : "—"}
+                  </p>
+                  <label className="text-xs">
+                    {t.studio_material}
+                    <select
+                      data-testid="viewer3d-material"
+                      value={previewMaterial}
+                      onChange={(e) => setPreviewMaterial(e.target.value)}
+                      className="mt-1 w-full rounded border border-stone-300 p-2"
+                    >
+                      {["silver-925", "gold-18k-yellow", "gold-18k-rose", "gold-18k-white", "platinum"].map((m) => (
+                        <option key={m} value={m}>
+                          {m}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <p className="text-[11px] text-stone-500">{t.viewer3d_note}</p>
+                </>
+              ) : (
+                <div className="h-40 w-full animate-pulse rounded bg-stone-100" />
+              )}
             </div>
           ) : (
             <div className="flex flex-col gap-3 rounded-xl border border-stone-200 bg-white p-4" data-testid="photoreal-panel">

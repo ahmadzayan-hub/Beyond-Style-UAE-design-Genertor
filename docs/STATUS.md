@@ -29,6 +29,26 @@ finding, not code: the artifact-upload step hit the GitHub artifact storage quot
 ("Artifact storage quota has been hit") — old CI artifacts need pruning or the step made
 non-blocking; it did not cause the test failures.
 
+## 3D Viewer (2026-08-29, owner-planned "عرض التصميم ثلاثي الأبعاد")
+Customer trust view before approval, per the 3D Stage rules (Three.js for visualization only;
+the 2D Design Graph stays canonical; only after 2D selection/QA):
+- `services/mesh3d.py` + `GET /api/versions/{id}/mesh3d` (owner-gated, 404 anti-enumeration):
+  canonical 2D polygons (holes preserved — payload area re-verified equal to shapely area),
+  real thickness (ring spec or workshop rules), real mm dimensions, ring bend radius
+  (EU size = inner circumference → r = size/2π), and deterministic weight estimates
+  (area × thickness × alloy density; densities are documented constants — rules math, no AI).
+- `components/Viewer3D.tsx`: client-side Three.js extrusion of the served polygons; rings are
+  bent around the real cylinder radius with the ENGRAVE layer on the outer face; five metal
+  materials; auto-rotating 360° with orbit controls; graceful null render when WebGL is
+  unavailable (the 2D proof remains authoritative). Loaded via dynamic import only when the
+  3D tab opens — shared first-load JS unchanged (103 kB).
+- Studio gains a ثلاثي الأبعاد tab showing dimensions (or ring size/band width), estimated
+  weight in grams per material, and the explicit "not the manufacturing file" note.
+Tests: `test_mesh3d.py` 3/3 (payload↔geometry equality, deterministic weight math, ring bend
+radius + engraving passthrough, owner gate); frontend typecheck + build clean. Honest notes:
+weight is area×thickness×density (no stones/chain mass; chain/bail/stones visualization not in
+this slice); materials are PBR approximations, not calibrated renders.
+
 ## Engraved Ring Band product (2026-08-29, owner "go ahead" on the ring slice)
 The wedding-ring case (photos 12–15: outer phrase, inner names, 4cm×0.75cm field) is a
 different manufacturing mode: marks on solid metal, not cut-outs. Implemented as a first-class

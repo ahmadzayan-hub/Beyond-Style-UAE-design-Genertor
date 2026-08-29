@@ -391,6 +391,20 @@ def version_preview_svg(version_id: str, request: Request, session: Session = De
     return Response(content=export_proof_svg(candidate, source), media_type="image/svg+xml")
 
 
+@versions_router.get("/{version_id}/mesh3d")
+def version_mesh3d(version_id: str, request: Request, session: Session = Depends(get_session)):
+    """Owner-scoped 3D visualization payload: canonical 2D polygons + real
+    thickness/dimensions/bend radius + deterministic weight estimates. The
+    browser extrudes it with Three.js; the 2D design graph stays canonical
+    and nothing from the 3D view flows back into geometry."""
+    from ..services.mesh3d import mesh3d_payload
+
+    v = require_owned_version(session, version_id, request)
+    design = session.get(m.Design, v.design_id)
+    req = session.get(m.DesignRequest, design.request_id) if design else None
+    return mesh3d_payload(v, req.product_type if req else "pendant")
+
+
 @versions_router.get("/{version_id}/agreement-proof")
 def version_agreement_proof(version_id: str, request: Request, session: Session = Depends(get_session)):
     """Owner-scoped dimensioned approval artifact: the design with its real
