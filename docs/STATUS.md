@@ -29,6 +29,37 @@ finding, not code: the artifact-upload step hit the GitHub artifact storage quot
 ("Artifact storage quota has been hit") — old CI artifacts need pruning or the step made
 non-blocking; it did not cause the test failures.
 
+## Engraved Ring Band product (2026-08-29, owner "go ahead" on the ring slice)
+The wedding-ring case (photos 12–15: outer phrase, inner names, 4cm×0.75cm field) is a
+different manufacturing mode: marks on solid metal, not cut-outs. Implemented as a first-class
+construction through the SAME build choke point:
+- `engines/ring_band.py`: flat-pattern build — CUT = developed strip (EU size = inner
+  circumference; length = size + π·thickness at the neutral axis), ENGRAVE = text + parametric
+  border (none/double_line/ornament_diamond) centered with real margins. Text is NEVER altered
+  to fit: uniform downscale only, blocked (ENGRAVING_TEXT_OVERFLOW) below 60% legibility.
+- Engraving-mode validation (real mm): ENGRAVING_STROKE_TOO_THIN (<0.30mm measured on the
+  actual engrave geometry), ENGRAVING_MARGIN_TOO_SMALL (<0.8mm to the edge),
+  RING_SIZE_OUT_OF_RANGE (EU 44–70, band 5–10mm). Dots float freely (no bridges) — correct for
+  engraving. Ring rules profile lifts the pendant slenderness/width caps that don't apply to a
+  strip that gets rolled.
+- `RecipeParams.ring` (None = silhouette product) excluded from candidate identity when None —
+  regression-proven that NO existing design was renumbered (seven-name golden fixture green).
+- Generation routes on product_type=="ring" (9 fonts × 3 borders × 2 heights = 54 candidates;
+  diversity re-featured from the ENGRAVE layer since every band shares one CUT rectangle);
+  edits version through the same choke point; construction can never change by edit; repair
+  options honestly empty for rings (future slice).
+- DXF: ENGRAVE layer + RING_SIZE_EU/BAND_HEIGHT_MM header vars alongside CUT/HOLES.
+- Frontend: product picker (قلادة/خاتم), EU size 44–70 + band width selectors; brief carries
+  ring_size_eu/band_height_mm into generation hints and syncs the request's product type.
+- Fixed en route: `agreement_proof_for_version` read product from the wrong table (Design id
+  against DesignRequest) and silently fell back to "pendant" — now Design → DesignRequest.
+Tests: `test_ring_band.py` 8/8 (flat-pattern math, strip geometry, margins+identity, floating
+dots, size gate, DXF layers, end-to-end ring flow with Arabic agreement proof, hash-stability
+invariant) + agreement 6/6 + golden fixture/quality gate/persistence/axis suites green.
+Honest limitations: no inner-face second engraving yet (one face per design); ♥ separator
+(U+2665) is in NO vendored font — a text containing it fails identity honestly rather than
+silently substituting; ring photoreal prompting reuses the generic product prompt.
+
 ## Dimensioned Agreement Proof (2026-08-29, owner mandate with 16 real production photos)
 Owner requirement: the customer must approve a picture that carries the REAL dimensions —
 matching Beyond Style's manual spec sheets (روز/شغف/فرح necklace sheet, the ring's 4cm×0.75cm

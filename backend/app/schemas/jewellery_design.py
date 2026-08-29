@@ -105,6 +105,11 @@ class ViolationCode(str, Enum):
     EMPTY_GEOMETRY = "EMPTY_GEOMETRY"
     TEXT_IDENTITY_UNVERIFIED = "TEXT_IDENTITY_UNVERIFIED"
     FONT_RIGHTS_BLOCK = "FONT_RIGHTS_BLOCK"
+    # Engraved-band (ring) mode — marks on solid metal, not cut-outs.
+    ENGRAVING_STROKE_TOO_THIN = "ENGRAVING_STROKE_TOO_THIN"
+    ENGRAVING_MARGIN_TOO_SMALL = "ENGRAVING_MARGIN_TOO_SMALL"
+    ENGRAVING_TEXT_OVERFLOW = "ENGRAVING_TEXT_OVERFLOW"
+    RING_SIZE_OUT_OF_RANGE = "RING_SIZE_OUT_OF_RANGE"
 
 
 class ProposedFix(BaseModel):
@@ -158,6 +163,11 @@ class RecipeParams(BaseModel):
     #: the font's default instance — which is what every pre-axis design
     #: used, so an empty dict must never change an existing geometry hash.
     font_axes: dict[str, float] = Field(default_factory=dict)
+    #: Engraved ring band spec ({"size_eu", "band_height_mm", "thickness_mm",
+    #: "border"}). None = silhouette product; like an empty `font_axes`, a
+    #: None ring is omitted from candidate identity so pre-ring designs keep
+    #: their hashes.
+    ring: Optional[dict] = None
     max_lines: int = 1  # 1 = single line; >1 = stacked multi-line
     line_spacing_ratio: float = 0.22
     # Curated archetype metadata (Design DNA, products, text-length fit,

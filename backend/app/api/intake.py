@@ -28,6 +28,9 @@ class BriefRequest(BaseModel):
     deadline: str | None = None
     delivery_emirate: str | None = None
     style_strength: float = Field(default=0.5, ge=0.0, le=1.0)
+    # Ring products only: EU size = inner circumference in mm.
+    ring_size_eu: int | None = Field(default=None, ge=44, le=70)
+    band_height_mm: float | None = Field(default=None, ge=5.0, le=10.0)
 
 
 def _brief_response(brief: m.CustomerBrief) -> dict:
@@ -130,6 +133,8 @@ def update_brief(
         deadline=body.deadline,
         delivery_emirate=body.delivery_emirate,
         style_strength=body.style_strength,
+        ring_size_eu=body.ring_size_eu,
+        band_height_mm=body.band_height_mm,
     )
     return _brief_response(brief)
 

@@ -36,7 +36,8 @@ def geometry_to_path_d(geom, flip_y: float) -> str:
 
 #: Compositions where the text sits on a solid plate — without relief
 #: differentiation the proof would render as a featureless silhouette.
-RELIEF_COMPOSITIONS = {"plate_oval", "plate_rect"}
+#: engraved_band: ring bands render the ENGRAVE layer on the solid strip.
+RELIEF_COMPOSITIONS = {"plate_oval", "plate_rect", "engraved_band"}
 
 
 def export_proof_svg(candidate: DesignCandidate, source: ImmutableSourceText) -> str:

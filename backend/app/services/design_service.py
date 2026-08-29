@@ -68,6 +68,10 @@ EDITABLE_RECIPE_FIELDS = {
     # one. Coordinates are validated against the font before use.
     "font_axes",
     "ot_feature_set",
+    # Ring spec (size/band height/border) — a resize is a real geometry
+    # change and versions like any other edit. Never present on silhouette
+    # products, so it cannot convert a pendant into a ring by edit.
+    "ring",
     "dot_style",
     "swash",
     "kashida_count",
@@ -188,7 +192,12 @@ def generate_and_persist_candidates(
     hints = brief.generation_hints if brief else None
 
     source = ImmutableSourceText.create(req.source_text_raw, confirmed=True)
-    all_candidates, top = generate_candidates(str(req.id), source, rules, hints=hints)
+    if req.product_type == "ring":
+        from ..engines.ring_band import generate_ring_candidates
+
+        all_candidates, top = generate_ring_candidates(str(req.id), source, rules, hints=hints)
+    else:
+        all_candidates, top = generate_candidates(str(req.id), source, rules, hints=hints)
 
     # Idempotent per request: regeneration replaces nothing — same
     # deterministic candidate_keys conflict-skip via unique constraint.
@@ -372,6 +381,13 @@ def edit_version(
     illegal = set(recipe_overrides) - EDITABLE_RECIPE_FIELDS
     if illegal:
         raise ApprovalRejected(f"Fields not editable (source text is immutable): {sorted(illegal)}")
+    if "ring" in recipe_overrides:
+        # A ring edit adjusts the ring spec; it can never convert a
+        # silhouette product into a ring (or back) mid-lineage.
+        was_ring = (parent.recipe or {}).get("ring") is not None
+        will_be_ring = recipe_overrides["ring"] is not None
+        if was_ring != will_be_ring:
+            raise ApprovalRejected("Product construction cannot change by edit.")
 
     design = session.get(m.Design, parent.design_id)
     base_recipe = RecipeParams(**parent.recipe)
@@ -578,13 +594,14 @@ def agreement_proof_for_version(session: Session, version: m.DesignVersion) -> s
     from ..exporters.agreement_proof import export_agreement_proof_svg
 
     candidate, source = _version_to_candidate(version)
-    design = session.get(m.DesignRequest, version.design_id)
+    design = session.get(m.Design, version.design_id)
+    req = session.get(m.DesignRequest, design.request_id) if design else None
     return export_agreement_proof_svg(
         candidate,
         source,
         version_number=version.version_number,
         geometry_hash=version.geometry_hash,
-        product_type=design.product_type if design else "pendant",
+        product_type=req.product_type if req else "pendant",
     )
 
 

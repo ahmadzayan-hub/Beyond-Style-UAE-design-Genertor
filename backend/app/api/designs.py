@@ -416,6 +416,11 @@ def repair_options(version_id: str, request: Request, session: Session = Depends
     to offer (design already comfortably manufacturable)."""
     v = require_owned_version(session, version_id, request)
     recipe = RecipeParams(**v.recipe)
+    if recipe.ring is not None:
+        # Silhouette repairs (thicken/bridge) don't apply to engraved bands;
+        # ring-mode repairs are a future slice — offer nothing rather than
+        # an untested transformation.
+        return {"version_id": str(v.id), "options": []}
     options = []
     if recipe.stroke_delta_mm < 0.45:
         options.append(

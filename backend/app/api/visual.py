@@ -82,6 +82,7 @@ def create_preview(
 
     design = session.get(m.Design, version.design_id)
     request_id = design.request_id
+    req_row = session.get(m.DesignRequest, request_id)
     brief = vs.build_brief(
         version,
         scene=body.scene,
@@ -90,7 +91,9 @@ def create_preview(
         stones=body.stones,
         orientation=body.orientation,
         quality=body.quality if body.quality in QUALITY_MODES else "DRAFT",
-        product_type=body.product_type,
+        # The design's own product wins unless the caller overrides — a ring
+        # preview must not be prompted as a pendant.
+        product_type=body.product_type or (req_row.product_type if req_row else None),
     )
     reference_dna = None
     if body.use_reference_style:

@@ -77,6 +77,25 @@ def export_dxf(
                 list(ring.coords), close=True, dxfattribs={"layer": "HOLES"}
             )
 
+    # Engraved-band products: the text/border marks go on their own ENGRAVE
+    # layer — the workshop cuts the CUT outline and engraves this layer.
+    if candidate.recipe.ring is not None and candidate.text_geometry_wkt:
+        engrave = shapely_wkt.loads(candidate.text_geometry_wkt)
+        doc.layers.add("ENGRAVE", color=3)
+        ring_spec = candidate.recipe.ring
+        doc.header.custom_vars.append("RING_SIZE_EU", f"{ring_spec.get('size_eu', '')}")
+        doc.header.custom_vars.append(
+            "BAND_HEIGHT_MM", f"{ring_spec.get('band_height_mm', '')}"
+        )
+        for poly in ([engrave] if engrave.geom_type == "Polygon" else list(engrave.geoms)):
+            msp.add_lwpolyline(
+                list(poly.exterior.coords), close=True, dxfattribs={"layer": "ENGRAVE"}
+            )
+            for hole in poly.interiors:
+                msp.add_lwpolyline(
+                    list(hole.coords), close=True, dxfattribs={"layer": "ENGRAVE"}
+                )
+
     buf = io.StringIO()
     doc.write(buf)
     return buf.getvalue()

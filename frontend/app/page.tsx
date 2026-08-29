@@ -79,6 +79,9 @@ export default function GoldenPathPage() {
   }>({ available: false, applied: false });
   const [approveChecked, setApproveChecked] = useState(false);
   const [agreementSvg, setAgreementSvg] = useState<string | null>(null);
+  const [productType, setProductType] = useState<"pendant" | "ring">("pendant");
+  const [ringSize, setRingSize] = useState(52);
+  const [bandHeight, setBandHeight] = useState(7.5);
   const [approval, setApproval] = useState<{ approval_hash: string } | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
 
@@ -114,7 +117,7 @@ export default function GoldenPathPage() {
     if (!text.trim()) return;
     setBusy(true);
     try {
-      const created = await api.createDesign(text.trim());
+      const created = await api.createDesign(text.trim(), productType);
       setDesignId(created.design_id);
       setNormalizedText(created.normalized_text);
       if (refFile) {
@@ -136,9 +139,12 @@ export default function GoldenPathPage() {
       await api.updateBrief(created.design_id, {
         customer_message: message || null,
         style_intent: styleIntent,
-        product_type: "pendant",
+        product_type: productType,
         language: lang,
         style_strength: styleStrength,
+        ...(productType === "ring"
+          ? { ring_size_eu: ringSize, band_height_mm: bandHeight }
+          : {}),
       });
       setBusy(false);
       setStep("confirm");
@@ -463,6 +469,59 @@ export default function GoldenPathPage() {
                 className="mt-3 w-full rounded-lg border border-stone-200 p-3 text-sm"
                 rows={2}
               />
+            )}
+          </div>
+          <div>
+            <p className="mb-2 text-sm font-medium">{t.product_label}</p>
+            <div className="flex flex-wrap gap-2">
+              {(["pendant", "ring"] as const).map((p) => (
+                <button
+                  key={p}
+                  data-testid={`product-${p}`}
+                  onClick={() => setProductType(p)}
+                  className={`rounded-full border px-4 py-2 text-sm ${
+                    productType === p
+                      ? "border-brand-gold bg-brand-gold text-white"
+                      : "border-stone-300 bg-white"
+                  }`}
+                >
+                  {t.products[p]}
+                </button>
+              ))}
+            </div>
+            {productType === "ring" && (
+              <div className="mt-3 flex gap-4">
+                <label className="flex-1 text-xs">
+                  {t.ring_size_label}
+                  <select
+                    data-testid="ring-size"
+                    value={ringSize}
+                    onChange={(e) => setRingSize(Number(e.target.value))}
+                    className="mt-1 w-full rounded border border-stone-300 p-2"
+                  >
+                    {Array.from({ length: 27 }, (_, i) => 44 + i).map((s) => (
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="flex-1 text-xs">
+                  {t.band_height_label}
+                  <select
+                    data-testid="band-height"
+                    value={bandHeight}
+                    onChange={(e) => setBandHeight(Number(e.target.value))}
+                    className="mt-1 w-full rounded border border-stone-300 p-2"
+                  >
+                    {[5.5, 6.5, 7.5, 8.5].map((h) => (
+                      <option key={h} value={h}>
+                        {h}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
             )}
           </div>
           <div>

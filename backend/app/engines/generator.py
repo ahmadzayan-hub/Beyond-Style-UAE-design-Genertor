@@ -40,6 +40,7 @@ COMPOSITION_CLASSES = {
     "frame_circle": 5,
     "frame_rect": 6,
     "top_bar": 7,
+    "engraved_band": 8,
 }
 LOOPS_CLASSES = {"none": 0, "top": 1, "left_right": 2}
 
@@ -116,11 +117,14 @@ def _candidate_id(design_id: str, recipe: RecipeParams, source_sha: str) -> str:
     empty so that adding the field did not renumber every pre-axis design;
     once coordinates ARE set they are part of identity, so a different
     weight is a different candidate rather than a silent restyle."""
-    dumped = (
-        recipe.model_dump_json()
-        if recipe.font_axes
-        else recipe.model_dump_json(exclude={"font_axes"})
-    )
+    exclude = set()
+    if not recipe.font_axes:
+        exclude.add("font_axes")
+    if recipe.ring is None:
+        # Same invariant as font_axes: a None ring must serialize exactly
+        # like the pre-ring schema so no existing candidate is renumbered.
+        exclude.add("ring")
+    dumped = recipe.model_dump_json(exclude=exclude) if exclude else recipe.model_dump_json()
     payload = f"{design_id}|{dumped}|{source_sha}|{GENERATOR_VERSION}"
     return hashlib.sha256(payload.encode()).hexdigest()[:16]
 
@@ -138,6 +142,13 @@ def build_geometry_for_recipe(source_text: str, recipe: RecipeParams, rules: Wor
     # structured error rather than crashing inside the font library.
     if recipe.font_axes:
         validate_axes(recipe.font_id, recipe.font_axes)
+
+    if recipe.ring is not None:
+        # Engraved-band mode: same choke point (generation AND designer
+        # edits), different construction — CUT band + ENGRAVE layer.
+        from .ring_band import build_ring_geometry
+
+        return build_ring_geometry(source_text, recipe, rules)
 
     features = None
     if recipe.ot_feature_set != "default":

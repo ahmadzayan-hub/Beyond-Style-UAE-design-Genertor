@@ -212,6 +212,8 @@ def upsert_brief(
     deadline: str | None = None,
     delivery_emirate: str | None = None,
     style_strength: float = 0.5,
+    ring_size_eu: int | None = None,
+    band_height_mm: float | None = None,
 ) -> m.CustomerBrief:
     req = session.get(m.DesignRequest, request_id)
     if req is None:
@@ -267,6 +269,16 @@ def upsert_brief(
                 dict.fromkeys(dna_hints["preferred_compositions"] + hints["preferred_compositions"])
             )
         hints = merged
+    if product_type == "ring":
+        ring_hint = {}
+        if ring_size_eu is not None:
+            ring_hint["size_eu"] = ring_size_eu
+        if band_height_mm is not None:
+            ring_hint["band_height_mm"] = band_height_mm
+        hints["ring"] = ring_hint
+        # Generation routes on the REQUEST's product type; the brief is the
+        # customer's authoritative product choice, so keep them in sync.
+        req.product_type = "ring"
     brief.generation_hints = hints
     brief.quantity = quantity
     brief.deadline = deadline
