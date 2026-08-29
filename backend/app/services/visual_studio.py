@@ -39,6 +39,59 @@ class PreviewRejected(Exception):
         super().__init__(f"{status}: divergence {guard['divergence']}")
 
 
+_STRIP_FONT = None
+
+
+def _strip_font(px: int):
+    from pathlib import Path
+
+    from PIL import ImageFont
+
+    global _STRIP_FONT
+    if _STRIP_FONT is None:
+        _STRIP_FONT = str(Path(__file__).resolve().parent.parent / "assets" / "fonts" / "Tajawal-Regular.ttf")
+    return ImageFont.truetype(_STRIP_FONT, px)
+
+
+def stamp_dimensions_strip(
+    png_bytes: bytes,
+    *,
+    width_mm: float,
+    height_mm: float,
+    version_number: int,
+    geometry_hash: str,
+) -> bytes:
+    """Append a spec strip to a preview PNG carrying the design's REAL
+    millimetre dimensions and the AI-preview disclaimer.
+
+    The stored generation stays untouched; the strip is composited at serve
+    time so every image a customer sees carries the agreed dimensions. The
+    numbers come from the built vector geometry, never from the raster."""
+    img = Image.open(io.BytesIO(png_bytes)).convert("RGB")
+    w = img.width
+    strip_h = max(int(img.height * 0.10), 64)
+    out = Image.new("RGB", (w, img.height + strip_h), "#fdfaf4")
+    out.paste(img, (0, 0))
+    draw = ImageDraw.Draw(out)
+    draw.line([(0, img.height), (w, img.height)], fill="#c9a961", width=2)
+
+    big = _strip_font(int(strip_h * 0.34))
+    small = _strip_font(int(strip_h * 0.22))
+    dims = f"{round(width_mm, 1):g} × {round(height_mm, 1):g} mm  (real size)"
+    ident = f"v{version_number} · {geometry_hash[:12]}"
+    note = "AI PREVIEW — NOT THE MANUFACTURING FILE"
+    y0 = img.height + int(strip_h * 0.12)
+    draw.text((int(w * 0.03), y0), dims, fill="#3d3325", font=big)
+    draw.text((int(w * 0.03), y0 + int(strip_h * 0.42)), note, fill="#8a6d3b", font=small)
+    bbox = draw.textbbox((0, 0), ident, font=small)
+    draw.text((w - int(w * 0.03) - (bbox[2] - bbox[0]), y0 + int(strip_h * 0.42)),
+              ident, fill="#8a6d3b", font=small)
+
+    buf = io.BytesIO()
+    out.save(buf, format="PNG")
+    return buf.getvalue()
+
+
 def render_canonical_png(geometry_wkt: str, size_px: int = RENDER_PX) -> bytes:
     """Deterministic transparent raster of the canonical geometry — the
     conditioning image. Rasterization is for AI conditioning and display

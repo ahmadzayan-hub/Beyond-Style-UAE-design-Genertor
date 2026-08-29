@@ -7,6 +7,7 @@ PostgreSQL via app.services.design_service.
 """
 from __future__ import annotations
 
+import hashlib
 import uuid
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Request, Response
@@ -388,6 +389,21 @@ def version_preview_svg(version_id: str, request: Request, session: Session = De
     v = require_owned_version(session, version_id, request)
     candidate, source = svc._version_to_candidate(v)
     return Response(content=export_proof_svg(candidate, source), media_type="image/svg+xml")
+
+
+@versions_router.get("/{version_id}/agreement-proof")
+def version_agreement_proof(version_id: str, request: Request, session: Session = Depends(get_session)):
+    """Owner-scoped dimensioned approval artifact: the design with its real
+    millimetre dimensions and spec block drawn on. What the customer sees at
+    the approval step; its sha256 is recorded on approval. Display artifact —
+    not a production export."""
+    v = require_owned_version(session, version_id, request)
+    content = svc.agreement_proof_for_version(session, v)
+    return Response(
+        content=content,
+        media_type="image/svg+xml",
+        headers={"X-Content-Sha256": hashlib.sha256(content.encode("utf-8")).hexdigest()},
+    )
 
 
 class RepairRequest(BaseModel):

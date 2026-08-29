@@ -68,6 +68,8 @@ export const STRINGS = {
     preview_unavailable: "المعاينة الواقعية غير متاحة حالياً — التصميم والتصنيع يعملان بشكل طبيعي.",
     preview_rejected: "رُفضت المعاينة: تغيّر شكل التصميم. تم الاحتفاظ بالتصميم الأصلي.",
     approve_title: "الموافقة النهائية",
+    agreement_note:
+      "هذا الرسم بالأبعاد الحقيقية بالمليمتر — اعتمادك يعني الموافقة على هذا التصميم بهذه الأبعاد.",
     approve_statement: "أؤكد صحة الكتابة والتصميم",
     approve_btn: "اعتماد التصميم نهائياً",
     approved_title: "تم اعتماد تصميمك ✓",
@@ -162,6 +164,8 @@ export const STRINGS = {
     preview_unavailable: "Photoreal preview unavailable right now — design and manufacturing are unaffected.",
     preview_rejected: "Preview rejected: it changed the design. Your original design is kept.",
     approve_title: "Final approval",
+    agreement_note:
+      "This drawing shows the real dimensions in millimetres — approving means agreeing to this design at these dimensions.",
     approve_statement: "I confirm the spelling and final design.",
     approve_btn: "Approve & lock design",
     approved_title: "Your design is approved ✓",

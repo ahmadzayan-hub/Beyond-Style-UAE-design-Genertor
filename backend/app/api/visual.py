@@ -141,8 +141,24 @@ def generation_image(generation_id: str, request: Request, session: Session = De
     require_owned_request(session, str(record.design_request_id), request)
     if not record.storage_key:
         raise HTTPException(404, "No image stored.")
+    content = get_storage().get(record.storage_key)
+    # Serve-time compositing: every preview a customer sees carries the
+    # design's REAL mm dimensions (from the vector geometry recorded in the
+    # brief) and the AI-preview disclaimer. The stored artifact is untouched.
+    dims = (record.visual_brief or {}).get("dimensions_mm") or {}
+    version = session.get(m.DesignVersion, record.design_version_id)
+    if dims.get("width_mm") and dims.get("height_mm") and version is not None:
+        from ..services.visual_studio import stamp_dimensions_strip
+
+        content = stamp_dimensions_strip(
+            content,
+            width_mm=dims["width_mm"],
+            height_mm=dims["height_mm"],
+            version_number=version.version_number,
+            geometry_hash=version.geometry_hash,
+        )
     return Response(
-        content=get_storage().get(record.storage_key),
+        content=content,
         media_type="image/png",
         headers={"Cache-Control": "private, no-store",
                  "X-AI-Preview": "true", "X-Guard-Status": record.guard_status},

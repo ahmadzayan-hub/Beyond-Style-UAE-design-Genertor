@@ -531,9 +531,16 @@ def approve_version(
         session.flush()
     except IntegrityError as exc:  # unique(design_version_id) — concurrent double insert
         raise ConflictError("Version already has an approval.") from exc
+    # The dimensioned agreement proof is deterministic per version; its hash
+    # in the audit trail binds the approval to the exact picture (design +
+    # real-mm dimensions + spec block) the customer saw and agreed to.
+    proof_sha256 = hashlib.sha256(
+        agreement_proof_for_version(session, version).encode("utf-8")
+    ).hexdigest()
     _emit(session, "CUSTOMER_APPROVED", design_id=version.design_id, version_id=version.id,
           actor=approved_by, actor_type="customer",
-          metadata={"approval_hash": approval_hash, "method": approval_method})
+          metadata={"approval_hash": approval_hash, "method": approval_method,
+                    "agreement_proof_sha256": proof_sha256})
     _emit(session, "VERSION_LOCKED", design_id=version.design_id, version_id=version.id,
           metadata={"approval_hash": approval_hash})
     return approval
@@ -562,6 +569,23 @@ def _version_to_candidate(version: m.DesignVersion) -> tuple[DesignCandidate, Im
         text_geometry_wkt=version.text_geometry_wkt or "",
     )
     return candidate, source
+
+
+def agreement_proof_for_version(session: Session, version: m.DesignVersion) -> str:
+    """Deterministic dimensioned approval artifact for one version. Same
+    version → byte-identical SVG, so its sha256 identifies the exact picture
+    the customer agreed to."""
+    from ..exporters.agreement_proof import export_agreement_proof_svg
+
+    candidate, source = _version_to_candidate(version)
+    design = session.get(m.DesignRequest, version.design_id)
+    return export_agreement_proof_svg(
+        candidate,
+        source,
+        version_number=version.version_number,
+        geometry_hash=version.geometry_hash,
+        product_type=design.product_type if design else "pendant",
+    )
 
 
 def export_version(

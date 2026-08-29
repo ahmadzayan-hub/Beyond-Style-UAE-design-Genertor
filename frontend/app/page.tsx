@@ -78,6 +78,7 @@ export default function GoldenPathPage() {
     applied: boolean;
   }>({ available: false, applied: false });
   const [approveChecked, setApproveChecked] = useState(false);
+  const [agreementSvg, setAgreementSvg] = useState<string | null>(null);
   const [approval, setApproval] = useState<{ approval_hash: string } | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
 
@@ -872,7 +873,16 @@ export default function GoldenPathPage() {
           <button
             data-testid="to-approve"
             disabled={busy || !selected.validation_passed}
-            onClick={() => setStep("approve")}
+            onClick={async () => {
+              setStep("approve");
+              // The customer approves the DIMENSIONED artifact; fall back
+              // to the plain proof if the endpoint is unreachable.
+              try {
+                setAgreementSvg(await api.agreementProofSvg(selected.version_id));
+              } catch {
+                setAgreementSvg(null);
+              }
+            }}
             className="rounded-xl bg-brand-dark p-4 text-lg font-semibold text-white disabled:opacity-40"
           >
             {t.continue}
@@ -886,9 +896,15 @@ export default function GoldenPathPage() {
       {step === "approve" && selected && (
         <section className="flex flex-col gap-5">
           <h2 className="text-xl font-bold">{t.approve_title}</h2>
-          <div className="proof-svg-large rounded-xl border border-stone-200 bg-white p-4">
-            {selected.svg && <div dangerouslySetInnerHTML={{ __html: selected.svg }} />}
+          <div
+            className="proof-svg-large rounded-xl border border-stone-200 bg-white p-4"
+            data-testid="agreement-proof"
+          >
+            {(agreementSvg ?? selected.svg) && (
+              <div dangerouslySetInnerHTML={{ __html: agreementSvg ?? selected.svg ?? "" }} />
+            )}
           </div>
+          <p className="text-xs text-stone-500">{t.agreement_note}</p>
           <div
             data-testid="approve-text-display"
             dir="auto"

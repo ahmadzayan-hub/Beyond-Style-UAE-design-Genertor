@@ -196,6 +196,16 @@ export async function versionSvg(versionId: string): Promise<string> {
   return res.text();
 }
 
+export async function agreementProofSvg(versionId: string): Promise<string> {
+  // Dimensioned approval artifact: the design with its real mm dimensions
+  // and spec block drawn on — what the customer actually agrees to.
+  const res = await doFetch(`/api/versions/${versionId}/agreement-proof`, {
+    headers: authHeaders(),
+  });
+  if (!res.ok) throw new ApiError(`HTTP ${res.status}`, "GENERATION_FAILED", res.status);
+  return res.text();
+}
+
 export async function editVersion(versionId: string, overrides: object, note: string | null) {
   return jsonOrThrow(
     await doFetch(`/api/versions/${versionId}/edit`, {

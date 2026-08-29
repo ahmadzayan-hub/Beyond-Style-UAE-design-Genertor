@@ -29,6 +29,30 @@ finding, not code: the artifact-upload step hit the GitHub artifact storage quot
 ("Artifact storage quota has been hit") — old CI artifacts need pruning or the step made
 non-blocking; it did not cause the test failures.
 
+## Dimensioned Agreement Proof (2026-08-29, owner mandate with 16 real production photos)
+Owner requirement: the customer must approve a picture that carries the REAL dimensions —
+matching Beyond Style's manual spec sheets (روز/شغف/فرح necklace sheet, the ring's 4cm×0.75cm
+engraving drawing) — and AI previews must carry the same dimensions so the manufactured piece
+matches the agreed image. Implemented:
+- `exporters/agreement_proof.py`: deterministic dimensioned approval SVG — canonical design,
+  real-mm dimension arrows measured from the built geometry, spec block (text/product/font/
+  dimensions/version·hash), Arabic footer. Byte-identical per version → stable sha256.
+- `GET /api/versions/{id}/agreement-proof` (owner-scoped, X-Content-Sha256 header; unowned
+  access reads 404 per the API's anti-enumeration contract).
+- Approval now records `agreement_proof_sha256` in the CUSTOMER_APPROVED audit event — the
+  approval is bound to the exact dimensioned picture the customer saw.
+- AI previews: `stamp_dimensions_strip` composites a strip at SERVE time (stored artifact
+  untouched) with the real mm from the vector geometry + "AI PREVIEW — NOT THE MANUFACTURING
+  FILE" + version·hash. Dimensions always come from geometry, never from the raster.
+- Frontend approve step displays the dimensioned proof (falls back to plain proof SVG) with an
+  explicit Arabic/English note that approving = agreeing to these dimensions.
+Tests: `test_agreement_proof.py` 6/6 (real-mm match, exact-text preservation, determinism,
+approval-hash binding, pixel-exact strip compositing on a locally rendered canonical PNG — no
+fabricated AI output, endpoint auth). Honest limitation: ring-band engraving construction
+(photos 12–15) is a product type the parametric generator does not yet build; the proof/strip
+machinery applies to all supported products, ring bands need their own generation slice. 3D
+viewer: deferred by owner ("بعد كدا بضيف خاصيه عرض التصميم ثلاثي").
+
 ## Live CORS failure fixed: first-party origins now built in (2026-08-28, real device report)
 With the frontend wired (below), the owner's phone showed CONNECTION_FAILED on the live site —
 the browser's fetch threw, the CORS signature: the deployed backend was missing the
