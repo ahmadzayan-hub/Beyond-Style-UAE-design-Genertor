@@ -29,6 +29,30 @@ finding, not code: the artifact-upload step hit the GitHub artifact storage quot
 ("Artifact storage quota has been hit") — old CI artifacts need pruning or the step made
 non-blocking; it did not cause the test failures.
 
+## Double-Face Ring Engraving (2026-08-29, completes the wedding-ring production case)
+Outer phrase + inner names (photos 12–15) as one design. Text truth preserved structurally:
+the inner engraving is the SECOND LINE of the single immutable source text (outer\ninner — the
+two-name necklace pattern), so one confirmed text and one identity proof cover every codepoint
+("\n" counts as layout, the same convention as shape_multiline's separators). More than two
+faces is refused (ValueError), never silently merged.
+- `ring_band.build_ring_geometry`: per-face build (shape → outline → downscale-only fit →
+  center); the inner flat pattern is MIRRORED about the strip centerline so back-face engraving
+  reads correctly after rolling (regression-proven by re-mirroring against a single-face build).
+  Engraving-mode violations (stroke/margins) now checked on BOTH faces.
+- Persistence: `inner_text_geometry_wkt` on design_candidates + design_versions (migration
+  a9d24c8e01b7), threaded through candidate → selection → version → edits.
+- **Hash gap fixed**: every ring shares one CUT rectangle, so version geometry_hash previously
+  could not distinguish two different engravings. `_design_geometry_hash` now binds
+  CUT|ENGRAVE|INNER for rings; silhouette products keep the CUT-only hash byte-identical (no
+  existing version renumbered — golden fixture green). Approval/export re-verification updated.
+- DXF: ENGRAVE_INNER layer + workshop note ("back face; mirrored in front view; engrave with
+  strip flipped"). Agreement proof shows the inner face as its own labelled band panel
+  (الوجه الداخلي). 3D viewer renders the inner marks at the inner radius facing into the ring.
+- Frontend: ring flow gains an optional "نقش داخلي" input; the combined text is confirmed as
+  one; multi-line text displays render both lines.
+Tests: `test_ring_dual_face.py` 7/7 + 73/73 across ring/mesh3d/agreement/persistence/approval/
+golden-fixture/quality-gate neighbors; frontend typecheck+build clean.
+
 ## 3D Viewer (2026-08-29, owner-planned "عرض التصميم ثلاثي الأبعاد")
 Customer trust view before approval, per the 3D Stage rules (Three.js for visualization only;
 the 2D Design Graph stays canonical; only after 2D selection/QA):

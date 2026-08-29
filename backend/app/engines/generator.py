@@ -241,6 +241,11 @@ def build_candidate(
             if built.text_geometry is not None and not built.text_geometry.is_empty
             else ""
         ),
+        inner_text_geometry_wkt=(
+            built.inner_text_geometry.wkt
+            if built.inner_text_geometry is not None and not built.inner_text_geometry.is_empty
+            else ""
+        ),
     )
 
 

@@ -24,6 +24,7 @@ export interface Mesh3DPayload {
   thickness_mm: number;
   polygons: PolyRing[];
   engrave_polygons: PolyRing[];
+  inner_engrave_polygons?: PolyRing[];
   ring: {
     size_eu: number;
     band_height_mm: number;
@@ -135,6 +136,21 @@ export default function Viewer3D({
       for (const g of engraveGeoms) {
         // Sit the marks just above the outer surface of the bent band.
         g.translate(0, 0, thickness + 0.01);
+        bendAroundCylinder(g, r, L);
+        group.add(new THREE.Mesh(g, engraveMat));
+      }
+      // Inner-face engraving (already mirrored in the flat pattern):
+      // just inside the inner surface, facing into the ring.
+      const innerGeoms = toShapes(payload.inner_engrave_polygons ?? []).map(
+        (s) =>
+          new THREE.ExtrudeGeometry(s, {
+            depth: 0.08,
+            bevelEnabled: false,
+            curveSegments: 8,
+          })
+      );
+      for (const g of innerGeoms) {
+        g.translate(0, 0, -0.09);
         bendAroundCylinder(g, r, L);
         group.add(new THREE.Mesh(g, engraveMat));
       }

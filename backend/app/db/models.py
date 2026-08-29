@@ -83,6 +83,9 @@ class DesignCandidateRow(TimestampMixin, Base):
     diversity_rank: Mapped[int | None] = mapped_column(Integer)
     geometry_wkt: Mapped[str] = mapped_column(Text, nullable=False)
     text_geometry_wkt: Mapped[str | None] = mapped_column(Text)
+    # Engraved-band second face (ring inner engraving); None for all
+    # silhouette products and single-face rings.
+    inner_text_geometry_wkt: Mapped[str | None] = mapped_column(Text)
     quality_report: Mapped[dict | None] = mapped_column(JSONB)
     source_text_sha256: Mapped[str] = mapped_column(String(64), nullable=False)
 
@@ -122,6 +125,7 @@ class DesignVersion(TimestampMixin, Base):
     source_text_sha256: Mapped[str] = mapped_column(String(64), nullable=False)
     geometry_wkt: Mapped[str] = mapped_column(Text, nullable=False)
     text_geometry_wkt: Mapped[str | None] = mapped_column(Text)
+    inner_text_geometry_wkt: Mapped[str | None] = mapped_column(Text)
     geometry_hash: Mapped[str] = mapped_column(String(64), nullable=False)
 
     schema_version: Mapped[str] = mapped_column(String(16), nullable=False)

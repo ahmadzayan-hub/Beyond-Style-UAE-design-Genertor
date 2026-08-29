@@ -207,6 +207,10 @@ class DesignCandidate(BaseModel):
     diversity_rank: Optional[int] = None
     geometry_wkt: str = ""  # canonical vector geometry (WKT MultiPolygon, mm)
     text_geometry_wkt: str = ""  # text-only geometry for proof rendering
+    #: Ring inner-face engraving (second line of the source text), mirrored
+    #: in the flat pattern so it reads correctly after rolling. Empty for
+    #: silhouette products and single-face rings.
+    inner_text_geometry_wkt: str = ""
     quality_report: Optional[dict] = None  # labelled heuristic quality layer
 
 

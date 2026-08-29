@@ -74,8 +74,11 @@ def mesh3d_payload(version: m.DesignVersion, product_type: str) -> dict:
         }
 
     engrave = []
+    inner_engrave = []
     if ring_spec and version.text_geometry_wkt:
         engrave = _rings_of(shapely_wkt.loads(version.text_geometry_wkt))
+    if ring_spec and version.inner_text_geometry_wkt:
+        inner_engrave = _rings_of(shapely_wkt.loads(version.inner_text_geometry_wkt))
 
     return {
         "units": "mm",
@@ -89,6 +92,9 @@ def mesh3d_payload(version: m.DesignVersion, product_type: str) -> dict:
         "thickness_mm": round(thickness, 3),
         "polygons": _rings_of(geom),
         "engrave_polygons": engrave,
+        # Inner-face marks are mirrored in the flat pattern; the viewer
+        # bends them at the inner radius facing into the ring.
+        "inner_engrave_polygons": inner_engrave,
         "ring": ring_info,
         "weight_estimate_g": weights,
         "weight_basis": WEIGHT_BASIS,

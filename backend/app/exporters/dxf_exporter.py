@@ -95,6 +95,25 @@ def export_dxf(
                 msp.add_lwpolyline(
                     list(hole.coords), close=True, dxfattribs={"layer": "ENGRAVE"}
                 )
+        if candidate.inner_text_geometry_wkt:
+            # Second face: engraved on the BACK of the strip. The layer is
+            # drawn in front-view coordinates already MIRRORED about the
+            # strip centerline, so the workshop flips the strip and engraves
+            # it as drawn — it then reads correctly from inside the ring.
+            inner = shapely_wkt.loads(candidate.inner_text_geometry_wkt)
+            doc.layers.add("ENGRAVE_INNER", color=6)
+            doc.header.custom_vars.append(
+                "ENGRAVE_INNER_NOTE",
+                "back face; mirrored in front view; engrave with strip flipped",
+            )
+            for poly in ([inner] if inner.geom_type == "Polygon" else list(inner.geoms)):
+                msp.add_lwpolyline(
+                    list(poly.exterior.coords), close=True, dxfattribs={"layer": "ENGRAVE_INNER"}
+                )
+                for hole in poly.interiors:
+                    msp.add_lwpolyline(
+                        list(hole.coords), close=True, dxfattribs={"layer": "ENGRAVE_INNER"}
+                    )
 
     buf = io.StringIO()
     doc.write(buf)

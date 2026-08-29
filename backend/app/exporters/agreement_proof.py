@@ -111,6 +111,27 @@ def export_agreement_proof_svg(
     dim_y = design_bottom + oy + _DIM_GAP
     dim_x = ox + w + _DIM_GAP
 
+    # Ring second face: draw the inner-face flat pattern as its own band
+    # panel under the dimension line, labelled explicitly. (The layer is
+    # mirrored for back-face engraving — shown as manufactured.)
+    inner_block = ""
+    inner_extra_h = 0.0
+    if candidate.recipe.ring is not None and candidate.inner_text_geometry_wkt:
+        inner_geom = shapely_wkt.loads(candidate.inner_text_geometry_wkt)
+        iy_top = dim_y + _DIM_TEXT + 4.0
+        band_local = affinity.translate(geom, xoff=-minx + ox, yoff=-miny + iy_top)
+        inner_local = affinity.translate(inner_geom, xoff=-minx + ox, yoff=-miny + iy_top)
+        inner_block = (
+            f'  <text x="{ox}" y="{iy_top - 1.2}" font-size="3.0" '
+            f'font-family="{_FONT_STACK}" fill="#5a4620" direction="rtl">'
+            "الوجه الداخلي (نقش من الخلف)</text>\n"
+            f'  <path d="{geometry_to_path_d(band_local, flip_y=2 * iy_top + h)}" '
+            f'fill="#1a1a1a" fill-rule="evenodd" stroke="none"/>\n'
+            f'  <path d="{geometry_to_path_d(inner_local, flip_y=2 * iy_top + h)}" '
+            f'fill="#f5efe2" fill-rule="evenodd" stroke="none"/>\n'
+        )
+        inner_extra_h = h + 6.5
+
     rows: list[tuple[str, str]] = [
         ("النص", source.normalized_text),
         ("المنتج", _PRODUCT_AR.get(product_type, product_type)),
@@ -121,7 +142,7 @@ def export_agreement_proof_svg(
     if material_label:
         rows.insert(2, ("الخامة", material_label))
 
-    info_top = dim_y + _DIM_TEXT + 4.0
+    info_top = dim_y + _DIM_TEXT + 4.0 + inner_extra_h
     info_h = _INFO_PAD * 2 + _INFO_ROW * len(rows) + 6.0
     total_w = round(max(dim_x + _DIM_TEXT + 6.0, 78.0), PRECISION)
     total_h = round(info_top + info_h + _MARGIN, PRECISION)
@@ -168,6 +189,7 @@ def export_agreement_proof_svg(
         f"{text_layer}"
         f"{_dim_h(ox, ox + w, dim_y, f'{_fmt(w)} mm')}"
         f"{_dim_v(dim_x, oy, design_bottom, f'{_fmt(h)} mm')}"
+        f"{inner_block}"
         f'  <line x1="{_INFO_PAD}" y1="{info_top}" x2="{total_w - _INFO_PAD}" y2="{info_top}" '
         f'stroke="#c9a961" stroke-width="0.3"/>\n'
         f"{info_rows}"

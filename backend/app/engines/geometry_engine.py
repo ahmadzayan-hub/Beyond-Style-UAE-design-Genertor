@@ -31,6 +31,8 @@ class BuiltGeometry:
     # renderer to differentiate raised text on solid plates. Display aid
     # only — the manufacturing truth remains `geometry`.
     text_geometry: MultiPolygon | None = None
+    # Ring inner-face engraving (flat pattern, mirrored for the back face).
+    inner_text_geometry: MultiPolygon | None = None
     outline_issues: list[str] = field(default_factory=list)
     bridges_added: int = 0
     loop_centers_mm: list[tuple[float, float]] = field(default_factory=list)

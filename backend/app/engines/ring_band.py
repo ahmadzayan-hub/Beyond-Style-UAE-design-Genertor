@@ -113,60 +113,109 @@ def build_ring_geometry(
         except (KeyError, ValueError):
             features = None
 
-    runs = shape_text(source_text, recipe.font_id, features)
-    proof = verify_identity(source_text, runs)
+    # Two engraved faces at most, expressed inside the single immutable
+    # source text as OUTER\nINNER — exactly the two-name necklace pattern.
+    # The text of each face is customer truth; more than two faces is
+    # refused, never silently merged.
+    faces = source_text.split("\n")
+    if len(faces) > 2:
+        raise ValueError("A ring band supports at most two engraved faces (outer\\ninner).")
+    outer_text = faces[0]
+    inner_text = faces[1] if len(faces) == 2 and faces[1].strip() else None
 
     # Text height budget: inside the margins, minus border rails when present.
     border_allowance = 1.6 if border != "none" else 0.0
     text_h = height - 2 * EDGE_MARGIN_MM - 2 * border_allowance
     field_len = length - 2 * (EDGE_MARGIN_MM + 1.2)
 
-    # Engraved marks stand alone: keep dots, no loops, no plates. The
-    # composed geometry is the ENGRAVE layer, not a cut-out silhouette.
-    text_recipe = recipe.model_copy(
-        update={
-            "composition": "bare",
-            "loops": "none",
-            "dot_strategy": "keep",
-            "target_height_mm": text_h,
-            "max_lines": 1,
-        }
-    )
-    built_text = compose(
-        runs,
-        text_recipe,
-        loop_inner_d=rules.loop_inner_diameter_mm,
-        loop_wall=rules.loop_wall_mm,
-        bridge_width=rules.min_bridge_mm,
-        min_gap_eff=rules.effective_min_gap_mm,
-        line_runs=None,
-        fit_width_mm=field_len,
-    )
-    text_geom = built_text.geometry
-    issues = list(built_text.outline_issues)
+    def _build_face(face_text: str, face_h: float):
+        """Shape → outline → fit (downscale only, never alter text) →
+        center on the band. Returns (runs, per-line proof, geometry, issues)."""
+        runs = shape_text(face_text, recipe.font_id, features)
+        line_proof = verify_identity(face_text, runs)
+        # Engraved marks stand alone: keep dots, no loops, no plates. The
+        # composed geometry is an ENGRAVE layer, not a cut-out silhouette.
+        text_recipe = recipe.model_copy(
+            update={
+                "composition": "bare",
+                "loops": "none",
+                "dot_strategy": "keep",
+                "target_height_mm": face_h,
+                "max_lines": 1,
+            }
+        )
+        built_text = compose(
+            runs,
+            text_recipe,
+            loop_inner_d=rules.loop_inner_diameter_mm,
+            loop_wall=rules.loop_wall_mm,
+            bridge_width=rules.min_bridge_mm,
+            min_gap_eff=rules.effective_min_gap_mm,
+            line_runs=None,
+            fit_width_mm=field_len,
+        )
+        geom = built_text.geometry
+        face_issues = list(built_text.outline_issues)
+        tminx, tminy, tmaxx, tmaxy = geom.bounds
+        tw = tmaxx - tminx
+        if tw > field_len and tw > 0:
+            scale = field_len / tw
+            if scale < MIN_LEGIBLE_SCALE:
+                face_issues.append("ENGRAVING_TEXT_OVERFLOW")
+                scale = MIN_LEGIBLE_SCALE
+            geom = affinity.scale(geom, xfact=scale, yfact=scale, origin=(tminx, tminy))
+            tminx, tminy, tmaxx, tmaxy = geom.bounds
+            tw = tmaxx - tminx
+        th = tmaxy - tminy
+        geom = affinity.translate(
+            geom,
+            xoff=(length - tw) / 2 - tminx,
+            yoff=(height - th) / 2 - tminy,
+        )
+        return runs, line_proof, geom, face_issues
 
-    # Fit without altering the text: uniform down-scale only, and refuse
-    # (flag) once legibility would be lost instead of shrinking further.
-    tminx, tminy, tmaxx, tmaxy = text_geom.bounds
-    tw = tmaxx - tminx
-    if tw > field_len and tw > 0:
-        scale = field_len / tw
-        if scale < MIN_LEGIBLE_SCALE:
-            issues.append("ENGRAVING_TEXT_OVERFLOW")
-            scale = MIN_LEGIBLE_SCALE
-        text_geom = affinity.scale(text_geom, xfact=scale, yfact=scale, origin=(tminx, tminy))
-        tminx, tminy, tmaxx, tmaxy = text_geom.bounds
-        tw, text_h = tmaxx - tminx, tmaxy - tminy
+    runs, outer_proof, outer_geom, issues = _build_face(outer_text, text_h)
 
-    # Center the text on the band.
-    th = tmaxy - tminy
-    text_geom = affinity.translate(
-        text_geom,
-        xoff=(length - tw) / 2 - tminx,
-        yoff=(height - th) / 2 - tminy,
-    )
+    inner_engrave = None
+    inner_proof = None
+    if inner_text is not None:
+        inner_runs, inner_proof, inner_geom, inner_issues = _build_face(
+            inner_text, height - 2 * EDGE_MARGIN_MM  # inner face has no border rails
+        )
+        issues.extend(inner_issues)
+        runs = runs + inner_runs
+        # The back face is engraved with the strip flipped, so the flat
+        # pattern is MIRRORED about the strip's vertical centerline — the
+        # text then reads correctly from inside the rolled ring.
+        inner_geom = affinity.scale(inner_geom, xfact=-1, yfact=1, origin=(length / 2, 0))
+        inner_engrave = MultiPolygon(
+            [p for p in getattr(inner_geom, "geoms", [inner_geom])
+             if not p.is_empty and p.geom_type == "Polygon"]
+        )
 
-    engrave_parts = [g for g in getattr(text_geom, "geoms", [text_geom])]
+    # Merge identity over the FULL source text; the "\n" separator is
+    # layout, covered by the face split itself (same convention as
+    # shape_multiline's consumed separators).
+    if inner_proof is None:
+        proof = outer_proof
+    else:
+        covered = set(outer_proof.covered_codepoint_indices)
+        covered.add(len(outer_text))  # the \n
+        covered.update(len(outer_text) + 1 + i for i in inner_proof.covered_codepoint_indices)
+        notdef = outer_proof.notdef_glyph_count + inner_proof.notdef_glyph_count
+        uncovered = [i for i in range(len(source_text)) if i not in covered]
+        verified = not uncovered and notdef == 0 and len(source_text) > 0
+        from ..schemas.jewellery_design import TextIdentityProof
+
+        proof = TextIdentityProof(
+            verified=verified,
+            covered_codepoint_indices=sorted(covered),
+            uncovered_codepoint_indices=uncovered,
+            notdef_glyph_count=notdef,
+            detail="ok" if verified else f"uncovered={uncovered[:20]} notdef={notdef}",
+        )
+
+    engrave_parts = [g for g in getattr(outer_geom, "geoms", [outer_geom])]
     engrave_parts.extend(_border_geometry(length, height, border))
     engrave = MultiPolygon(
         [p for p in engrave_parts if not p.is_empty and p.geom_type == "Polygon"]
@@ -176,6 +225,7 @@ def build_ring_geometry(
     return runs, proof, BuiltGeometry(
         geometry=band,
         text_geometry=engrave,
+        inner_text_geometry=inner_engrave,
         outline_issues=issues,
         bridges_added=0,
         loop_centers_mm=[],
@@ -214,24 +264,26 @@ def ring_violations(candidate, rules: WorkshopRules) -> list[Violation]:
             detail="Ring has no engraving geometry.",
         ))
         return out
-    engrave = shapely_wkt.loads(candidate.text_geometry_wkt)
-
-    stroke = min_material_width_mm(engrave)
-    if stroke < ENGRAVE_MIN_STROKE_MM:
-        out.append(Violation(
-            code=ViolationCode.ENGRAVING_STROKE_TOO_THIN,
-            severity=ValidationSeverity.ERROR,
-            detail=f"Narrowest engraved stroke {stroke:.2f} mm < {ENGRAVE_MIN_STROKE_MM} mm.",
-        ))
-
     band = shapely_wkt.loads(candidate.geometry_wkt)
     safe_zone = band.buffer(-EDGE_MARGIN_MM + 1e-9)
-    if not engrave.within(safe_zone):
-        out.append(Violation(
-            code=ViolationCode.ENGRAVING_MARGIN_TOO_SMALL,
-            severity=ValidationSeverity.ERROR,
-            detail=f"Engraving closer than {EDGE_MARGIN_MM} mm to the band edge.",
-        ))
+    faces = [("outer", candidate.text_geometry_wkt)]
+    if candidate.inner_text_geometry_wkt:
+        faces.append(("inner", candidate.inner_text_geometry_wkt))
+    for face, wkt_str in faces:
+        engrave = shapely_wkt.loads(wkt_str)
+        stroke = min_material_width_mm(engrave)
+        if stroke < ENGRAVE_MIN_STROKE_MM:
+            out.append(Violation(
+                code=ViolationCode.ENGRAVING_STROKE_TOO_THIN,
+                severity=ValidationSeverity.ERROR,
+                detail=f"Narrowest {face}-face engraved stroke {stroke:.2f} mm < {ENGRAVE_MIN_STROKE_MM} mm.",
+            ))
+        if not engrave.within(safe_zone):
+            out.append(Violation(
+                code=ViolationCode.ENGRAVING_MARGIN_TOO_SMALL,
+                severity=ValidationSeverity.ERROR,
+                detail=f"{face.capitalize()}-face engraving closer than {EDGE_MARGIN_MM} mm to the band edge.",
+            ))
     return out
 
 

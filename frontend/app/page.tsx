@@ -87,6 +87,7 @@ export default function GoldenPathPage() {
   const [productType, setProductType] = useState<"pendant" | "ring">("pendant");
   const [ringSize, setRingSize] = useState(52);
   const [bandHeight, setBandHeight] = useState(7.5);
+  const [innerText, setInnerText] = useState("");
   const [approval, setApproval] = useState<{ approval_hash: string } | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
 
@@ -122,7 +123,13 @@ export default function GoldenPathPage() {
     if (!text.trim()) return;
     setBusy(true);
     try {
-      const created = await api.createDesign(text.trim(), productType);
+      // A ring's optional inner engraving is the second line of the SAME
+      // immutable source text (outer\ninner) — one confirmed text, two faces.
+      const fullText =
+        productType === "ring" && innerText.trim()
+          ? `${text.trim()}\n${innerText.trim()}`
+          : text.trim();
+      const created = await api.createDesign(fullText, productType);
       setDesignId(created.design_id);
       setNormalizedText(created.normalized_text);
       if (refFile) {
@@ -495,7 +502,7 @@ export default function GoldenPathPage() {
               ))}
             </div>
             {productType === "ring" && (
-              <div className="mt-3 flex gap-4">
+              <div className="mt-3 flex flex-wrap gap-3">
                 <label className="flex-1 text-xs">
                   {t.ring_size_label}
                   <select
@@ -510,6 +517,16 @@ export default function GoldenPathPage() {
                       </option>
                     ))}
                   </select>
+                </label>
+                <label className="flex-1 text-xs">
+                  {t.inner_engraving_label}
+                  <input
+                    data-testid="inner-text-input"
+                    value={innerText}
+                    onChange={(e) => setInnerText(e.target.value)}
+                    placeholder={t.inner_engraving_hint}
+                    className="mt-1 w-full rounded border border-stone-300 p-2"
+                  />
                 </label>
                 <label className="flex-1 text-xs">
                   {t.band_height_label}
@@ -570,7 +587,7 @@ export default function GoldenPathPage() {
           <div
             data-testid="confirm-text-display"
             dir="auto"
-            className="rounded-xl border-2 border-brand-gold bg-white p-6 text-center text-4xl font-bold"
+            className="rounded-xl border-2 border-brand-gold bg-white p-6 text-center text-4xl font-bold whitespace-pre-line"
           >
             {normalizedText}
           </div>
@@ -787,7 +804,7 @@ export default function GoldenPathPage() {
           </div>
 
           {repair.available && !repair.applied && (
-            <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4" data-testid="repair-box">
+            <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 whitespace-pre-line" data-testid="repair-box">
               <p className="text-sm font-medium text-emerald-900">{t.improve_available}</p>
               {!repair.afterSvg ? (
                 <button
@@ -1017,7 +1034,7 @@ export default function GoldenPathPage() {
           <div
             data-testid="approve-text-display"
             dir="auto"
-            className="rounded-xl border-2 border-brand-gold bg-white p-5 text-center text-3xl font-bold"
+            className="rounded-xl border-2 border-brand-gold bg-white p-5 text-center text-3xl font-bold whitespace-pre-line"
           >
             {normalizedText}
           </div>

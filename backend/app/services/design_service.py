@@ -92,6 +92,29 @@ def _geometry_hash(wkt: str) -> str:
     return hashlib.sha256(wkt.encode("utf-8")).hexdigest()
 
 
+def _design_geometry_hash(
+    recipe: dict, geometry_wkt: str, text_wkt: str | None, inner_wkt: str | None
+) -> str:
+    """Version identity hash. Silhouette products: the CUT geometry alone
+    (unchanged, so no existing version is renumbered). Engraved bands: every
+    ring shares the same CUT rectangle, so the hash must also bind BOTH
+    engrave layers — otherwise two different engravings would be
+    hash-identical and the approval lock would not distinguish them."""
+    if (recipe or {}).get("ring") is not None:
+        payload = f"{geometry_wkt}|ENGRAVE|{text_wkt or ''}|INNER|{inner_wkt or ''}"
+        return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+    return _geometry_hash(geometry_wkt)
+
+
+def _version_geometry_hash(version: "m.DesignVersion") -> str:
+    return _design_geometry_hash(
+        version.recipe or {},
+        version.geometry_wkt,
+        version.text_geometry_wkt,
+        version.inner_text_geometry_wkt,
+    )
+
+
 def _utcnow() -> datetime:
     return datetime.now(timezone.utc)
 
@@ -228,6 +251,7 @@ def generate_and_persist_candidates(
                 diversity_rank=rank_by_key.get(c.candidate_id),
                 geometry_wkt=c.geometry_wkt,
                 text_geometry_wkt=c.text_geometry_wkt or None,
+                inner_text_geometry_wkt=c.inner_text_geometry_wkt or None,
                 quality_report=c.quality_report,
                 source_text_sha256=c.source_text_sha256,
             )
@@ -280,6 +304,7 @@ def select_candidate(
         recipe=RecipeParams(**row.recipe),
         geometry_wkt=row.geometry_wkt,
         text_geometry_wkt=row.text_geometry_wkt,
+        inner_text_geometry_wkt=row.inner_text_geometry_wkt,
         validation=row.validation,
         identity_verified=row.identity_verified,
         score=row.score,
@@ -302,6 +327,7 @@ def _create_version_row(
     geometry_wkt: str,
     validation: dict,
     text_geometry_wkt: str | None,
+    inner_text_geometry_wkt: str | None,
     identity_verified: bool,
     score: float,
     created_by: str,
@@ -324,7 +350,10 @@ def _create_version_row(
         source_text_sha256=source_sha,
         geometry_wkt=geometry_wkt,
         text_geometry_wkt=text_geometry_wkt,
-        geometry_hash=_geometry_hash(geometry_wkt),
+        inner_text_geometry_wkt=inner_text_geometry_wkt,
+        geometry_hash=_design_geometry_hash(
+            recipe.model_dump(), geometry_wkt, text_geometry_wkt, inner_text_geometry_wkt
+        ),
         schema_version=SCHEMA_VERSION,
         arabic_engine_version=ARABIC_ENGINE_VERSION,
         font_id=font.font_id,
@@ -411,6 +440,7 @@ def edit_version(
         recipe=new_recipe,
         geometry_wkt=built.geometry.wkt if not built.geometry.is_empty else "",
         text_geometry_wkt=(built.text_geometry.wkt if built.text_geometry is not None and not built.text_geometry.is_empty else None),
+        inner_text_geometry_wkt=(built.inner_text_geometry.wkt if built.inner_text_geometry is not None and not built.inner_text_geometry.is_empty else None),
         validation=report.model_dump(),
         identity_verified=proof.verified,
         score=0.0,
@@ -456,6 +486,7 @@ def change_source_text(
         recipe=recipe,
         geometry_wkt=built.geometry.wkt if not built.geometry.is_empty else "",
         text_geometry_wkt=(built.text_geometry.wkt if built.text_geometry is not None and not built.text_geometry.is_empty else None),
+        inner_text_geometry_wkt=(built.inner_text_geometry.wkt if built.inner_text_geometry is not None and not built.inner_text_geometry.is_empty else None),
         validation=report.model_dump(),
         identity_verified=proof.verified,
         score=0.0,
@@ -506,7 +537,7 @@ def approve_version(
         raise ApprovalRejected("Source text hash mismatch.")
     if geometry_hash != version.geometry_hash:
         raise ApprovalRejected("Geometry hash mismatch — the design changed since it was shown.")
-    if _geometry_hash(version.geometry_wkt) != version.geometry_hash:
+    if _version_geometry_hash(version) != version.geometry_hash:
         raise ApprovalRejected("Stored geometry failed hash re-verification.")
     if not version.identity_verified:
         raise ApprovalRejected("Text identity is not verified for this version.")
@@ -583,6 +614,7 @@ def _version_to_candidate(version: m.DesignVersion) -> tuple[DesignCandidate, Im
         validation=ValidationReport(**version.validation),
         geometry_wkt=version.geometry_wkt,
         text_geometry_wkt=version.text_geometry_wkt or "",
+        inner_text_geometry_wkt=version.inner_text_geometry_wkt or "",
     )
     return candidate, source
 
@@ -642,7 +674,7 @@ def export_version(
     ).scalar_one_or_none()
     if approval is None or approval.status != "ACTIVE":
         raise ProductionExportBlocked("BLOCK_PRODUCTION_EXPORT: no active approval bound to version.")
-    if _geometry_hash(version.geometry_wkt) != version.geometry_hash or approval.geometry_hash != version.geometry_hash:
+    if _version_geometry_hash(version) != version.geometry_hash or approval.geometry_hash != version.geometry_hash:
         raise ProductionExportBlocked("BLOCK_PRODUCTION_EXPORT: geometry hash verification failed.")
     if not (version.identity_verified and version.validation_passed):
         raise ProductionExportBlocked("BLOCK_PRODUCTION_EXPORT: QA state not PASS.")
