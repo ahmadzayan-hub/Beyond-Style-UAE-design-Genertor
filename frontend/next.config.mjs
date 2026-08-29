@@ -19,13 +19,27 @@ const nextConfig = {
       (process.env.VERCEL ? PRODUCTION_BACKEND : ""),
   },
   async rewrites() {
+    // DIAGNOSTIC ONLY — relays the backend's liveness endpoint through
+    // Vercel so operators (and remote debugging sessions that cannot
+    // reach Replit directly) can check whether the backend is up and
+    // which schema version it runs. Never the customer data path: /api/*
+    // stays a direct browser→backend fetch in production.
+    const diag = [
+      {
+        source: "/__diag/backend-health",
+        destination: `${PRODUCTION_BACKEND}/health`,
+      },
+    ];
     // Never bake the localhost rewrite into a Vercel build: production must
     // use NEXT_PUBLIC_API_URL (direct browser→backend fetch). With the
     // rewrite baked, /api/* proxied to localhost and Vercel returned
     // DNS_HOSTNAME_RESOLVED_PRIVATE 404s that masqueraded as app errors.
-    if (process.env.VERCEL && !process.env.BACKEND_URL) return [];
+    if (process.env.VERCEL && !process.env.BACKEND_URL) return diag;
     const backend = process.env.BACKEND_URL || "http://localhost:8000";
-    return [{ source: "/api/:path*", destination: `${backend}/api/:path*` }];
+    return [
+      ...diag,
+      { source: "/api/:path*", destination: `${backend}/api/:path*` },
+    ];
   },
 };
 
