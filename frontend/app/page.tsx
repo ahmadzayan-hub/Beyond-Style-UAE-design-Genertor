@@ -1,9 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import * as api from "@/lib/api";
 import { Lang, STRINGS } from "@/lib/i18n";
+import StartStep from "@/components/golden-path/StartStep";
+import ConfirmStep from "@/components/golden-path/ConfirmStep";
+import ApproveStep from "@/components/golden-path/ApproveStep";
+import ApprovedStep from "@/components/golden-path/ApprovedStep";
 
 // Three.js is heavy — load the 3D viewer only when its tab is opened.
 const Viewer3D = dynamic(() => import("@/components/Viewer3D"), { ssr: false });
@@ -89,7 +93,6 @@ export default function GoldenPathPage() {
   const [bandHeight, setBandHeight] = useState(7.5);
   const [innerText, setInnerText] = useState("");
   const [approval, setApproval] = useState<{ approval_hash: string } | null>(null);
-  const fileInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     document.documentElement.dir = t.dir;
@@ -416,204 +419,24 @@ export default function GoldenPathPage() {
       )}
 
       {step === "start" && (
-        <section className="flex flex-col gap-5">
-          <div>
-            <h2 className="text-2xl font-bold">{t.start_title}</h2>
-            <p className="mt-1 text-sm text-stone-500">{t.start_subtitle}</p>
-          </div>
-          <input
-            data-testid="text-input"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder={t.text_placeholder}
-            className="rounded-xl border border-stone-300 bg-white p-4 text-lg focus:border-brand-gold focus:outline-none"
-          />
-          <div className="rounded-xl border border-dashed border-stone-300 bg-white p-4">
-            <button
-              onClick={() => fileInput.current?.click()}
-              className="w-full text-start text-sm font-medium text-brand-gold"
-              data-testid="upload-button"
-            >
-              {t.upload_reference}
-            </button>
-            <p className="mt-1 text-xs text-stone-400">{t.upload_hint}</p>
-            <input
-              ref={fileInput}
-              data-testid="file-input"
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              className="hidden"
-              onChange={(e) => {
-                const f = e.target.files?.[0] || null;
-                setRefFile(f);
-                setRefPreview(f ? URL.createObjectURL(f) : null);
-              }}
-            />
-            {refPreview && (
-              <img
-                src={refPreview}
-                alt="reference"
-                data-testid="reference-preview"
-                className="mt-3 max-h-40 rounded-lg object-contain"
-              />
-            )}
-            {refFile && (
-              <label className="mt-3 block text-xs">
-                <span className="flex justify-between">
-                  <span>{t.strength_original}</span>
-                  <span className="font-medium">{t.style_strength}</span>
-                  <span>{t.strength_similar}</span>
-                </span>
-                <input
-                  type="range" data-testid="style-strength"
-                  min={0} max={1} step={0.1} value={styleStrength}
-                  onChange={(e) => setStyleStrength(Number(e.target.value))}
-                  className="w-full accent-brand-gold"
-                />
-              </label>
-            )}
-            {refFile && (
-              <textarea
-                data-testid="message-input"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder={t.message_placeholder}
-                className="mt-3 w-full rounded-lg border border-stone-200 p-3 text-sm"
-                rows={2}
-              />
-            )}
-          </div>
-          <div>
-            <p className="mb-2 text-sm font-medium">{t.product_label}</p>
-            <div className="flex flex-wrap gap-2">
-              {(["pendant", "ring"] as const).map((p) => (
-                <button
-                  key={p}
-                  data-testid={`product-${p}`}
-                  onClick={() => setProductType(p)}
-                  className={`rounded-full border px-4 py-2 text-sm ${
-                    productType === p
-                      ? "border-brand-gold bg-brand-gold text-white"
-                      : "border-stone-300 bg-white"
-                  }`}
-                >
-                  {t.products[p]}
-                </button>
-              ))}
-            </div>
-            {productType === "ring" && (
-              <div className="mt-3 flex flex-wrap gap-3">
-                <label className="flex-1 text-xs">
-                  {t.ring_size_label}
-                  <select
-                    data-testid="ring-size"
-                    value={ringSize}
-                    onChange={(e) => setRingSize(Number(e.target.value))}
-                    className="mt-1 w-full rounded border border-stone-300 p-2"
-                  >
-                    {Array.from({ length: 27 }, (_, i) => 44 + i).map((s) => (
-                      <option key={s} value={s}>
-                        {s}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label className="flex-1 text-xs">
-                  {t.inner_engraving_label}
-                  <input
-                    data-testid="inner-text-input"
-                    value={innerText}
-                    onChange={(e) => setInnerText(e.target.value)}
-                    placeholder={t.inner_engraving_hint}
-                    className="mt-1 w-full rounded border border-stone-300 p-2"
-                  />
-                </label>
-                <label className="flex-1 text-xs">
-                  {t.band_height_label}
-                  <select
-                    data-testid="band-height"
-                    value={bandHeight}
-                    onChange={(e) => setBandHeight(Number(e.target.value))}
-                    className="mt-1 w-full rounded border border-stone-300 p-2"
-                  >
-                    {[5.5, 6.5, 7.5, 8.5].map((h) => (
-                      <option key={h} value={h}>
-                        {h}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </div>
-            )}
-          </div>
-          <div>
-            <p className="mb-2 text-sm font-medium">{t.style_label}</p>
-            <div className="flex flex-wrap gap-2">
-              {Object.entries(t.styles).map(([key, label]) => (
-                <button
-                  key={key}
-                  data-testid={`style-${key}`}
-                  onClick={() => setStyleIntent(styleIntent === key ? null : key)}
-                  className={`rounded-full border px-4 py-2 text-sm ${
-                    styleIntent === key
-                      ? "border-brand-gold bg-brand-gold text-white"
-                      : "border-stone-300 bg-white"
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          </div>
-          {busyLabel && (
-            <p className="text-center text-sm text-brand-dark/70" data-testid="busy-label">
-              {busyLabel}
-            </p>
-          )}
-          <button
-            data-testid="start-continue"
-            disabled={!text.trim() || busy}
-            onClick={handleStart}
-            className="rounded-xl bg-brand-dark p-4 text-lg font-semibold text-white disabled:opacity-40"
-          >
-            {t.continue}
-          </button>
-        </section>
+        <StartStep
+          t={t} text={text} setText={setText} message={message} setMessage={setMessage}
+          refFile={refFile} setRefFile={setRefFile} refPreview={refPreview} setRefPreview={setRefPreview}
+          styleStrength={styleStrength} setStyleStrength={setStyleStrength}
+          styleIntent={styleIntent} setStyleIntent={setStyleIntent}
+          productType={productType} setProductType={setProductType}
+          ringSize={ringSize} setRingSize={setRingSize} bandHeight={bandHeight} setBandHeight={setBandHeight}
+          innerText={innerText} setInnerText={setInnerText}
+          busy={busy} busyLabel={busyLabel} onStart={handleStart}
+        />
       )}
 
       {step === "confirm" && (
-        <section className="flex flex-col gap-5">
-          <h2 className="text-xl font-bold">{t.confirm_title}</h2>
-          <div
-            data-testid="confirm-text-display"
-            dir="auto"
-            className="rounded-xl border-2 border-brand-gold bg-white p-6 text-center text-4xl font-bold whitespace-pre-line"
-          >
-            {normalizedText}
-          </div>
-          <p className="text-sm text-stone-500">{t.confirm_hint}</p>
-          <label className="flex items-center gap-3 text-sm font-medium">
-            <input
-              type="checkbox"
-              data-testid="confirm-checkbox"
-              checked={confirmChecked}
-              onChange={(e) => setConfirmChecked(e.target.checked)}
-              className="h-5 w-5 accent-brand-gold"
-            />
-            {t.confirm_exact}
-          </label>
-          <button
-            data-testid="confirm-continue"
-            disabled={!confirmChecked || busy}
-            onClick={handleConfirm}
-            className="rounded-xl bg-brand-dark p-4 text-lg font-semibold text-white disabled:opacity-40"
-          >
-            {t.continue}
-          </button>
-          <button className="text-sm text-stone-400" onClick={() => setStep("start")}>
-            {t.back}
-          </button>
-        </section>
+        <ConfirmStep
+          t={t} normalizedText={normalizedText} confirmChecked={confirmChecked}
+          setConfirmChecked={setConfirmChecked} busy={busy} onConfirm={handleConfirm}
+          onBack={() => setStep("start")}
+        />
       )}
 
       {step === "generating" && (
@@ -1020,93 +843,16 @@ export default function GoldenPathPage() {
       )}
 
       {step === "approve" && selected && (
-        <section className="flex flex-col gap-5">
-          <h2 className="text-xl font-bold">{t.approve_title}</h2>
-          <div
-            className="proof-svg-large rounded-xl border border-stone-200 bg-white p-4"
-            data-testid="agreement-proof"
-          >
-            {(agreementSvg ?? selected.svg) && (
-              <div dangerouslySetInnerHTML={{ __html: agreementSvg ?? selected.svg ?? "" }} />
-            )}
-          </div>
-          <p className="text-xs text-stone-500">{t.agreement_note}</p>
-          <div
-            data-testid="approve-text-display"
-            dir="auto"
-            className="rounded-xl border-2 border-brand-gold bg-white p-5 text-center text-3xl font-bold whitespace-pre-line"
-          >
-            {normalizedText}
-          </div>
-          <label className="flex items-center gap-3 rounded-lg bg-white p-4 text-sm font-medium">
-            <input
-              type="checkbox"
-              data-testid="approve-checkbox"
-              checked={approveChecked}
-              onChange={(e) => setApproveChecked(e.target.checked)}
-              className="h-5 w-5 accent-brand-gold"
-            />
-            <span>
-              {t.approve_statement}
-              <br />
-              <span className="text-xs text-stone-400">
-                {lang === "ar" ? STRINGS.en.approve_statement : STRINGS.ar.approve_statement}
-              </span>
-            </span>
-          </label>
-          <button
-            data-testid="approve-button"
-            disabled={!approveChecked || busy}
-            onClick={handleApprove}
-            className="rounded-xl bg-brand-dark p-4 text-lg font-semibold text-white disabled:opacity-40"
-          >
-            {t.approve_btn}
-          </button>
-          <button className="text-sm text-stone-400" onClick={() => setStep("selected")}>
-            {t.back}
-          </button>
-        </section>
+        <ApproveStep
+          t={t} lang={lang} agreementSvg={agreementSvg} selected={selected}
+          normalizedText={normalizedText} approveChecked={approveChecked}
+          setApproveChecked={setApproveChecked} busy={busy} onApprove={handleApprove}
+          onBack={() => setStep("selected")}
+        />
       )}
 
       {step === "approved" && selected && approval && (
-        <section className="flex flex-col gap-5" data-testid="approved">
-          <h2 className="text-2xl font-bold text-emerald-700">{t.approved_title}</h2>
-          <div className="proof-svg-large rounded-xl border border-stone-200 bg-white p-4">
-            {selected.svg && <div dangerouslySetInnerHTML={{ __html: selected.svg }} />}
-          </div>
-          <div className="rounded-lg bg-white p-4 text-sm">
-            <p>
-              {t.approved_version}: <b data-testid="locked-version">{selected.version_number}</b>
-            </p>
-            <p className="mt-1 break-all text-[10px] text-stone-400" data-testid="approval-hash">
-              {approval.approval_hash}
-            </p>
-          </div>
-          <div className="flex gap-3">
-            <button
-              data-testid="download-svg"
-              onClick={() => handleDownload("svg")}
-              className="flex-1 rounded-xl border border-brand-gold p-3 font-semibold text-brand-gold"
-            >
-              {t.download_svg}
-            </button>
-            <button
-              data-testid="download-dxf"
-              onClick={() => handleDownload("dxf")}
-              className="flex-1 rounded-xl bg-brand-gold p-3 font-semibold text-white"
-            >
-              {t.download_dxf}
-            </button>
-          </div>
-          <button
-            disabled
-            title="coming soon"
-            data-testid="make-it-disabled"
-            className="rounded-xl bg-stone-300 p-4 text-lg font-semibold text-stone-500"
-          >
-            {t.make_it}
-          </button>
-        </section>
+        <ApprovedStep t={t} selected={selected} approval={approval} onDownload={handleDownload} />
       )}
     </main>
   );

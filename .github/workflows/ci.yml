@@ -37,6 +37,8 @@ jobs:
           cache-dependency-path: backend/requirements.txt
       - name: Install backend dependencies
         run: pip install -r backend/requirements.txt
+      - name: Environment matches pins (no silent resolver overrides)
+        run: python3 scripts/check_env_pins.py
       - name: Migrations up/down/up (integrity)
         working-directory: backend
         run: |

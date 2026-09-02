@@ -69,6 +69,18 @@ enable evidence, they are not evidence.
   8/8 + generation/quality gates green.
 Honest: 215 archetypes ≠ 150 *curated* archetypes; curation of the derived set is designer work.
 
+## Maintainability: env-pin drift check + Golden Path page split (2026-09-02, risk #8)
+- `scripts/check_env_pins.py` (`make check-pins`) fails when the local Python environment differs
+  from `backend/requirements.txt` — the drift that hid a red CI for eight commits. Wired as a CI
+  step right after install. First local run found real drift (pytest 8.3.3 vs 9.0.3, boto3
+  missing); fixed by reinstalling the pins.
+- `frontend/app/page.tsx` 1,113 → 860 lines: the start, confirm, approve and approved steps are now
+  `components/golden-path/*Step.tsx` with typed props; JSX and every `data-testid` moved verbatim
+  (tsc + `next build` clean). The 345-line studio (selected) step remains inline — it is the most
+  state-coupled block and is the next split.
+- Full backend suite wall time is unchanged (~13–25 min on this box); no test was skipped or
+  parallelised to hide it.
+
 ## Security slice: framework CVEs closed, headers, malware scan, S3, staff roles (2026-08-29)
 Owner mandate "solve 1–8" → risk #2. Root cause of the previously reverted upgrade found and fixed:
 - **FastAPI 0.141.1 + Starlette 1.6.0** now pinned (all 9 previously open Starlette advisories closed).
