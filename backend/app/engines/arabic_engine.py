@@ -163,11 +163,71 @@ def shape_run(run: DirectionalRun, font: FontRecord, extra_features: dict | None
     )
 
 
+#: Decorative symbols rendered by the geometry engine itself, never by a
+#: font. No shipped font carries U+2665; substituting a font glyph would be
+#: a silent change, so the heart is an explicit parametric outline and its
+#: glyph carries glyph_id DECORATIVE_GLYPH_ID + glyph_name "decorative.<name>".
+#: The symbol stays part of the immutable source text and is covered by
+#: the identity proof like any other codepoint.
+DECORATIVE_SYMBOLS = {"\u2665": "heart", "\u2764": "heart"}
+DECORATIVE_GLYPH_ID = -1
+#: Advance of a decorative symbol, as a fraction of the em.
+DECORATIVE_ADVANCE_EM = 0.95
+
+
+def _decorative_run(ch: str, index: int, font, font_id: str) -> ShapedRun:
+    return ShapedRun(
+        text_slice=ch, direction="ltr", script="Zyyy", font_id=font_id,
+        glyphs=[GlyphIdentity(
+            glyph_id=DECORATIVE_GLYPH_ID,
+            glyph_name=f"decorative.{DECORATIVE_SYMBOLS[ch]}",
+            cluster_start=index, cluster_end=index + 1,
+            source_codepoints=[ch],
+            x_offset_mm=0.0, y_offset_mm=0.0,
+            x_advance_mm=DECORATIVE_ADVANCE_EM * upem(font),
+        )],
+    )
+
+
+def _offset_runs(runs: list[ShapedRun], offset: int) -> list[ShapedRun]:
+    if offset == 0:
+        return runs
+    return [
+        r.model_copy(update={"glyphs": [
+            g.model_copy(update={"cluster_start": g.cluster_start + offset,
+                                 "cluster_end": g.cluster_end + offset})
+            for g in r.glyphs
+        ]}) for r in runs
+    ]
+
+
 def shape_text(text: str, font_id: str, extra_features: dict | None = None,
                font_axes: dict | None = None) -> list[ShapedRun]:
     """Shape full normalized text into visually ordered shaped runs."""
     font = get_registry().get(font_id)
     normalized = normalize(text)
+    if any(ch in DECORATIVE_SYMBOLS for ch in normalized):
+        # Split around decorative symbols; shape each text piece with the
+        # font, render the symbol parametrically, keep source indices exact.
+        pieces: list[tuple[str, int]] = []  # (segment text or symbol, start index)
+        start = 0
+        for i, ch in enumerate(normalized):
+            if ch in DECORATIVE_SYMBOLS:
+                if i > start:
+                    pieces.append((normalized[start:i], start))
+                pieces.append((ch, i))
+                start = i + 1
+        if start < len(normalized):
+            pieces.append((normalized[start:], start))
+        base = paragraph_direction(normalized.replace("\u2665", "").replace("\u2764", "") or normalized)
+        ordered = list(reversed(pieces)) if base == "rtl" else pieces
+        out: list[ShapedRun] = []
+        for seg, off in ordered:
+            if seg in DECORATIVE_SYMBOLS:
+                out.append(_decorative_run(seg, off, font, font_id))
+            else:
+                out.extend(_offset_runs(shape_text(seg, font_id, extra_features, font_axes), off))
+        return out
     runs = segment_runs(normalized)
     base = paragraph_direction(normalized)
     # Visual order: RTL base reverses run order.

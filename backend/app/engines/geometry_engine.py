@@ -18,7 +18,7 @@ from shapely.ops import nearest_points, unary_union
 
 from ..fonts.registry import get_registry
 from ..schemas.jewellery_design import RecipeParams, ShapedRun
-from .arabic_engine import upem
+from .arabic_engine import DECORATIVE_GLYPH_ID, upem
 from .outline_extractor import extract_contours
 
 QUAD_SEGS = 8  # deterministic buffer resolution
@@ -66,6 +66,34 @@ def _contours_to_polygon(contours: list[list[tuple[float, float]]]) -> Polygon |
     return result
 
 
+
+def decorative_polygon(glyph_name: str, units: int) -> Polygon:
+    """Deterministic outlines for decorative symbols, in font units.
+    heart: two circles + a point, ~0.55 em tall, centred in a 0.95 em
+    advance, raised to sit on the x-height band like a separator."""
+    import math
+
+    kind = glyph_name.split(".", 1)[-1]
+    if kind != "heart":
+        raise ValueError(f"unknown decorative symbol {glyph_name}")
+    em = float(units)
+    size = 0.55 * em
+    cx = 0.95 * em / 2
+    base_y = 0.12 * em
+    r = size * 0.27
+    top = base_y + size
+    lobes = unary_union([
+        Point(cx - r * 0.98, top - r).buffer(r, resolution=24),
+        Point(cx + r * 0.98, top - r).buffer(r, resolution=24),
+    ])
+    body = Polygon([
+        (cx - 2 * r * 0.98 - r * 0.02, top - r),
+        (cx, base_y),
+        (cx + 2 * r * 0.98 + r * 0.02, top - r),
+    ])
+    return unary_union([lobes, body])
+
+
 def build_text_body(runs: list[ShapedRun], recipe: RecipeParams) -> tuple[Polygon | MultiPolygon, list[str]]:
     """Place glyph polygons using HarfBuzz advances/offsets (font units),
     then scale to target mm height. Letter spacing is added between glyphs.
@@ -83,6 +111,14 @@ def build_text_body(runs: list[ShapedRun], recipe: RecipeParams) -> tuple[Polygo
     spacing_units = recipe.letter_spacing_mm / recipe.target_height_mm * units if recipe.target_height_mm else 0
     for run in runs:
         for g in run.glyphs:
+            if g.glyph_id == DECORATIVE_GLYPH_ID:
+                # Parametric symbol (e.g. ♥): drawn by the engine, never a
+                # font substitution. Sized relative to the em so it sits
+                # with the letters at any text height.
+                poly = decorative_polygon(g.glyph_name, units)
+                glyph_polys.append(affinity.translate(poly, xoff=pen_x + g.x_offset_mm, yoff=g.y_offset_mm))
+                pen_x += g.x_advance_mm + spacing_units
+                continue
             contours, gi = extract_contours(str(font.path), g.glyph_id, axes)
             issues.extend(gi)
             poly = _contours_to_polygon(contours)

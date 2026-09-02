@@ -213,6 +213,7 @@ def generate_and_persist_candidates(
         select(m.CustomerBrief).where(m.CustomerBrief.design_request_id == req.id)
     ).scalar_one_or_none()
     hints = brief.generation_hints if brief else None
+    trace: dict = {}
 
     source = ImmutableSourceText.create(req.source_text_raw, confirmed=True)
     if req.product_type == "ring":
@@ -220,7 +221,7 @@ def generate_and_persist_candidates(
 
         all_candidates, top = generate_ring_candidates(str(req.id), source, rules, hints=hints)
     else:
-        all_candidates, top = generate_candidates(str(req.id), source, rules, hints=hints)
+        all_candidates, top = generate_candidates(str(req.id), source, rules, hints=hints, trace=trace)
 
     # Idempotent per request: regeneration replaces nothing — same
     # deterministic candidate_keys conflict-skip via unique constraint.
@@ -268,6 +269,7 @@ def generate_and_persist_candidates(
             "top": [c.candidate_id for c in top],
             "diversity_min_pairwise": diversity_score(top),
             "ranking_config_version": DEFAULT_RANKING.version,
+            "retrieval": trace.get("retrieval"),
         },
     )
     return {"all": all_candidates, "top": top, "request": req}

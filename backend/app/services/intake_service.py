@@ -196,6 +196,7 @@ def generation_hints_from(analysis: dict | None, style_intent: str | None) -> di
         if analysis.get("aspect_ratio"):
             hints["target_aspect_ratio"] = analysis["aspect_ratio"]
     if style_intent:
+        hints["style_intent"] = style_intent  # archetype retrieval signal
         style_map = {
             "minimal": ["kufi-wide-minimal", "kufi-solid-plate-oval"],
             "luxury": ["naskh-condensed-luxury", "naskh-classic-bar"],
@@ -286,6 +287,9 @@ def upsert_brief(
         # Generation routes on the REQUEST's product type; the brief is the
         # customer's authoritative product choice, so keep them in sync.
         req.product_type = "ring"
+    # Archetype retrieval filters by the customer's product; style/DNA keys
+    # above are its similarity signal (see engines/archetype_library.py).
+    hints["product_type"] = brief.product_type
     brief.generation_hints = hints
     brief.quantity = quantity
     brief.deadline = deadline

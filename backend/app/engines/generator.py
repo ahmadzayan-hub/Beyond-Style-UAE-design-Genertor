@@ -346,12 +346,30 @@ def generate_candidates(
     min_internal: int = 30,
     top_n: int = 10,
     hints: dict | None = None,
+    trace: dict | None = None,
 ) -> tuple[list[DesignCandidate], list[DesignCandidate]]:
     """Returns (all_internal_candidates, diverse_top_n). `hints` come from
     deterministic reference intake; they add a transparent score bonus so
     reference-matching styles seed the diverse selection first — they never
-    bypass validation or the schema."""
-    recipes = _adapt_for_text_length(expand_recipes(min_internal), source.normalized_text)
+    bypass validation or the schema. With hints, the structured archetype
+    catalogue is queried by Design-DNA similarity and the top matches join
+    the pool (additive: the hint-less pool — and every golden fixture built
+    on it — is unchanged). `trace`, when given, receives the retrieval
+    provenance for the audit event."""
+    recipes = expand_recipes(min_internal)
+    if hints:
+        from .archetype_library import retrieve_archetypes
+
+        extra, provenance = retrieve_archetypes(
+            hints,
+            product_type=hints.get("product_type"),
+            text_length=len(source.normalized_text),
+            exclude_ids={r.recipe_id for r in recipes},
+        )
+        recipes = recipes + extra
+        if trace is not None:
+            trace["retrieval"] = provenance
+    recipes = _adapt_for_text_length(recipes, source.normalized_text)
     all_candidates = [build_candidate(design_id, source, r, rules) for r in recipes]
     from .ranking import DEFAULT_RANKING, REFERENCE_RANKING
 

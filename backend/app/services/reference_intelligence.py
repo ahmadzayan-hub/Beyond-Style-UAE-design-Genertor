@@ -129,4 +129,10 @@ def dna_generation_hints(dna: dict, style_strength: float = 0.5) -> dict:
     if dna.get("aspect_ratio"):
         hints["target_aspect_ratio"] = dna["aspect_ratio"]
     hints["bonus_scale"] = 0.5 + style_strength  # 0.5–1.5 × standard bonus
+    # Visual-grammar fields only (never text) for archetype retrieval.
+    fields = {k: dna.get(k) for k in ("script_family", "composition", "construction",
+                                      "dot_style", "swashes", "kashida")
+              if dna.get(k) not in (None, "unknown")}
+    if fields:
+        hints["dna_fields"] = fields
     return hints

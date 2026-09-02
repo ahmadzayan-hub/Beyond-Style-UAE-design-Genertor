@@ -47,6 +47,28 @@ Zero human/customer evidence was the top non-code risk. Two owner-operable paths
 Tests `test_validation_api.py` 5/5. Honest: still zero real responses recorded — the endpoints
 enable evidence, they are not evidence.
 
+## Coverage: ♥ decorative glyph, 215-archetype catalogue, DNA retrieval (2026-09-02, risk #6)
+- **♥ (U+2665/U+2764)** is now a first-class decorative glyph: shaped as its own run (never a font
+  substitution), parametric heart polygon in the geometry engine, advance 0.95 em, covered by the
+  identity proof at its exact index. Tests `test_decorative_symbols.py` 3/3.
+- **Archetype catalogue** (`engines/archetype_library.py`): the 46 curated recipes (40 design + 6
+  script) are unchanged and first; 169 derived archetypes are built from a deterministic
+  construction matrix (composition × dot style × swash × kashida) on each font's curated base,
+  de-duplicated by parameter signature — 215 total, 65 DNA families, 9 approved fonts. Every
+  derived archetype is labelled `UNCURATED_PARAMETRIC` (inherits manufacturing parameters from a
+  curated base; no designer has reviewed it as a look) and still passes the same Arabic +
+  manufacturing QA as any candidate.
+- **Retrieval**: brief/reference hints (product, style intent, DesignDNA script/dots/swash/
+  construction) are encoded into the archetype DNA space; metadata filter (product, text length)
+  then cosine ranking; top-8 join the candidate pool. Provenance (basis, considered, returned ids,
+  similarities, curation labels) is recorded in the CANDIDATES_GENERATED event. Encoder is the
+  deterministic DNA encoder with a Python cosine — pgvector-shaped; the extension is not installed
+  on the DB host, and the provenance says so.
+- **Golden fixtures untouched**: the hint-less pool is byte-identical (asserted), so the pinned
+  candidate ids in `tests/golden/golden_visual.json` did not move. Tests `test_archetype_library.py`
+  8/8 + generation/quality gates green.
+Honest: 215 archetypes ≠ 150 *curated* archetypes; curation of the derived set is designer work.
+
 ## Security slice: framework CVEs closed, headers, malware scan, S3, staff roles (2026-08-29)
 Owner mandate "solve 1–8" → risk #2. Root cause of the previously reverted upgrade found and fixed:
 - **FastAPI 0.141.1 + Starlette 1.6.0** now pinned (all 9 previously open Starlette advisories closed).
