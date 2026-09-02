@@ -78,9 +78,22 @@ def main() -> int:
     status, _, body = request("GET", FRONTEND_URL)
     check("A. frontend loads", status == 200, f"status={status}")
 
-    # B. backend /health
+    # B. backend /health — must be OUR backend's JSON, not merely "something
+    # answered". A 200 HTML page here means another application occupies
+    # the URL (seen in production: an AI-scaffolded SPA on the Replit
+    # subdomain), which is the single most misleading failure mode.
     status, _, body = request("GET", f"{BACKEND_URL}/health")
-    check("B. backend /health", status == 200, f"status={status}")
+    health_json = None
+    try:
+        health_json = json.loads(body)
+    except Exception:
+        health_json = None
+    is_ours = isinstance(health_json, dict) and health_json.get("status") == "ok" and "schema_version" in health_json
+    if status == 200 and not is_ours:
+        check("B. backend /health", False,
+              "URL answers 200 but is NOT the Beyond Style backend (non-JSON/other app at this address)")
+        _summarize(); return 1
+    check("B. backend /health", status == 200 and is_ours, f"status={status}")
 
     # C. backend /ready
     status, _, body = request("GET", f"{BACKEND_URL}/ready")

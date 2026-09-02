@@ -1,0 +1,34 @@
+name: Production Monitor
+
+# Smoke-tests the REAL deployed URLs in deploy/production.json. Runs on
+# every push (so a redeploy or URL change is verified immediately) and
+# daily. Deliberately a separate workflow from CI: a dead production
+# backend is an operations signal, not a code failure — and it never
+# fabricates a pass (scripts/production-smoke.py exits non-zero on the
+# first real failure, including "the URL answers but is NOT our backend").
+on:
+  push:
+    branches: ["**"]
+  schedule:
+    - cron: "0 6 * * *"
+
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Pillow for the reference-upload check
+        run: pip install pillow==12.3.0
+      - name: Read canonical production URLs
+        id: urls
+        run: |
+          echo "frontend=$(jq -r .frontend_url deploy/production.json)" >> "$GITHUB_OUTPUT"
+          echo "backend=$(jq -r .backend_url deploy/production.json)" >> "$GITHUB_OUTPUT"
+      - name: Run production smoke test
+        env:
+          FRONTEND_URL: ${{ steps.urls.outputs.frontend }}
+          BACKEND_URL: ${{ steps.urls.outputs.backend }}
+        run: python3 scripts/production-smoke.py

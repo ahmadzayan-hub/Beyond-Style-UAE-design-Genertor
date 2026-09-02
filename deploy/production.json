@@ -1,0 +1,5 @@
+{
+  "_note": "Canonical production URLs. The production-monitor workflow smoke-tests these on every push and daily; GitHub runners can reach Replit/Vercel where sandboxed sessions cannot.",
+  "frontend_url": "https://frontend-sigma-sable-22.vercel.app",
+  "backend_url": "https://beyond-style-uae-design-genertor.replit.app"
+}
