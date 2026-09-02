@@ -23,6 +23,8 @@ ARABIC_CASE = "BS-GPC-0001-arabic-letter-pearl-earrings"
 @pytest.fixture
 def client(clean_tables, monkeypatch):
     monkeypatch.setattr(validation, "VOTE_LIMITER", RateLimiter(60, 600))
+    # The pack is deterministic; one build per test module keeps the run fast
+    # while the TTL path itself is covered below.
     with TestClient(app) as c:
         yield c
 
@@ -102,3 +104,22 @@ def test_confirm_text_route_is_admin_only_and_rejects_ocr(client, db_session, mo
         select(m.GoldenProductionCase).where(m.GoldenProductionCase.case_id == ARABIC_CASE)
     ).scalar_one()
     assert case.source_text_status == "CONFIRMED"
+
+
+def test_pack_is_cached_per_process_and_votes_never_rebuild_it(client, monkeypatch):
+    calls = {"n": 0}
+    real = validation._build_pack
+
+    def counting(session):
+        calls["n"] += 1
+        return real(session)
+
+    monkeypatch.setattr(validation, "_build_pack", counting)
+    validation.reset_pack_cache()
+    pack = client.get("/api/validation/pack").json()
+    client.get("/api/validation/pack")
+    client.post("/api/validation/response", json=_vote(pack, pack["items"][0]["item_id"], token="cache-tok-1"))
+    assert calls["n"] == 1
+    monkeypatch.setattr(validation, "PACK_TTL_S", 0.0)
+    client.get("/api/validation/pack")
+    assert calls["n"] == 2

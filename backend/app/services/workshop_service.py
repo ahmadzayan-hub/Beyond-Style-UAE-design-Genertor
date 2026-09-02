@@ -149,7 +149,14 @@ def production_pack(session: Session, order: m.WorkshopOrder) -> dict:
     mesh = mesh3d_payload(version, product_type)
     validation = version.validation or {}
     recipe = version.recipe or {}
-    rules = validation.get("rules_snapshot") or {}
+    # Tolerances come from the rules the validator actually ran with (the
+    # persisted validation run), never from a re-read of today's profile.
+    run = session.execute(
+        select(m.ManufacturingValidationRun)
+        .where(m.ManufacturingValidationRun.version_id == version.id)
+        .order_by(m.ManufacturingValidationRun.created_at.desc())
+    ).scalars().first()
+    rules = (run.rules_snapshot if run else None) or validation.get("rules_snapshot") or {}
     ring = recipe.get("ring")
 
     process = ["laser_cut_sheet", "finish", "polish"]
@@ -186,7 +193,8 @@ def production_pack(session: Session, order: m.WorkshopOrder) -> dict:
         "bom": bom,
         "tolerances": {k: rules.get(k) for k in ("kerf_mm", "min_stroke_mm", "min_gap_mm",
                                                   "min_bridge_mm", "min_counter_mm")},
-        "rules_profile": validation.get("rules_profile"),
+        "rules_profile": (run.rules_profile if run else None) or validation.get("rules_profile"),
+        "rules_version": run.rules_version if run else None,
         "warnings": warnings,
         "manufacturing_score": version.manufacturing_score,
         "font_id": version.font_id,

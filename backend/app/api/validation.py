@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import hashlib
 import os
+import time
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, Field
@@ -26,7 +27,27 @@ VOTE_LIMITER = RateLimiter(
 )
 
 
+#: The pack is deterministic (same library → same items) but expensive to
+#: build (real geometry for every review item), so it is built at most once
+#: per PACK_TTL_S per process — a vote must never trigger a rebuild.
+PACK_TTL_S = float(os.environ.get("VALIDATION_PACK_TTL_S", "600"))
+_PACK_CACHE: dict = {"built_at": 0.0, "pack": None}
+
+
+def reset_pack_cache() -> None:
+    _PACK_CACHE.update(built_at=0.0, pack=None)
+
+
 def _pack(session: Session) -> dict:
+    now = time.monotonic()
+    if _PACK_CACHE["pack"] is not None and now - _PACK_CACHE["built_at"] < PACK_TTL_S:
+        return _PACK_CACHE["pack"]
+    pack = _build_pack(session)
+    _PACK_CACHE.update(built_at=now, pack=pack)
+    return pack
+
+
+def _build_pack(session: Session) -> dict:
     from ..services.customer_validation import select_customer_pack
     from ..services.review_items import generate_review_pack
 
@@ -78,7 +99,7 @@ def public_response(body: VoteIn, request: Request, session: Session = Depends(g
     try:
         row = record_customer_response(
             session, item_id=body.item_id, pack_id=body.pack_id, respondent_token=key,
-            would_buy=body.would_buy, premium_feel=body.premium_feel, readability=body.readability,
+            would_buy=body.would_buy.strip().lower(), premium_feel=body.premium_feel, readability=body.readability,
             uniqueness=body.uniqueness, preferred_product=body.preferred_product,
             price_band=body.price_band, comment=body.comment,
         )

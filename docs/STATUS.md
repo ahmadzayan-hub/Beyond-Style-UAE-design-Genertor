@@ -22,7 +22,9 @@ requires receiver name + staff number + actual received date; every transition i
 Production pack = approved hash, exact text, dimensions (ring: size/flat length), material,
 process list, BOM with weight estimate, tolerances, warnings, score and SVG/DXF content hashes
 (ring packs list `engrave_inner_face_mirrored` and carry the `ENGRAVE_INNER` DXF layer).
-Admin-token only. Tests `test_workshop_os.py` 6/6. Not built: staff UI for the board (API only),
+Admin-token only. Tests `test_workshop_os.py` 6/6 (fix 2026-09-02: pack tolerances now come from
+the persisted validation run's rules snapshot — the version JSON never carried one, so `kerf_mm`
+was null in every pack; CI run 33638126995 caught it). Not built: staff UI for the board (API only),
 customer-facing order status, invoicing.
 **Calibration kit** (`engines/calibration.py`, `scripts/calibrate_workshop.py`,
 `docs/evidence/calibration/`): `make calibration-coupon` writes a dimensioned coupon (SVG+DXF+
@@ -46,6 +48,9 @@ Zero human/customer evidence was the top non-code risk. Two owner-operable paths
   curation analysis already reads; never mixed with expert reviews.
 Tests `test_validation_api.py` 5/5. Honest: still zero real responses recorded — the endpoints
 enable evidence, they are not evidence.
+Fix (2026-09-02, found by CI run 33638126995): the `/vote` page sent `YES/MAYBE/NO` while the
+service accepts lowercase — every real vote would have been refused with 422. The API now
+normalises case; the two API tests that reproduced it are green.
 
 ## Coverage: ♥ decorative glyph, 215-archetype catalogue, DNA retrieval (2026-09-02, risk #6)
 - **♥ (U+2665/U+2764)** is now a first-class decorative glyph: shaped as its own run (never a font
