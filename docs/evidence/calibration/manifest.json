@@ -1,0 +1,208 @@
+{
+  "profile_name": "pendant/silver-925",
+  "material_thickness_mm": 1.1,
+  "plate_mm": [
+    90.0,
+    78.0
+  ],
+  "grades": {
+    "stroke": [
+      0.3,
+      0.4,
+      0.5,
+      0.6,
+      0.7,
+      0.8,
+      1.0
+    ],
+    "gap": [
+      0.25,
+      0.3,
+      0.4,
+      0.5,
+      0.6,
+      0.8
+    ],
+    "bridge": [
+      0.4,
+      0.5,
+      0.6,
+      0.8,
+      1.0,
+      1.2
+    ],
+    "counter": [
+      0.3,
+      0.4,
+      0.5,
+      0.6,
+      0.8,
+      1.0
+    ],
+    "engrave_line": [
+      0.1,
+      0.15,
+      0.2,
+      0.3,
+      0.4,
+      0.6
+    ]
+  },
+  "features": {
+    "stroke-1": {
+      "class": "stroke",
+      "nominal_mm": 0.3,
+      "ticks": 1
+    },
+    "stroke-2": {
+      "class": "stroke",
+      "nominal_mm": 0.4,
+      "ticks": 2
+    },
+    "stroke-3": {
+      "class": "stroke",
+      "nominal_mm": 0.5,
+      "ticks": 3
+    },
+    "stroke-4": {
+      "class": "stroke",
+      "nominal_mm": 0.6,
+      "ticks": 4
+    },
+    "stroke-5": {
+      "class": "stroke",
+      "nominal_mm": 0.7,
+      "ticks": 5
+    },
+    "stroke-6": {
+      "class": "stroke",
+      "nominal_mm": 0.8,
+      "ticks": 6
+    },
+    "stroke-7": {
+      "class": "stroke",
+      "nominal_mm": 1.0,
+      "ticks": 7
+    },
+    "gap-1": {
+      "class": "gap",
+      "nominal_mm": 0.25,
+      "ticks": 1
+    },
+    "gap-2": {
+      "class": "gap",
+      "nominal_mm": 0.3,
+      "ticks": 2
+    },
+    "gap-3": {
+      "class": "gap",
+      "nominal_mm": 0.4,
+      "ticks": 3
+    },
+    "gap-4": {
+      "class": "gap",
+      "nominal_mm": 0.5,
+      "ticks": 4
+    },
+    "gap-5": {
+      "class": "gap",
+      "nominal_mm": 0.6,
+      "ticks": 5
+    },
+    "gap-6": {
+      "class": "gap",
+      "nominal_mm": 0.8,
+      "ticks": 6
+    },
+    "bridge-1": {
+      "class": "bridge",
+      "nominal_mm": 0.4,
+      "ticks": 1
+    },
+    "bridge-2": {
+      "class": "bridge",
+      "nominal_mm": 0.5,
+      "ticks": 2
+    },
+    "bridge-3": {
+      "class": "bridge",
+      "nominal_mm": 0.6,
+      "ticks": 3
+    },
+    "bridge-4": {
+      "class": "bridge",
+      "nominal_mm": 0.8,
+      "ticks": 4
+    },
+    "bridge-5": {
+      "class": "bridge",
+      "nominal_mm": 1.0,
+      "ticks": 5
+    },
+    "bridge-6": {
+      "class": "bridge",
+      "nominal_mm": 1.2,
+      "ticks": 6
+    },
+    "counter-1": {
+      "class": "counter",
+      "nominal_mm": 0.3,
+      "ticks": 1
+    },
+    "counter-2": {
+      "class": "counter",
+      "nominal_mm": 0.4,
+      "ticks": 2
+    },
+    "counter-3": {
+      "class": "counter",
+      "nominal_mm": 0.5,
+      "ticks": 3
+    },
+    "counter-4": {
+      "class": "counter",
+      "nominal_mm": 0.6,
+      "ticks": 4
+    },
+    "counter-5": {
+      "class": "counter",
+      "nominal_mm": 0.8,
+      "ticks": 5
+    },
+    "counter-6": {
+      "class": "counter",
+      "nominal_mm": 1.0,
+      "ticks": 6
+    },
+    "engrave_line-1": {
+      "class": "engrave_line",
+      "nominal_mm": 0.1,
+      "ticks": 1
+    },
+    "engrave_line-2": {
+      "class": "engrave_line",
+      "nominal_mm": 0.15,
+      "ticks": 2
+    },
+    "engrave_line-3": {
+      "class": "engrave_line",
+      "nominal_mm": 0.2,
+      "ticks": 3
+    },
+    "engrave_line-4": {
+      "class": "engrave_line",
+      "nominal_mm": 0.3,
+      "ticks": 4
+    },
+    "engrave_line-5": {
+      "class": "engrave_line",
+      "nominal_mm": 0.4,
+      "ticks": 5
+    },
+    "engrave_line-6": {
+      "class": "engrave_line",
+      "nominal_mm": 0.6,
+      "ticks": 6
+    }
+  }
+}

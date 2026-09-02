@@ -7,9 +7,10 @@ Alembic migration — see docs/adr/0001-immutable-versioning-approval.md.
 from __future__ import annotations
 
 import uuid
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 
 from sqlalchemy import (
+    Date,
     Boolean,
     DateTime,
     Float,
@@ -506,3 +507,30 @@ class ExportRecord(TimestampMixin, Base):
     units: Mapped[str] = mapped_column(String(8), default="mm", nullable=False)
     validation_rules_version: Mapped[str] = mapped_column(String(64), nullable=False)
     idempotency_key: Mapped[str | None] = mapped_column(String(120))
+
+
+class WorkshopOrder(TimestampMixin, Base):
+    """Workshop OS order: one per approved design version. State machine
+    New → Design Review → Technical Check → Approved → Manufacturing → QC
+    → Rework? → Ready → Delivered (workshop_service enforces it)."""
+
+    __tablename__ = "workshop_orders"
+    __table_args__ = (UniqueConstraint("design_version_id"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=_uuid)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utcnow, onupdate=utcnow, nullable=False
+    )
+    design_version_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("design_versions.id"), nullable=False)
+    approval_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("customer_approvals.id"), nullable=False)
+    approval_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    state: Mapped[str] = mapped_column(String(24), default="NEW", nullable=False)
+    material: Mapped[str] = mapped_column(String(40), nullable=False)
+    notes: Mapped[str | None] = mapped_column(Text)
+    history: Mapped[list | None] = mapped_column(JSONB)
+    rework_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    receiver_name: Mapped[str | None] = mapped_column(String(120))
+    staff_number: Mapped[str | None] = mapped_column(String(40))
+    actual_received_date: Mapped[date | None] = mapped_column(Date)
+    delivered_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    created_by: Mapped[str] = mapped_column(String(120), nullable=False)

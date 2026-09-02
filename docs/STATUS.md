@@ -13,6 +13,26 @@ Statuses (External AI / Real Tool Wiring sections, precise per-claim vocabulary)
 Updated: 2026-08-28 · GitHub Actions CI: VERIFIED_CI, run 33204109378 (HEAD `5954693`) — all 4 jobs green (secret-scan, backend full suite on the corrected fonttools 4.60.2 + uharfbuzz 0.56.0 pins, frontend build, Golden Path + Copilot browser E2E); local full suite also exit 0 on the same pins. Note: CI was red for the 8 commits between `a7e3858` and this fix (see "CI red since 49c4ceb" below) — the previous "5 consecutive green runs" claim ended at `a7e3858`.
 Previous (2026-08-26): Backend suite: 401 passed (394 + 7 First-Wave Analysis) (PostgreSQL 16, incl. 11-test immutable seven-name golden fixture) · E2E: 5 browser flows passed (incl. dedicated seven-name+reference flow) · production smoke: 15/15 checks passed (local, corrected fixture) · CI run 32900447345 (`a7e3858`) conclusion=success — see RELEASE_EVIDENCE.md.
 
+## Workshop OS + calibration kit (2026-09-02, assessment risks #3 and #7)
+**Workshop OS** (`services/workshop_service.py`, `api/workshop.py`, table `workshop_orders`,
+migration `b7c3e9d4a1f0`): state machine `NEW → DESIGN_REVIEW → TECHNICAL_CHECK → APPROVED →
+MANUFACTURING → QC → (REWORK → MANUFACTURING) | READY → DELIVERED`; no state may be skipped; the
+customer approval is re-verified against the version hash at every transition; DELIVERED
+requires receiver name + staff number + actual received date; every transition is an audit event.
+Production pack = approved hash, exact text, dimensions (ring: size/flat length), material,
+process list, BOM with weight estimate, tolerances, warnings, score and SVG/DXF content hashes
+(ring packs list `engrave_inner_face_mirrored` and carry the `ENGRAVE_INNER` DXF layer).
+Admin-token only. Tests `test_workshop_os.py` 6/6. Not built: staff UI for the board (API only),
+customer-facing order status, invoicing.
+**Calibration kit** (`engines/calibration.py`, `scripts/calibrate_workshop.py`,
+`docs/evidence/calibration/`): `make calibration-coupon` writes a dimensioned coupon (SVG+DXF+
+manifest, hash-bound) with graded stroke/gap/bridge/counter/engrave-line features; the operator
+records which grades came out clean and `apply --write` derives the workshop limits with a 15 %
+safety margin, bumps the profiles version and records provenance (`WORKSHOP_CALIBRATED_<date>`)
+— or `CALIBRATION_INCOMPLETE` if any feature class is missing. Tests `test_calibration_kit.py`
+6/6. Honest: the limits in `workshop_profiles.json` are still the uncalibrated defaults until the
+owner cuts the coupon; every export says so through the profile provenance.
+
 ## Security slice: framework CVEs closed, headers, malware scan, S3, staff roles (2026-08-29)
 Owner mandate "solve 1–8" → risk #2. Root cause of the previously reverted upgrade found and fixed:
 - **FastAPI 0.141.1 + Starlette 1.6.0** now pinned (all 9 previously open Starlette advisories closed).

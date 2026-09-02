@@ -49,7 +49,7 @@ def clean_tables(migrated_db):
     session = session_factory()()
     session.execute(text("SET session_replication_role = replica"))
     for table in [
-        "design_reviews", "customer_validation_responses",
+        "workshop_orders", "design_reviews", "customer_validation_responses",
         "exports", "manufacturing_validation_runs", "design_events",
         "customer_approvals", "design_versions", "designs",
         "design_candidates", "font_references", "design_requests",
