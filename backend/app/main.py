@@ -15,6 +15,7 @@ from .api.designs import fonts_router, router as designs_router, versions_router
 from .api.intake import router as intake_router
 from .api.visual import orchestration_router, router as visual_router
 from .api.workshop import router as workshop_router
+from .api.validation import router as validation_router
 from .config import SCHEMA_VERSION
 from .db.base import get_session
 from .observability import CorrelationIdMiddleware, get_request_id
@@ -66,6 +67,7 @@ app.include_router(visual_router)
 app.include_router(orchestration_router)
 app.include_router(admin_router)
 app.include_router(workshop_router)
+app.include_router(validation_router)
 
 
 # --- Structured errors: every 4xx/5xx response carries a machine-

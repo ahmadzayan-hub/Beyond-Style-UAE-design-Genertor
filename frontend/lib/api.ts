@@ -364,3 +364,18 @@ export async function getReviewHistory(token: string, itemId: string) {
     })
   );
 }
+
+// ---- Public customer validation (anonymous, no staff token) ----
+export async function validationPack() {
+  return jsonOrThrow(await doFetch("/api/validation/pack", {}));
+}
+
+export async function submitVote(body: object) {
+  return jsonOrThrow(
+    await doFetch("/api/validation/response", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    })
+  );
+}

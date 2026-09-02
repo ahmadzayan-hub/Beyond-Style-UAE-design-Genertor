@@ -33,6 +33,20 @@ safety margin, bumps the profiles version and records provenance (`WORKSHOP_CALI
 6/6. Honest: the limits in `workshop_profiles.json` are still the uncalibrated defaults until the
 owner cuts the coupon; every export says so through the profile provenance.
 
+## Evidence collection enablement (2026-09-02, assessment risk #4)
+Zero human/customer evidence was the top non-code risk. Two owner-operable paths now exist:
+- `POST /api/admin/golden-cases/{case_id}/confirm-text` (admin token): the owner types the exact
+  text from the order record; the golden case promotes to production memory. OCR/vision authority
+  is refused (422) — text truth stays deterministic.
+- Public customer validation: `GET /api/validation/pack` (manufacturing-passing, diverse proofs
+  with engineering metadata stripped) and `POST /api/validation/response` (anonymous; respondent
+  token stored hashed; 60 responses / 10 min per IP and per respondent; honeypot field; votes
+  bound to the live pack) — served by the new `/vote` page (mobile-first, AR/EN) so a WhatsApp
+  link collects real reactions. Responses land in the append-only customer_validation table the
+  curation analysis already reads; never mixed with expert reviews.
+Tests `test_validation_api.py` 5/5. Honest: still zero real responses recorded — the endpoints
+enable evidence, they are not evidence.
+
 ## Security slice: framework CVEs closed, headers, malware scan, S3, staff roles (2026-08-29)
 Owner mandate "solve 1–8" → risk #2. Root cause of the previously reverted upgrade found and fixed:
 - **FastAPI 0.141.1 + Starlette 1.6.0** now pinned (all 9 previously open Starlette advisories closed).

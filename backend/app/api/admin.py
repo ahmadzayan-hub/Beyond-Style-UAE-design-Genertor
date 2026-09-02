@@ -151,6 +151,39 @@ def get_golden_case(case_id: str, session: Session = Depends(get_session)):
     }
 
 
+class ConfirmTextRequest(BaseModel):
+    """Owner enters the exact customer-confirmed text from the ORDER RECORD.
+    Vision/OCR can never be the authority (enforced in the service)."""
+    text: str
+    authority: str = "ORDER_RECORD"
+    order_reference: str | None = None
+    actor: str = "workshop_admin"
+
+
+@router.post("/golden-cases/{case_id}/confirm-text", dependencies=[Depends(require_admin)])
+def confirm_golden_case_text(case_id: str, body: ConfirmTextRequest, session: Session = Depends(get_session)):
+    """Promotes a PENDING_CUSTOMER_VERIFICATION golden case to production
+    training memory once the exact text is supplied from an order record."""
+    from ..services.golden_memory import confirm_customer_source_text
+
+    try:
+        case = confirm_customer_source_text(
+            session, case_id, body.text, authority=body.authority, actor=body.actor
+        )
+    except KeyError:
+        raise HTTPException(404, "Golden case not found.")
+    except ValueError as exc:
+        raise HTTPException(422, str(exc))
+    return {
+        "case_id": case.case_id,
+        "source_text_status": case.source_text_status,
+        "source_text_authority": case.source_text_authority,
+        "memory_tier": case.memory_tier,
+        "source_text_sha256": case.source_text_sha256,
+        "order_reference": body.order_reference,
+    }
+
+
 @router.post("/golden-cases/retrieve", dependencies=[Depends(require_admin)])
 def retrieve(query: dict, session: Session = Depends(get_session)):
     """Rank golden cases for a prospective request — the same retrieval
