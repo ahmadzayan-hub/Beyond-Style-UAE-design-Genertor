@@ -1,6 +1,7 @@
 """SQLAlchemy engine/session setup. PostgreSQL is the source of truth."""
 from __future__ import annotations
 
+from fastapi import Request
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
@@ -28,12 +29,22 @@ def session_factory() -> sessionmaker:
     return _SessionLocal
 
 
-def get_session():
-    """FastAPI dependency: one session per request."""
+def get_session(request: Request):
+    """FastAPI dependency: one session per request.
+
+    The commit happens in SessionCommitMiddleware at `http.response.start`
+    (before any byte of the response leaves), because FastAPI 0.118+ runs
+    this generator's exit code only AFTER the response is sent. The
+    teardown below is the safety net for non-HTTP callers and for anything
+    left pending: commit if nothing committed yet, roll back on error,
+    always close."""
     session: Session = session_factory()()
+    request.state.db_session = session
+    request.state.db_committed = False
     try:
         yield session
-        session.commit()
+        if not request.state.db_committed:
+            session.commit()
     except Exception:
         session.rollback()
         raise

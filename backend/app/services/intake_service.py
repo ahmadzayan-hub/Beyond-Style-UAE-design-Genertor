@@ -24,6 +24,7 @@ from ..db import models as m
 from ..security.uploads import (
     UploadRejected,
     get_scanner,
+    REQUIRE_MALWARE_SCAN,
     get_storage,
     sha256_of,
     validate_and_strip,
@@ -138,6 +139,12 @@ def add_reference(
         raise UploadRejected("Invalid provenance value.")
     clean, media_type, analysis = validate_and_strip(data, declared_type)
     scan_status = get_scanner().scan(clean)
+    if scan_status.startswith("INFECTED"):
+        raise UploadRejected("The file was rejected by the malware scanner.")
+    if REQUIRE_MALWARE_SCAN and scan_status != "CLEAN":
+        # Production policy: nothing unscanned is stored. Honest failure
+        # (scanner down) is a refusal, never a silent "clean".
+        raise UploadRejected("Uploads are temporarily unavailable: the malware scanner did not confirm the file.")
 
     analyzer = get_analyzer()
     if INTAKE_AI_ENABLED and analyzer is not None:

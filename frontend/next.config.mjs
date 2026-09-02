@@ -12,7 +12,36 @@
 // always wins, and local dev (no VERCEL) keeps the empty base + rewrite.
 const PRODUCTION_BACKEND = "https://beyond-style-uae-design-genertor.replit.app";
 
+// Content-Security-Policy for the customer site. Next.js's runtime needs
+// inline scripts (no nonce pipeline here), so script-src keeps
+// 'unsafe-inline' but is otherwise self-only; the browser may only talk
+// to this origin and the production backend; nothing may frame the site.
+const CSP = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline'",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob:",
+  "font-src 'self' data:",
+  `connect-src 'self' ${PRODUCTION_BACKEND} ${process.env.NEXT_PUBLIC_API_URL || ""}`.trim(),
+  "frame-ancestors 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "object-src 'none'",
+].join("; ");
+
+const SECURITY_HEADERS = [
+  { key: "Content-Security-Policy", value: CSP },
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "X-Frame-Options", value: "DENY" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=()" },
+  { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains" },
+];
+
 const nextConfig = {
+  async headers() {
+    return [{ source: "/(.*)", headers: SECURITY_HEADERS }];
+  },
   env: {
     NEXT_PUBLIC_API_URL:
       process.env.NEXT_PUBLIC_API_URL ||

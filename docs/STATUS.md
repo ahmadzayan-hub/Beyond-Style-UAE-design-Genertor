@@ -13,6 +13,31 @@ Statuses (External AI / Real Tool Wiring sections, precise per-claim vocabulary)
 Updated: 2026-08-28 · GitHub Actions CI: VERIFIED_CI, run 33204109378 (HEAD `5954693`) — all 4 jobs green (secret-scan, backend full suite on the corrected fonttools 4.60.2 + uharfbuzz 0.56.0 pins, frontend build, Golden Path + Copilot browser E2E); local full suite also exit 0 on the same pins. Note: CI was red for the 8 commits between `a7e3858` and this fix (see "CI red since 49c4ceb" below) — the previous "5 consecutive green runs" claim ended at `a7e3858`.
 Previous (2026-08-26): Backend suite: 401 passed (394 + 7 First-Wave Analysis) (PostgreSQL 16, incl. 11-test immutable seven-name golden fixture) · E2E: 5 browser flows passed (incl. dedicated seven-name+reference flow) · production smoke: 15/15 checks passed (local, corrected fixture) · CI run 32900447345 (`a7e3858`) conclusion=success — see RELEASE_EVIDENCE.md.
 
+## Security slice: framework CVEs closed, headers, malware scan, S3, staff roles (2026-08-29)
+Owner mandate "solve 1–8" → risk #2. Root cause of the previously reverted upgrade found and fixed:
+- **FastAPI 0.141.1 + Starlette 1.6.0** now pinned (all 9 previously open Starlette advisories closed).
+  The "candidates invisible under real HTTP" regression was a **timing race, not persistence**:
+  FastAPI ≥0.118 runs yield-dependency teardown (the session commit) AFTER the response is sent,
+  so a client that immediately fetched a candidate beat the ~48-row commit. Reproduced with real
+  uvicorn (DB rows = 0 right after a 200 listing 10 candidates), invisible under TestClient
+  (regenerates on demand). Fix: `app/db/commit_middleware.py` commits at `http.response.start`
+  (rollback on 4xx/5xx; commit failure → 500, never a silently lost write). Regression tests
+  `test_commit_before_respond.py` 4/4; real-HTTP round trip with immediate GET passes.
+- Security headers on every API response (`app/security/headers.py`: nosniff, DENY framing,
+  no-referrer, permissions-policy, restrictive CSP; HSTS when `SECURE_HSTS=true`). Frontend
+  CSP + headers via `next.config.mjs` `headers()` (connect-src limited to self + backend).
+- Malware scanning: `ClamdScanner` (real INSTREAM protocol, tested against a protocol double);
+  infected uploads are refused and never stored; `REQUIRE_MALWARE_SCAN=true` refuses anything
+  not positively CLEAN (production policy; scanner outage = refusal, never a fake "clean").
+- Object storage: `S3PrivateStorage` (S3/R2/MinIO via boto3, private objects, random keys,
+  never served by URL), selected by `OBJECT_STORAGE=s3`. Adapter tested with a fake client —
+  a real bucket has not been exercised from this environment.
+- Staff roles: `REVIEWER_API_TOKEN` scoped to `/api/admin/review/*`; `ADMIN_API_TOKEN` full;
+  constant-time comparison; closed by default. Customer accounts/MFA remain P1 (not built).
+Tests: `test_security_hardening.py` 7/7 + 57/57 API/persistence/approval suites on the new
+stack; frontend build clean. Honest: CSP keeps `'unsafe-inline'` for scripts/styles because
+Next.js's runtime needs it without a nonce pipeline.
+
 ## CI red since 49c4ceb — broken pin combo fixed (2026-08-28)
 Discovered while verifying the branch for the owner's Replit pull: GitHub Actions CI had been
 failing for the last 8 commits (backend job only; frontend + secret-scan green). Root cause:

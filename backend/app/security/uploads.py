@@ -116,13 +116,54 @@ class LocalPrivateStorage:
             path.unlink()
 
 
-_storage: LocalPrivateStorage | None = None
+class S3PrivateStorage:
+    """S3-compatible private object storage (AWS S3, Cloudflare R2, MinIO,
+    any endpoint boto3 speaks). Objects are private; keys are random and
+    non-guessable; nothing is ever served by URL — reads go through the
+    owner-scoped API. Configure OBJECT_STORAGE=s3, S3_BUCKET, optional
+    S3_ENDPOINT_URL / S3_REGION, and standard AWS credential env vars."""
+
+    def __init__(self, bucket: str, client=None, prefix: str = "private/"):
+        if client is None:
+            import boto3  # pinned in requirements; imported lazily so local dev needs no creds
+
+            client = boto3.client(
+                "s3",
+                endpoint_url=os.environ.get("S3_ENDPOINT_URL") or None,
+                region_name=os.environ.get("S3_REGION") or None,
+            )
+        self.bucket, self.client, self.prefix = bucket, client, prefix
+
+    def put(self, data: bytes, suffix: str) -> str:
+        key = f"{self.prefix}{secrets.token_hex(24)}{suffix}"
+        self.client.put_object(Bucket=self.bucket, Key=key, Body=data, ACL="private")
+        return key
+
+    def get(self, key: str) -> bytes:
+        if not key.startswith(self.prefix) or ".." in key:
+            raise PermissionError("Invalid storage key.")
+        return self.client.get_object(Bucket=self.bucket, Key=key)["Body"].read()
+
+    def delete(self, key: str) -> None:
+        if key.startswith(self.prefix):
+            self.client.delete_object(Bucket=self.bucket, Key=key)
 
 
-def get_storage() -> LocalPrivateStorage:
+_storage: PrivateStorage | None = None
+
+
+def get_storage() -> PrivateStorage:
+    """OBJECT_STORAGE=s3 selects S3PrivateStorage (production); the default
+    stays the local private directory (dev/CI)."""
     global _storage
     if _storage is None:
-        _storage = LocalPrivateStorage()
+        if os.environ.get("OBJECT_STORAGE", "local").lower() == "s3":
+            bucket = os.environ.get("S3_BUCKET")
+            if not bucket:
+                raise RuntimeError("OBJECT_STORAGE=s3 requires S3_BUCKET.")
+            _storage = S3PrivateStorage(bucket)
+        else:
+            _storage = LocalPrivateStorage()
     return _storage
 
 
@@ -138,7 +179,54 @@ class NoScannerAvailable:
         return "PENDING_SCAN"
 
 
+class ClamdScanner:
+    """ClamAV daemon over TCP (INSTREAM protocol). Configure CLAMD_HOST /
+    CLAMD_PORT. Results: CLEAN, INFECTED:<signature>, SCAN_ERROR — never a
+    guessed status: if the daemon cannot be reached the file is NOT
+    reported clean."""
+
+    def __init__(self, host: str, port: int, timeout: float = 20.0):
+        self.host, self.port, self.timeout = host, port, timeout
+
+    def scan(self, data: bytes) -> str:
+        import socket
+        import struct
+
+        try:
+            with socket.create_connection((self.host, self.port), timeout=self.timeout) as sock:
+                sock.sendall(b"zINSTREAM\0")
+                view = memoryview(data)
+                chunk = 64 * 1024
+                for i in range(0, len(view), chunk):
+                    part = view[i:i + chunk]
+                    sock.sendall(struct.pack("!I", len(part)) + part.tobytes())
+                sock.sendall(struct.pack("!I", 0))
+                reply = b""
+                while not reply.endswith(b"\0") and len(reply) < 4096:
+                    got = sock.recv(1024)
+                    if not got:
+                        break
+                    reply += got
+        except OSError:
+            return "SCAN_ERROR"
+        text = reply.decode("utf-8", errors="replace").strip("\0\n ")
+        if text.endswith("OK"):
+            return "CLEAN"
+        if "FOUND" in text:
+            sig = text.split(":", 1)[-1].replace("FOUND", "").strip()
+            return f"INFECTED:{sig or 'unknown'}"
+        return "SCAN_ERROR"
+
+
+#: Production must set this true once a scanner is deployed: an upload
+#: that is not positively CLEAN is then refused instead of stored PENDING.
+REQUIRE_MALWARE_SCAN = os.environ.get("REQUIRE_MALWARE_SCAN", "false").lower() == "true"
+
+
 def get_scanner() -> MalwareScanner:
+    host = os.environ.get("CLAMD_HOST")
+    if host:
+        return ClamdScanner(host, int(os.environ.get("CLAMD_PORT", "3310")))
     return NoScannerAvailable()
 
 

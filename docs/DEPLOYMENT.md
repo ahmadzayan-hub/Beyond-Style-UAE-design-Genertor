@@ -79,6 +79,23 @@ This app has **no Next.js API routes** — nothing on Vercel executes
 server-side code that would need `ANTHROPIC_API_KEY`/`OPENAI_API_KEY`.
 Do not add them to the Vercel project.
 
+### Security hardening variables (backend)
+
+| Variable | Default | Notes |
+|---|---|---|
+| `SECURE_HSTS` | `false` | Set `true` on HTTPS-terminated deployments (Replit) to emit Strict-Transport-Security. All other security headers (nosniff, DENY framing, no-referrer, restrictive CSP for API responses) are always on. |
+| `CLAMD_HOST` / `CLAMD_PORT` | unset / `3310` | ClamAV daemon reachable over TCP (INSTREAM). Unset → uploads are stored `PENDING_SCAN` (dev/CI only). |
+| `REQUIRE_MALWARE_SCAN` | `false` | **Set `true` in production once clamd runs**: any upload not positively `CLEAN` is refused; an infected file is always refused regardless of this flag. |
+| `OBJECT_STORAGE` | `local` | `s3` selects the S3-compatible private store (AWS S3, Cloudflare R2, MinIO). Requires `S3_BUCKET`; optional `S3_ENDPOINT_URL`, `S3_REGION`; credentials via standard `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY`. Objects are private and never served by URL. |
+| `ADMIN_API_TOKEN` | unset | Full staff access to `/api/admin/*`. Unset → every staff route 403s. |
+| `REVIEWER_API_TOKEN` | unset | Reviewer role: `/api/admin/review/*` only (blinded pack, decisions, history, agreement, wave). Give each reviewer this token, never the admin one. |
+
+The API framework is `fastapi==0.141.1` + `starlette==1.6.0` (all previously
+open Starlette advisories closed). The request session commits at
+`http.response.start` (`app/db/commit_middleware.py`), so no response
+leaves before its data is durable — required because FastAPI ≥0.118 runs
+dependency teardown after the response.
+
 ### GitHub Actions secrets
 
 - `ANTHROPIC_API_KEY`, `OPENAI_API_KEY` — only consumed by the manual

@@ -17,6 +17,8 @@ from .api.visual import orchestration_router, router as visual_router
 from .config import SCHEMA_VERSION
 from .db.base import get_session
 from .observability import CorrelationIdMiddleware, get_request_id
+from .db.commit_middleware import SessionCommitMiddleware
+from .security.headers import SecurityHeadersMiddleware
 from .readiness import readiness_report
 
 app = FastAPI(
@@ -49,6 +51,9 @@ app.add_middleware(
     expose_headers=["X-Request-ID"],
 )
 app.add_middleware(CorrelationIdMiddleware)
+app.add_middleware(SecurityHeadersMiddleware)
+# Innermost: commits the request session before the response starts.
+app.add_middleware(SessionCommitMiddleware)
 
 app.include_router(designs_router)
 app.include_router(intake_router)

@@ -25,27 +25,22 @@ ezdxf==1.3.3
 # upload path) — see RELEASE_EVIDENCE.md security scan. Full backend
 # suite (230/230) re-verified green against this version before pinning.
 pillow==12.3.0
+# Object storage (OBJECT_STORAGE=s3: AWS S3 / Cloudflare R2 / MinIO) —
+# imported lazily, unused in local/CI default.
+boto3==1.43.86
 # Persistence (PostgreSQL source of truth)
 sqlalchemy==2.0.35
 alembic==1.13.3
 psycopg2-binary==2.9.9
 # API
-# SECURITY UPGRADE ATTEMPTED AND REVERTED THIS SLICE: fastapi==0.135.0 +
-# starlette==1.3.1 (the smallest FastAPI version whose starlette
-# constraint, >=0.46.0 unbounded, permits a fully-patched starlette) was
-# tried to close the 9 known starlette CVEs starlette<0.39.0 excludes.
-# It passed the full 230-test suite (FastAPI TestClient, in-process ASGI)
-# but a REAL uvicorn HTTP request cycle reproducibly broke candidate
-# persistence: POST /candidates returns a normal-looking response, but
-# the rows are never visible to a subsequent request (GET .../svg 404s,
-# GET .../candidates returns [] ) — confirmed 100% reproducible via curl
-# against a real running server, confirmed NOT reproducible calling the
-# same service function in-process, so it is specific to real ASGI
-# request handling under this FastAPI/Starlette pairing, not caught by
-# TestClient-based unit tests. Reverted rather than ship a P0
-# golden-path break for a security fix — see RELEASE_EVIDENCE.md. The
-# starlette CVEs remain open pending a properly bisected fix.
-fastapi==0.115.0
+# fastapi 0.141.1 + starlette 1.6.0: closes the 9 starlette advisories that
+# starlette<0.39 excluded. The earlier attempt regressed "candidates
+# invisible under real HTTP": root cause was FastAPI >=0.118 running
+# yield-dependency teardown (the session commit) AFTER the response is
+# sent — a data race, not persistence. Fixed by committing at
+# http.response.start in app/db/commit_middleware.py (see the module doc).
+fastapi==0.141.1
+starlette==1.6.0
 uvicorn==0.30.6
 pydantic==2.9.2
 # Required by FastAPI's Form()/File() multipart parsing (reference-image

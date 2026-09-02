@@ -7,6 +7,7 @@ conversation evidence is never served here — it is not stored.
 from __future__ import annotations
 
 import os
+import secrets
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy import select
@@ -21,11 +22,33 @@ from ..services.golden_memory import EVIDENCE_TIER_WEIGHTS, retrieve_golden_case
 router = APIRouter(prefix="/api/admin", tags=["admin"])
 
 ADMIN_API_TOKEN = os.environ.get("ADMIN_API_TOKEN", "")
+#: Reviewer role: may read review packs and submit/inspect review decisions
+#: only — never golden cases, curation, or customer-validation data.
+REVIEWER_API_TOKEN = os.environ.get("REVIEWER_API_TOKEN", "")
+
+REVIEWER_ALLOWED_PREFIXES = ("/api/admin/review/",)
+
+
+def _role_for(token: str | None) -> str | None:
+    if not token:
+        return None
+    if ADMIN_API_TOKEN and secrets.compare_digest(token, ADMIN_API_TOKEN):
+        return "admin"
+    if REVIEWER_API_TOKEN and secrets.compare_digest(token, REVIEWER_API_TOKEN):
+        return "reviewer"
+    return None
 
 
 def require_admin(request: Request) -> None:
-    if not ADMIN_API_TOKEN or request.headers.get("X-Admin-Token") != ADMIN_API_TOKEN:
-        raise HTTPException(403, "Admin endpoints require a valid X-Admin-Token.")
+    """Role-scoped staff access. Admin: everything. Reviewer: review routes
+    only (blinded pack, decision, history, agreement, wave). Closed by
+    default — with no tokens configured every route 403s."""
+    role = _role_for(request.headers.get("X-Admin-Token"))
+    if role == "admin":
+        return
+    if role == "reviewer" and request.url.path.startswith(REVIEWER_ALLOWED_PREFIXES):
+        return
+    raise HTTPException(403, "Admin endpoints require a valid X-Admin-Token.")
 
 
 def _summary(row: m.GoldenProductionCase) -> dict:
