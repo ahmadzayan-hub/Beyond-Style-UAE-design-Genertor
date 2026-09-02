@@ -528,6 +528,25 @@ for the current (honest) run.
 | No paid photoreal preview for all 10 candidates | VERIFIED_LOCAL | `create_visual_preview` is called only once, on the single selected/ranked candidate — never per-candidate |
 | Security: keys server-side only, never logged, no raw images in evidence | VERIFIED_LOCAL | `test_evidence_never_contains_secrets_or_raw_payload`; evidence JSON contains hashes/statuses/numbers only |
 
+### One-run procedure to move CLAUDE / GPT_IMAGE to VERIFIED_EXTERNAL (owner, ~10 min, paid)
+Risk #5 of the 2026-08-29 assessment: the external-model branches have never executed. Nothing in
+this environment can run them (no credentials; `workflow_dispatch` is refused for this integration
+with 403), so the run is the owner's — the code path is ready and the evidence file is produced
+automatically:
+1. GitHub → repo **Settings → Secrets and variables → Actions → New repository secret**:
+   `ANTHROPIC_API_KEY` and `OPENAI_API_KEY` (server-side only; never in the frontend).
+2. GitHub → **Actions → "External AI Acceptance" → Run workflow** (branch
+   `claude/p0-golden-path-audit-jtyduw`). Runs `make external-ai-e2e` against a fresh PostgreSQL.
+3. Download the `external-ai-acceptance-evidence` artifact and commit it as
+   `docs/evidence/external-ai-acceptance.json` (redaction allow-list means it holds only hashes,
+   statuses, tokens, latency, cost — no prompts, images or keys).
+4. Read the statuses: CLAUDE and GPT_IMAGE must show `VERIFIED_EXTERNAL`; if one shows `FAILED`,
+   the JSON carries the provider error class — paste it here and it is a real defect to fix.
+   `SKIPPED_NO_CREDENTIALS` after step 1 means the secret name is wrong.
+5. Expected cost per run: one Claude structured-DNA call plus one GPT-Image-2 generation (well
+   under 1 USD at 2026 list prices). Never wired into push/PR CI.
+Until that run lands, every claim below stays SKIPPED_NO_CREDENTIALS — not a fake pass.
+
 ## Real Tool Wiring + Isolated Hermes Runtime + Live Provider Acceptance (see ADR-0003)
 
 **Adding real credentials to a deployment** (never commit them —
