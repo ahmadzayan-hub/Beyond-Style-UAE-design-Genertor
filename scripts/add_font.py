@@ -184,14 +184,21 @@ def registry_identity_proof(registry_path: Path, assets_dir: Path, font_id: str)
     from app.engines import arabic_engine as ae
 
     reg = reg_mod.FontRegistry(registry_path, assets_dir)
-    reg_mod.get_registry.cache_clear()
+    # Point the engine at the freshly written registry for the proof only,
+    # then restore the process-wide accessor (the kit may run inside a
+    # longer-lived process such as the test suite).
+    original_reg, original_ae = reg_mod.get_registry, ae.get_registry
     reg_mod.get_registry = lambda: reg  # type: ignore[assignment]
     ae.get_registry = lambda: reg  # type: ignore[assignment]
-    results = {}
-    for name in GOLDEN_NAMES:
-        runs = ae.shape_text(name, font_id)
-        proof = ae.verify_identity(name, runs)
-        results[name] = bool(proof.verified)
+    try:
+        results = {}
+        for name in GOLDEN_NAMES:
+            runs = ae.shape_text(name, font_id)
+            proof = ae.verify_identity(name, runs)
+            results[name] = bool(proof.verified)
+    finally:
+        reg_mod.get_registry = original_reg  # type: ignore[assignment]
+        ae.get_registry = original_ae  # type: ignore[assignment]
     return {"all_verified": all(results.values()), "names": results}
 
 
