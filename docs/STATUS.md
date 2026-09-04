@@ -86,6 +86,26 @@ Honest: 215 archetypes ≠ 150 *curated* archetypes; curation of the derived set
 - Full backend suite wall time is unchanged (~13–25 min on this box); no test was skipped or
   parallelised to hide it.
 
+## Reference study applied: script picker + real-metal proof render (2026-09-04, ADR-0004)
+Owner shared arabicdesign.ai as the bar for "real jewellery design" (site unreachable from this
+sandbox; studied via its public descriptions — flow: text → script → visual direction →
+treatments → refine → HD/SVG, credit-priced, no manufacturing concepts).
+- **Script picker** on the start step (Naskh, Ruqaa, Kufi, Nastaliq, Modern, Thuluth-inspired,
+  Diwani-inspired). Resolved through the rights-gated capability map: Thuluth/Diwani return
+  `STYLE_NOT_AVAILABLE` + the closest licensed face + a visible note (never a silent
+  substitution); the script's curated recipes join the pool additively and its faces get a
+  transparent +4 ranking bonus. Brief echoes `script_family` + `script_resolution`.
+- **Real-metal render** of the same vector path: `?material=` on both preview-SVG endpoints
+  (silver-925, gold-18k-yellow/rose/white, platinum) — SVG gradient + bevel lighting + soft
+  shadow on a studio ground, deterministic, no raster/AI/credentials. Path data proven
+  byte-identical to the flat proof; the dimensioned agreement proof stays technical. Rendered
+  gold sample inspected in headless Chromium (bevel, highlight, shadow visible).
+- Metal chosen at the start drives the 10 proofs, the studio 2D view (chips to switch), the 3D
+  viewer and the photoreal request; stored as `material_preference`.
+Tests `test_reference_presentation.py` 4/4; generation/quality-gate/archetype/intake/API/reference
+regressions re-run (see CI). Honest: no licensed true Thuluth/Diwani cut exists (font purchase
+decision); photoreal stays `PHOTOREAL_PREVIEW_UNAVAILABLE` until the owner runs it with keys.
+
 ## Security slice: framework CVEs closed, headers, malware scan, S3, staff roles (2026-08-29)
 Owner mandate "solve 1–8" → risk #2. Root cause of the previously reverted upgrade found and fixed:
 - **FastAPI 0.141.1 + Starlette 1.6.0** now pinned (all 9 previously open Starlette advisories closed).

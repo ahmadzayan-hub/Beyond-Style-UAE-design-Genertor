@@ -43,6 +43,7 @@ export default function GoldenPathPage() {
   const [text, setText] = useState("");
   const [message, setMessage] = useState("");
   const [styleIntent, setStyleIntent] = useState<string | null>(null);
+  const [scriptFamily, setScriptFamily] = useState<string | null>(null);
   const [refFile, setRefFile] = useState<File | null>(null);
   const [refPreview, setRefPreview] = useState<string | null>(null);
   const [styleStrength, setStyleStrength] = useState(0.5);
@@ -154,6 +155,8 @@ export default function GoldenPathPage() {
       await api.updateBrief(created.design_id, {
         customer_message: message || null,
         style_intent: styleIntent,
+        script_family: scriptFamily,
+        material_preference: previewMaterial,
         product_type: productType,
         language: lang,
         style_strength: styleStrength,
@@ -201,7 +204,7 @@ export default function GoldenPathPage() {
       // Progressive vector loading — cards render as SVGs arrive.
       cards.forEach(async (card) => {
         try {
-          const svg = await api.candidateSvg(designId, card.candidate_id);
+          const svg = await api.candidateSvg(designId, card.candidate_id, previewMaterial);
           setProofs((prev) =>
             prev.map((p) => (p.candidate_id === card.candidate_id ? { ...p, svg } : p))
           );
@@ -214,6 +217,15 @@ export default function GoldenPathPage() {
     }
   }
 
+  async function changeMaterial(material: string) {
+    setPreviewMaterial(material);
+    if (!selected) return;
+    try {
+      const svg = await api.versionSvg(selected.version_id, material);
+      setHistory((h) => h.map((v, i) => (i === histIdx ? { ...v, svg } : v)));
+    } catch {}
+  }
+
   async function handleChoose(candidateId: string) {
     if (!designId) return;
     setError(null);
@@ -222,7 +234,7 @@ export default function GoldenPathPage() {
     try {
       const sel = await api.selectCandidate(designId, candidateId);
       const [svg, full] = await Promise.all([
-        api.versionSvg(sel.version_id),
+        api.versionSvg(sel.version_id, previewMaterial),
         api.getVersion(sel.version_id),
       ]);
       const v = {
@@ -424,6 +436,8 @@ export default function GoldenPathPage() {
           refFile={refFile} setRefFile={setRefFile} refPreview={refPreview} setRefPreview={setRefPreview}
           styleStrength={styleStrength} setStyleStrength={setStyleStrength}
           styleIntent={styleIntent} setStyleIntent={setStyleIntent}
+          scriptFamily={scriptFamily} setScriptFamily={setScriptFamily}
+          material={previewMaterial} setMaterial={setPreviewMaterial}
           productType={productType} setProductType={setProductType}
           ringSize={ringSize} setRingSize={setRingSize} bandHeight={bandHeight} setBandHeight={setBandHeight}
           innerText={innerText} setInnerText={setInnerText}
@@ -524,6 +538,21 @@ export default function GoldenPathPage() {
           {studioTab === "2d" ? (
             <div className="proof-svg-large rounded-xl border border-stone-200 bg-white p-4" data-testid="selected-preview">
               {selected.svg && <div dangerouslySetInnerHTML={{ __html: selected.svg }} />}
+              <div className="mt-3 flex flex-wrap gap-2">
+                {Object.entries(t.materials).map(([key, label]) => (
+                  <button
+                    key={key}
+                    data-testid={`studio-material-${key}`}
+                    onClick={() => changeMaterial(key)}
+                    className={`rounded-full border px-3 py-1 text-xs ${
+                      previewMaterial === key ? "border-brand-gold bg-brand-gold text-white" : "border-stone-300 bg-white"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+              <p className="mt-2 text-[11px] text-stone-500">{t.render_note}</p>
             </div>
           ) : studioTab === "3d" ? (
             <div className="flex flex-col gap-3 rounded-xl border border-stone-200 bg-white p-4" data-testid="viewer3d-panel">

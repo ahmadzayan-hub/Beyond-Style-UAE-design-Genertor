@@ -172,8 +172,11 @@ export async function generateCandidates(designId: string) {
   );
 }
 
-export async function candidateSvg(designId: string, candidateId: string): Promise<string> {
-  const res = await doFetch(`/api/designs/${designId}/candidates/${candidateId}/svg`, {
+/** Optional `material` returns the deterministic metal render of the same
+ * geometry (gradients + lighting in SVG — never AI, never a different path). */
+export async function candidateSvg(designId: string, candidateId: string, material?: string): Promise<string> {
+  const q = material ? `?material=${encodeURIComponent(material)}` : "";
+  const res = await doFetch(`/api/designs/${designId}/candidates/${candidateId}/svg${q}`, {
     headers: authHeaders(),
   });
   if (!res.ok) throw new ApiError(`HTTP ${res.status}`, "GENERATION_FAILED", res.status);
@@ -190,8 +193,9 @@ export async function selectCandidate(designId: string, candidateId: string) {
   );
 }
 
-export async function versionSvg(versionId: string): Promise<string> {
-  const res = await doFetch(`/api/versions/${versionId}/svg`, { headers: authHeaders() });
+export async function versionSvg(versionId: string, material?: string): Promise<string> {
+  const q = material ? `?material=${encodeURIComponent(material)}` : "";
+  const res = await doFetch(`/api/versions/${versionId}/svg${q}`, { headers: authHeaders() });
   if (!res.ok) throw new ApiError(`HTTP ${res.status}`, "GENERATION_FAILED", res.status);
   return res.text();
 }

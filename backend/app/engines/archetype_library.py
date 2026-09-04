@@ -246,7 +246,7 @@ def query_vector(hints: dict) -> list[float] | None:
     for name, w in STYLE_INTENT_FAMILIES.get(hints.get("style_intent") or "", {}).items():
         (infl if name in INFLUENCES else fam)[name] = w
     dna = hints.get("dna_fields") or {}
-    mapped = DNA_SCRIPT_MAP.get(dna.get("script_family"))
+    mapped = DNA_SCRIPT_MAP.get(hints.get("script_family") or dna.get("script_family"))
     if mapped:
         fam[mapped[0]] = 1.0
         if mapped[1]:

@@ -222,6 +222,7 @@ def upsert_brief(
     style_strength: float = 0.5,
     ring_size_eu: int | None = None,
     band_height_mm: float | None = None,
+    script_family: str | None = None,
 ) -> m.CustomerBrief:
     req = session.get(m.DesignRequest, request_id)
     if req is None:
@@ -290,6 +291,21 @@ def upsert_brief(
     # Archetype retrieval filters by the customer's product; style/DNA keys
     # above are its similarity signal (see engines/archetype_library.py).
     hints["product_type"] = brief.product_type
+    if script_family:
+        from ..fonts.capabilities import resolve_script_request
+
+        resolution = resolve_script_request(script_family)
+        fonts = list(resolution.get("fonts") or [])
+        if not fonts and resolution.get("recommended_font_id"):
+            fonts = [resolution["recommended_font_id"]]
+        hints["script_family"] = script_family
+        hints["script_resolution"] = {
+            k: resolution.get(k) for k in ("outcome", "font_id", "recommended_font_id",
+                                           "recommended_capability", "message")
+        }
+        # The chosen script's faces surface first in the diverse top 10 —
+        # a transparent bonus, never a bypass of Arabic/manufacturing QA.
+        hints["preferred_fonts"] = fonts
     brief.generation_hints = hints
     brief.quantity = quantity
     brief.deadline = deadline

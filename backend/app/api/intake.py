@@ -23,6 +23,11 @@ class BriefRequest(BaseModel):
     product_type: str | None = None
     material_preference: str | None = None
     style_intent: str | None = None
+    #: Customer-chosen script family (naskh, ruqaa, kufi, nastaliq,
+    #: modern_arabic, thuluth, diwani …). Resolved honestly: an unlicensed
+    #: true script is answered with the closest influenced face, never a
+    #: silent substitution.
+    script_family: str | None = None
     language: str | None = None
     quantity: int = Field(default=1, ge=1, le=500)
     deadline: str | None = None
@@ -42,6 +47,8 @@ def _brief_response(brief: m.CustomerBrief) -> dict:
         "product_type": brief.product_type,
         "material_preference": brief.material_preference,
         "style_intent": brief.style_intent,
+        "script_family": (brief.generation_hints or {}).get("script_family"),
+        "script_resolution": (brief.generation_hints or {}).get("script_resolution"),
         "reference_ids": brief.reference_ids or [],
         "quantity": brief.quantity,
         "deadline": brief.deadline,
@@ -128,6 +135,7 @@ def update_brief(
         product_type=body.product_type,
         material_preference=body.material_preference,
         style_intent=body.style_intent,
+        script_family=body.script_family,
         language=body.language,
         quantity=body.quantity,
         deadline=body.deadline,

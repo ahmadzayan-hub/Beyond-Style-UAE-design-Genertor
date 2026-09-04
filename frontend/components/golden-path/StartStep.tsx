@@ -14,6 +14,8 @@ export interface StartStepProps {
   refPreview: string | null; setRefPreview: (v: string | null) => void;
   styleStrength: number; setStyleStrength: (v: number) => void;
   styleIntent: string | null; setStyleIntent: (v: string | null) => void;
+  scriptFamily: string | null; setScriptFamily: (v: string | null) => void;
+  material: string; setMaterial: (v: string) => void;
   productType: "pendant" | "ring"; setProductType: (v: "pendant" | "ring") => void;
   ringSize: number; setRingSize: (v: number) => void;
   bandHeight: number; setBandHeight: (v: number) => void;
@@ -24,7 +26,8 @@ export interface StartStepProps {
 
 export default function StartStep({
   t, text, setText, message, setMessage, refFile, setRefFile, refPreview, setRefPreview,
-  styleStrength, setStyleStrength, styleIntent, setStyleIntent, productType, setProductType,
+  styleStrength, setStyleStrength, styleIntent, setStyleIntent, scriptFamily, setScriptFamily,
+  material, setMaterial, productType, setProductType,
   ringSize, setRingSize, bandHeight, setBandHeight, innerText, setInnerText,
   busy, busyLabel, onStart,
 }: StartStepProps) {
@@ -159,6 +162,49 @@ export default function StartStep({
             </label>
           </div>
         )}
+      </div>
+      <div>
+        <p className="mb-2 text-sm font-medium">{t.script_label}</p>
+        <div className="flex flex-wrap gap-2">
+          {Object.entries(t.scripts).map(([key, label]) => (
+            <button
+              key={key}
+              data-testid={`script-${key}`}
+              onClick={() => setScriptFamily(scriptFamily === key ? null : key)}
+              className={`rounded-full border px-4 py-2 text-sm ${
+                scriptFamily === key
+                  ? "border-brand-gold bg-brand-gold text-white"
+                  : "border-stone-300 bg-white"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        {(scriptFamily === "thuluth" || scriptFamily === "diwani") && (
+          <p className="mt-2 text-xs text-stone-500" data-testid="script-influenced-note">
+            {t.script_note_influenced}
+          </p>
+        )}
+      </div>
+      <div>
+        <p className="mb-2 text-sm font-medium">{t.material_label}</p>
+        <div className="flex flex-wrap gap-2">
+          {Object.entries(t.materials).map(([key, label]) => (
+            <button
+              key={key}
+              data-testid={`material-${key}`}
+              onClick={() => setMaterial(key)}
+              className={`rounded-full border px-4 py-2 text-sm ${
+                material === key
+                  ? "border-brand-gold bg-brand-gold text-white"
+                  : "border-stone-300 bg-white"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
       <div>
         <p className="mb-2 text-sm font-medium">{t.style_label}</p>

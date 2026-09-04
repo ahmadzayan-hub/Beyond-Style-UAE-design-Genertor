@@ -186,12 +186,24 @@ def get_validation(design_id: str, candidate_id: str, request: Request, session:
 
 
 @router.get("/{design_id}/candidates/{candidate_id}/svg")
-def get_candidate_svg(design_id: str, candidate_id: str, request: Request, session: Session = Depends(get_session)):
-    """Preview SVG for a generated candidate (pre-selection, not production)."""
+def get_candidate_svg(design_id: str, candidate_id: str, request: Request,
+                      material: str | None = None, session: Session = Depends(get_session)):
+    """Preview SVG for a generated candidate (pre-selection, not production).
+    `?material=` returns the deterministic metal render of the same geometry."""
     req = require_owned_request(session, design_id, request)
     row = _candidate_row(session, design_id, candidate_id)
     candidate, source = _row_to_candidate(row, req)
-    return Response(content=export_proof_svg(candidate, source), media_type="image/svg+xml")
+    return Response(content=_render_proof(candidate, source, material), media_type="image/svg+xml")
+
+
+def _render_proof(candidate, source, material: str | None) -> str:
+    if not material:
+        return export_proof_svg(candidate, source)
+    from ..exporters.svg_exporter import MATERIAL_RENDER, export_material_proof_svg
+
+    if material not in MATERIAL_RENDER:
+        raise HTTPException(422, f"Unknown material. Choose one of: {', '.join(MATERIAL_RENDER)}")
+    return export_material_proof_svg(candidate, source, material)
 
 
 @router.post("/{design_id}/select", status_code=201)
@@ -382,13 +394,15 @@ def export(
 
 
 @versions_router.get("/{version_id}/svg")
-def version_preview_svg(version_id: str, request: Request, session: Session = Depends(get_session)):
+def version_preview_svg(version_id: str, request: Request, material: str | None = None,
+                        session: Session = Depends(get_session)):
     """Owner-scoped PREVIEW render of a version (any status) — used for
     proof display and repair before/after. Not a production export: no
-    export record, and the production DXF path stays lock-gated."""
+    export record, and the production DXF path stays lock-gated.
+    `?material=` returns the deterministic metal render of the same geometry."""
     v = require_owned_version(session, version_id, request)
     candidate, source = svc._version_to_candidate(v)
-    return Response(content=export_proof_svg(candidate, source), media_type="image/svg+xml")
+    return Response(content=_render_proof(candidate, source, material), media_type="image/svg+xml")
 
 
 @versions_router.get("/{version_id}/mesh3d")

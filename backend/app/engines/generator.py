@@ -369,6 +369,7 @@ def generate_candidates(
         recipes = recipes + extra
         if trace is not None:
             trace["retrieval"] = provenance
+        recipes = recipes + _script_recipes(hints, {r.recipe_id for r in recipes})
     recipes = _adapt_for_text_length(recipes, source.normalized_text)
     all_candidates = [build_candidate(design_id, source, r, rules) for r in recipes]
     from .ranking import DEFAULT_RANKING, REFERENCE_RANKING
@@ -410,6 +411,18 @@ def _attach_quality_reports(top: list[DesignCandidate]) -> None:
         )
 
 
+def _script_recipes(hints: dict, existing: set[str]) -> list[RecipeParams]:
+    """Curated script recipes for a customer-chosen script family. Kept out
+    of the default pool on purpose (the golden fixtures pin it); added only
+    when the customer asked for that script."""
+    family = hints.get("script_family")
+    if not family:
+        return []
+    from ..fonts.capabilities import recipes_for_script
+
+    return [RecipeParams(**r) for r in recipes_for_script(family) if r["recipe_id"] not in existing]
+
+
 def _apply_hint_bonus(candidates: list[DesignCandidate], hints: dict) -> None:
     """Reference-intent match, applied as a transparent scaled bonus.
     style_strength (bonus_scale 0.5–1.5) maps "more original" ↔ "similar
@@ -427,6 +440,8 @@ def _apply_hint_bonus(candidates: list[DesignCandidate], hints: dict) -> None:
             bonus += 3.0
         if hints.get("prefer_swash") and c.recipe.swash != "none":
             bonus += 3.0
+        if c.recipe.font_id in (hints.get("preferred_fonts") or ()):
+            bonus += 4.0  # customer-chosen script family
         bonus = round(bonus * scale, 4)
         if bonus and c.score_breakdown is not None:
             c.score = round(c.score + bonus, 4)
