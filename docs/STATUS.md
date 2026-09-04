@@ -86,6 +86,26 @@ Honest: 215 archetypes ≠ 150 *curated* archetypes; curation of the derived set
 - Full backend suite wall time is unchanged (~13–25 min on this box); no test was skipped or
   parallelised to hide it.
 
+## The two remaining reference-study gaps, engineered down (2026-09-04, owner "solve these issues")
+1. **True Thuluth / Diwani** — still a license purchase (no OFL true cut exists; none is claimed),
+   but now a ten-minute install instead of an engineering task: `scripts/add_font.py` inspects
+   the bought binary (Arabic coverage, `init/medi/fina` contextual features, mark positioning,
+   golden names shaped without `.notdef`), refuses UNKNOWN/INTERNAL rights, and with `--write`
+   copies font + EULA into the assets, appends the registry entry (sha256, next diversity index)
+   and re-runs the identity proof on the golden names through the real registry. The capability
+   map now computes `THULUTH`/`DIWANI` from the registry, so the chip stops saying "(inspired)"
+   the moment a licensed cut is onboarded — proven in `test_font_onboarding.py` with a temp
+   registry (Katibeh's binary stands in for a purchased Thuluth). Buying guide:
+   `docs/FONT_LICENSING.md`. Registry loader accepts an explicit assets dir (dry runs never
+   touch the vendored fonts).
+2. **Photoreal without keys** — the photoreal tab no longer dead-ends on `PHOTOREAL_PREVIEW_
+   UNAVAILABLE`: it falls back to the deterministic studio render of the same vector (chosen
+   metal + scene ground: studio white, clean, luxury black, Beyond Style gold — `?scene=`),
+   labelled honestly as a deterministic render, never as AI. The paid tier stays available the
+   moment `OPENAI_API_KEY` exists; nothing is faked.
+Tests: `test_font_onboarding.py` 5/5, `test_reference_presentation.py` 4/4, font capability
+suite green; frontend build clean.
+
 ## Reference study applied: script picker + real-metal proof render (2026-09-04, ADR-0004)
 Owner shared arabicdesign.ai as the bar for "real jewellery design" (site unreachable from this
 sandbox; studied via its public descriptions — flow: text → script → visual direction →

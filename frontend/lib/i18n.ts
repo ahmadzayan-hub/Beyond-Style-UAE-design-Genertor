@@ -88,6 +88,7 @@ export const STRINGS = {
     studio_generate: "أنشئ المعاينة",
     ai_preview_label: "معاينة بالذكاء الاصطناعي — ليست ملف التصنيع",
     preview_unavailable: "المعاينة الواقعية غير متاحة حالياً — التصميم والتصنيع يعملان بشكل طبيعي.",
+    preview_fallback_label: "المعاينة الواقعية بالذكاء الاصطناعي غير متاحة — هذا عرض استوديو حتمي لنفس الرسم المتجهي (المعدن والمشهد المختاران). التصميم والتصنيع غير متأثرين.",
     preview_rejected: "رُفضت المعاينة: تغيّر شكل التصميم. تم الاحتفاظ بالتصميم الأصلي.",
     approve_title: "الموافقة النهائية",
     agreement_note:
@@ -206,6 +207,7 @@ export const STRINGS = {
     studio_generate: "Generate preview",
     ai_preview_label: "AI-generated preview — not the manufacturing file",
     preview_unavailable: "Photoreal preview unavailable right now — design and manufacturing are unaffected.",
+    preview_fallback_label: "AI photoreal preview unavailable — showing the deterministic studio render of the same vector (chosen metal and scene). Design and manufacturing are unaffected.",
     preview_rejected: "Preview rejected: it changed the design. Your original design is kept.",
     approve_title: "Final approval",
     agreement_note:

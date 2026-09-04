@@ -62,7 +62,9 @@ class FontRecord(BaseModel):
 
     @property
     def path(self) -> Path:
-        return ASSETS_DIR / self.file
+        # A registry loaded from another location (font onboarding dry runs,
+        # tests) carries its own assets dir; production uses the vendored one.
+        return getattr(self, "_assets_dir", ASSETS_DIR) / self.file
 
     @property
     def commercial_production_allowed(self) -> bool:
@@ -87,16 +89,19 @@ class FontRecord(BaseModel):
 
 
 class FontRegistry:
-    def __init__(self, registry_file: Path = REGISTRY_FILE):
+    def __init__(self, registry_file: Path = REGISTRY_FILE, assets_dir: Path | None = None):
         data = json.loads(registry_file.read_text(encoding="utf-8"))
         self._fonts: dict[str, FontRecord] = {}
+        assets = assets_dir or ASSETS_DIR
         for entry in data["fonts"]:
             record = FontRecord(**entry)
+            if assets_dir is not None:
+                object.__setattr__(record, "_assets_dir", assets_dir)
             if not record.path.is_file():
                 raise FileNotFoundError(
                     f"Registered font binary missing: {record.path}"
                 )
-            if not (ASSETS_DIR / record.license_file).is_file():
+            if not (assets / record.license_file).is_file():
                 raise FileNotFoundError(
                     f"License file missing for {record.font_id}: {record.license_file}"
                 )

@@ -193,8 +193,10 @@ export async function selectCandidate(designId: string, candidateId: string) {
   );
 }
 
-export async function versionSvg(versionId: string, material?: string): Promise<string> {
-  const q = material ? `?material=${encodeURIComponent(material)}` : "";
+export async function versionSvg(versionId: string, material?: string, scene?: string): Promise<string> {
+  const q = material
+    ? `?material=${encodeURIComponent(material)}${scene ? `&scene=${encodeURIComponent(scene)}` : ""}`
+    : "";
   const res = await doFetch(`/api/versions/${versionId}/svg${q}`, { headers: authHeaders() });
   if (!res.ok) throw new ApiError(`HTTP ${res.status}`, "GENERATION_FAILED", res.status);
   return res.text();

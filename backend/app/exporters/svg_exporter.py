@@ -101,17 +101,29 @@ MATERIAL_RENDER = {
     "platinum":        {"label": "Platinum",          "stops": ["#f6f7f8", "#dcdfe3", "#b0b5bb", "#e9ebee", "#969ba2"]},
 }
 STUDIO_BACKGROUND = "#f7f3ec"
+#: Deterministic scene grounds (same vocabulary as the photoreal request so
+#: the studio render is the always-available tier beneath it).
+SCENE_GROUNDS = {
+    "studio_white": ("#f7f3ec", "#ffffff"),
+    "clean_design": ("#ffffff", "#ffffff"),
+    "luxury_black": ("#141216", "#2b2630"),
+    "beyond_style_gold": ("#f3e7cf", "#fff8e8"),
+}
+DEFAULT_SCENE = "studio_white"
 
 
 def export_material_proof_svg(candidate: DesignCandidate, source: ImmutableSourceText,
-                              material: str) -> str:
+                              material: str, scene: str = DEFAULT_SCENE) -> str:
     """Customer-facing material render: metal gradient, bevel highlight and a
     soft drop shadow on a neutral studio ground. Display artifact only —
     same mm frame and path data as `export_proof_svg`."""
     if material not in MATERIAL_RENDER:
         raise ValueError(f"Unknown material: {material}")
+    if scene not in SCENE_GROUNDS:
+        raise ValueError(f"Unknown scene: {scene}")
     if not candidate.geometry_wkt:
         raise ValueError("Candidate has no geometry to render.")
+    ground, ground_hi = SCENE_GROUNDS[scene]
     from shapely import affinity
 
     geom = shapely_wkt.loads(candidate.geometry_wkt)
@@ -142,6 +154,7 @@ def export_material_proof_svg(candidate: DesignCandidate, source: ImmutableSourc
     meta = {
         "proof_render": True,
         "material_render": material,
+        "scene": scene,
         "design_id": candidate.design_id,
         "candidate_id": candidate.candidate_id,
         "units": "mm",
@@ -155,6 +168,8 @@ def export_material_proof_svg(candidate: DesignCandidate, source: ImmutableSourc
         "  <defs>\n"
         f'    <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1">{gradient}</linearGradient>\n'
         f'    <linearGradient id="metal-hi" x1="1" y1="0" x2="0" y2="1">{gradient}</linearGradient>\n'
+        f'    <radialGradient id="ground" cx="0.5" cy="0.35" r="0.75">'
+        f'<stop offset="0%" stop-color="{ground_hi}"/><stop offset="100%" stop-color="{ground}"/></radialGradient>\n'
         f'    <filter id="bevel" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">\n'
         f'      <feGaussianBlur in="SourceAlpha" stdDeviation="{blur}" result="blur"/>\n'
         f'      <feSpecularLighting in="blur" surfaceScale="{round(blur * 6, 3)}" specularConstant="0.75" '
@@ -167,7 +182,7 @@ def export_material_proof_svg(candidate: DesignCandidate, source: ImmutableSourc
         f'<feDropShadow dx="{round(blur, 3)}" dy="{round(blur * 2, 3)}" stdDeviation="{round(blur * 2.5, 3)}" '
         f'flood-color="#3b2f1e" flood-opacity="0.35"/></filter>\n'
         "  </defs>\n"
-        f'  <rect width="{w}" height="{h}" fill="{STUDIO_BACKGROUND}"/>\n'
+        f'  <rect width="{w}" height="{h}" fill="url(#ground)"/>\n'
         f'  <path d="{base_d}" fill="url(#metal)" fill-rule="evenodd" stroke="none" '
         f'filter="url(#shadow)"/>\n'
         f'  <path d="{base_d}" fill="url(#metal)" fill-rule="evenodd" stroke="none" '

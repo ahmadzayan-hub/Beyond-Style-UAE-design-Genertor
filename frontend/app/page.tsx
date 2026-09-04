@@ -77,6 +77,7 @@ export default function GoldenPathPage() {
   const [previewScene, setPreviewScene] = useState("studio_white");
   const [previewQuality, setPreviewQuality] = useState("DRAFT");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [studioSvg, setStudioSvg] = useState<string | null>(null);
   const [previewNote, setPreviewNote] = useState<string | null>(null);
   const [editOpen, setEditOpen] = useState(false);
   const [editParams, setEditParams] = useState<any>({});
@@ -313,8 +314,30 @@ export default function GoldenPathPage() {
       setBusy(false);
     } catch (e: any) {
       setPreviewUrl(null);
-      setPreviewNote(e.status === 503 ? t.preview_unavailable : t.preview_rejected);
+      if (e.status === 503) {
+        // Honest fallback: the deterministic studio render (same vector
+        // path, metal + scene ground) stands in for the paid photoreal tier.
+        await showStudioRender();
+        setPreviewNote(t.preview_fallback_label);
+      } else {
+        setPreviewNote(t.preview_rejected);
+      }
       setBusy(false);
+    }
+  }
+
+  const RENDER_MATERIALS = ["silver-925", "gold-18k-yellow", "gold-18k-rose", "gold-18k-white", "platinum"];
+  const RENDER_SCENES = ["studio_white", "clean_design", "luxury_black", "beyond_style_gold"];
+
+  async function showStudioRender() {
+    if (!selected) return;
+    const material = RENDER_MATERIALS.includes(previewMaterial) ? previewMaterial : "silver-925";
+    const scene = RENDER_SCENES.includes(previewScene) ? previewScene : "studio_white";
+    try {
+      const svg = await api.versionSvg(selected.version_id, material, scene);
+      setStudioSvg(svg);
+    } catch {
+      setStudioSvg(null);
     }
   }
 
@@ -594,6 +617,10 @@ export default function GoldenPathPage() {
             <div className="flex flex-col gap-3 rounded-xl border border-stone-200 bg-white p-4" data-testid="photoreal-panel">
               {previewUrl ? (
                 <img src={previewUrl} alt="AI preview" className="w-full rounded-lg" data-testid="photoreal-image" />
+              ) : studioSvg ? (
+                <div className="proof-svg-large" data-testid="studio-render">
+                  <div dangerouslySetInnerHTML={{ __html: studioSvg }} />
+                </div>
               ) : (
                 <div className="proof-svg-large">
                   {selected.svg && <div dangerouslySetInnerHTML={{ __html: selected.svg }} />}

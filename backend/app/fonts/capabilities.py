@@ -44,10 +44,10 @@ SCRIPT_REQUIREMENTS: dict[str, dict] = {
                        "note": "Farsi/Ta'liq is served only by the Urdu Nastaliq face; not a true Farsi cut."},
     "modern_arabic":  {"true": ["MODERN_ARABIC"], "influenced": []},
     "minimal":        {"true": ["MODERN_ARABIC"], "influenced": []},
-    "thuluth":        {"true": [], "influenced": ["THULUTH_INFLUENCED"]},
-    "thuluth_jali":   {"true": [], "influenced": ["THULUTH_INFLUENCED"]},
-    "diwani":         {"true": [], "influenced": ["DIWANI_INFLUENCED"]},
-    "diwani_jali":    {"true": [], "influenced": ["DIWANI_INFLUENCED"]},
+    "thuluth":        {"true": ["THULUTH"], "influenced": ["THULUTH_INFLUENCED"]},
+    "thuluth_jali":   {"true": ["THULUTH"], "influenced": ["THULUTH_INFLUENCED"]},
+    "diwani":         {"true": ["DIWANI"], "influenced": ["DIWANI_INFLUENCED"]},
+    "diwani_jali":    {"true": ["DIWANI"], "influenced": ["DIWANI_INFLUENCED"]},
     "square_kufi":    {"true": [], "influenced": [], "parametric": True,
                        "note": "Square Kufi is a geometric construction, not a typeface — a parametric composer slice, not a font purchase."},
     "monogram":       {"true": [], "influenced": [], "parametric": True,
@@ -191,10 +191,13 @@ def production_capability_map() -> dict[str, str]:
     tokens = {
         "NASKH", "RUQAA", "KUFI", "NASTALIQ", "MODERN_ARABIC",
         "THULUTH_INFLUENCED", "DIWANI_INFLUENCED",
+        # True classical cuts become REAL the moment a licensed font with
+        # that production_capability is onboarded (scripts/add_font.py).
+        "THULUTH", "DIWANI",
     }
     out = {t: (REAL if t in available else LICENSE_REQUIRED) for t in sorted(tokens)}
-    for true_script in ("THULUTH", "THULUTH_JALI", "DIWANI", "DIWANI_JALI"):
-        out[true_script] = LICENSE_REQUIRED
+    out["THULUTH_JALI"] = out["THULUTH"]
+    out["DIWANI_JALI"] = out["DIWANI"]
     return out
 
 
