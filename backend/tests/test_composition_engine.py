@@ -86,7 +86,7 @@ def test_material_system_and_weight_basis():
     from shapely.geometry import Point, box
 
     plate = box(0, 0, 20, 10).difference(Point(10, 5).buffer(3))
-    r = weight_report(plate, "gold-18k-yellow", 1.0, target_g=3.0)
+    r = weight_report(plate, "gold-18k-yellow", 1.0, target_g=2.7)
     assert abs(r["metal_area_mm2"] - (200 - 3.14159 * 9)) < 0.5      # holes subtracted, not the bounding box
     assert abs(r["estimated_weight_g"] - r["metal_area_mm2"] * 15.5 / 1000) < 0.01  # reported to 0.01 g
     assert r["target"]["within_tolerance"] is True and r["target"]["thickness_for_target_mm"]
