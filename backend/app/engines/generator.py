@@ -129,6 +129,22 @@ def _candidate_id(design_id: str, recipe: RecipeParams, source_sha: str) -> str:
     return hashlib.sha256(payload.encode()).hexdigest()[:16]
 
 
+def _width_allowance_mm(recipe: RecipeParams, rules: WorkshopRules) -> float:
+    """Width the composition adds beyond the fitted text: chain rings at
+    both ends, bar overhangs, hairline lift. Keeps stacked designs inside
+    the product envelope after construction."""
+    allowance = 2.0  # hairline lift + closing on both sides
+    ch = recipe.connector_height_mm
+    if recipe.composition in ("baseline_bar", "underline_bar", "top_bar"):
+        allowance += 2 * ch * 1.5
+    if recipe.composition in ("frame_circle", "frame_rect", "plate_rect", "plate_oval"):
+        allowance += 2 * (recipe.frame_margin_mm + max(ch, 1.1))
+    if recipe.loops == "left_right":
+        r_out = rules.loop_inner_diameter_mm / 2 + rules.loop_wall_mm
+        allowance += 2 * (2 * r_out - rules.loop_wall_mm * 0.85)
+    return allowance
+
+
 def build_geometry_for_recipe(source_text: str, recipe: RecipeParams, rules: WorkshopRules):
     """Shared deterministic build path (generator + designer edits).
     Applies the Glyph Variant Library (OT feature set, kashida with source
@@ -178,7 +194,7 @@ def build_geometry_for_recipe(source_text: str, recipe: RecipeParams, rules: Wor
         bridge_width=rules.min_bridge_mm,
         min_gap_eff=rules.effective_min_gap_mm,
         line_runs=line_runs,
-        fit_width_mm=rules.max_width_mm - 4.0,
+        fit_width_mm=rules.max_width_mm - _width_allowance_mm(recipe, rules),
     )
     return runs, proof, built
 
@@ -462,7 +478,14 @@ def _apply_ranking(candidates: list[DesignCandidate], ranking_config=None) -> No
         [sum(col) / len(col) for col in zip(*vectors)] if vectors else None
     )
     vec_by_id = {c.candidate_id: v for c, v in zip(with_features, vectors)}
+    from shapely import wkt as _wkt
+
+    from .geometry_engine import mean_stroke_mm
+
     for c in candidates:
+        stroke_ratio = None
+        if c.text_geometry_wkt and c.recipe.target_height_mm:
+            stroke_ratio = mean_stroke_mm(_wkt.loads(c.text_geometry_wkt)) / c.recipe.target_height_mm
         score, breakdown = score_candidate(
             identity_verified=c.identity_proof.verified,
             validation_passed=bool(c.validation and c.validation.passed),
@@ -471,6 +494,7 @@ def _apply_ranking(candidates: list[DesignCandidate], ranking_config=None) -> No
             pool_mean_vector=mean,
             feature_vector=vec_by_id.get(c.candidate_id),
             config=ranking_config,
+            stroke_ratio=stroke_ratio,
         )
         c.score = score
         c.score_breakdown = breakdown

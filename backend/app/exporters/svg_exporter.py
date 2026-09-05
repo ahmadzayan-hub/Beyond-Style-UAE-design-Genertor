@@ -134,7 +134,7 @@ def export_material_proof_svg(candidate: DesignCandidate, source: ImmutableSourc
     local = affinity.translate(geom, xoff=-minx + margin, yoff=-miny + margin)
     base_d = geometry_to_path_d(local, flip_y=h)
     height_mm = maxy - miny
-    blur = round(max(0.12, min(0.45, height_mm * 0.02)), 3)   # bevel radius scales with the piece
+    blur = round(max(0.06, min(0.16, height_mm * 0.009)), 3)  # crisp bevel: metal edges, not melt
     stops = MATERIAL_RENDER[material]["stops"]
     offsets = ("0%", "28%", "52%", "74%", "100%")
     gradient = "".join(
@@ -172,7 +172,7 @@ def export_material_proof_svg(candidate: DesignCandidate, source: ImmutableSourc
         f'<stop offset="0%" stop-color="{ground_hi}"/><stop offset="100%" stop-color="{ground}"/></radialGradient>\n'
         f'    <filter id="bevel" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">\n'
         f'      <feGaussianBlur in="SourceAlpha" stdDeviation="{blur}" result="blur"/>\n'
-        f'      <feSpecularLighting in="blur" surfaceScale="{round(blur * 6, 3)}" specularConstant="0.75" '
+        f'      <feSpecularLighting in="blur" surfaceScale="{round(blur * 6, 3)}" specularConstant="0.6" '
         f'specularExponent="20" lighting-color="#ffffff" result="spec">'
         f'<feDistantLight azimuth="225" elevation="48"/></feSpecularLighting>\n'
         f'      <feComposite in="spec" in2="SourceAlpha" operator="in" result="spec-in"/>\n'
@@ -180,7 +180,7 @@ def export_material_proof_svg(candidate: DesignCandidate, source: ImmutableSourc
         "    </filter>\n"
         f'    <filter id="shadow" x="-15%" y="-15%" width="130%" height="140%">'
         f'<feDropShadow dx="{round(blur, 3)}" dy="{round(blur * 2, 3)}" stdDeviation="{round(blur * 2.5, 3)}" '
-        f'flood-color="#3b2f1e" flood-opacity="0.35"/></filter>\n'
+        f'flood-color="#3b2f1e" flood-opacity="0.22"/></filter>\n'
         "  </defs>\n"
         f'  <rect width="{w}" height="{h}" fill="url(#ground)"/>\n'
         f'  <path d="{base_d}" fill="url(#metal)" fill-rule="evenodd" stroke="none" '

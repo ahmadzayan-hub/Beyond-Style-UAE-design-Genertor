@@ -57,7 +57,7 @@ REFERENCE_RANKING = RankingConfig(
 REFERENCE_INTENT_WEIGHT = 15.0
 
 HEURISTIC_DIMENSIONS = {
-    "visual_quality": "HEURISTIC / NOT ML-VALIDATED (aspect-ratio + fill balance)",
+    "visual_quality": "HEURISTIC / NOT ML-VALIDATED (aspect-ratio + fill balance + stroke weight)",
     "wearability": "HEURISTIC / NOT ML-VALIDATED (size envelope + hole snag proxy)",
     "originality": "HEURISTIC / NOT ML-VALIDATED (feature distance from pool mean)",
     "customer_fit": "HEURISTIC / NOT ML-VALIDATED (no preference model yet; constant)",
@@ -72,6 +72,7 @@ def score_candidate(
     pool_mean_vector: list[float] | None,
     feature_vector: list[float] | None,
     config: RankingConfig = DEFAULT_RANKING,
+    stroke_ratio: float | None = None,
 ) -> tuple[float, dict]:
     """Returns (total_score_0_100, breakdown). Deterministic."""
     # Arabic integrity: binary from deterministic identity proof.
@@ -84,7 +85,13 @@ def score_candidate(
         # Visual: pendant-friendly aspect ratio (~1.5-3) and moderate fill.
         aspect_fit = 1.0 / (1.0 + abs(features.aspect_ratio - 2.2) / 2.2)
         fill_fit = 1.0 - abs(features.fill_ratio - 0.45)
-        visual = max(0.0, min(1.0, 0.6 * aspect_fit + 0.4 * fill_fit))
+        # Jewellery weight: mean stroke / text height. Fine name jewellery
+        # sits near 0.08–0.10; above 0.18 the lettering reads as a slab.
+        if stroke_ratio is None:
+            weight_fit = 0.5
+        else:
+            weight_fit = 1.0 - min(max((stroke_ratio - 0.10) / 0.08, 0.0), 1.0)
+        visual = max(0.0, min(1.0, 0.45 * aspect_fit + 0.3 * fill_fit + 0.25 * weight_fit))
         # Wearability: within envelope, moderate size, few snag holes.
         size_fit = 1.0 - min(max((features.width_mm - 45) / 45, 0.0), 1.0)
         snag = 1.0 / (1.0 + 0.05 * features.hole_count)

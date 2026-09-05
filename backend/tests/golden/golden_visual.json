@@ -3,35 +3,32 @@
   "top_candidate_ids": [
    "904ab2bcfc873d00",
    "f618337a736c33ad",
-   "98262f352e0fb86f",
+   "cb33c2e85d8331ed",
    "dd2f08c6fe7e1b23",
-   "140d8b2a56c522ee",
+   "9ec1054f8110e50e",
    "9b522e234f1e453a",
-   "a76738e7c641169a",
-   "f845136960e9f892",
+   "76ac2e79981bd4d2",
    "374b4517df73adbe",
-   "232f45f43fababf3"
+   "4792e56a796799ad",
+   "6c23edde55b34e2e"
   ],
-  "combined_geometry_sha256": "e70b59c02ef7f54009ea64915c0a8c4c8f7199e0b1cac71e63cce38101b70470",
+  "combined_geometry_sha256": "a3bcae50b7e503bb70657babb6b5592e8e3e41c6aeb0931257cd62ac893f9be8",
   "families": [
    "circular-medallion",
    "flourish-crest",
-   "frame-openwork",
-   "kashida-elongated",
-   "kufi-minimal",
-   "naskh-luxury",
-   "petite-charm",
+   "kufi-bold",
+   "naskh-airy",
+   "naskh-nameplate",
    "plate-relief",
    "stacked-emblem",
    "suspended-bar"
   ],
   "compositions": [
    "bare",
+   "baseline_bar",
    "frame_circle",
-   "frame_rect",
    "plate_rect",
-   "top_bar",
-   "underline_bar"
+   "top_bar"
   ],
   "fonts": [
    "amiri-regular",
@@ -41,62 +38,27 @@
  },
  "نورة": {
   "top_candidate_ids": [
-   "b1c808de020bfd62",
-   "ceebc297cf61da2f",
+   "e353407df0293efb",
+   "a2131076cd6b1f9b",
+   "3c238e18fc61dd20",
    "e4a5c9a7927927c9",
-   "0de79235bdb7d13a",
+   "b1c808de020bfd62",
+   "912f5f7196f25d7d",
+   "199ba68f3faa2c25",
+   "b4a5f720dd9164f7",
    "faecc3d1116d75e7",
-   "216f51f2759bf626",
-   "6051aaf32911fd1c",
-   "5647d3f39324dd40",
-   "abc29f106a5532d7",
-   "b720b5bf58ef0c59"
+   "5ac99955a194237e"
   ],
-  "combined_geometry_sha256": "e462c205424f6ff3500b584157afe1b9c0377b9c8a4d8a6c7c05caa40ad3b3e9",
-  "families": [
-   "circular-medallion",
-   "frame-openwork",
-   "kufi-bold",
-   "kufi-minimal",
-   "naskh-luxury",
-   "petite-charm",
-   "plate-relief",
-   "stacked-emblem"
-  ],
-  "compositions": [
-   "bare",
-   "frame_circle",
-   "frame_rect",
-   "plate_oval",
-   "plate_rect"
-  ],
-  "fonts": [
-   "amiri-regular",
-   "cairo",
-   "scheherazade-new"
-  ]
- },
- "محمد": {
-  "top_candidate_ids": [
-   "2bd029456c3fda49",
-   "a2f448d90dd18b16",
-   "52d9808b8a17be78",
-   "01ac497e33283022",
-   "b44ccf1c07b37db7",
-   "a6e4b902a949c08a",
-   "385340e6d1772c7a",
-   "8e47a947b1217646",
-   "e936306153c55314",
-   "bd445543fb1a6b2c"
-  ],
-  "combined_geometry_sha256": "27f4c62c7c515dc2ad635dfb6f9060f2edbf1cfc75d897a80cd44e93b5bb0b18",
+  "combined_geometry_sha256": "733ece8b395a517744e10f83527a5e6752fa14faed9e487cc621946b7a45c337",
   "families": [
    "circular-medallion",
    "flourish-crest",
    "kashida-elongated",
-   "naskh-airy",
-   "naskh-nameplate",
-   "plate-relief",
+   "kufi-bold",
+   "kufi-nameplate",
+   "naskh-luxury",
+   "ornate-tails",
+   "phrase-badge",
    "stacked-emblem",
    "suspended-bar"
   ],
@@ -114,37 +76,77 @@
    "scheherazade-new"
   ]
  },
- "Amal": {
+ "محمد": {
   "top_candidate_ids": [
-   "5c27c7c1e4ec72ba",
-   "729a8e6ebacdd2ee",
-   "b53fa241b5dd2ab6",
-   "78fa9f36f63438e8",
-   "63a9f4f692a26b13",
-   "1e4ce4c906e1c253",
-   "a53741e1afb4b52a",
-   "e8610c43527cd619",
-   "22f68bafc5c1ed2b",
-   "9e8a99ed891049e3"
+   "2bd029456c3fda49",
+   "f620fb9fd0c3c0a2",
+   "a2f448d90dd18b16",
+   "01ac497e33283022",
+   "52d9808b8a17be78",
+   "b44ccf1c07b37db7",
+   "a6e4b902a949c08a",
+   "385340e6d1772c7a",
+   "5a1ddf95c3406aa2",
+   "222d084efcf2740d"
   ],
-  "combined_geometry_sha256": "0e538ddba84a2b6d9bfbc96028c65a362dc9ed4e81e9a7bed17a32364ecb0172",
+  "combined_geometry_sha256": "8d5f5fdb87e11f65f70d38e05528f17a74e5da6bf0e87b77090400fddf1e7f22",
   "families": [
+   "circular-medallion",
    "flourish-crest",
    "frame-openwork",
    "kashida-elongated",
-   "kufi-bold",
-   "kufi-minimal",
+   "kufi-nameplate",
    "naskh-airy",
-   "naskh-elegant",
    "naskh-luxury",
-   "phrase-badge",
-   "plate-relief"
+   "naskh-nameplate",
+   "plate-relief",
+   "stacked-emblem"
   ],
   "compositions": [
    "bare",
+   "baseline_bar",
+   "frame_circle",
    "frame_rect",
+   "plate_rect",
+   "underline_bar"
+  ],
+  "fonts": [
+   "amiri-regular",
+   "cairo",
+   "scheherazade-new"
+  ]
+ },
+ "Amal": {
+  "top_candidate_ids": [
+   "b4c2ea7a5a93434a",
+   "9c4d11ddc83598cf",
+   "a53741e1afb4b52a",
+   "3376442b6ac12603",
+   "1e4ce4c906e1c253",
+   "729a8e6ebacdd2ee",
+   "1370284c3b888d44",
+   "316f09b70bba8dd1",
+   "c65679a8f54cdf6d",
+   "22f68bafc5c1ed2b"
+  ],
+  "combined_geometry_sha256": "701b07e286c611a5b659a9ec9cf9ad1435c747eea090cf69784f0488bb5ece06",
+  "families": [
+   "flourish-crest",
+   "kashida-elongated",
+   "naskh-airy",
+   "naskh-elegant",
+   "naskh-luxury",
+   "naskh-nameplate",
+   "phrase-badge",
+   "plate-relief",
+   "suspended-bar"
+  ],
+  "compositions": [
+   "bare",
+   "baseline_bar",
    "plate_oval",
    "plate_rect",
+   "top_bar",
    "underline_bar"
   ],
   "fonts": [
@@ -156,23 +158,23 @@
  "Basma": {
   "top_candidate_ids": [
    "a047e083ea8d586c",
-   "729e7ce8ca79bc63",
-   "41bc2c9f208717db",
-   "6733645b162424a8",
-   "4ab774b643523c17",
-   "d8406bd57583280f",
-   "7cee83c8f724320e",
+   "4bbece2e8de2229f",
+   "35f1c7d4415975d3",
+   "0a94626f8eafc459",
+   "711651846052128f",
    "7fbd2e28415d4b9d",
-   "a7e62346eeb22731",
-   "80e853919e21b752"
+   "3b65aa5457611a9a",
+   "1fb2560102ebb4c9",
+   "790d2b379f3a8e45",
+   "ef37930a2c2b7ac4"
   ],
-  "combined_geometry_sha256": "cb7bbbca00b1b922baedab80380891ac305a79d05c31c8f78aacd6aa1444e8a5",
+  "combined_geometry_sha256": "51c0c7952902d96ab4d4c79b3c23a30c82668d6d17e40b5c6b79e45a7678b483",
   "families": [
    "circular-medallion",
-   "kufi-bold",
    "kufi-minimal",
+   "naskh-airy",
+   "naskh-luxury",
    "naskh-nameplate",
-   "naskh-openwork",
    "plate-relief",
    "stacked-emblem",
    "suspended-bar"
@@ -181,7 +183,6 @@
    "bare",
    "baseline_bar",
    "frame_circle",
-   "plate_oval",
    "plate_rect",
    "top_bar",
    "underline_bar"

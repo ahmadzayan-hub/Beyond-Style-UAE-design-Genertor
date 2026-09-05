@@ -1,6 +1,6 @@
 {
- "library_version": "0.3.0",
- "note": "Curated parametric archetypes (32) — each with a distinct visual purpose and Design DNA. Structured constructions, not artwork copies. Rights: original Beyond Style parametric recipes. Values in mm.",
+ "library_version": "0.4.0",
+ "note": "Curated parametric archetypes (32) — each with a distinct visual purpose and Design DNA. Structured constructions, not artwork copies. Rights: original Beyond Style parametric recipes. Values in mm. v0.4.0: Cairo recipes use the wght=300 instance (lighter Kufi strokes for metal); geometry engine normalises stroke weight (ADR-0005).",
  "recipes": [
   {
    "recipe_id": "naskh-classic-bar",
@@ -712,7 +712,10 @@
     },
     "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
    },
-   "dot_style": "square"
+   "dot_style": "square",
+   "font_axes": {
+    "wght": 300
+   }
   },
   {
    "recipe_id": "kufi-minimal-line",
@@ -744,6 +747,9 @@
      "rules_profile": "TEST_DEFAULTS"
     },
     "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   },
+   "font_axes": {
+    "wght": 300
    }
   },
   {
@@ -776,6 +782,9 @@
      "rules_profile": "TEST_DEFAULTS"
     },
     "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   },
+   "font_axes": {
+    "wght": 300
    }
   },
   {
@@ -810,7 +819,10 @@
     },
     "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
    },
-   "dot_style": "square"
+   "dot_style": "square",
+   "font_axes": {
+    "wght": 300
+   }
   },
   {
    "recipe_id": "kufi-open-frame",
@@ -842,6 +854,9 @@
      "rules_profile": "TEST_DEFAULTS"
     },
     "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   },
+   "font_axes": {
+    "wght": 300
    }
   },
   {
@@ -874,6 +889,9 @@
      "rules_profile": "TEST_DEFAULTS"
     },
     "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   },
+   "font_axes": {
+    "wght": 300
    }
   },
   {
@@ -906,6 +924,9 @@
      "rules_profile": "TEST_DEFAULTS"
     },
     "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   },
+   "font_axes": {
+    "wght": 300
    }
   },
   {
@@ -938,6 +959,9 @@
      "rules_profile": "TEST_DEFAULTS"
     },
     "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   },
+   "font_axes": {
+    "wght": 300
    }
   },
   {
@@ -970,6 +994,9 @@
      "rules_profile": "TEST_DEFAULTS"
     },
     "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   },
+   "font_axes": {
+    "wght": 300
    }
   },
   {
@@ -1002,6 +1029,9 @@
      "rules_profile": "TEST_DEFAULTS"
     },
     "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   },
+   "font_axes": {
+    "wght": 300
    }
   },
   {
@@ -1034,6 +1064,9 @@
      "rules_profile": "TEST_DEFAULTS"
     },
     "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   },
+   "font_axes": {
+    "wght": 300
    }
   },
   {
@@ -1262,6 +1295,9 @@
      "rules_profile": "workshop_profiles"
     },
     "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   },
+   "font_axes": {
+    "wght": 300
    }
   },
   {
@@ -1337,6 +1373,9 @@
      "rules_profile": "workshop_profiles"
     },
     "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC"
+   },
+   "font_axes": {
+    "wght": 300
    }
   }
  ],

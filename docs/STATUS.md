@@ -86,6 +86,23 @@ Honest: 215 archetypes ≠ 150 *curated* archetypes; curation of the derived set
 - Full backend suite wall time is unchanged (~13–25 min on this box); no test was skipped or
   parallelised to hide it.
 
+## Jewellery realism: the proofs now read as metal pieces (2026-09-04, ADR-0005)
+Owner: «ما عجبني التصميمات لأنها غير حقيقية». Measured, not guessed: mean strokes were 1.0–1.7 mm
+(up to 0.135 of height), bails floated on stalks, frames used spokes, dots were specks. Fixed in
+the deterministic construction (no AI, no new fonts): stroke buffer sized from the face's own
+metal (lift the thinnest hairline class to the 0.85 mm neck minimum, or bring a light face toward
+0.082·height; never erode — erosion and a local thin-parts pass were both measured to lower
+validity and rejected), Cairo recipes on the `wght=300` instance, bails on the central top of the
+main body with the chain hole kept clear, chain rings on the true ends of the metal (soldered
+overlap, no bridges), medallion names kissing a 1.1 mm ring with solder fillets, rounded plates,
+dots ≥ 1.25 mm circles, solder fillets on every bridge landing, stroke weight in the visual
+ranking, crisper render. Validity of the 48-candidate pool rose for every golden text (e.g. ميثة
+34→45, نورة 27→42, long phrase 24→35). Before/after gold sheets (`docs/evidence/realism/`) were
+inspected in headless Chromium at each step. Golden visual fixture regenerated deliberately
+(text-truth fixture untouched). Tests `test_jewellery_realism.py` 4/4; full suite: see CI on this
+commit. Honest: still parametric lettering from licensed print fonts; a small Naskh charm stays
+heavier because its hairlines must physically reach the neck minimum.
+
 ## The two remaining reference-study gaps, engineered down (2026-09-04, owner "solve these issues")
 1. **True Thuluth / Diwani** — still a license purchase (no OFL true cut exists; none is claimed),
    but now a ten-minute install instead of an engineering task: `scripts/add_font.py` inspects
