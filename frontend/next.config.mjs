@@ -39,6 +39,12 @@ const SECURITY_HEADERS = [
 ];
 
 const nextConfig = {
+  // Local/CI only: the /api rewrite below proxies through Next, whose
+  // default proxy timeout is 30 s — shorter than a multi-name composition
+  // run (7 names ≈ 40–80 s depending on CPU). Production never proxies
+  // (direct browser→backend fetch via NEXT_PUBLIC_API_URL), so this has
+  // no effect there.
+  experimental: { proxyTimeout: 300_000 },
   async headers() {
     return [{ source: "/(.*)", headers: SECURITY_HEADERS }];
   },
