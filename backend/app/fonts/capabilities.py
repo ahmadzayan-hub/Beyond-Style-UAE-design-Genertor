@@ -37,12 +37,12 @@ NOT_APPLICABLE = "NOT_APPLICABLE"
 SCRIPT_REQUIREMENTS: dict[str, dict] = {
     "naskh":          {"true": ["NASKH"], "influenced": []},
     "ruqaa":          {"true": ["RUQAA"], "influenced": []},
-    "kufi":           {"true": ["KUFI"], "influenced": ["MODERN_ARABIC"]},
-    "geometric_kufi": {"true": ["KUFI"], "influenced": []},
+    "kufi":           {"true": ["KUFI", "MODERN_KUFI", "GEOMETRIC_KUFI"], "influenced": ["MODERN_ARABIC"]},
+    "geometric_kufi": {"true": ["GEOMETRIC_KUFI", "KUFI"], "influenced": ["MODERN_KUFI"]},
     "nastaliq":       {"true": ["NASTALIQ"], "influenced": []},
     "farsi":          {"true": [], "influenced": ["NASTALIQ"],
                        "note": "Farsi/Ta'liq is served only by the Urdu Nastaliq face; not a true Farsi cut."},
-    "modern_arabic":  {"true": ["MODERN_ARABIC"], "influenced": []},
+    "modern_arabic":  {"true": ["MODERN_ARABIC", "LOGO", "DISPLAY", "BOLD"], "influenced": []},
     "minimal":        {"true": ["MODERN_ARABIC"], "influenced": []},
     "thuluth":        {"true": ["THULUTH"], "influenced": ["THULUTH_INFLUENCED"]},
     "thuluth_jali":   {"true": ["THULUTH"], "influenced": ["THULUTH_INFLUENCED"]},
@@ -190,6 +190,7 @@ def production_capability_map() -> dict[str, str]:
     available = set(_fonts_by_capability())
     tokens = {
         "NASKH", "RUQAA", "KUFI", "NASTALIQ", "MODERN_ARABIC",
+        "MODERN_KUFI", "GEOMETRIC_KUFI", "DISPLAY", "BOLD", "LOGO",
         "THULUTH_INFLUENCED", "DIWANI_INFLUENCED",
         # True classical cuts become REAL the moment a licensed font with
         # that production_capability is onboarded (scripts/add_font.py).

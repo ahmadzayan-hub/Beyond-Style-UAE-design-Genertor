@@ -23,7 +23,8 @@ def test_catalogue_is_large_unique_and_labelled():
     cat = al.build_catalogue()
     summary = al.catalogue_summary()
     assert summary["total"] >= 150
-    assert summary["curated"] == 46 and summary["uncurated_parametric"] >= 100
+    curated_count = len(al._load(al.DESIGN_RECIPES)["recipes"]) + len(al._load(al.SCRIPT_RECIPES)["recipes"])
+    assert summary["curated"] == curated_count and summary["uncurated_parametric"] >= 100
     assert len({r.recipe_id for r in cat}) == len(cat)
     curated_sigs = {al.signature(r) for r in cat if (r.dna or {})["curation"] == al.CURATED}
     derived_sigs = [al.signature(r) for r in cat if (r.dna or {})["curation"] == al.UNCURATED]

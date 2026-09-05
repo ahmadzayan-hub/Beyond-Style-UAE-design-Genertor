@@ -1,5 +1,5 @@
 {
- "library_version": "0.1.0",
+ "library_version": "0.2.0",
  "note": "On-demand recipes for the newly-vendored script families. Kept OUT of the default candidate pool so the ranked-10 Golden Path and its immutable golden fixture are unchanged; these are selected only when a customer explicitly asks for that script family (see app/fonts/capabilities.resolve_script_request). Parameters were chosen by a validator sweep, not by eye — see dna.manufacturing_validated on each entry.",
  "recipes": [
   {
@@ -205,6 +205,2402 @@
     "manufacturing_validated": "parameters selected by sweep; 3/4 golden names pass the validator"
    },
    "kashida_count": 2
+  },
+  {
+   "recipe_id": "rakkas-bare-11",
+   "name": "rakkas bare",
+   "font_id": "rakkas",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "ruqaa-bare",
+    "visual_purpose": "rakkas bare (handwriting, display, soft)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "rakkas-bare-13",
+   "name": "rakkas bare",
+   "font_id": "rakkas",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 13.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "ruqaa-bare",
+    "visual_purpose": "rakkas bare (handwriting, display, soft)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 11.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "lateef-bare-11",
+   "name": "lateef bare",
+   "font_id": "lateef",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "naskh-bare",
+    "visual_purpose": "lateef bare (naskh, light)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "lateef-bare-13",
+   "name": "lateef bare",
+   "font_id": "lateef",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 13.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "naskh-bare",
+    "visual_purpose": "lateef bare (naskh, light)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 11.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "harmattan-bare-11",
+   "name": "harmattan bare",
+   "font_id": "harmattan",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "naskh-bare",
+    "visual_purpose": "harmattan bare (naskh, warsh)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "harmattan-bare-13",
+   "name": "harmattan bare",
+   "font_id": "harmattan",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 13.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "naskh-bare",
+    "visual_purpose": "harmattan bare (naskh, warsh)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 11.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "kufam-underline_bar-12",
+   "name": "kufam underline_bar",
+   "font_id": "kufam",
+   "composition": "underline_bar",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "left_right",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 12.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "kufi-underline_bar",
+    "visual_purpose": "kufam underline_bar (modern-kufi, geometric)",
+    "products": [
+     "pendant",
+     "necklace",
+     "bracelet"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 10.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 4/5 golden names pass",
+    "manufacturing_score": 0.8
+   }
+  },
+  {
+   "recipe_id": "qahiri-bare-13",
+   "name": "qahiri bare",
+   "font_id": "qahiri",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 13.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "kufi-bare",
+    "visual_purpose": "qahiri bare (geometric, kufi, logo)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 11.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "qahiri-baseline_bar-11",
+   "name": "qahiri baseline_bar",
+   "font_id": "qahiri",
+   "composition": "baseline_bar",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "left_right",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "kufi-baseline_bar",
+    "visual_purpose": "qahiri baseline_bar (geometric, kufi, logo)",
+    "products": [
+     "pendant",
+     "necklace",
+     "bracelet"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "jomhuria-bare-11",
+   "name": "jomhuria bare",
+   "font_id": "jomhuria",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "kufi-bare",
+    "visual_purpose": "jomhuria bare (kufi, display, retro)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "jomhuria-bare-13",
+   "name": "jomhuria bare",
+   "font_id": "jomhuria",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 13.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "kufi-bare",
+    "visual_purpose": "jomhuria bare (kufi, display, retro)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 11.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "ruwudu-bare-13",
+   "name": "ruwudu bare",
+   "font_id": "ruwudu",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 13.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "kufi-bare",
+    "visual_purpose": "ruwudu bare (kufi)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 11.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "ruwudu-baseline_bar-11",
+   "name": "ruwudu baseline_bar",
+   "font_id": "ruwudu",
+   "composition": "baseline_bar",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "left_right",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "kufi-baseline_bar",
+    "visual_purpose": "ruwudu baseline_bar (kufi)",
+    "products": [
+     "pendant",
+     "necklace",
+     "bracelet"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "gulzar-bare-11",
+   "name": "gulzar bare",
+   "font_id": "gulzar",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "nastaliq-bare",
+    "visual_purpose": "gulzar bare (nastaliq, persian)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "gulzar-bare-13",
+   "name": "gulzar bare",
+   "font_id": "gulzar",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 13.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "nastaliq-bare",
+    "visual_purpose": "gulzar bare (nastaliq, persian)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 11.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "mirza-bare-11",
+   "name": "mirza bare",
+   "font_id": "mirza",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "nastaliq-bare",
+    "visual_purpose": "mirza bare (nastaliq, persian, poetic)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "mirza-bare-13",
+   "name": "mirza bare",
+   "font_id": "mirza",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 13.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "nastaliq-bare",
+    "visual_purpose": "mirza bare (nastaliq, persian, poetic)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 11.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 4/5 golden names pass",
+    "manufacturing_score": 0.8
+   }
+  },
+  {
+   "recipe_id": "blaka-bare-11",
+   "name": "blaka bare",
+   "font_id": "blaka",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "modern_arabic-bare",
+    "visual_purpose": "blaka bare (decorative, sculpture, statement)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "blaka-bare-13",
+   "name": "blaka bare",
+   "font_id": "blaka",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 13.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "modern_arabic-bare",
+    "visual_purpose": "blaka bare (decorative, sculpture, statement)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 11.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "lalezar-bare-11",
+   "name": "lalezar bare",
+   "font_id": "lalezar",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "modern_arabic-bare",
+    "visual_purpose": "lalezar bare (bold, retro, display)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "lalezar-bare-13",
+   "name": "lalezar bare",
+   "font_id": "lalezar",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 13.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "modern_arabic-bare",
+    "visual_purpose": "lalezar bare (bold, retro, display)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 11.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "marhey-bare-11",
+   "name": "marhey bare",
+   "font_id": "marhey",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "modern_arabic-bare",
+    "visual_purpose": "marhey bare (decorative, soft, fun)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 4/5 golden names pass",
+    "manufacturing_score": 0.8
+   }
+  },
+  {
+   "recipe_id": "marhey-bare-13",
+   "name": "marhey bare",
+   "font_id": "marhey",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 13.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "modern_arabic-bare",
+    "visual_purpose": "marhey bare (decorative, soft, fun)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 11.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 4/5 golden names pass",
+    "manufacturing_score": 0.8
+   }
+  },
+  {
+   "recipe_id": "changa-bare-11",
+   "name": "changa bare",
+   "font_id": "changa",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "modern_arabic-bare",
+    "visual_purpose": "changa bare (modern, bold, kufi)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "changa-baseline_bar-11",
+   "name": "changa baseline_bar",
+   "font_id": "changa",
+   "composition": "baseline_bar",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "left_right",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "modern_arabic-baseline_bar",
+    "visual_purpose": "changa baseline_bar (modern, bold, kufi)",
+    "products": [
+     "pendant",
+     "necklace",
+     "bracelet"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 4/5 golden names pass",
+    "manufacturing_score": 0.8
+   }
+  },
+  {
+   "recipe_id": "beiruti-bare-11",
+   "name": "beiruti bare",
+   "font_id": "beiruti",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "modern_arabic-bare",
+    "visual_purpose": "beiruti bare (logo, modern)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "beiruti-bare-13",
+   "name": "beiruti bare",
+   "font_id": "beiruti",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 13.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "modern_arabic-bare",
+    "visual_purpose": "beiruti bare (logo, modern)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 11.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "almarai-bare-11",
+   "name": "almarai bare",
+   "font_id": "almarai",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "modern_arabic-bare",
+    "visual_purpose": "almarai bare (modern, minimal)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "almarai-bare-13",
+   "name": "almarai bare",
+   "font_id": "almarai",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 13.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "modern_arabic-bare",
+    "visual_purpose": "almarai bare (modern, minimal)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 11.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "vazirmatn-bare-11",
+   "name": "vazirmatn bare",
+   "font_id": "vazirmatn",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "modern_arabic-bare",
+    "visual_purpose": "vazirmatn bare (modern, minimal)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 3/5 golden names pass",
+    "manufacturing_score": 0.6
+   }
+  },
+  {
+   "recipe_id": "vazirmatn-bare-13",
+   "name": "vazirmatn bare",
+   "font_id": "vazirmatn",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 13.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "modern_arabic-bare",
+    "visual_purpose": "vazirmatn bare (modern, minimal)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 11.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 3/5 golden names pass",
+    "manufacturing_score": 0.6
+   }
+  },
+  {
+   "recipe_id": "mada-bare-11",
+   "name": "mada bare",
+   "font_id": "mada",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "modern_arabic-bare",
+    "visual_purpose": "mada bare (modern, geometric)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "mada-bare-13",
+   "name": "mada bare",
+   "font_id": "mada",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 13.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "modern_arabic-bare",
+    "visual_purpose": "mada bare (modern, geometric)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 11.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 4/5 golden names pass",
+    "manufacturing_score": 0.8
+   }
+  },
+  {
+   "recipe_id": "zain-bare-11",
+   "name": "zain bare",
+   "font_id": "zain",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "modern_arabic-bare",
+    "visual_purpose": "zain bare (modern, minimal)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 4/5 golden names pass",
+    "manufacturing_score": 0.8
+   }
+  },
+  {
+   "recipe_id": "zain-bare-13",
+   "name": "zain bare",
+   "font_id": "zain",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 13.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "modern_arabic-bare",
+    "visual_purpose": "zain bare (modern, minimal)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 11.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 4/5 golden names pass",
+    "manufacturing_score": 0.8
+   }
+  },
+  {
+   "recipe_id": "aref-ruqaa-ink-bare-13",
+   "name": "aref-ruqaa-ink bare",
+   "font_id": "aref-ruqaa-ink",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 13.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "ruqaa-bare",
+    "visual_purpose": "aref-ruqaa-ink bare (ruqaa, ink, handwriting)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 11.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "aref-ruqaa-ink-underline_bar-12",
+   "name": "aref-ruqaa-ink underline_bar",
+   "font_id": "aref-ruqaa-ink",
+   "composition": "underline_bar",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "left_right",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 12.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "ruqaa-underline_bar",
+    "visual_purpose": "aref-ruqaa-ink underline_bar (ruqaa, ink, handwriting)",
+    "products": [
+     "pendant",
+     "necklace",
+     "bracelet"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 10.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "noto-naskh-arabic-bare-11",
+   "name": "noto-naskh-arabic bare",
+   "font_id": "noto-naskh-arabic",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "naskh-bare",
+    "visual_purpose": "noto-naskh-arabic bare (naskh, classic)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 3/5 golden names pass",
+    "manufacturing_score": 0.6
+   }
+  },
+  {
+   "recipe_id": "noto-naskh-arabic-underline_bar-12",
+   "name": "noto-naskh-arabic underline_bar",
+   "font_id": "noto-naskh-arabic",
+   "composition": "underline_bar",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "left_right",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 12.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "naskh-underline_bar",
+    "visual_purpose": "noto-naskh-arabic underline_bar (naskh, classic)",
+    "products": [
+     "pendant",
+     "necklace",
+     "bracelet"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 10.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 3/5 golden names pass",
+    "manufacturing_score": 0.6
+   }
+  },
+  {
+   "recipe_id": "amiri-quran-bare-11",
+   "name": "amiri-quran bare",
+   "font_id": "amiri-quran",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "naskh-bare",
+    "visual_purpose": "amiri-quran bare (naskh, classic, sacred)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "amiri-quran-bare-13",
+   "name": "amiri-quran bare",
+   "font_id": "amiri-quran",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 13.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "naskh-bare",
+    "visual_purpose": "amiri-quran bare (naskh, classic, sacred)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 11.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "markazi-text-bare-11",
+   "name": "markazi-text bare",
+   "font_id": "markazi-text",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "naskh-bare",
+    "visual_purpose": "markazi-text bare (modern-naskh, logo)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "markazi-text-bare-13",
+   "name": "markazi-text bare",
+   "font_id": "markazi-text",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 13.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "naskh-bare",
+    "visual_purpose": "markazi-text bare (modern-naskh, logo)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 11.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 4/5 golden names pass",
+    "manufacturing_score": 0.8
+   }
+  },
+  {
+   "recipe_id": "noto-kufi-arabic-baseline_bar-11",
+   "name": "noto-kufi-arabic baseline_bar",
+   "font_id": "noto-kufi-arabic",
+   "composition": "baseline_bar",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "left_right",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "kufi-baseline_bar",
+    "visual_purpose": "noto-kufi-arabic baseline_bar (modern-kufi, bold, geometric)",
+    "products": [
+     "pendant",
+     "necklace",
+     "bracelet"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "noto-kufi-arabic-bare-11",
+   "name": "noto-kufi-arabic bare",
+   "font_id": "noto-kufi-arabic",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "kufi-bare",
+    "visual_purpose": "noto-kufi-arabic bare (modern-kufi, bold, geometric)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 4/5 golden names pass",
+    "manufacturing_score": 0.8
+   }
+  },
+  {
+   "recipe_id": "reem-kufi-ink-bare-11",
+   "name": "reem-kufi-ink bare",
+   "font_id": "reem-kufi-ink",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "kufi-bare",
+    "visual_purpose": "reem-kufi-ink bare (kufi, ink, decorative)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "reem-kufi-ink-baseline_bar-11",
+   "name": "reem-kufi-ink baseline_bar",
+   "font_id": "reem-kufi-ink",
+   "composition": "baseline_bar",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "left_right",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "kufi-baseline_bar",
+    "visual_purpose": "reem-kufi-ink baseline_bar (kufi, ink, decorative)",
+    "products": [
+     "pendant",
+     "necklace",
+     "bracelet"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "reem-kufi-fun-baseline_bar-11",
+   "name": "reem-kufi-fun baseline_bar",
+   "font_id": "reem-kufi-fun",
+   "composition": "baseline_bar",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "left_right",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "kufi-baseline_bar",
+    "visual_purpose": "reem-kufi-fun baseline_bar (kufi, fun, decorative)",
+    "products": [
+     "pendant",
+     "necklace",
+     "bracelet"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "reem-kufi-fun-bare-11",
+   "name": "reem-kufi-fun bare",
+   "font_id": "reem-kufi-fun",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "kufi-bare",
+    "visual_purpose": "reem-kufi-fun bare (kufi, fun, decorative)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 4/5 golden names pass",
+    "manufacturing_score": 0.8
+   }
+  },
+  {
+   "recipe_id": "blaka-ink-bare-11",
+   "name": "blaka-ink bare",
+   "font_id": "blaka-ink",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "modern_arabic-bare",
+    "visual_purpose": "blaka-ink bare (decorative, ink, statement)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "blaka-ink-bare-13",
+   "name": "blaka-ink bare",
+   "font_id": "blaka-ink",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 13.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "modern_arabic-bare",
+    "visual_purpose": "blaka-ink bare (decorative, ink, statement)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 11.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "baloo-bhaijaan-2-bare-11",
+   "name": "baloo-bhaijaan-2 bare",
+   "font_id": "baloo-bhaijaan-2",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "modern_arabic-bare",
+    "visual_purpose": "baloo-bhaijaan-2 bare (bold, rounded)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 5/5 golden names pass",
+    "manufacturing_score": 1.0
+   }
+  },
+  {
+   "recipe_id": "baloo-bhaijaan-2-bare-13",
+   "name": "baloo-bhaijaan-2 bare",
+   "font_id": "baloo-bhaijaan-2",
+   "composition": "bare",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "top",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 13.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "modern_arabic-bare",
+    "visual_purpose": "baloo-bhaijaan-2 bare (bold, rounded)",
+    "products": [
+     "pendant",
+     "necklace",
+     "earring",
+     "keychain"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 11.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 4/5 golden names pass",
+    "manufacturing_score": 0.8
+   }
+  },
+  {
+   "recipe_id": "el-messiri-baseline_bar-11",
+   "name": "el-messiri baseline_bar",
+   "font_id": "el-messiri",
+   "composition": "baseline_bar",
+   "letter_spacing_mm": 0.0,
+   "x_scale": 1.0,
+   "y_scale": 1.0,
+   "stroke_delta_mm": 0.25,
+   "dot_strategy": "bridge",
+   "connector_height_mm": 1.2,
+   "loops": "left_right",
+   "frame_margin_mm": 2.0,
+   "target_height_mm": 11.0,
+   "ot_feature_set": "default",
+   "dot_style": "round",
+   "swash": "none",
+   "kashida_count": 0,
+   "font_axes": {},
+   "ring": null,
+   "max_lines": 1,
+   "line_spacing_ratio": 0.22,
+   "dna": {
+    "family": "modern_arabic-baseline_bar",
+    "visual_purpose": "el-messiri baseline_bar (logo, modern, calligraphic)",
+    "products": [
+     "pendant",
+     "necklace",
+     "bracelet"
+    ],
+    "text_length_chars": [
+     1,
+     14
+    ],
+    "manufacturing_constraints": {
+     "min_target_height_mm": 9.0,
+     "rules_profile": "pendant/silver-925"
+    },
+    "rights": "BEYOND_STYLE_ORIGINAL_PARAMETRIC",
+    "manufacturing_validated": "sweep 2026-09-05: 4/5 golden names pass",
+    "manufacturing_score": 0.8
+   }
   }
- ]
+ ],
+ "manufacturing_scores": {
+  "rakkas": 1.0,
+  "lateef": 1.0,
+  "harmattan": 1.0,
+  "kufam": 0.8,
+  "qahiri": 1.0,
+  "jomhuria": 1.0,
+  "ruwudu": 1.0,
+  "gulzar": 1.0,
+  "mirza": 1.0,
+  "blaka": 1.0,
+  "lalezar": 1.0,
+  "marhey": 0.8,
+  "changa": 1.0,
+  "beiruti": 1.0,
+  "almarai": 1.0,
+  "vazirmatn": 0.6,
+  "mada": 1.0,
+  "zain": 0.8,
+  "aref-ruqaa-ink": 1.0,
+  "noto-naskh-arabic": 0.6,
+  "amiri-quran": 1.0,
+  "markazi-text": 1.0,
+  "noto-kufi-arabic": 1.0,
+  "reem-kufi-ink": 1.0,
+  "reem-kufi-fun": 1.0,
+  "blaka-ink": 1.0,
+  "baloo-bhaijaan-2": 1.0,
+  "el-messiri": 0.8
+ }
 }

@@ -573,35 +573,63 @@ def font_variants(font_id: str):
 
 
 @fonts_router.get("/styles")
-def style_options():
-    """The customer style picker. Arabic labels only — raw OpenType tags
-    and internal feature-set ids are deliberately absent from this
-    payload; they are generation inputs, not customer data."""
+def style_browser():
+    """Style Browser cards: availability derived from the rights-cleared
+    registry (AVAILABLE / INFLUENCED_ONLY / UPLOAD_REQUIRED /
+    PARAMETRIC_NOT_BUILT / ENGINE), jewellery suitability and the sweep's
+    manufacturing score. Nothing here is declared by hand."""
+    import json
+
+    from ..fonts.capabilities import _script_recipe_library
+    from ..fonts.styles import MOOD_FILTERS, PRODUCT_FILTERS, style_catalogue
+
     from ..fonts.curation import customer_style_options
 
-    return {"styles": customer_style_options()}
-
-
-@fonts_router.get("/products/{product}/suitability")
-def product_suitability(product: str):
-    """Per-product font suitability. Ten dimensions are measured from real
-    geometry; three aesthetic dimensions stay NOT_ASSESSED until a human
-    reviews the proof sheets, so this is never a finished taste ranking."""
-    from ..fonts.curation import PRODUCTS
-    from ..fonts.suitability import measure
-
-    if product not in PRODUCTS:
-        raise HTTPException(404, "Unknown product.")
-    profile = PRODUCTS[product]
-    rows = [measure(f.font_id, profile) for f in get_registry().list()]
-    rows.sort(key=lambda r: (r.get("computed_suitability") or 0.0), reverse=True)
+    scores = _script_recipe_library().get("manufacturing_scores", {})
     return {
-        "product": product,
-        "human_review_required": True,
-        "results": [
-            {k: v for k, v in r.items() if k != "attempts"} for r in rows
-        ],
+        "styles": style_catalogue(scores),
+        "product_filters": PRODUCT_FILTERS,
+        "mood_filters": MOOD_FILTERS,
+        # Curated Arabic mood labels (intake style_intent vocabulary) — kept
+        # under the one styles endpoint instead of a second route.
+        "customer_labels": customer_style_options(),
     }
+
+
+@fonts_router.get("/registry")
+def font_registry_view():
+    """Font & Glyph Registry (name, script, source, version, license, use
+    statuses, hash, imported date, glyph count, shaping status)."""
+    from ..fonts.styles import registry_view
+
+    rows = registry_view()
+    return {"fonts": rows, "count": len(rows)}
+
+
+@fonts_router.get("/preview/{font_id}")
+def font_preview(font_id: str, text: str = "ميثه", material: str | None = None):
+    """Vector preview of a registry font with the given text — shaped by
+    HarfBuzz and outlined by the real engine (never browser text)."""
+    from ..config import DEFAULT_RULES
+    from ..engines.generator import build_candidate
+    from ..engines.text_integrity import inspect
+    from ..fonts.registry import get_registry
+    from ..schemas.jewellery_design import ImmutableSourceText, RecipeParams
+
+    try:
+        record = get_registry().get(font_id)
+    except KeyError:
+        raise HTTPException(404, "Unknown font.")
+    if not record.commercial_production_allowed:
+        raise HTTPException(403, "Font is not cleared for production previews.")
+    report = inspect(text[:40])
+    if report.status == "FAIL":
+        raise HTTPException(422, {"code": "TEXT_INTEGRITY_FAILED", "integrity": report.as_dict()})
+    source = ImmutableSourceText.create(report.raw_text, confirmed=True)
+    recipe = RecipeParams(recipe_id=f"preview-{font_id}", name="preview", font_id=font_id, composition="bare",
+                          stroke_delta_mm=0.25, dot_strategy="bridge", loops="none", target_height_mm=12.0)
+    candidate = build_candidate("preview", source, recipe, DEFAULT_RULES)
+    return Response(content=_render_proof(candidate, source, material), media_type="image/svg+xml")
 
 
 @fonts_router.get("/resolve/{script_family}")

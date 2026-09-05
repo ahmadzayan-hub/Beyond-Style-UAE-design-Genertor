@@ -60,7 +60,9 @@ def test_dry_run_reports_a_usable_binary(tmp_path, capsys):
     assert out["binary"]["contextual_forms"] and out["binary"]["missing_arabic_letters"] == []
     assert out["shaping"]["ok"] and all(n["notdef"] == 0 for n in out["shaping"]["names"])
     assert out["entry"]["production_capability"] == "THULUTH"
-    assert out["entry"]["file_sha256"] and out["entry"]["diversity_index"] == 9
+    from app.fonts.registry import get_registry
+    expected_index = max(f.diversity_index for f in get_registry().list()) + 1
+    assert out["entry"]["file_sha256"] and out["entry"]["diversity_index"] == expected_index
     assert not (tmp_path / "assets" / "EULA.txt").exists()  # dry run copies nothing
 
 

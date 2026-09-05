@@ -68,4 +68,4 @@ def test_brief_resolves_script_honestly(clean_tables, db_session):
 
     brief = upsert_brief(db_session, req.id, product_type="pendant", script_family="kufi")
     assert brief.generation_hints["script_resolution"]["outcome"] == "AVAILABLE"
-    assert brief.generation_hints["preferred_fonts"] == ["reem-kufi"]
+    assert "reem-kufi" in brief.generation_hints["preferred_fonts"]  # every licensed Kufi face
