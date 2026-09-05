@@ -71,5 +71,8 @@ incrementally with tests. Audit findings that drove the design:
 - Removed duplication: the two `/api/fonts/styles` routes were merged; hard-coded loop maps were
   replaced by the generator's single map; repair logic lives in one service function used by both
   the options and the apply endpoints.
-- Not done (honest): secure customer approval links, node/pen editing, Thuluth/Diwani true
+- Secure customer approval links (added after the first acceptance run): single-use, expiring,
+  bound to the geometry hash, retype-to-confirm, `approval_method=SECURE_LINK`; internal approvals
+  stay labelled INTERNAL_UI.
+- Not done (honest): OTP/identity check on the link holder, node/pen editing, Thuluth/Diwani true
   sources (need a licensed upload), server-side rendering of the actual-size preview at true DPI.

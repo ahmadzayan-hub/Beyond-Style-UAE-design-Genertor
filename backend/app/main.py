@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 
 from .api.admin import router as admin_router
 from .api.ai import ref_router as ai_ref_router, router as ai_router
-from .api.designs import fonts_router, router as designs_router, versions_router
+from .api.designs import approval_router, fonts_router, router as designs_router, versions_router
 from .api.intake import router as intake_router
 from .api.visual import orchestration_router, router as visual_router
 from .api.workshop import router as workshop_router
@@ -60,6 +60,7 @@ app.add_middleware(SessionCommitMiddleware)
 app.include_router(designs_router)
 app.include_router(intake_router)
 app.include_router(versions_router)
+app.include_router(approval_router)
 app.include_router(fonts_router)
 app.include_router(ai_router)
 app.include_router(ai_ref_router)

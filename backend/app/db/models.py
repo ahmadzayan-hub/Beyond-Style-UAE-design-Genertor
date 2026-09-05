@@ -146,6 +146,29 @@ class DesignVersion(TimestampMixin, Base):
     edit_metadata: Mapped[dict | None] = mapped_column(JSONB)
 
 
+class ApprovalLink(TimestampMixin, Base):
+    """Single-use, expiring secure approval link for ONE exact version.
+
+    The customer opens `/approve/{token}` without a session, sees the exact
+    text + dimensioned agreement proof of that version, and approves. Only
+    the sha256 of the token is stored; the link is bound to the geometry
+    hash it was issued for, so a later edit invalidates it."""
+
+    __tablename__ = "approval_links"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=_uuid)
+    design_version_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("design_versions.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    token_hash: Mapped[str] = mapped_column(String(64), nullable=False, unique=True)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    used_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    created_by: Mapped[str] = mapped_column(String(80), nullable=False)
+    geometry_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    approval_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("customer_approvals.id"))
+
+
 class CustomerApproval(TimestampMixin, Base):
     __tablename__ = "customer_approvals"
     __table_args__ = (UniqueConstraint("design_version_id"),)

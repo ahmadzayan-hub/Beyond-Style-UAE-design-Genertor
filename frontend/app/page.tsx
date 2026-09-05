@@ -84,6 +84,7 @@ export default function GoldenPathPage() {
   function pushVersion(v: SelectedVersion) {
     setHistory((h) => [...h.slice(0, histIdx + 1), v]);
     setHistIdx((i) => i + 1);
+    setApprovalLink(null);   // a link is bound to one exact version
   }
   const [studioTab, setStudioTab] = useState<"2d" | "3d" | "photoreal">("2d");
   const [previewMaterial, setPreviewMaterial] = useState("silver-925");
@@ -112,6 +113,7 @@ export default function GoldenPathPage() {
   const [bandHeight, setBandHeight] = useState(7.5);
   const [innerText, setInnerText] = useState("");
   const [approval, setApproval] = useState<{ approval_hash: string } | null>(null);
+  const [approvalLink, setApprovalLink] = useState<{ url: string; expires_at: string } | null>(null);
 
   useEffect(() => {
     document.documentElement.dir = t.dir;
@@ -460,6 +462,18 @@ export default function GoldenPathPage() {
       setStep("approved");
     } catch (e) {
       fail(e instanceof api.ApiError && e.code === "ARABIC_VALIDATION_FAILED" ? t.error_mismatch : e);
+    }
+  }
+
+  async function handleCreateLink() {
+    if (!selected) return;
+    setBusy(true);
+    try {
+      const res = await api.createApprovalLink(selected.version_id);
+      setApprovalLink({ url: `${window.location.origin}${res.path}`, expires_at: res.expires_at });
+      setBusy(false);
+    } catch (e) {
+      fail(e);
     }
   }
 
@@ -1010,6 +1024,7 @@ export default function GoldenPathPage() {
           normalizedText={normalizedText} approveChecked={approveChecked}
           setApproveChecked={setApproveChecked} busy={busy} onApprove={handleApprove}
           onBack={() => setStep("selected")}
+          link={approvalLink} onCreateLink={handleCreateLink}
         />
       )}
 

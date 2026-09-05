@@ -136,7 +136,7 @@ jobs:
           for i in $(seq 1 30); do curl -sf http://localhost:8000/ready && break; sleep 2; done
           for i in $(seq 1 30); do curl -sf -o /dev/null http://localhost:3000/ && break; sleep 2; done
       - name: Golden Path + Copilot browser E2E
-        run: python e2e/golden_path_e2e.py && python e2e/copilot_e2e.py
+        run: python e2e/golden_path_e2e.py && python e2e/copilot_e2e.py && python e2e/approval_link_e2e.py
       - name: Show backend/frontend logs on failure
         if: failure()
         run: tail -n 200 /tmp/backend.log /tmp/frontend.log

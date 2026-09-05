@@ -10,6 +10,7 @@ from __future__ import annotations
 import hashlib
 import uuid
 
+from fastapi.responses import JSONResponse
 from fastapi import APIRouter, Depends, Header, HTTPException, Request, Response
 from pydantic import BaseModel, Field
 from sqlalchemy import select
@@ -29,12 +30,14 @@ from ..schemas.jewellery_design import (
     TextIdentityProof,
     ValidationReport,
 )
-from ..security.sessions import GENERATE_LIMITER, issue_token
+from ..security.sessions import GENERATE_LIMITER, RateLimiter, issue_token
 from ..services import design_service as svc
 from .auth import require_owned_request, require_owned_version
 
 router = APIRouter(prefix="/api/designs", tags=["designs"])
 versions_router = APIRouter(prefix="/api/versions", tags=["versions"])
+approval_router = APIRouter(prefix="/api/approval-links", tags=["approval-links"])
+APPROVAL_LINK_LIMITER = RateLimiter(20, 60.0)
 fonts_router = APIRouter(prefix="/api/fonts", tags=["fonts"])
 
 
@@ -512,6 +515,17 @@ class RepairRequest(BaseModel):
     repair_id: str | None = None   # None → legacy default (thicken_strokes)
 
 
+class ApprovalLinkRequest(BaseModel):
+    ttl_hours: int = Field(default=72, ge=1, le=336)
+    created_by: str = Field(default="designer", max_length=80)
+
+
+class LinkApproveRequest(BaseModel):
+    confirmed_text: str = Field(min_length=1, max_length=400)
+    approver_name: str = Field(default="customer", max_length=120)
+    accept_statement: bool = False
+
+
 class VectorEditRequest(BaseModel):
     ops: list[dict] = Field(min_length=1, max_length=50)
     note: str | None = Field(default=None, max_length=300)
@@ -562,6 +576,84 @@ def apply_repair(
         "source_text_sha256": version.source_text_sha256,
         "before_svg_url": f"/api/versions/{v.id}/svg",
         "after_svg_url": f"/api/versions/{version.id}/svg",
+    }
+
+
+@versions_router.post("/{version_id}/approval-link", status_code=201)
+def create_approval_link(version_id: str, req: ApprovalLinkRequest, request: Request, session: Session = Depends(get_session)):
+    """Issue a single-use, expiring secure approval link for this exact
+    version (owner session required). The token is returned ONCE; only its
+    hash is stored. Approval through it is recorded as SECURE_LINK."""
+    owned = require_owned_version(session, version_id, request)
+    try:
+        token, link = svc.create_approval_link(session, owned.id, req.created_by, req.ttl_hours)
+    except svc.ConflictError as exc:
+        raise HTTPException(409, str(exc))
+    except svc.ApprovalRejected as exc:
+        raise HTTPException(422, str(exc))
+    return {
+        "link_id": str(link.id),
+        "token": token,
+        "path": f"/approve/{token}",
+        "expires_at": link.expires_at.isoformat(),
+        "version_id": str(owned.id),
+        "version_number": owned.version_number,
+        "geometry_hash": link.geometry_hash,
+        "single_use": True,
+    }
+
+
+@approval_router.get("/{token}")
+def approval_link_view(token: str, request: Request, session: Session = Depends(get_session)):
+    """Public (no session): what the customer approves — exact text, version
+    facts and the dimensioned agreement proof SVG. Invalid links report why."""
+    if not APPROVAL_LINK_LIMITER.allow(request.client.host if request.client else "anon"):
+        raise HTTPException(429, "Too many requests. Please wait a moment.")
+    try:
+        link, version = svc.resolve_approval_link(session, token)
+    except svc.LinkInvalid as exc:
+        return JSONResponse(status_code=410 if exc.code in ("EXPIRED", "USED", "REVOKED", "STALE") else 404,
+                            content={"detail": str(exc), "error_code": f"APPROVAL_LINK_{exc.code}"})
+    design = session.get(m.Design, version.design_id)
+    req_row = session.get(m.DesignRequest, design.request_id) if design else None
+    return {
+        "state": "OPEN",
+        "version_number": version.version_number,
+        "immutable_source_text": version.immutable_source_text,
+        "source_text_sha256": version.source_text_sha256,
+        "geometry_hash": version.geometry_hash,
+        "product_type": req_row.product_type if req_row else None,
+        "expires_at": link.expires_at.isoformat(),
+        "statement_ar": svc.CONFIRMATION_STATEMENT_AR,
+        "statement_en": svc.CONFIRMATION_STATEMENT_EN,
+        "agreement_proof_svg": svc.agreement_proof_for_version(session, version),
+    }
+
+
+@approval_router.post("/{token}/approve", status_code=201)
+def approval_link_approve(token: str, req: LinkApproveRequest, request: Request, session: Session = Depends(get_session)):
+    """Customer approval through the link: exact text must be retyped/
+    confirmed byte-equal, statement accepted; creates the immutable lock with
+    approval_method SECURE_LINK and consumes the link."""
+    if not APPROVAL_LINK_LIMITER.allow(request.client.host if request.client else "anon"):
+        raise HTTPException(429, "Too many requests. Please wait a moment.")
+    if not req.accept_statement:
+        raise HTTPException(422, "The approval statement must be accepted.")
+    try:
+        approval = svc.approve_via_link(session, token, req.confirmed_text, req.approver_name)
+    except svc.LinkInvalid as exc:
+        raise HTTPException(410 if exc.code in ("EXPIRED", "USED", "REVOKED", "STALE") else 404, str(exc))
+    except svc.ConflictError as exc:
+        raise HTTPException(409, str(exc))
+    except svc.ApprovalRejected as exc:
+        raise HTTPException(422, str(exc))
+    return {
+        "approval_id": str(approval.id),
+        "approval_hash": approval.approval_hash,
+        "approved_at": approval.approved_at.isoformat(),
+        "approval_method": approval.approval_method,
+        "version_status": "APPROVED_LOCKED",
+        "confirmation_statement": approval.confirmation_statement,
     }
 
 

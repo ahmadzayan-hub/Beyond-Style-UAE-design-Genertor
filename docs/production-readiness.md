@@ -19,8 +19,8 @@ is never claimed for an area whose acceptance E2E has not passed.
 | Materials + weight from actual area | **90 %** | 11 materials; `weight_report` tests; E2E shows weight from area×thickness×density | 18K 60×40 mm ≈10 g reached only for oval/arch layouts at 1.0 mm (documented in ADR-0006/test) |
 | Manufacturability QA ("JEWELRY QA: PASS/FAIL", real attachments) | **90 %** | `test_manufacturing_gate.py` (QA plain language, attachment facts); E2E: JEWELRY QA PASS | workshop rule values remain INDUSTRY_TYPICAL_UNCALIBRATED (calibration kit exists) |
 | Vector editor (transforms, booleans, fail-safe, versioned) | **75 %** | `test_vector_edit.py` 8/8 (engine + DB/API); E2E: Pro-mode translate → version 2 → locked | node/anchor editing and pen tool NOT built (listed as unavailable in the UI, never fake); scale is uniform only |
-| Real repair (bridges / rings / thicken) | **80 %** | validator-fix → vector op → dry-run → offered only when errors drop; `test_real_repair_connects_floating_part_from_validator_fix` | gap widening (interior holes) is not auto-repaired yet |
-| Approval states + immutable lock | **85 %** | existing lock suite; E2E: approval hash of v2, later edits invalidate | approval is INTERNAL_UI (no secure customer link / OTP) — labelled as such in the UI and ladder |
+| Real repair (bridges / rings / gaps / thicken) | **85 %** | validator-fix → vector op → dry-run → offered only when errors drop; bridge, ring and narrow-gap tests in `test_vector_edit.py` | gap widening is refused (honestly) when the hole sits inside the letters |
+| Approval states + immutable lock | **90 %** | existing lock suite; E2E: approval hash of v2, later edits invalidate; **secure customer link**: single-use, 72 h, bound to the geometry hash, retype-to-confirm, recorded as SECURE_LINK (`test_approval_link.py` 2/2, `e2e/approval_link_e2e.py`) | no OTP/identity check on the link holder; internal approvals remain possible and are labelled INTERNAL_UI |
 | Exports SVG / DXF / PDF + manifest | **95 %** | `test_pdf_export_is_true_scale_vector_and_reimports`; E2E: three exports, `X-Export-Fidelity: PASS` | PNG export is preview-only (no raster export record) |
 | Export fidelity gate (re-import → compare → WORKSHOP READY) | **95 %** | fidelity stored per export; readiness ladder from facts; E2E: WORKSHOP READY | the PDF re-import found by the E2E (multi-op lines) fixed in `44001e0` |
 | Style browser / 10-step wizard / Pro mode / premium UX | **70 %** | `/styles`, Golden Path steps, Pro panel, actual-size preview mode, mobile action bar; build green; E2E screenshots 360/390/768/1280 | wizard is 7 steps (start → confirm → generate → proofs → selected → approve → approved), not the spec's 10; no on-body preview modes |
@@ -34,8 +34,8 @@ is never claimed for an area whose acceptance E2E has not passed.
 
 ### Issues by severity
 - **Critical (blocks production use)**: none open in code. The production deployment itself is unreachable (Production Monitor workflow red on every push) — an operations task, not a code defect.
-- **High**: (1) seven-name generation 15–30 s depending on cores, with no progress stream to the customer; (2) customer approval is internal-UI only (no secure link); (3) workshop rule values uncalibrated for Beyond Style's actual processes.
-- **Medium**: (1) Thuluth/Diwani/Nastaliq need licensed sources (upload path ready); (2) no node/pen editing; (3) wizard is 7 steps and preview modes are flat/actual-size only; (4) gap widening not auto-repaired.
+- **High**: (1) seven-name generation 15–30 s depending on cores, with no progress stream to the customer; (2) the secure approval link has no OTP/identity check on the holder (anyone with the link can approve); (3) workshop rule values uncalibrated for Beyond Style's actual processes.
+- **Medium**: (1) Thuluth/Diwani/Nastaliq need licensed sources (upload path ready); (2) no node/pen editing; (3) wizard is 7 steps and preview modes are flat/actual-size only; (4) gap widening repair only where the cut stays outside the letters.
 - **Low**: (1) PNG export is preview-only; (2) proof cards are SVG previews, photoreal remains optional/external; (3) `experimental.proxyTimeout` only matters for the local/CI rewrite.
 
 ### Local full-suite evidence

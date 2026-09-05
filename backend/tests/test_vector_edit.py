@@ -166,3 +166,20 @@ def test_repair_options_are_dry_run_and_apply_by_id(clean_tables, db_session):
             r = c.post(f"/api/versions/{vid}/repair", json={"repair_id": avail[0]["repair_id"]}, headers=h)
             assert r.status_code == 201 and r.json()["repair_id"] == avail[0]["repair_id"]
             assert r.json()["before_svg_url"].endswith(f"{vid}/svg")
+
+
+def test_real_repair_widens_narrow_gap_outside_letters():
+    """Validator flags a too-narrow interior cut-out; the fix becomes a real
+    cut op (text-protected) and the repaired plate passes."""
+    from shapely.geometry import Point
+
+    plate = box(0, 0, 20, 10).difference(Point(16, 5).buffer(0.15, quad_segs=8))   # 0.3 mm pinhole
+    b = BuiltGeometry(geometry=MultiPolygon([plate]), text_geometry=MultiPolygon([box(3, 3, 12, 7)]))
+    before = validate(b, DEFAULT_RULES, PROOF)
+    assert any(v.code.value == "GAP_TOO_SMALL" for v in before.violations)
+    fixes = svc.fix_ops_from_report(before, DEFAULT_RULES)
+    assert "widen_gaps" in fixes and fixes["widen_gaps"][0]["op"] == "cut_shape"
+    out, _ = apply_ops(b, fixes["widen_gaps"], DEFAULT_RULES)
+    after = validate(out, DEFAULT_RULES, PROOF)
+    assert not any(v.code.value == "GAP_TOO_SMALL" for v in after.violations), after.violations
+    assert out.text_geometry.equals(b.text_geometry)

@@ -73,11 +73,17 @@ def ladder(session: Session, version: m.DesignVersion) -> dict:
     ok = rung("CUSTOMER_READY", ok, "Dimensioned agreement proof available." if ok else "Blocked by an earlier step.",
               "إثبات الاتفاق بالأبعاد متاح." if ok else "متوقف بسبب خطوة سابقة.")
     appr = approval is not None and approval.geometry_hash == version.geometry_hash
+    secure = appr and approval.approval_method == "SECURE_LINK"
+    channel = ("SECURE_LINK" if secure else "INTERNAL_UI") if appr else None
     ok = rung("CUSTOMER_APPROVED", ok and appr,
-              f"Approved {approval.approved_at.isoformat()} by {approval.approved_by} via {approval.approval_method} "
-              f"(INTERNAL approval — no secure customer link yet)." if appr else "No active approval bound to this version.",
-              "اعتماد داخلي مسجّل (لا يوجد رابط اعتماد آمن للعميل بعد)." if appr else "لا يوجد اعتماد نشط لهذه النسخة.",
-              {"approval_hash": approval.approval_hash if appr else None, "approval_channel": "INTERNAL_UI" if appr else None})
+              (f"Approved {approval.approved_at.isoformat()} by {approval.approved_by} through the secure customer link."
+               if secure else
+               f"Approved {approval.approved_at.isoformat()} by {approval.approved_by} via {approval.approval_method} "
+               f"(INTERNAL approval — recorded in the studio UI, not through a customer link).") if appr
+              else "No active approval bound to this version.",
+              ("اعتماد العميل عبر الرابط الآمن." if secure else "اعتماد داخلي مسجّل من واجهة الاستوديو (ليس عبر رابط العميل).") if appr
+              else "لا يوجد اعتماد نشط لهذه النسخة.",
+              {"approval_hash": approval.approval_hash if appr else None, "approval_channel": channel})
     ws = ok and fid_ok.get("svg") and fid_ok.get("dxf")
     ok = rung("WORKSHOP_READY", ws,
               "SVG and DXF exported and EXPORT FIDELITY: PASS." if ws else
@@ -90,4 +96,4 @@ def ladder(session: Session, version: m.DesignVersion) -> dict:
          f"طلب الورشة في حالة {order.state}." if order else "لا يوجد طلب ورشة.")
     current = [r["state"] for r in rungs if r["reached"]][-1]
     return {"current_state": current, "current_label_ar": LABELS_AR[current], "rungs": rungs,
-            "approval_channel_note": "Approvals recorded here are internal; a secure customer approval link is not implemented."}
+            "approval_channel_note": "INTERNAL_UI approvals are recorded in the studio; SECURE_LINK approvals come from the single-use customer link (POST /api/versions/{id}/approval-link)."}

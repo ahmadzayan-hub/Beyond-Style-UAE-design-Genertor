@@ -484,3 +484,31 @@ export async function applyRepairById(versionId: string, repairId: string) {
     })
   );
 }
+
+// ------------------------------------------------- secure approval link
+// Single-use, expiring link bound to one exact version. Minting needs the
+// owner session; viewing/approving needs only the token (no session).
+
+export async function createApprovalLink(versionId: string, ttlHours = 72) {
+  return jsonOrThrow(
+    await doFetch(`/api/versions/${versionId}/approval-link`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...authHeaders() },
+      body: JSON.stringify({ ttl_hours: ttlHours, created_by: "studio" }),
+    })
+  );
+}
+
+export async function approvalLinkView(token: string) {
+  return jsonOrThrow(await doFetch(`/api/approval-links/${encodeURIComponent(token)}`));
+}
+
+export async function approveViaLink(token: string, confirmedText: string, approverName: string) {
+  return jsonOrThrow(
+    await doFetch(`/api/approval-links/${encodeURIComponent(token)}/approve`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ confirmed_text: confirmedText, approver_name: approverName, accept_statement: true }),
+    })
+  );
+}

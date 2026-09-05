@@ -12,7 +12,7 @@ from __future__ import annotations
 import hashlib
 import unicodedata
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
@@ -541,6 +541,12 @@ def fix_ops_from_report(report: ValidationReport, rules: WorkshopRules = DEFAULT
             grouped.setdefault("connect_floating_parts", []).append(
                 {"op": "add_bridge", "params": {"from": list(fx.params["from"]), "to": list(fx.params["to"]), "width_mm": round(width, 3)}}
             )
+        elif fx.action == "widen_gap" and v.location_mm is not None:
+            gap = float(fx.params.get("min_gap_mm", rules.min_gap_mm)) + 2 * rules.kerf_mm + 0.1
+            grouped.setdefault("widen_gaps", []).append(
+                {"op": "cut_shape", "params": {"shape": "circle", "center": [v.location_mm[0], v.location_mm[1]],
+                                               "diameter_mm": round(gap, 3)}}
+            )
         elif fx.action == "enlarge_loop" and v.location_mm is not None:
             grouped.setdefault("rebuild_chain_ring", []).append(
                 {"op": "add_ring", "params": {"center": [v.location_mm[0], v.location_mm[1]],
@@ -554,6 +560,7 @@ _REPAIR_LABELS = {
     "connect_floating_parts": ("وصل الأجزاء المنفصلة بجسور حقيقية", "Connect floating parts with real bridges"),
     "rebuild_chain_ring": ("إعادة بناء حلقة التعليق بالمقاس الصحيح", "Rebuild the chain ring at workshop size"),
     "thicken_strokes": ("تحسين قابلية التصنيع (تسميك الخطوط)", "Improve manufacturability (thicken strokes)"),
+    "widen_gaps": ("توسيع الفتحات الضيقة (خارج الحروف)", "Widen narrow cut-outs (outside letters)"),
 }
 
 
@@ -832,6 +839,96 @@ def approve_version(
 
 
 # ------------------------------------------------------------------ export
+
+
+# ---------------------------------------------------------------- secure link
+
+APPROVAL_LINK_TTL_HOURS = 72
+APPROVAL_METHOD_SECURE_LINK = "SECURE_LINK"
+
+
+class LinkInvalid(ValueError):
+    """Link unknown, expired, revoked, already used, or stale (design changed)."""
+
+    def __init__(self, reason: str, code: str):
+        super().__init__(reason)
+        self.code = code   # NOT_FOUND | EXPIRED | USED | REVOKED | STALE | VERSION_NOT_APPROVABLE
+
+
+def create_approval_link(session: Session, version_id: uuid.UUID, created_by: str,
+                         ttl_hours: int = APPROVAL_LINK_TTL_HOURS) -> tuple[str, m.ApprovalLink]:
+    """Issue a single-use link for an approvable version. Returns the secret
+    token (shown once) and the row. Any earlier open link for the version
+    is revoked so exactly one link is live."""
+    from ..security.sessions import hash_token, issue_token
+
+    version = session.get(m.DesignVersion, version_id)
+    if version is None:
+        raise KeyError("version not found")
+    if version.status != "UNAPPROVED":
+        raise ConflictError(f"Version status {version.status} cannot be sent for approval.")
+    if not (version.validation_passed and version.identity_verified):
+        raise ApprovalRejected("Only a version that passes JEWELRY QA and text identity can be sent for approval.")
+    now = _utcnow()
+    for old in session.execute(
+        select(m.ApprovalLink).where(m.ApprovalLink.design_version_id == version.id,
+                                     m.ApprovalLink.used_at.is_(None), m.ApprovalLink.revoked_at.is_(None))
+    ).scalars():
+        old.revoked_at = now
+    token, token_hash = issue_token()
+    link = m.ApprovalLink(
+        design_version_id=version.id, token_hash=token_hash,
+        expires_at=now + timedelta(hours=max(1, min(int(ttl_hours), 24 * 14))),
+        created_by=created_by, geometry_hash=version.geometry_hash,
+    )
+    session.add(link)
+    session.flush()
+    _emit(session, "APPROVAL_LINK_ISSUED", design_id=version.design_id, version_id=version.id,
+          actor=created_by, actor_type="designer",
+          metadata={"link_id": str(link.id), "expires_at": link.expires_at.isoformat()})
+    return token, link
+
+
+def resolve_approval_link(session: Session, token: str) -> tuple[m.ApprovalLink, m.DesignVersion]:
+    """Validate a token → (link, version). Raises LinkInvalid with a code."""
+    from ..security.sessions import hash_token
+
+    link = session.execute(
+        select(m.ApprovalLink).where(m.ApprovalLink.token_hash == hash_token(token or ""))
+    ).scalar_one_or_none()
+    if link is None:
+        raise LinkInvalid("Unknown approval link.", "NOT_FOUND")
+    if link.revoked_at is not None:
+        raise LinkInvalid("This approval link was replaced by a newer one.", "REVOKED")
+    if link.used_at is not None:
+        raise LinkInvalid("This approval link has already been used.", "USED")
+    if link.expires_at <= _utcnow():
+        raise LinkInvalid("This approval link has expired.", "EXPIRED")
+    version = session.get(m.DesignVersion, link.design_version_id)
+    if version is None or version.geometry_hash != link.geometry_hash:
+        raise LinkInvalid("The design changed after this link was issued.", "STALE")
+    if version.status != "UNAPPROVED":
+        raise LinkInvalid(f"Version status {version.status} cannot be approved.", "VERSION_NOT_APPROVABLE")
+    return link, version
+
+
+def approve_via_link(session: Session, token: str, confirmed_text: str, approver_name: str) -> m.CustomerApproval:
+    """Customer approval through a secure link: same server-side checks as
+    the internal path (exact text, hashes, QA), method SECURE_LINK, link
+    consumed atomically with the lock."""
+    link, version = resolve_approval_link(session, token)
+    approval = approve_version(
+        session, version.id,
+        confirmed_text=confirmed_text,
+        source_text_sha256=version.source_text_sha256,
+        geometry_hash=version.geometry_hash,
+        approved_by=approver_name.strip() or "customer",
+        approval_method=APPROVAL_METHOD_SECURE_LINK,
+    )
+    link.used_at = _utcnow()
+    link.approval_id = approval.id
+    session.flush()
+    return approval
 
 
 def _version_to_candidate(version: m.DesignVersion) -> tuple[DesignCandidate, ImmutableSourceText]:
