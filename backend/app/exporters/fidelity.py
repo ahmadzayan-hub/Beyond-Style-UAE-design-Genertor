@@ -78,20 +78,33 @@ def reimport_pdf(pdf_bytes: bytes) -> MultiPolygon:
             pass
         if b" m\n" in s or b" m " in s or b" l\n" in s:
             ops += s + b"\n"
+    # Token walk, not line walk: the writer packs many operators per line
+    # for long paths, so `x y m` / `x y l` / `h` must be recognised anywhere
+    # in the stream. Only path-construction operators are consumed.
     rings: list[list[tuple[float, float]]] = []
     cur: list[tuple[float, float]] = []
-    for line in ops.decode("latin-1").splitlines():
-        parts = line.strip().split()
-        if len(parts) == 3 and parts[2] == "m":
+    stack: list[str] = []
+    for tok in ops.decode("latin-1").split():
+        if tok == "m":
             if len(cur) >= 3:
                 rings.append(cur)
-            cur = [(float(parts[0]), float(parts[1]))]
-        elif len(parts) == 3 and parts[2] == "l":
-            cur.append((float(parts[0]), float(parts[1])))
-        elif parts and parts[0] == "h":
+            cur = [(float(stack[-2]), float(stack[-1]))] if len(stack) >= 2 else []
+            stack = []
+        elif tok == "l":
+            if len(stack) >= 2:
+                cur.append((float(stack[-2]), float(stack[-1])))
+            stack = []
+        elif tok == "h":
             if len(cur) >= 3:
                 rings.append(cur)
             cur = []
+            stack = []
+        else:
+            try:
+                float(tok)
+                stack.append(tok)
+            except ValueError:
+                stack = []   # any other operator resets the operand stack
     if len(cur) >= 3:
         rings.append(cur)
     mm = 25.4 / 72.0

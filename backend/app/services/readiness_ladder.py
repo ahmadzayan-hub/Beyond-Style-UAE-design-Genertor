@@ -36,9 +36,19 @@ def ladder(session: Session, version: m.DesignVersion) -> dict:
     exports = session.execute(select(m.ExportRecord).where(m.ExportRecord.version_id == version.id)).scalars().all()
     fid_ok = {e.format: (e.fidelity or {}).get("status") == "PASS" for e in exports}
     order = session.execute(select(m.WorkshopOrder).where(m.WorkshopOrder.design_version_id == version.id)).scalar_one_or_none()
+    # Designer review rows are keyed by the deterministic review-item id of
+    # the combination (font, feature set, axes, product, composition, text);
+    # derive it from this version's recipe so a recorded human review of the
+    # same combination counts, and a version never reviewed simply has none.
+    from .review_workflow import item_id as review_item_id
+
+    recipe = candidate.recipe
+    product = (req.product_type if req and req.product_type else None) or (design.product_type if design else "pendant")
     reviewed = session.execute(
-        select(m.DesignReview).where(m.DesignReview.item_id == version.candidate_id)
-    ).first() is not None if hasattr(m, "DesignReview") and hasattr(m.DesignReview, "item_id") else False
+        select(m.DesignReview).where(m.DesignReview.item_id == review_item_id(
+            recipe.font_id, recipe.ot_feature_set, recipe.font_axes, product, recipe.composition,
+            version.immutable_source_text))
+    ).first() is not None
 
     rungs = []
     def rung(state, reached, why_en, why_ar, extra=None):
