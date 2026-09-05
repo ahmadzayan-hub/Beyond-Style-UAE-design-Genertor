@@ -152,6 +152,12 @@ def create_request(
     actor: str = "customer",
     session_token_hash: str | None = None,
 ) -> m.DesignRequest:
+    from ..engines.text_integrity import TextIntegrityError, inspect
+
+    report = inspect(text)
+    if report.status == "FAIL":
+        # Never auto-correct: the customer re-enters the text explicitly.
+        raise TextIntegrityError(report)
     src = ImmutableSourceText.create(text)
     req = m.DesignRequest(
         schema_version=SCHEMA_VERSION,

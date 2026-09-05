@@ -79,8 +79,13 @@ class ApproveRequest(BaseModel):
 
 @router.post("", status_code=201)
 def create_design(req: CreateDesignRequest, session: Session = Depends(get_session)):
+    from ..engines.text_integrity import TextIntegrityError, inspect
+
     token, token_hash = issue_token()
-    row = svc.create_request(session, req.text, req.product_type, session_token_hash=token_hash)
+    try:
+        row = svc.create_request(session, req.text, req.product_type, session_token_hash=token_hash)
+    except TextIntegrityError as exc:
+        raise HTTPException(422, {"code": "TEXT_INTEGRITY_FAILED", "integrity": exc.report.as_dict()})
     return {
         "design_id": str(row.id),
         "session_token": token,
@@ -88,7 +93,18 @@ def create_design(req: CreateDesignRequest, session: Session = Depends(get_sessi
         "normalized_text": row.source_text_normalized,
         "source_text_sha256": row.source_text_sha256,
         "requires_confirmation": True,
+        # Verify-Spelling step: per-character listing + plain-language notes.
+        "integrity": inspect(req.text).as_dict(),
     }
+
+
+@router.post("/integrity/inspect")
+def inspect_text(req: CreateDesignRequest):
+    """Stateless pre-check for the Verify Spelling step: lists every
+    character and any hidden/control characters, never modifies the text."""
+    from ..engines.text_integrity import inspect
+
+    return inspect(req.text).as_dict()
 
 
 @router.post("/{design_id}/confirm")
@@ -407,6 +423,20 @@ def version_preview_svg(version_id: str, request: Request, material: str | None 
     v = require_owned_version(session, version_id, request)
     candidate, source = svc._version_to_candidate(v)
     return Response(content=_render_proof(candidate, source, material, scene), media_type="image/svg+xml")
+
+
+@versions_router.get("/{version_id}/integrity")
+def version_integrity(version_id: str, request: Request, session: Session = Depends(get_session)):
+    """TEXT INTEGRITY: PASS / FAIL for this version — the contract text,
+    its hash, glyph coverage (identity proof) and outline survival."""
+    from ..engines.text_integrity import certify
+
+    v = require_owned_version(session, version_id, request)
+    candidate, source = svc._version_to_candidate(v)
+    proof = candidate.identity_proof
+    return certify(source.normalized_text, source.sha256, proof,
+                   candidate.outline_issues if hasattr(candidate, "outline_issues") else None,
+                   carried_text=v.immutable_source_text)
 
 
 @versions_router.get("/{version_id}/mesh3d")
