@@ -90,4 +90,4 @@ def test_material_system_and_weight_basis():
     assert abs(r["metal_area_mm2"] - (200 - 3.14159 * 9)) < 0.5      # holes subtracted, not the bounding box
     assert abs(r["estimated_weight_g"] - r["metal_area_mm2"] * 15.5 / 1000) < 0.01  # reported to 0.01 g
     assert r["target"]["within_tolerance"] is True and r["target"]["thickness_for_target_mm"]
-    assert weight_report(plate, "enamel", 0.5)["warnings"][0]["code"] == "VISUAL_PREVIEW_ONLY"
+    assert "VISUAL_PREVIEW_ONLY" in {w["code"] for w in weight_report(plate, "enamel", 0.5)["warnings"]}
