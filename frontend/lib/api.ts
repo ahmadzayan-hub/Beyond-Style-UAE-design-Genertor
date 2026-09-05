@@ -289,11 +289,16 @@ export async function approveVersion(
   );
 }
 
-export async function downloadExport(versionId: string, fmt: "svg" | "dxf") {
+export type ExportFormat = "svg" | "dxf" | "pdf";
+
+/** Workshop export. Resolves to the Export Fidelity Gate verdict the
+ * backend computed by re-importing the file it just wrote. */
+export async function downloadExport(versionId: string, fmt: ExportFormat): Promise<string> {
   const res = await doFetch(`/api/versions/${versionId}/export/${fmt}`, {
     headers: authHeaders(),
   });
   if (!res.ok) throw new ApiError(`HTTP ${res.status}`, "GENERATION_FAILED", res.status);
+  const fidelity = res.headers.get("X-Export-Fidelity") || "UNKNOWN";
   const blob = await res.blob();
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -303,6 +308,7 @@ export async function downloadExport(versionId: string, fmt: "svg" | "dxf") {
   a.click();
   a.remove();
   URL.revokeObjectURL(url);
+  return fidelity;
 }
 
 // --- Admin (Golden Production Cases) ---
@@ -382,6 +388,99 @@ export async function submitVote(body: object) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
+    })
+  );
+}
+
+
+// ---- Text Integrity Engine ----
+export async function inspectText(text: string) {
+  return jsonOrThrow(
+    await doFetch(`/api/designs/integrity/inspect`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, product_type: "pendant" }),
+    })
+  );
+}
+
+export async function versionIntegrity(versionId: string) {
+  return jsonOrThrow(await doFetch(`/api/versions/${versionId}/integrity`, { headers: authHeaders() }));
+}
+
+// ---- Arabic Calligraphy Source Registry ----
+export async function stylesCatalogue() {
+  return jsonOrThrow(await doFetch(`/api/fonts/styles`));
+}
+
+export async function fontRegistry() {
+  return jsonOrThrow(await doFetch(`/api/fonts/registry`));
+}
+
+export async function fontPreview(fontId: string, text: string, material?: string): Promise<string> {
+  const q = new URLSearchParams({ text });
+  if (material) q.set("material", material);
+  const res = await doFetch(`/api/fonts/preview/${encodeURIComponent(fontId)}?${q}`);
+  if (!res.ok) throw new ApiError(`HTTP ${res.status}`, "GENERATION_FAILED", res.status);
+  return res.text();
+}
+
+// ---- Jewelry Manufacturing Gate ----
+export async function jewelryQa(versionId: string, material?: string, thicknessMm?: number, targetG?: number) {
+  const q = new URLSearchParams();
+  if (material) q.set("material", material);
+  if (thicknessMm) q.set("thickness_mm", String(thicknessMm));
+  if (targetG) q.set("target_weight_g", String(targetG));
+  return jsonOrThrow(await doFetch(`/api/versions/${versionId}/jewelry-qa?${q}`, { headers: authHeaders() }));
+}
+
+export async function readiness(versionId: string) {
+  return jsonOrThrow(await doFetch(`/api/versions/${versionId}/readiness`, { headers: authHeaders() }));
+}
+
+export async function listExports(versionId: string) {
+  return jsonOrThrow(await doFetch(`/api/versions/${versionId}/exports`, { headers: authHeaders() }));
+}
+
+// ---------------------------------------------------------------- Pro mode
+// Vector edit operations: versioned, text-protected, fail-safe (a rejected
+// op returns 422 with the reason and creates no version).
+
+export interface VectorOp {
+  op: string;
+  params: Record<string, unknown>;
+}
+
+export async function vectorOps(versionId: string) {
+  return jsonOrThrow(await doFetch(`/api/versions/${versionId}/vector-ops`, { headers: authHeaders() }));
+}
+
+export async function vectorEditPreview(versionId: string, ops: VectorOp[]) {
+  return jsonOrThrow(
+    await doFetch(`/api/versions/${versionId}/vector-edit/preview`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...authHeaders() },
+      body: JSON.stringify({ ops }),
+    })
+  );
+}
+
+export async function vectorEdit(versionId: string, ops: VectorOp[], note: string | null) {
+  return jsonOrThrow(
+    await doFetch(`/api/versions/${versionId}/vector-edit`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...authHeaders() },
+      body: JSON.stringify({ ops, note, created_by: "designer-pro" }),
+    })
+  );
+}
+
+export async function applyRepairById(versionId: string, repairId: string) {
+  return jsonOrThrow(
+    await doFetch(`/api/versions/${versionId}/repair`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...authHeaders() },
+      body: JSON.stringify({ repair_id: repairId }),
     })
   );
 }

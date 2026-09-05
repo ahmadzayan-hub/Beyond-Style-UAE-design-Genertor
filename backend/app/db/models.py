@@ -507,6 +507,9 @@ class ExportRecord(TimestampMixin, Base):
     units: Mapped[str] = mapped_column(String(8), default="mm", nullable=False)
     validation_rules_version: Mapped[str] = mapped_column(String(64), nullable=False)
     idempotency_key: Mapped[str | None] = mapped_column(String(120))
+    #: Export Fidelity Gate result (re-import vs master) and the manifest.
+    fidelity: Mapped[dict | None] = mapped_column(JSONB)
+    manifest: Mapped[dict | None] = mapped_column(JSONB)
 
 
 class WorkshopOrder(TimestampMixin, Base):

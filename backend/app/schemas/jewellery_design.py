@@ -150,7 +150,7 @@ class RecipeParams(BaseModel):
     stroke_delta_mm: float = 0.0  # buffer applied to glyph outlines
     dot_strategy: str = "bridge"  # bridge | keep (keep => must be connected by composition)
     connector_height_mm: float = 1.2
-    loops: str = "top"  # none | top | left_right
+    loops: str = "top"  # none | top | left_right | upper_left_right
     frame_margin_mm: float = 2.0
     target_height_mm: float = 18.0
     # Glyph Variant Library axes (deterministic, data-driven).

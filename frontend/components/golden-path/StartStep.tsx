@@ -15,6 +15,9 @@ export interface StartStepProps {
   styleStrength: number; setStyleStrength: (v: number) => void;
   styleIntent: string | null; setStyleIntent: (v: string | null) => void;
   scriptFamily: string | null; setScriptFamily: (v: string | null) => void;
+  /** Style catalogue from the registry (availability computed server-side). */
+  styleCards?: { id: string; name_en: string; name_ar: string; status: string; action_en: string; action_ar: string }[];
+  lang?: "ar" | "en";
   material: string; setMaterial: (v: string) => void;
   productType: "pendant" | "ring"; setProductType: (v: "pendant" | "ring") => void;
   ringSize: number; setRingSize: (v: number) => void;
@@ -27,7 +30,7 @@ export interface StartStepProps {
 export default function StartStep({
   t, text, setText, message, setMessage, refFile, setRefFile, refPreview, setRefPreview,
   styleStrength, setStyleStrength, styleIntent, setStyleIntent, scriptFamily, setScriptFamily,
-  material, setMaterial, productType, setProductType,
+  styleCards, lang, material, setMaterial, productType, setProductType,
   ringSize, setRingSize, bandHeight, setBandHeight, innerText, setInnerText,
   busy, busyLabel, onStart,
 }: StartStepProps) {
@@ -166,7 +169,30 @@ export default function StartStep({
       <div>
         <p className="mb-2 text-sm font-medium">{t.script_label}</p>
         <div className="flex flex-wrap gap-2">
-          {Object.entries(t.scripts).map(([key, label]) => (
+          {styleCards && styleCards.length > 0
+            ? styleCards.filter((c) => c.status !== "ENGINE").map((c) => {
+                const locked = c.status === "UPLOAD_REQUIRED" || c.status === "PARAMETRIC_NOT_BUILT";
+                const key = c.id === "kufi_traditional" ? "kufi" : c.id === "nastaliq_persian" ? "nastaliq" : c.id;
+                return (
+                  <button
+                    key={c.id}
+                    data-testid={`script-${key}`}
+                    disabled={locked}
+                    title={lang === "ar" ? c.action_ar : c.action_en}
+                    onClick={() => setScriptFamily(scriptFamily === key ? null : key)}
+                    className={`rounded-full border px-4 py-2 text-sm ${
+                      scriptFamily === key
+                        ? "border-brand-gold bg-brand-gold text-white"
+                        : locked ? "border-dashed border-stone-300 bg-stone-50 text-stone-400" : "border-stone-300 bg-white"
+                    }`}
+                  >
+                    {lang === "ar" ? c.name_ar : c.name_en}
+                    {c.status === "INFLUENCED_ONLY" && <span className="ms-1 text-[10px] opacity-70">({t.style_status.INFLUENCED_ONLY})</span>}
+                    {locked && <span className="ms-1 text-[10px]">🔒</span>}
+                  </button>
+                );
+              })
+            : Object.entries(t.scripts).map(([key, label]) => (
             <button
               key={key}
               data-testid={`script-${key}`}
@@ -181,6 +207,7 @@ export default function StartStep({
             </button>
           ))}
         </div>
+        <a href="/styles" className="mt-2 inline-block text-xs text-brand-gold underline" data-testid="style-browser-link">{t.style_browser_link}</a>
         {(scriptFamily === "thuluth" || scriptFamily === "diwani") && (
           <p className="mt-2 text-xs text-stone-500" data-testid="script-influenced-note">
             {t.script_note_influenced}

@@ -18,6 +18,7 @@ from sqlalchemy.orm import Session
 from ..db import models as m
 from ..db.base import get_session
 from ..engines.generator import diversity_score
+from ..engines.vector_edit import VectorEditRejected
 from ..exporters.dxf_exporter import ProductionExportBlocked
 from ..exporters.svg_exporter import export_proof_svg, export_svg
 from ..fonts.registry import get_registry
@@ -402,15 +403,53 @@ def export(
             "export_id": str(record.id),
             "content_sha256": record.content_sha256,
         }
-    media = "image/svg+xml" if fmt == "svg" else "application/dxf"
+    media = {"svg": "image/svg+xml", "dxf": "application/dxf", "pdf": "application/pdf"}[fmt]
     return Response(
         content=content,
         media_type=media,
         headers={
             "X-Export-Id": str(record.id),
             "X-Content-Sha256": record.content_sha256,
+            "X-Export-Fidelity": (record.fidelity or {}).get("status", "UNKNOWN"),
         },
     )
+
+
+@versions_router.get("/{version_id}/exports")
+def list_exports(version_id: str, request: Request, session: Session = Depends(get_session)):
+    """Export records with their fidelity verdicts and manifests."""
+    owned = require_owned_version(session, version_id, request)
+    rows = session.execute(select(m.ExportRecord).where(m.ExportRecord.version_id == owned.id)).scalars().all()
+    return {"exports": [{
+        "export_id": str(e.id), "format": e.format, "content_sha256": e.content_sha256,
+        "width_mm": e.width_mm, "height_mm": e.height_mm, "units": e.units,
+        "fidelity": e.fidelity, "manifest": e.manifest, "created_at": e.created_at.isoformat(),
+    } for e in rows]}
+
+
+@versions_router.get("/{version_id}/jewelry-qa")
+def jewelry_qa(version_id: str, request: Request, material: str | None = None,
+               thickness_mm: float | None = None, target_weight_g: float | None = None,
+               session: Session = Depends(get_session)):
+    """JEWELRY QA: PASS / FAIL with plain-language explanations, attachment
+    facts and the geometry-based weight report."""
+    from ..services.jewelry_qa import jewelry_qa_report
+
+    owned = require_owned_version(session, version_id, request)
+    try:
+        return jewelry_qa_report(owned, material_id=material, thickness_mm=thickness_mm, target_weight_g=target_weight_g)
+    except KeyError as exc:
+        raise HTTPException(422, str(exc))
+
+
+@versions_router.get("/{version_id}/readiness")
+def readiness(version_id: str, request: Request, session: Session = Depends(get_session)):
+    """Readiness ladder derived from recorded facts (text, QA, approval,
+    export fidelity, workshop order)."""
+    from ..services.readiness_ladder import ladder
+
+    owned = require_owned_version(session, version_id, request)
+    return ladder(session, owned)
 
 
 @versions_router.get("/{version_id}/svg")
@@ -470,47 +509,87 @@ def version_agreement_proof(version_id: str, request: Request, session: Session 
 
 class RepairRequest(BaseModel):
     created_by: str = "customer"
+    repair_id: str | None = None   # None → legacy default (thicken_strokes)
+
+
+class VectorEditRequest(BaseModel):
+    ops: list[dict] = Field(min_length=1, max_length=50)
+    note: str | None = Field(default=None, max_length=300)
+    created_by: str = Field(default="designer", max_length=80)
 
 
 @versions_router.get("/{version_id}/repair-options")
 def repair_options(version_id: str, request: Request, session: Session = Depends(get_session)):
-    """Deterministic, validated repair proposals only. Empty list = nothing
-    to offer (design already comfortably manufacturable)."""
+    """Deterministic, validated repair proposals only. Every option was
+    dry-run on this version: it is offered only when it reduces the number
+    of manufacturing errors (or, for the thicken option, keeps it valid).
+    Empty list = nothing to offer."""
     v = require_owned_version(session, version_id, request)
-    recipe = RecipeParams(**v.recipe)
-    if recipe.ring is not None:
-        # Silhouette repairs (thicken/bridge) don't apply to engraved bands;
-        # ring-mode repairs are a future slice — offer nothing rather than
-        # an untested transformation.
-        return {"version_id": str(v.id), "options": []}
-    options = []
-    if recipe.stroke_delta_mm < 0.45:
-        options.append(
-            {
-                "repair_id": "thicken_strokes",
-                "label_ar": "تحسين قابلية التصنيع (تسميك الخطوط)",
-                "label_en": "Improve manufacturability (thicken strokes)",
-                "overrides": {"stroke_delta_mm": round(recipe.stroke_delta_mm + 0.1, 3)},
-            }
-        )
-    return {"version_id": version_id, "options": options}
+    return {"version_id": str(v.id), "options": svc.repair_options_for_version(v)}
 
 
 @versions_router.post("/{version_id}/repair", status_code=201)
 def apply_repair(
     version_id: str, req: RepairRequest, request: Request, session: Session = Depends(get_session)
 ):
-    """Apply the safe deterministic fix as a NEW version (before/after =
-    parent SVG vs new SVG). Historical/approved versions are never mutated."""
+    """Apply one validated repair as a NEW version (before/after = parent SVG
+    vs new SVG). Historical/approved versions are never mutated."""
     v = require_owned_version(session, version_id, request)
-    recipe = RecipeParams(**v.recipe)
-    overrides = {"stroke_delta_mm": round(recipe.stroke_delta_mm + 0.1, 3)}
+    options = svc.repair_options_for_version(v)
+    wanted = req.repair_id or "thicken_strokes"
+    chosen = next((o for o in options if o["repair_id"] == wanted), None)
+    if chosen is None:
+        raise HTTPException(422, f"Repair '{wanted}' is not available for this version.")
     try:
-        version = svc.edit_version(
-            session, v.id, overrides, note="auto-repair: thicken strokes", created_by=req.created_by
-        )
+        if chosen["kind"] == "vector":
+            version = svc.vector_edit_version(
+                session, v.id, chosen["ops"], note=f"auto-repair: {chosen['repair_id']}", created_by=req.created_by
+            )
+        else:
+            version = svc.edit_version(
+                session, v.id, chosen["overrides"], note=f"auto-repair: {chosen['repair_id']}", created_by=req.created_by
+            )
+    except (svc.ApprovalRejected, VectorEditRejected) as exc:
+        raise HTTPException(422, str(exc))
+    return {
+        "version_id": str(version.id),
+        "parent_version_id": str(v.id),
+        "repair_id": chosen["repair_id"],
+        "version_number": version.version_number,
+        "status": version.status,
+        "validation_passed": version.validation_passed,
+        "geometry_hash": version.geometry_hash,
+        "source_text_sha256": version.source_text_sha256,
+        "before_svg_url": f"/api/versions/{v.id}/svg",
+        "after_svg_url": f"/api/versions/{version.id}/svg",
+    }
+
+
+@versions_router.get("/{version_id}/vector-ops")
+def vector_ops_catalogue(version_id: str, request: Request, session: Session = Depends(get_session)):
+    """Pro-mode tool catalogue for one version: what the vector editor can
+    do (with mm parameter contracts), what it refuses and why (no fake
+    tools), the design bounds/rings to anchor ops, the lineage's cumulative
+    ops, and validator-proposed fixes expressed as ready-to-apply ops."""
+    v = require_owned_version(session, version_id, request)
+    return svc.vector_tool_catalogue(v)
+
+
+@versions_router.post("/{version_id}/vector-edit", status_code=201)
+def vector_edit(version_id: str, req: VectorEditRequest, request: Request, session: Session = Depends(get_session)):
+    """Manual vector edit → NEW version (transforms, bridges, rings, union/
+    cut shapes). Source text is untouched by construction; letters are
+    protected; a rejected op returns 422 with the reason and no version."""
+    v = require_owned_version(session, version_id, request)
+    try:
+        version = svc.vector_edit_version(session, v.id, req.ops, req.note, req.created_by)
+    except KeyError:
+        raise HTTPException(404, "Version not found.")
+    except VectorEditRejected as exc:
+        raise HTTPException(422, str(exc))
     except svc.ApprovalRejected as exc:
         raise HTTPException(422, str(exc))
+    meta = version.edit_metadata or {}
     return {
         "version_id": str(version.id),
         "parent_version_id": str(v.id),
@@ -519,8 +598,35 @@ def apply_repair(
         "validation_passed": version.validation_passed,
         "geometry_hash": version.geometry_hash,
         "source_text_sha256": version.source_text_sha256,
-        "before_svg_url": f"/api/versions/{v.id}/svg",
-        "after_svg_url": f"/api/versions/{version.id}/svg",
+        "applied_ops": meta.get("applied_ops", []),
+        "total_ops": len(meta.get("vector_ops", [])),
+        "op_log": meta.get("vector_op_log", []),
+        "violations": [x for x in (version.validation or {}).get("violations", []) if x.get("severity") == "ERROR"],
+    }
+
+
+@versions_router.post("/{version_id}/vector-edit/preview")
+def vector_edit_preview(version_id: str, req: VectorEditRequest, request: Request, session: Session = Depends(get_session)):
+    """Dry run: same fail-safes and validation, nothing persisted. Returns
+    the would-be preview SVG and the error list so the designer can see
+    before/after without creating a version."""
+    v = require_owned_version(session, version_id, request)
+    try:
+        built, report, op_log = svc.preview_vector_ops(v, req.ops)
+    except VectorEditRejected as exc:
+        raise HTTPException(422, str(exc))
+    candidate, source = svc._version_to_candidate(v)
+    candidate = candidate.model_copy(update={
+        "geometry_wkt": built.geometry.wkt,
+        "text_geometry_wkt": built.text_geometry.wkt if built.text_geometry is not None and not built.text_geometry.is_empty else "",
+        "validation": report,
+    })
+    return {
+        "validation_passed": report.passed,
+        "violations": [x.model_dump(mode="json") for x in report.violations if x.severity == "ERROR"],
+        "op_log": op_log,
+        "bounds_mm": [round(b, 3) for b in built.geometry.bounds],
+        "svg": _render_proof(candidate, source, None, None),
     }
 
 

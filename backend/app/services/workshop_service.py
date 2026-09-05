@@ -171,7 +171,8 @@ def production_pack(session: Session, order: m.WorkshopOrder) -> dict:
     bom = [{"item": f"{order.material} sheet/strip", "thickness_mm": mesh["thickness_mm"],
             "estimated_metal_weight_g": mesh["weight_estimate_g"].get(order.material),
             "weight_basis": mesh["weight_basis"]}]
-    loops = {"none": 0, "top": 1, "left_right": 2}.get(recipe.get("loops", "none"), 0)
+    from ..engines.generator import EXPECTED_LOOPS
+    loops = EXPECTED_LOOPS.get(recipe.get("loops", "none"), 0)
     if loops:
         bom.append({"item": "jump_ring", "qty": loops, "note": "size per workshop standard"})
 

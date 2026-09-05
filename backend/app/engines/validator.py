@@ -93,7 +93,17 @@ def validate(
         for p in parts:
             if p is main:
                 continue
-            pa, pb = nearest_points(p, main)
+            # Anchor the proposed bridge INSIDE both parts (nearest points of
+            # the half-width-eroded shapes) so a capsule of min bridge width
+            # engages each part across its full width instead of grazing a
+            # corner and leaving a neck thinner than the bridge itself.
+            half_bridge = rules.min_bridge_mm / 2
+            p_core = p.buffer(-half_bridge, quad_segs=QUAD_SEGS)
+            m_core = main.buffer(-half_bridge, quad_segs=QUAD_SEGS)
+            pa, pb = nearest_points(
+                p_core if not p_core.is_empty else p.centroid,
+                m_core if not m_core.is_empty else main.centroid,
+            )
             code = (
                 ViolationCode.FLOATING_ISLAND
                 if p.area < main.area * 0.05

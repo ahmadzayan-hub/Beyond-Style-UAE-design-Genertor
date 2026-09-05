@@ -148,6 +148,24 @@ tools (not just policy simulation) with durable per-call audit events.
 P0 is FROZEN/STABLE (see `docs/STATUS.md`) — external AI verification is
 a deployment acceptance gate, not a P0 blocker.
 
+## Source Registry + Text Integrity + Composition + Manufacturing Gate + Vector edit (see ADR-0006)
+
+```
+raw input ─ text_integrity.inspect ─► ImmutableSourceText (NFC) ─ HarfBuzz shaping ─ identity proof
+      └── certify(source sha, proof, outline issues, carried text) ─► TEXT INTEGRITY: PASS/FAIL (version + exports)
+fonts.json + PRIVATE_FONTS_DIR overlay ─► FontRegistry (capability tokens) ─► styles.py catalogue (honest statuses)
+single-name  ─► generator recipes ─► geometry_engine (jewellery realism)        ┐
+multi-name   ─► composition_engine (6 layouts, welded, 2 upper rings)           ├─► validator ─► candidates
+vector edits ─► vector_edit.apply_ops (replayed on the regenerated base)        ┘
+version ─► svg/dxf/pdf exporters ─► fidelity.reimport_* ─► fidelity.compare ─► ExportRecord.fidelity + manifest
+version ─► jewelry_qa (plain-language QA + weight from area×thickness×density) ─► readiness_ladder (facts only)
+```
+Modules: `engines/text_integrity.py`, `fonts/styles.py`, `fonts/onboarding.py`,
+`engines/composition_engine.py`, `engines/vector_edit.py`, `services/materials.py`,
+`services/jewelry_qa.py`, `services/readiness_ladder.py`, `exporters/pdf_exporter.py`,
+`exporters/fidelity.py`. Frontend: `/styles` (style browser), `/admin/fonts` (upload),
+Pro-mode panel, integrity panel, jewelry check, readiness ladder, mobile action bar.
+
 ## Deferred (later slices)
 pgvector retrieval over a grown archetype library, designer copilot
 editor UI, WhatsApp channel integration, real malware scanner + S3,

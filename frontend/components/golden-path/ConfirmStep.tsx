@@ -1,11 +1,14 @@
 "use client";
 
+import IntegrityPanel, { IntegrityReport } from "./IntegrityPanel";
 import type { Strings } from "./types";
 
 /** Exact-text confirmation gate (the text shown is the normalized source
  * text the backend will lock — never an AI rewrite). */
 export interface ConfirmStepProps {
   t: Strings;
+  lang: "ar" | "en";
+  integrity: IntegrityReport | null;
   normalizedText: string;
   confirmChecked: boolean; setConfirmChecked: (v: boolean) => void;
   busy: boolean;
@@ -14,7 +17,7 @@ export interface ConfirmStepProps {
 }
 
 export default function ConfirmStep({
-  t, normalizedText, confirmChecked, setConfirmChecked, busy, onConfirm, onBack,
+  t, lang, integrity, normalizedText, confirmChecked, setConfirmChecked, busy, onConfirm, onBack,
 }: ConfirmStepProps) {
   return (
     <section className="flex flex-col gap-5">
@@ -27,6 +30,7 @@ export default function ConfirmStep({
         {normalizedText}
       </div>
       <p className="text-sm text-stone-500">{t.confirm_hint}</p>
+      {integrity && <IntegrityPanel t={t} lang={lang} report={integrity} />}
       <label className="flex items-center gap-3 text-sm font-medium">
         <input
           type="checkbox"

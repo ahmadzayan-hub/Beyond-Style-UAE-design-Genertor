@@ -141,7 +141,8 @@ class ValidateManufacturingOutput(BaseModel):
 def _validate_manufacturing(session: Session, text: str, recipe: dict, font_id: str = "amiri-regular") -> dict:
     recipe_obj = RecipeParams(**{**recipe, "font_id": font_id})
     _runs, proof, built = build_geometry_for_recipe(text, recipe_obj, DEFAULT_RULES)
-    expected_loops = {"none": 0, "top": 1, "left_right": 2}[recipe_obj.loops]
+    from ..engines.generator import EXPECTED_LOOPS
+    expected_loops = EXPECTED_LOOPS[recipe_obj.loops]
     report = validate_geometry(built, DEFAULT_RULES, proof, expected_loops=expected_loops)
     return {
         "passed": report.passed,

@@ -23,3 +23,15 @@ body {
   height: auto;
   max-height: 280px;
 }
+
+/* Customer preview mode "actual size": the SVG keeps its intrinsic mm
+   width/height, so the browser renders it at CSS-mm scale (approximate on
+   screens — DPI dependent; the exports are the true-scale artefacts). */
+.proof-actual {
+  overflow-x: auto;
+}
+.proof-actual svg {
+  width: auto;
+  height: auto;
+  max-height: none;
+}

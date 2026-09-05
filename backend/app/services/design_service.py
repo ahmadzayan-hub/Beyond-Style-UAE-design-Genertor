@@ -28,6 +28,7 @@ from ..config import (
 from ..db import models as m
 from ..engines.arabic_engine import shape_text, verify_identity
 from ..engines.generator import (
+    EXPECTED_LOOPS,
     build_geometry_for_recipe,
     diversity_score,
     generate_candidates,
@@ -36,6 +37,7 @@ from ..engines.generator import (
 from ..engines.geometry_engine import compose
 from ..engines.ranking import DEFAULT_RANKING
 from ..engines.validator import validate
+from ..engines.vector_edit import VectorEditRejected, apply_ops
 from ..exporters.dxf_exporter import ProductionExportBlocked, export_dxf
 from ..exporters.svg_exporter import export_svg
 from ..fonts.registry import get_registry
@@ -45,6 +47,7 @@ from ..schemas.jewellery_design import (
     RecipeParams,
     TextIdentityProof,
     ValidationReport,
+    ValidationSeverity,
 )
 
 CONFIRMATION_STATEMENT_EN = "I confirm the spelling and final design."
@@ -433,8 +436,20 @@ def edit_version(
     # Deterministic re-run of the pipeline on the unchanged source text.
     source = ImmutableSourceText.create(parent.immutable_source_text, confirmed=True)
     runs, proof, built = build_geometry_for_recipe(source.normalized_text, new_recipe, rules)
+    # Manual vector edits carried by the lineage are replayed on the
+    # regenerated base (fail-safe: a replay that no longer fits is refused
+    # with the reason instead of silently dropping the designer's work).
+    vector_ops = list((parent.edit_metadata or {}).get("vector_ops") or [])
+    op_log: list[dict] = []
+    if vector_ops:
+        try:
+            built, op_log = apply_ops(built, vector_ops, rules)
+        except VectorEditRejected as exc:
+            raise ApprovalRejected(
+                f"Recipe edit refused: replaying the {len(vector_ops)} manual vector edit(s) on the new base failed — {exc}"
+            )
     font = get_registry().get(new_recipe.font_id)
-    expected_loops = {"none": 0, "top": 1, "left_right": 2}[new_recipe.loops]
+    expected_loops = EXPECTED_LOOPS[new_recipe.loops]
     report = validate(
         built, rules, proof,
         font_production_allowed=font.commercial_production_allowed,
@@ -454,11 +469,223 @@ def edit_version(
         score=0.0,
         created_by=created_by,
         parent_version_id=parent.id,
-        edit_metadata={"overrides": recipe_overrides, "note": note},
+        edit_metadata={"overrides": recipe_overrides, "note": note,
+                       "vector_ops": vector_ops, "vector_op_log": op_log},
     )
     _emit(session, "DESIGN_EDITED", design_id=design.id, version_id=version.id,
           actor=created_by, actor_type="designer",
-          metadata={"parent_version": parent.version_number, "overrides": recipe_overrides})
+          metadata={"parent_version": parent.version_number, "overrides": recipe_overrides,
+                    "vector_ops_replayed": len(vector_ops)})
+    return version
+
+
+def preview_vector_ops(
+    version: m.DesignVersion, ops: list[dict], rules: WorkshopRules = DEFAULT_RULES
+):
+    """Dry run: replay (lineage ops + ops) on the regenerated base and
+    validate. Nothing is persisted. Returns (built, report, op_log).
+    Raises VectorEditRejected."""
+    recipe = RecipeParams(**version.recipe)
+    source = ImmutableSourceText.create(version.immutable_source_text, confirmed=True)
+    _runs, proof, base = build_geometry_for_recipe(source.normalized_text, recipe, rules)
+    prior = list((version.edit_metadata or {}).get("vector_ops") or [])
+    cumulative = prior + [{"op": o.get("op"), "params": o.get("params") or {}} for o in ops]
+    built, op_log = apply_ops(base, cumulative, rules)
+    font = get_registry().get(recipe.font_id)
+    report = validate(
+        built, rules, proof,
+        font_production_allowed=font.commercial_production_allowed,
+        expected_loops=max(EXPECTED_LOOPS[recipe.loops], len(built.loop_centers_mm)),
+    )
+    return built, report, op_log
+
+
+VECTOR_TOOLS = [
+    {"op": "translate", "label_ar": "تحريك", "label_en": "Move",
+     "params": {"dx_mm": "number [-200, 200]", "dy_mm": "number [-200, 200]"}},
+    {"op": "rotate", "label_ar": "تدوير", "label_en": "Rotate",
+     "params": {"angle_deg": "number [-180, 180], about the design centre"}},
+    {"op": "scale", "label_ar": "تكبير/تصغير موحّد", "label_en": "Uniform scale",
+     "params": {"factor": "number [0.5, 2.0]; strokes re-validated"}},
+    {"op": "add_bridge", "label_ar": "إضافة جسر", "label_en": "Add bridge",
+     "params": {"from": "[x_mm, y_mm]", "to": "[x_mm, y_mm]", "width_mm": "≥ workshop min bridge"}},
+    {"op": "add_ring", "label_ar": "إضافة حلقة تعليق", "label_en": "Add chain ring",
+     "params": {"position": "top_center | top_left | top_right | left | right | bottom_center",
+                "center": "[x_mm, y_mm] (alternative to position)",
+                "inner_diameter_mm": "≥ workshop min", "wall_mm": "≥ workshop min"}},
+    {"op": "add_shape", "label_ar": "دمج شكل", "label_en": "Union shape",
+     "params": {"shape": "circle | rect | capsule", "center/origin/from/to": "mm", "diameter_mm/width_mm/height_mm": "mm"}},
+    {"op": "cut_shape", "label_ar": "قصّ شكل (خارج الحروف فقط)", "label_en": "Cut shape (outside letters only)",
+     "params": {"shape": "circle | rect | capsule", "…": "same as add_shape"}},
+]
+VECTOR_REFUSED = [
+    {"op": "mirror", "label_ar": "انعكاس", "label_en": "Mirror",
+     "reason_ar": "مرفوض: يعكس اتجاه قراءة النص العربي.", "reason_en": "Refused: would reverse the Arabic reading direction."},
+    {"op": "node_edit", "label_ar": "تحرير النقاط (العُقد)", "label_en": "Node editing",
+     "reason_ar": "غير متاح بعد — لا نعرض أدوات وهمية.", "reason_en": "Not available yet — no fake tools."},
+    {"op": "pen", "label_ar": "أداة القلم", "label_en": "Pen tool",
+     "reason_ar": "غير متاح بعد — لا نعرض أدوات وهمية.", "reason_en": "Not available yet — no fake tools."},
+]
+
+
+def fix_ops_from_report(report: ValidationReport, rules: WorkshopRules = DEFAULT_RULES) -> dict[str, list[dict]]:
+    """Translate validator-proposed fixes into ready-to-apply vector ops,
+    grouped by repair id. Only fixes that map to a real op are emitted."""
+    grouped: dict[str, list[dict]] = {}
+    for v in report.violations:
+        fx = v.proposed_fix
+        if fx is None:
+            continue
+        if fx.action == "add_bridge" and "from" in fx.params and "to" in fx.params:
+            width = max(float(fx.params.get("width_mm", rules.min_bridge_mm)), rules.min_bridge_mm)
+            grouped.setdefault("connect_floating_parts", []).append(
+                {"op": "add_bridge", "params": {"from": list(fx.params["from"]), "to": list(fx.params["to"]), "width_mm": round(width, 3)}}
+            )
+        elif fx.action == "enlarge_loop" and v.location_mm is not None:
+            grouped.setdefault("rebuild_chain_ring", []).append(
+                {"op": "add_ring", "params": {"center": [v.location_mm[0], v.location_mm[1]],
+                                              "inner_diameter_mm": rules.loop_inner_diameter_mm,
+                                              "wall_mm": rules.loop_wall_mm}}
+            )
+    return grouped
+
+
+_REPAIR_LABELS = {
+    "connect_floating_parts": ("وصل الأجزاء المنفصلة بجسور حقيقية", "Connect floating parts with real bridges"),
+    "rebuild_chain_ring": ("إعادة بناء حلقة التعليق بالمقاس الصحيح", "Rebuild the chain ring at workshop size"),
+    "thicken_strokes": ("تحسين قابلية التصنيع (تسميك الخطوط)", "Improve manufacturability (thicken strokes)"),
+}
+
+
+def repair_options_for_version(version: m.DesignVersion, rules: WorkshopRules = DEFAULT_RULES) -> list[dict]:
+    """Validated repair proposals. Vector repairs are dry-run and offered
+    only when they reduce the manufacturing error count; the recipe
+    thicken option is offered while there is headroom and is dry-run when
+    the version currently fails."""
+    recipe = RecipeParams(**version.recipe)
+    if recipe.ring is not None:
+        return []   # ring-mode repairs are a future slice — offer nothing rather than an untested transformation
+    report = ValidationReport(**version.validation)
+    errors_before = sum(1 for x in report.violations if x.severity == ValidationSeverity.ERROR)
+    options: list[dict] = []
+    for repair_id, ops in fix_ops_from_report(report, rules).items():
+        try:
+            _built, after, _log = preview_vector_ops(version, ops, rules)
+        except VectorEditRejected as exc:
+            options.append({"repair_id": repair_id, "kind": "vector", "available": False, "reason": str(exc),
+                            "label_ar": _REPAIR_LABELS[repair_id][0], "label_en": _REPAIR_LABELS[repair_id][1]})
+            continue
+        errors_after = sum(1 for x in after.violations if x.severity == ValidationSeverity.ERROR)
+        if errors_after < errors_before:
+            options.append({"repair_id": repair_id, "kind": "vector", "available": True, "ops": ops,
+                            "label_ar": _REPAIR_LABELS[repair_id][0], "label_en": _REPAIR_LABELS[repair_id][1],
+                            "errors_before": errors_before, "errors_after": errors_after,
+                            "passes_after": after.passed})
+    if recipe.stroke_delta_mm < 0.45:
+        overrides = {"stroke_delta_mm": round(recipe.stroke_delta_mm + 0.1, 3)}
+        opt = {"repair_id": "thicken_strokes", "kind": "recipe", "available": True, "overrides": overrides,
+               "label_ar": _REPAIR_LABELS["thicken_strokes"][0], "label_en": _REPAIR_LABELS["thicken_strokes"][1],
+               "errors_before": errors_before}
+        if errors_before:
+            try:
+                source = ImmutableSourceText.create(version.immutable_source_text, confirmed=True)
+                new_recipe = recipe.model_copy(update=overrides)
+                _r, proof, built = build_geometry_for_recipe(source.normalized_text, new_recipe, rules)
+                prior = list((version.edit_metadata or {}).get("vector_ops") or [])
+                if prior:
+                    built, _ = apply_ops(built, prior, rules)
+                font = get_registry().get(new_recipe.font_id)
+                after = validate(built, rules, proof, font_production_allowed=font.commercial_production_allowed,
+                                 expected_loops=max(EXPECTED_LOOPS[new_recipe.loops], len(built.loop_centers_mm)))
+                opt["errors_after"] = sum(1 for x in after.violations if x.severity == ValidationSeverity.ERROR)
+                opt["passes_after"] = after.passed
+                if opt["errors_after"] > errors_before:
+                    opt["available"] = False
+                    opt["reason"] = "Thickening would add manufacturing errors on this design."
+            except VectorEditRejected as exc:
+                opt["available"] = False
+                opt["reason"] = str(exc)
+        options.append(opt)
+    return [o for o in options if o.get("available")] + [o for o in options if not o.get("available")]
+
+
+def vector_tool_catalogue(version: m.DesignVersion, rules: WorkshopRules = DEFAULT_RULES) -> dict:
+    from shapely import wkt as shapely_wkt
+
+    geom = shapely_wkt.loads(version.geometry_wkt) if version.geometry_wkt else None
+    bounds = [round(b, 3) for b in geom.bounds] if geom is not None and not geom.is_empty else None
+    report = ValidationReport(**version.validation)
+    meta = version.edit_metadata or {}
+    return {
+        "version_id": str(version.id),
+        "status": version.status,
+        "editable": version.status != "APPROVED_LOCKED",
+        "bounds_mm": bounds,
+        "loop_centers_mm": meta.get("loop_centers_mm"),
+        "workshop_minimums": {"bridge_mm": rules.min_bridge_mm, "ring_inner_diameter_mm": rules.loop_inner_diameter_mm,
+                              "ring_wall_mm": rules.loop_wall_mm, "stroke_mm": rules.min_stroke_mm},
+        "tools": VECTOR_TOOLS,
+        "refused": VECTOR_REFUSED,
+        "lineage_ops": meta.get("vector_ops") or [],
+        "proposed_fix_ops": fix_ops_from_report(report, rules),
+        "errors": [x.model_dump(mode="json") for x in report.violations if x.severity == ValidationSeverity.ERROR],
+    }
+
+
+def vector_edit_version(
+    session: Session,
+    version_id: uuid.UUID,
+    ops: list[dict],
+    note: str | None,
+    created_by: str,
+    rules: WorkshopRules = DEFAULT_RULES,
+) -> m.DesignVersion:
+    """Manual vector edit → NEW version. The parent is never mutated and the
+    source text is untouched by construction (ops only see geometry).
+
+    The version records the CUMULATIVE ordered op list (parent ops + new
+    ops) replayed on the deterministic base generated from the recipe, so
+    the geometry is reproducible from (source text, recipe, ops)."""
+    parent = session.get(m.DesignVersion, version_id)
+    if parent is None:
+        raise KeyError("version not found")
+    if not ops:
+        raise VectorEditRejected("No operations given.")
+    design = session.get(m.Design, parent.design_id)
+    recipe = RecipeParams(**parent.recipe)
+    source = ImmutableSourceText.create(parent.immutable_source_text, confirmed=True)
+    runs, proof, base = build_geometry_for_recipe(source.normalized_text, recipe, rules)
+    prior = list((parent.edit_metadata or {}).get("vector_ops") or [])
+    cumulative = prior + [{"op": o.get("op"), "params": o.get("params") or {}} for o in ops]
+    built, op_log = apply_ops(base, cumulative, rules)   # raises VectorEditRejected
+    font = get_registry().get(recipe.font_id)
+    report = validate(
+        built, rules, proof,
+        font_production_allowed=font.commercial_production_allowed,
+        expected_loops=max(EXPECTED_LOOPS[recipe.loops], len(built.loop_centers_mm)),
+    )
+    version = _create_version_row(
+        session,
+        design,
+        source_text=parent.immutable_source_text,
+        source_sha=parent.source_text_sha256,
+        recipe=recipe,
+        geometry_wkt=built.geometry.wkt if not built.geometry.is_empty else "",
+        text_geometry_wkt=(built.text_geometry.wkt if built.text_geometry is not None and not built.text_geometry.is_empty else None),
+        inner_text_geometry_wkt=(built.inner_text_geometry.wkt if built.inner_text_geometry is not None and not built.inner_text_geometry.is_empty else None),
+        validation=report.model_dump(),
+        identity_verified=proof.verified,
+        score=0.0,
+        created_by=created_by,
+        parent_version_id=parent.id,
+        edit_metadata={"vector_ops": cumulative, "applied_ops": cumulative[len(prior):],
+                       "vector_op_log": op_log, "note": note,
+                       "loop_centers_mm": [[round(x, 3), round(y, 3)] for x, y in built.loop_centers_mm]},
+    )
+    _emit(session, "DESIGN_EDITED", design_id=design.id, version_id=version.id,
+          actor=created_by, actor_type="designer",
+          metadata={"parent_version": parent.version_number, "kind": "vector",
+                    "ops": [o["op"] for o in cumulative[len(prior):]], "total_ops": len(cumulative)})
     return version
 
 
@@ -485,7 +712,7 @@ def change_source_text(
     report = validate(
         built, rules, proof,
         font_production_allowed=font.commercial_production_allowed,
-        expected_loops={"none": 0, "top": 1, "left_right": 2}[recipe.loops],
+        expected_loops=EXPECTED_LOOPS[recipe.loops],
     )
     version = _create_version_row(
         session, design,
@@ -500,7 +727,10 @@ def change_source_text(
         score=0.0,
         created_by=created_by,
         parent_version_id=parent.id,
-        edit_metadata={"source_text_revision": True},
+        edit_metadata={"source_text_revision": True,
+                       # Manual vector edits are anchored in mm to the OLD
+                       # text's geometry; they are not carried onto new text.
+                       "vector_ops_dropped": len((parent.edit_metadata or {}).get("vector_ops") or [])},
     )
     # Force invalidation of every active approval on this design.
     active = session.execute(
@@ -654,11 +884,11 @@ def export_version(
 ) -> tuple[str, m.ExportRecord]:
     """Authorized production export. Requires APPROVED_LOCKED + hash
     re-verification + stored validation PASS + rights PASS."""
-    if fmt not in ("svg", "dxf"):
+    if fmt not in ("svg", "dxf", "pdf"):
         # Only deterministic vector formats are exportable. AI rasters
         # (ai_generations) are display artifacts and can never become a
         # manufacturing file — see ADR-0002.
-        raise ValueError("format must be svg or dxf (AI raster output is never exportable)")
+        raise ValueError("format must be svg, dxf or pdf (AI raster output is never exportable)")
     version = session.get(m.DesignVersion, version_id)
     if version is None:
         raise KeyError("version not found")
@@ -691,21 +921,40 @@ def export_version(
         raise ProductionExportBlocked("BLOCK_PRODUCTION_EXPORT: font rights.")
 
     candidate, source = _version_to_candidate(version)
-    content = export_svg(candidate, source) if fmt == "svg" else export_dxf(candidate, source)
-    features = ValidationReport(**version.validation)  # noqa: F841 (validated above)
     from shapely import wkt as shapely_wkt
 
-    bounds = shapely_wkt.loads(version.geometry_wkt).bounds
+    from ..exporters import fidelity as fid
+    from ..exporters.pdf_exporter import export_pdf, manifest_for
+
+    master = shapely_wkt.loads(version.geometry_wkt)
+    if fmt == "svg":
+        content: str | bytes = export_svg(candidate, source)
+        reimported = fid.reimport_svg(content)
+    elif fmt == "dxf":
+        content = export_dxf(candidate, source)
+        reimported = fid.reimport_dxf(content)
+    else:
+        content = export_pdf(candidate, source, version_id=str(version.id), geometry_hash=version.geometry_hash)
+        reimported = fid.reimport_pdf(content)
+    raw = content.encode("utf-8") if isinstance(content, str) else content
+    content_sha = hashlib.sha256(raw).hexdigest()
+    loops = (version.recipe or {}).get("loops", "none")
+    # Export Fidelity Gate: what was written must equal the master vector.
+    fidelity = fid.compare(master, reimported)
+    features = ValidationReport(**version.validation)  # noqa: F841 (validated above)
+    bounds = master.bounds
     record = m.ExportRecord(
         version_id=version.id,
         kind="production",
         format=fmt,
-        content_sha256=hashlib.sha256(content.encode("utf-8")).hexdigest(),
+        content_sha256=content_sha,
         width_mm=round(bounds[2] - bounds[0], 3),
         height_mm=round(bounds[3] - bounds[1], 3),
         units="mm",
         validation_rules_version=version.manufacturing_rules_version,
         idempotency_key=idempotency_key,
+        fidelity=fidelity,
+        manifest=manifest_for(candidate, source, fmt, content_sha, str(version.id), version.geometry_hash),
     )
     session.add(record)
     try:
@@ -714,7 +963,8 @@ def export_version(
         raise ConflictError("Duplicate idempotency key (race).") from exc
     _emit(session, "PRODUCTION_EXPORT_CREATED", design_id=version.design_id,
           version_id=version.id, actor=actor,
-          metadata={"format": fmt, "content_sha256": record.content_sha256})
+          metadata={"format": fmt, "content_sha256": record.content_sha256,
+                    "fidelity": fidelity["status"]})
     return content, record
 
 

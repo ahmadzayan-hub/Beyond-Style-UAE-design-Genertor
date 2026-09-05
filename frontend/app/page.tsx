@@ -8,6 +8,11 @@ import StartStep from "@/components/golden-path/StartStep";
 import ConfirmStep from "@/components/golden-path/ConfirmStep";
 import ApproveStep from "@/components/golden-path/ApproveStep";
 import ApprovedStep from "@/components/golden-path/ApprovedStep";
+import ProPanel from "@/components/golden-path/ProPanel";
+import ActionBar from "@/components/golden-path/ActionBar";
+import JewelryCheck, { QaReport } from "@/components/golden-path/JewelryCheck";
+import type { IntegrityReport } from "@/components/golden-path/IntegrityPanel";
+import type { Ladder } from "@/components/golden-path/ReadinessLadder";
 
 // Three.js is heavy — load the 3D viewer only when its tab is opened.
 const Viewer3D = dynamic(() => import("@/components/Viewer3D"), { ssr: false });
@@ -44,6 +49,15 @@ export default function GoldenPathPage() {
   const [message, setMessage] = useState("");
   const [styleIntent, setStyleIntent] = useState<string | null>(null);
   const [scriptFamily, setScriptFamily] = useState<string | null>(null);
+  const [styleCards, setStyleCards] = useState<any[]>([]);
+  const [integrity, setIntegrity] = useState<IntegrityReport | null>(null);
+  const [qa, setQa] = useState<QaReport | null>(null);
+  const [thickness, setThickness] = useState(1.0);
+  const [fidelity, setFidelity] = useState<Record<string, string>>({});
+  const [ladder, setLadder] = useState<Ladder | null>(null);
+  useEffect(() => {
+    api.stylesCatalogue().then((r) => setStyleCards(r.styles || [])).catch(() => {});
+  }, []);
   const [refFile, setRefFile] = useState<File | null>(null);
   const [refPreview, setRefPreview] = useState<string | null>(null);
   const [styleStrength, setStyleStrength] = useState(0.5);
@@ -80,14 +94,17 @@ export default function GoldenPathPage() {
   const [studioSvg, setStudioSvg] = useState<string | null>(null);
   const [previewNote, setPreviewNote] = useState<string | null>(null);
   const [editOpen, setEditOpen] = useState(false);
+  const [proOpen, setProOpen] = useState(false);
+  const [previewMode, setPreviewMode] = useState<"fit" | "actual">("fit");
   const [editParams, setEditParams] = useState<any>({});
   const [repair, setRepair] = useState<{
     available: boolean;
+    options: any[];
     beforeSvg?: string;
     afterSvg?: string;
     newVersionId?: string;
     applied: boolean;
-  }>({ available: false, applied: false });
+  }>({ available: false, options: [], applied: false });
   const [approveChecked, setApproveChecked] = useState(false);
   const [agreementSvg, setAgreementSvg] = useState<string | null>(null);
   const [productType, setProductType] = useState<"pendant" | "ring">("pendant");
@@ -137,6 +154,7 @@ export default function GoldenPathPage() {
       const created = await api.createDesign(fullText, productType);
       setDesignId(created.design_id);
       setNormalizedText(created.normalized_text);
+      setIntegrity(created.integrity || null);
       if (refFile) {
         try {
           setBusyLabel(t.uploading_label);
@@ -218,9 +236,24 @@ export default function GoldenPathPage() {
     }
   }
 
+  async function refreshQa(versionId: string, material: string, t_mm: number) {
+    try {
+      const mat = ["silver-925", "gold-18k-yellow", "gold-18k-rose", "gold-18k-white", "platinum"].includes(material) ? material : "silver-925";
+      setQa(await api.jewelryQa(versionId, mat === "platinum" ? "gold-18k-white" : mat, t_mm));
+    } catch {
+      setQa(null);
+    }
+  }
+
+  async function changeThickness(t_mm: number) {
+    setThickness(t_mm);
+    if (selected) refreshQa(selected.version_id, previewMaterial, t_mm);
+  }
+
   async function changeMaterial(material: string) {
     setPreviewMaterial(material);
     if (!selected) return;
+    refreshQa(selected.version_id, material, thickness);
     try {
       const svg = await api.versionSvg(selected.version_id, material);
       setHistory((h) => h.map((v, i) => (i === histIdx ? { ...v, svg } : v)));
@@ -250,8 +283,9 @@ export default function GoldenPathPage() {
       setHistory([v]);
       setHistIdx(0);
       setEditParams({ ...full.recipe });
+      refreshQa(sel.version_id, previewMaterial, thickness);
       const opts = await api.repairOptions(sel.version_id);
-      setRepair({ available: opts.options.length > 0, applied: false });
+      setRepair({ available: opts.options.some((o: any) => o.available), options: opts.options, applied: false });
       setBusy(false);
       setStep("selected");
     } catch (e) {
@@ -341,26 +375,49 @@ export default function GoldenPathPage() {
     }
   }
 
-  async function handleApplyRepair() {
+  async function handleApplyRepair(repairId: string) {
     if (!selected) return;
     setBusy(true);
     try {
-      const rep = await api.applyRepair(selected.version_id);
+      const rep = await api.applyRepairById(selected.version_id, repairId);
       const [beforeSvg, afterSvg] = await Promise.all([
         api.versionSvg(rep.parent_version_id),
         api.versionSvg(rep.version_id),
       ]);
-      setRepair({
+      setRepair((r) => ({
+        ...r,
         available: true,
         beforeSvg,
         afterSvg,
         newVersionId: rep.version_id,
         applied: false,
-      });
+      }));
       setBusy(false);
     } catch (e) {
       fail(e);
     }
+  }
+
+  /** A Pro-mode vector edit landed as a new version: show it, refresh the
+   *  manufacturing check and the validated repair offers for it. */
+  async function afterVectorEdit(res: any) {
+    const [svg, full, opts] = await Promise.all([
+      api.versionSvg(res.version_id),
+      api.getVersion(res.version_id),
+      api.repairOptions(res.version_id),
+    ]);
+    pushVersion({
+      version_id: res.version_id,
+      version_number: res.version_number,
+      source_text_sha256: res.source_text_sha256,
+      geometry_hash: res.geometry_hash,
+      validation_passed: res.validation_passed,
+      recipe: full.recipe,
+      svg,
+    });
+    setRepair({ available: opts.options.some((o: any) => o.available), options: opts.options, applied: false });
+    refreshQa(res.version_id, previewMaterial, thickness);
+    if (!res.validation_passed) setError(t.edit_invalid);
   }
 
   async function acceptRepairVersion() {
@@ -398,16 +455,20 @@ export default function GoldenPathPage() {
       );
       setApproval(res);
       setBusy(false);
+      try { setLadder(await api.readiness(selected.version_id)); } catch {}
+      setFidelity({});
       setStep("approved");
     } catch (e) {
       fail(e instanceof api.ApiError && e.code === "ARABIC_VALIDATION_FAILED" ? t.error_mismatch : e);
     }
   }
 
-  async function handleDownload(fmt: "svg" | "dxf") {
+  async function handleDownload(fmt: "svg" | "dxf" | "pdf") {
     if (!selected) return;
     try {
-      await api.downloadExport(selected.version_id, fmt);
+      const verdict = await api.downloadExport(selected.version_id, fmt);
+      setFidelity((f) => ({ ...f, [fmt]: verdict }));
+      try { setLadder(await api.readiness(selected.version_id)); } catch {}
     } catch {
       setError(t.error_export);
       setRequestId(null);
@@ -459,7 +520,7 @@ export default function GoldenPathPage() {
           refFile={refFile} setRefFile={setRefFile} refPreview={refPreview} setRefPreview={setRefPreview}
           styleStrength={styleStrength} setStyleStrength={setStyleStrength}
           styleIntent={styleIntent} setStyleIntent={setStyleIntent}
-          scriptFamily={scriptFamily} setScriptFamily={setScriptFamily}
+          scriptFamily={scriptFamily} setScriptFamily={setScriptFamily} styleCards={styleCards} lang={lang}
           material={previewMaterial} setMaterial={setPreviewMaterial}
           productType={productType} setProductType={setProductType}
           ringSize={ringSize} setRingSize={setRingSize} bandHeight={bandHeight} setBandHeight={setBandHeight}
@@ -470,7 +531,7 @@ export default function GoldenPathPage() {
 
       {step === "confirm" && (
         <ConfirmStep
-          t={t} normalizedText={normalizedText} confirmChecked={confirmChecked}
+          t={t} lang={lang} integrity={integrity} normalizedText={normalizedText} confirmChecked={confirmChecked}
           setConfirmChecked={setConfirmChecked} busy={busy} onConfirm={handleConfirm}
           onBack={() => setStep("start")}
         />
@@ -559,7 +620,21 @@ export default function GoldenPathPage() {
             ))}
           </div>
           {studioTab === "2d" ? (
-            <div className="proof-svg-large rounded-xl border border-stone-200 bg-white p-4" data-testid="selected-preview">
+            <div className={`${previewMode === "actual" ? "proof-actual" : "proof-svg-large"} rounded-xl border border-stone-200 bg-white p-4`} data-testid="selected-preview">
+              <div className="mb-2 flex flex-wrap items-center gap-2 text-xs" data-testid="preview-mode">
+                <span className="text-stone-500">{t.preview_mode}:</span>
+                {(["fit", "actual"] as const).map((m) => (
+                  <button
+                    key={m}
+                    data-testid={`preview-mode-${m}`}
+                    onClick={() => setPreviewMode(m)}
+                    className={`rounded-full border px-3 py-1 ${previewMode === m ? "border-brand-dark bg-brand-dark text-white" : "border-stone-300 bg-white"}`}
+                  >
+                    {m === "fit" ? t.preview_fit : t.preview_actual}
+                  </button>
+                ))}
+              </div>
+              {previewMode === "actual" && <p className="mb-2 text-[11px] text-stone-500">{t.preview_actual_note}</p>}
               {selected.svg && <div dangerouslySetInnerHTML={{ __html: selected.svg }} />}
               <div className="mt-3 flex flex-wrap gap-2">
                 {Object.entries(t.materials).map(([key, label]) => (
@@ -682,18 +757,35 @@ export default function GoldenPathPage() {
             {normalizedText}
           </div>
 
+          {qa && <JewelryCheck t={t} lang={lang} report={qa} thickness={thickness} setThickness={changeThickness} />}
           {repair.available && !repair.applied && (
             <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 whitespace-pre-line" data-testid="repair-box">
               <p className="text-sm font-medium text-emerald-900">{t.improve_available}</p>
               {!repair.afterSvg ? (
-                <button
-                  data-testid="repair-preview"
-                  disabled={busy}
-                  onClick={handleApplyRepair}
-                  className="mt-2 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-semibold text-white disabled:opacity-40"
-                >
-                  {t.apply_fix}
-                </button>
+                <div className="mt-2 flex flex-col gap-2" data-testid="repair-options">
+                  <p className="text-xs text-emerald-900">{t.repair_choose}</p>
+                  {repair.options.filter((o) => o.available).map((o) => (
+                    <button
+                      key={o.repair_id}
+                      data-testid={`repair-preview-${o.repair_id}`}
+                      disabled={busy}
+                      onClick={() => handleApplyRepair(o.repair_id)}
+                      className="rounded-lg bg-emerald-700 px-4 py-2 text-start text-sm font-semibold text-white disabled:opacity-40"
+                    >
+                      {lang === "ar" ? o.label_ar : o.label_en}
+                      {o.errors_after != null && (
+                        <span className="ms-2 text-xs font-normal opacity-80">
+                          {t.repair_after}: {o.errors_before} → {o.errors_after}
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                  {repair.options.filter((o) => !o.available).map((o) => (
+                    <p key={o.repair_id} className="text-[11px] text-stone-500" data-testid={`repair-unavailable-${o.repair_id}`}>
+                      {t.repair_unavailable} {lang === "ar" ? o.label_ar : o.label_en} — {o.reason}
+                    </p>
+                  ))}
+                </div>
               ) : (
                 <div className="mt-3">
                   <div className="grid grid-cols-2 gap-2">
@@ -859,7 +951,7 @@ export default function GoldenPathPage() {
                   onChange={(e) => setEditParams({ ...editParams, loops: e.target.value })}
                   className="mt-1 w-full rounded border border-stone-300 p-2"
                 >
-                  {["top", "left_right", "none"].map((c) => (
+                  {["top", "left_right", "upper_left_right", "none"].map((c) => (
                     <option key={c} value={c}>{c}</option>
                   ))}
                 </select>
@@ -873,6 +965,20 @@ export default function GoldenPathPage() {
                 {t.edit_apply}
               </button>
             </div>
+          )}
+
+          <button
+            data-testid="pro-toggle"
+            onClick={() => setProOpen(!proOpen)}
+            className="rounded-xl border border-stone-400 p-3 text-sm font-semibold text-stone-700"
+          >
+            {t.pro_open}
+          </button>
+          {proOpen && (
+            <ProPanel
+              t={t} lang={lang} versionId={selected.version_id} currentSvg={selected.svg} busy={busy}
+              onApplied={afterVectorEdit} onError={(m) => setError(m)}
+            />
           )}
 
           <button
@@ -908,7 +1014,32 @@ export default function GoldenPathPage() {
       )}
 
       {step === "approved" && selected && approval && (
-        <ApprovedStep t={t} selected={selected} approval={approval} onDownload={handleDownload} />
+        <ApprovedStep t={t} selected={selected} approval={approval} onDownload={handleDownload}
+                      lang={lang} fidelity={fidelity} ladder={ladder} />
+      )}
+
+      {/* Mobile-first primary action: one thumb-reachable button per step. */}
+      {step === "start" && (
+        <ActionBar label={t.bar_start} testId="bar-start" disabled={busy || (!text.trim() && !refFile)} onClick={handleStart} />
+      )}
+      {step === "confirm" && (
+        <ActionBar label={t.bar_confirm} testId="bar-confirm" disabled={busy || !confirmChecked} onClick={handleConfirm} />
+      )}
+      {step === "selected" && selected && (
+        <ActionBar
+          label={t.bar_approve} testId="bar-approve" disabled={busy || !selected.validation_passed}
+          onClick={async () => {
+            setStep("approve");
+            try {
+              setAgreementSvg(await api.agreementProofSvg(selected.version_id));
+            } catch {
+              setAgreementSvg(null);
+            }
+          }}
+        />
+      )}
+      {step === "approved" && selected && approval && (
+        <ActionBar label={t.bar_download} testId="bar-download" disabled={busy} onClick={() => handleDownload("svg")} />
       )}
     </main>
   );
