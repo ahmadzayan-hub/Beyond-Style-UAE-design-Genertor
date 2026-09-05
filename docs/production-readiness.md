@@ -1,12 +1,45 @@
 # Production Readiness
 
-Updated: 2026-08-24 · Slices done: (1) deterministic Golden Path core,
-(2) PostgreSQL persistence + versioning + approval lock + audit (ADR-0001),
-(3) reference/WhatsApp intake + upload security + anonymous sessions + mobile-first customer UI,
-(4) design quality gate: perceptual dedup + high-fidelity proofs + curated archetype library + minimal Designer Copilot,
-(5) decorative engine: Glyph Variant Library (OT sets, dot styles, swashes, kashida w/ identity remap), aesthetic bridge routing (vertical/radial + fillets), versioned workshop profiles (product × material, wp-1.0.0, INDUSTRY_TYPICAL_UNCALIBRATED), stacked multi-line long-text composition with width-fit, Copilot variant controls, CI workflow
-Test evidence: `cd backend && python3 -m pytest` → **127 passed** (PostgreSQL 16 integration)
-+ browser E2E `python3 e2e/golden_path_e2e.py` (3 flows) + `python3 e2e/copilot_e2e.py` (edit→undo/redo→approve v2) — screenshots in `docs/evidence/`.
+Updated: 2026-09-05 · Latest slice: **Arabic Calligraphy Source Registry + Text Integrity Engine +
+Vector Composition Engine + Jewelry Manufacturing Gate** (ADR-0006, six increments on top of the
+jewellery-realism slice, ADR-0005). The report below is the honest readiness picture for the
+owner specification; earlier slice tables follow unchanged.
+
+## Readiness report — 2026-09-05 (spec "BEYOND STYLE ARABIC JEWELRY DESIGNER")
+
+Rule applied: a percentage is claimed only from executed evidence (tests, browser E2E, CI). 100 %
+is never claimed for an area whose acceptance E2E has not passed.
+
+| Area (spec section) | Readiness | Evidence (executed) | Not done / caveat |
+|---|---|---|---|
+| Text integrity (ميثه never becomes ميثة; hidden chars; NFC only) | **95 %** | `test_text_integrity.py` 7/7; acceptance E2E: TEXT INTEGRITY PASS, confirm/approve displays byte-exact; `certify()` on version + exports | sacred-text special mode not built (blocks are generic, not a scripture register) |
+| Calligraphy source registry (never a fake locked style) | **85 %** | 37 rights-cleared OFL families vendored; `test_source_registry.py`, `test_font_onboarding.py` 5/5, `test_font_upload.py` 3/3; style catalogue with honest statuses; upload API + `/admin/fonts` UI; `/styles` browser (favourites/recent persisted) | Thuluth/Diwani are INFLUENCED_ONLY until a licensed source is uploaded (by design, not imitated); glyph-variant library per calligraphic style is partial (OT sets + dot/swash variants only) |
+| Shaping (HarfBuzz, contextual forms, marks) | **95 %** | existing Arabic regression suite; identity proof per cluster; multi-name proof through per-name offsets | Nastaliq true source absent (influenced) |
+| Vector Composition Engine (6–12 variants from the same glyph vectors) | **85 %** | `test_composition_engine.py` 4/4 (engineering case 23/24 valid, 10 diverse); E2E: 10 different compositions for the seven names (family tree / arch / circular / horizontal flow / oval / interwoven) | ornament/component library is small (bridges, rings, frames, swashes); no calligraphic ligature re-composition |
+| Materials + weight from actual area | **90 %** | 11 materials; `weight_report` tests; E2E shows weight from area×thickness×density | 18K 60×40 mm ≈10 g reached only for oval/arch layouts at 1.0 mm (documented in ADR-0006/test) |
+| Manufacturability QA ("JEWELRY QA: PASS/FAIL", real attachments) | **90 %** | `test_manufacturing_gate.py` (QA plain language, attachment facts); E2E: JEWELRY QA PASS | workshop rule values remain INDUSTRY_TYPICAL_UNCALIBRATED (calibration kit exists) |
+| Vector editor (transforms, booleans, fail-safe, versioned) | **75 %** | `test_vector_edit.py` 8/8 (engine + DB/API); E2E: Pro-mode translate → version 2 → locked | node/anchor editing and pen tool NOT built (listed as unavailable in the UI, never fake); scale is uniform only |
+| Real repair (bridges / rings / thicken) | **80 %** | validator-fix → vector op → dry-run → offered only when errors drop; `test_real_repair_connects_floating_part_from_validator_fix` | gap widening (interior holes) is not auto-repaired yet |
+| Approval states + immutable lock | **85 %** | existing lock suite; E2E: approval hash of v2, later edits invalidate | approval is INTERNAL_UI (no secure customer link / OTP) — labelled as such in the UI and ladder |
+| Exports SVG / DXF / PDF + manifest | **95 %** | `test_pdf_export_is_true_scale_vector_and_reimports`; E2E: three exports, `X-Export-Fidelity: PASS` | PNG export is preview-only (no raster export record) |
+| Export fidelity gate (re-import → compare → WORKSHOP READY) | **95 %** | fidelity stored per export; readiness ladder from facts; E2E: WORKSHOP READY | the PDF re-import found by the E2E (multi-op lines) fixed in `44001e0` |
+| Style browser / 10-step wizard / Pro mode / premium UX | **70 %** | `/styles`, Golden Path steps, Pro panel, actual-size preview mode, mobile action bar; build green; E2E screenshots 360/390/768/1280 | wizard is 7 steps (start → confirm → generate → proofs → selected → approve → approved), not the spec's 10; no on-body preview modes |
+| Mobile-first (360 px) | **85 %** | E2E: no horizontal overflow at 360/390/768/1280 on start + styles; mobile flow passes at 390 | full flow at 360 not run as a separate viewport (only layout checks) |
+| Reference import (IP reminder, "same style, change text") | **80 %** | existing reference flow E2E; copyright notice | unchanged this slice |
+| AI as art director only | **100 % of what exists** | deterministic engines own text/geometry; AI tools blocked from writes | external providers unverified here (no credentials) |
+| Performance | **75 %** | seven-name generation 14.6 s on 4 cores (52 s inline) after `8c4bf41` (proxy placement search, erosion reuse, fork pool over recipes; byte-identical candidates); single names 2–8 s | 2-core hosts (CI, small Replit) still see ~30 s; no progress stream to the customer yet |
+| Security | **80 %** | secret scan in CI, private font storage never served by URL, admin token on upload, session-scoped ownership | private font licence text stored but no encryption-at-rest claim |
+| Tests / CI | **see below** | full local suite result recorded below; CI runs 33971823356 / 33972231291 / 33972484731 / 33972620082 | — |
+| **Mandatory acceptance E2E (seven names)** | **PASSED 2026-09-05** | `e2e/acceptance_seven_names_e2e.py`, evidence `docs/evidence/acceptance-seven-*` | run on localhost, not on the production deployment (Production Monitor red — deployment unreachable) |
+
+### Issues by severity
+- **Critical (blocks production use)**: none open in code. The production deployment itself is unreachable (Production Monitor workflow red on every push) — an operations task, not a code defect.
+- **High**: (1) seven-name generation 15–30 s depending on cores, with no progress stream to the customer; (2) customer approval is internal-UI only (no secure link); (3) workshop rule values uncalibrated for Beyond Style's actual processes.
+- **Medium**: (1) Thuluth/Diwani/Nastaliq need licensed sources (upload path ready); (2) no node/pen editing; (3) wizard is 7 steps and preview modes are flat/actual-size only; (4) gap widening not auto-repaired.
+- **Low**: (1) PNG export is preview-only; (2) proof cards are SVG previews, photoreal remains optional/external; (3) `experimental.proxyTimeout` only matters for the local/CI rewrite.
+
+### Local full-suite evidence
+`cd backend && python3 -m pytest -q` on HEAD `8c4bf41` (PostgreSQL 16, 4 cores): **511 passed, 0 failed, exit 0** in ~35 min (log `full_s5.log`, 2026-09-05 15:05–15:41 UTC). An earlier run on the pre-fix tree timed out at 50 min because the seven-name generation was 75 s per call under CPU contention; that is what the perf work in `8c4bf41` addressed. CI: runs 53–56 failed only on the three tests fixed in `8c4bf41` (phrase routing ×2, vector-edit text protection); run 57 (`8c4bf41`) is the reference run for this report.
 
 ## Slice 5 evidence (decorative engine / rules / multi-line / CI)
 

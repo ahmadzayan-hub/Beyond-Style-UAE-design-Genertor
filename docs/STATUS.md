@@ -13,6 +13,44 @@ Statuses (External AI / Real Tool Wiring sections, precise per-claim vocabulary)
 Updated: 2026-09-05 · GitHub Actions CI: VERIFIED_CI, run 33932846404 (HEAD `c5126c9`, jewellery realism slice, ADR-0005) — all 4 jobs green; previous run 33872385421 (`56d07d9`, font onboarding kit + studio-render fallback) — all 4 jobs green; run 33869986675 (`486a5fb`) was red on one test (registry accessor left swapped by the kit's proof step, fixed in `56d07d9`); previous green runs 33861562627 (`b521aa8`), 33664799084 (`3ada443`) — all 4 jobs green (secret-scan, backend full suite incl. Workshop OS / validation API / archetype catalogue / security hardening, frontend build with the split Golden Path page, Golden Path + Copilot browser E2E). The preceding run 33638126995 (`5c3dd32`) was red on 3 tests — vote casing, pack tolerances — fixed in `3ada443` (see the slice sections below). Previous baseline: run 33204109378 (HEAD `5954693`) — all 4 jobs green (secret-scan, backend full suite on the corrected fonttools 4.60.2 + uharfbuzz 0.56.0 pins, frontend build, Golden Path + Copilot browser E2E); local full suite also exit 0 on the same pins. Note: CI was red for the 8 commits between `a7e3858` and this fix (see "CI red since 49c4ceb" below) — the previous "5 consecutive green runs" claim ended at `a7e3858`.
 Previous (2026-08-26): Backend suite: 401 passed (394 + 7 First-Wave Analysis) (PostgreSQL 16, incl. 11-test immutable seven-name golden fixture) · E2E: 5 browser flows passed (incl. dedicated seven-name+reference flow) · production smoke: 15/15 checks passed (local, corrected fixture) · CI run 32900447345 (`a7e3858`) conclusion=success — see RELEASE_EVIDENCE.md.
 
+## Arabic Calligraphy Source Registry + Text Integrity Engine + Vector Composition Engine + Jewelry Manufacturing Gate (2026-09-05, ADR-0006)
+Owner specification ("BEYOND STYLE ARABIC JEWELRY DESIGNER") implemented as six increments after an
+audit (preserve working code, remove duplicates: merged `/api/fonts/styles`, one `EXPECTED_LOOPS`
+map, one repair service). Full readiness table with percentages and Critical/High/Medium/Low issues:
+`docs/production-readiness.md` (top section).
+- **Text Integrity Engine** (`engines/text_integrity.py`): VERIFIED — inspect (invisible/bidi/
+  tatweel/presentation forms/NFC drift), rasm-group diff classification, `certify()` on every
+  version and export; `POST /api/designs/integrity/inspect`, `GET /api/versions/{id}/integrity`.
+  ميثه is byte-exact through confirm → approve → export (acceptance E2E).
+- **Source Registry**: VERIFIED — 37 OFL families vendored; style catalogue with honest statuses;
+  `POST /api/admin/fonts` upload (private storage, never served by URL); `/styles` browser with
+  persisted favourites/recent; `/admin/fonts` UI. Thuluth/Diwani/Nastaliq = INFLUENCED_ONLY until
+  a licensed source is uploaded (never imitated).
+- **Vector Composition Engine**: VERIFIED — six layouts from the same glyph vectors, welded, two
+  upper chain rings; seven-name case 23/24 valid, 10 diverse; phrases (function words) keep the
+  stacked path; brief hint `text_kind` overrides; pool topped up with stacked recipes when
+  compositions cannot supply ten valid options. Generation 14.6 s on 4 cores (`8c4bf41`).
+- **Materials + weight**: VERIFIED — 11 materials, weight = area × thickness × density.
+- **Jewelry Manufacturing Gate**: VERIFIED — PDF export; every SVG/DXF/PDF re-imported and compared
+  with the master vector (verdict on the export record + `X-Export-Fidelity`); JEWELRY QA
+  PASS/FAIL in plain Arabic/English; readiness ladder from facts (approval = INTERNAL_UI).
+  Migration `c1d2e3f4a5b6`. Two defects found by the acceptance E2E and fixed (`44001e0`).
+- **Vector edit ops + real repair** (`engines/vector_edit.py`): VERIFIED — translate/rotate/
+  uniform scale/bridge/ring/union/cut with text protection, workshop minimums, must-touch rule,
+  replay on recipe edits; node/pen editing NOT_IMPLEMENTED (listed as unavailable in the UI);
+  repair options are dry-run and offered only when they reduce errors.
+- **UI**: integrity panel, dynamic style chips, JewelryCheck, fidelity badges, readiness ladder,
+  Pro-mode panel, actual-size preview mode, mobile sticky action bar; `next build` green.
+- **Mandatory acceptance E2E** `e2e/acceptance_seven_names_e2e.py`: VERIFIED_E2E on localhost
+  (evidence `docs/evidence/acceptance-seven-*`, results JSON with the event trail); layout has no
+  horizontal overflow at 360/390/768/1280. Local dev proxy needed `experimental.proxyTimeout`
+  (`4b61409`) — production fetches the backend directly.
+- **Not done (honest)**: secure customer approval link, node/pen editing, 10-step wizard (7 steps),
+  on-body preview modes, PNG export record, Thuluth/Diwani true sources, gap-widening auto-repair,
+  workshop calibration values. Production Monitor is red on every push because the deployment is
+  unreachable — an operations task.
+- **Tests**: local full suite on `8c4bf41` — 511 passed, 0 failed, exit 0 (~35 min, 4 cores); slice tests: text_integrity 7, source_registry, font_onboarding 5, font_upload 3, composition_engine 4, manufacturing_gate 4, vector_edit 8, variants/long-text 3; acceptance E2E PASSED (localhost). CI run 57 (`8c4bf41`) pending at the time of writing; runs 53–56 failed only on the three tests fixed in `8c4bf41`.
+
 ## Workshop OS + calibration kit (2026-09-02, assessment risks #3 and #7)
 **Workshop OS** (`services/workshop_service.py`, `api/workshop.py`, table `workshop_orders`,
 migration `b7c3e9d4a1f0`): state machine `NEW → DESIGN_REVIEW → TECHNICAL_CHECK → APPROVED →
