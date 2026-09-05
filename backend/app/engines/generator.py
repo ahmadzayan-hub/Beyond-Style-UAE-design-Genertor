@@ -41,8 +41,10 @@ COMPOSITION_CLASSES = {
     "frame_rect": 6,
     "top_bar": 7,
     "engraved_band": 8,
+    "multi_name": 9,
 }
-LOOPS_CLASSES = {"none": 0, "top": 1, "left_right": 2}
+LOOPS_CLASSES = {"none": 0, "top": 1, "left_right": 2, "upper_left_right": 3}
+EXPECTED_LOOPS = {"none": 0, "top": 1, "left_right": 2, "upper_left_right": 2}
 
 
 def load_recipe_library() -> dict:
@@ -124,6 +126,8 @@ def _candidate_id(design_id: str, recipe: RecipeParams, source_sha: str) -> str:
         # Same invariant as font_axes: a None ring must serialize exactly
         # like the pre-ring schema so no existing candidate is renumbered.
         exclude.add("ring")
+    if recipe.multi_name is None:
+        exclude.add("multi_name")
     dumped = recipe.model_dump_json(exclude=exclude) if exclude else recipe.model_dump_json()
     payload = f"{design_id}|{dumped}|{source_sha}|{GENERATOR_VERSION}"
     return hashlib.sha256(payload.encode()).hexdigest()[:16]
@@ -165,6 +169,19 @@ def build_geometry_for_recipe(source_text: str, recipe: RecipeParams, rules: Wor
         from .ring_band import build_ring_geometry
 
         return build_ring_geometry(source_text, recipe, rules)
+
+    if recipe.multi_name is not None:
+        # Vector Composition Engine: every name shaped once, variants are
+        # rigid transforms + welds + safe bridges of the same vectors.
+        from .composition_engine import compose_multi_name
+
+        spec = recipe.multi_name
+        runs, proof, built, _meta = compose_multi_name(
+            source_text, recipe, rules, layout=spec["layout"], variant=int(spec.get("variant", 0)),
+            envelope_mm=tuple(spec.get("envelope_mm", (60.0, 40.0))),
+            attachments=recipe.loops if recipe.loops == "upper_left_right" else "none",
+        )
+        return runs, proof, built
 
     features = None
     if recipe.ot_feature_set != "default":
@@ -208,7 +225,7 @@ def build_candidate(
     registry = get_registry()
     font = registry.get(recipe.font_id)
     runs, proof, built = build_geometry_for_recipe(source.normalized_text, recipe, rules)
-    expected_loops = {"none": 0, "top": 1, "left_right": 2}[recipe.loops]
+    expected_loops = EXPECTED_LOOPS[recipe.loops]
     report = validate(
         built,
         rules,
@@ -372,6 +389,26 @@ def generate_candidates(
     the pool (additive: the hint-less pool — and every golden fixture built
     on it — is unchanged). `trace`, when given, receives the retrieval
     provenance for the audit event."""
+    from .composition_engine import is_multi_name, multi_name_recipes
+
+    if is_multi_name(source.normalized_text):
+        # Multi-name pieces never fall back to ordinary stacked text: the
+        # Vector Composition Engine builds 6–12 variants per face from the
+        # same validated glyph vectors.
+        recipes = multi_name_recipes(hints)
+        all_candidates = [build_candidate(design_id, source, r, rules) for r in recipes]
+        from .ranking import DEFAULT_RANKING
+
+        _apply_ranking(all_candidates, DEFAULT_RANKING)
+        if hints:
+            _apply_hint_bonus(all_candidates, hints)
+        top = select_diverse(all_candidates, top_n)
+        _attach_quality_reports(top)
+        if trace is not None:
+            trace["composition_engine"] = {"layouts": sorted({r.multi_name["layout"] for r in recipes}),
+                                           "fonts": sorted({r.font_id for r in recipes}), "variants": len(recipes)}
+        return all_candidates, top
+
     recipes = expand_recipes(min_internal)
     if hints:
         from .archetype_library import retrieve_archetypes

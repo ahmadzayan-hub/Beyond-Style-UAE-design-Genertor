@@ -168,6 +168,10 @@ class RecipeParams(BaseModel):
     #: None ring is omitted from candidate identity so pre-ring designs keep
     #: their hashes.
     ring: Optional[dict] = None
+    #: Vector Composition Engine spec for multi-name pieces
+    #: ({"layout", "variant", "envelope_mm"}). None = single-text
+    #: construction; like `ring`, omitted from candidate identity when None.
+    multi_name: Optional[dict] = None
     max_lines: int = 1  # 1 = single line; >1 = stacked multi-line
     line_spacing_ratio: float = 0.22
     # Curated archetype metadata (Design DNA, products, text-length fit,

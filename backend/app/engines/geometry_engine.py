@@ -522,6 +522,32 @@ def attachment_ring_centers(geom, loops: str, r_out: float, wall: float) -> list
     return [(lx - r_out + overlap, ly), (rx + r_out - overlap, ry)]
 
 
+def heal_pinches(geom, half_stroke: float, protect=None, max_piece_area: float = 0.06):
+    """Heal pinch points: specks that survive erosion by `half_stroke` as
+    separate tiny pieces are joined by a local closing (a solder fillet at
+    that spot only). `protect` (e.g. chain holes) is never filled. Letters
+    elsewhere are untouched."""
+    geom = _as_multipolygon(geom)
+    eroded = geom.buffer(-half_stroke, quad_segs=QUAD_SEGS)
+    pieces = [g for g in getattr(eroded, "geoms", [eroded]) if not g.is_empty]
+    if len(pieces) <= 1:
+        return geom
+    main_area = max(p.area for p in pieces)
+    additions = []
+    for p in pieces:
+        if p.area >= main_area or p.area > max_piece_area:
+            continue
+        zone = p.buffer(half_stroke + 0.9, quad_segs=QUAD_SEGS)
+        local = geom.intersection(zone)
+        closed = local.buffer(0.6, quad_segs=QUAD_SEGS).buffer(-0.6, quad_segs=QUAD_SEGS).intersection(zone)
+        if protect is not None:
+            closed = closed.difference(protect)
+        additions.append(closed)
+    if not additions:
+        return geom
+    return _as_multipolygon(unary_union([geom] + additions))
+
+
 def _junction_fillet(a, b, reach: float = JUNCTION_FILLET_MM):
     """Solid fillet where two parts meet or nearly meet: the region within
     `reach` of both. Turns a kiss between a letter and a frame wall into a
