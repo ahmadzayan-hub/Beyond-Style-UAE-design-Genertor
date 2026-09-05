@@ -311,7 +311,11 @@ def test_live_gpt_image2_acceptance_letter_ain_earring(clean_tables, db_session)
     # Deterministic canonical geometry hash exists regardless of AI status.
     assert version.geometry_hash
     with pytest.raises(ValueError):
-        svc.export_version(db_session, version.id, fmt="png")  # never exportable as a manufacturing file
+        svc.export_version(db_session, version.id, fmt="ai_preview")  # the AI image is never an export
+    from app.exporters.dxf_exporter import ProductionExportBlocked
+
+    with pytest.raises(ProductionExportBlocked):
+        svc.export_version(db_session, version.id, fmt="png")  # geometry raster, still lock-gated
     assert status in ("SKIPPED_EXTERNAL_MODEL", "OK")
 
 

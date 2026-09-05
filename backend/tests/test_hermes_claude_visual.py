@@ -297,13 +297,18 @@ def test_ai_raster_can_never_be_exported(clean_tables, db_session, monkeypatch):
     svc.approve_version(db_session, v1.id, v1.immutable_source_text,
                         v1.source_text_sha256, v1.geometry_hash, "customer")
     db_session.commit()
-    for fmt in ("png", "ai_preview", "jpeg"):
+    for fmt in ("ai_preview", "jpeg"):
         with pytest.raises(ValueError):
             svc.export_version(db_session, v1.id, fmt)
     # The legitimate DXF export never contains the AI raster.
     dxf, record = svc.export_version(db_session, v1.id, "dxf")
     assert record.content_sha256 != rec.content_sha256
     assert "LWPOLYLINE" in dxf
+    # A PNG export exists, but it is a raster OF THE MASTER VECTOR (kind
+    # "preview", raster fidelity against the geometry) — never the AI image.
+    png, prec = svc.export_version(db_session, v1.id, "png")
+    assert prec.kind == "preview" and prec.content_sha256 != rec.content_sha256
+    assert prec.fidelity["status"] == "PASS" and "not manufacturing truth" in prec.fidelity["note"]
 
 
 def test_preview_endpoint_unavailable_keeps_deterministic_path(client, monkeypatch):
