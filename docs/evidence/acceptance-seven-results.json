@@ -1,0 +1,59 @@
+{
+  "flow": {
+    "text": "حامد محمد سلطان ميثه حمد خالد مهرة",
+    "integrity_label": "سلامة النص: ناجحة",
+    "proof_cards": [
+      "1. family tree · katibeh\n\nقابل للتصنيع ✓\n\nاختر هذا",
+      "2. arch · scheherazade-new\n\nقابل للتصنيع ✓\n\nاختر هذا",
+      "3. horizontal flow · amiri-regular\n\nقابل للتصنيع ✓\n\nاختر هذا",
+      "4. circular · amiri-regular\n\nقابل للتصنيع ✓\n\nاختر هذا",
+      "5. circular · katibeh\n\nقابل للتصنيع ✓\n\nاختر هذا",
+      "6. horizontal flow · katibeh\n\nقابل للتصنيع ✓\n\nاختر هذا",
+      "7. oval · scheherazade-new\n\nقابل للتصنيع ✓\n\nاختر هذا",
+      "8. interwoven stack · scheherazade-new\n\nقابل للتصنيع ✓\n\nاختر هذا",
+      "9. oval · katibeh\n\nقابل للتصنيع ✓\n\nاختر هذا",
+      "10. arch · amiri-regular\n\nقابل للتصنيع ✓\n\nاختر هذا"
+    ],
+    "jewelry_qa_label": "فحص المجوهرات: ناجح",
+    "weight": "3.58 g",
+    "vector_edit_version": 2,
+    "locked_version": "2",
+    "approval_hash": "9aab48398ddcda9fe89b7ee61f973fec740c7a917e7933cb5af953dd7a9915fd",
+    "readiness_state": "جاهز للورشة",
+    "events": [
+      "REQUEST_CREATED",
+      "BRIEF_UPDATED",
+      "TEXT_CONFIRMED",
+      "CANDIDATES_GENERATED",
+      "VERSION_CREATED",
+      "VALIDATION_PASSED",
+      "DESIGN_SELECTED",
+      "VERSION_CREATED",
+      "VALIDATION_PASSED",
+      "DESIGN_EDITED",
+      "CUSTOMER_APPROVED",
+      "VERSION_LOCKED",
+      "PRODUCTION_EXPORT_CREATED",
+      "PRODUCTION_EXPORT_CREATED",
+      "PRODUCTION_EXPORT_CREATED"
+    ]
+  },
+  "viewports": {
+    "360": {
+      "start_no_overflow": true,
+      "styles_no_overflow": true
+    },
+    "390": {
+      "start_no_overflow": true,
+      "styles_no_overflow": true
+    },
+    "768": {
+      "start_no_overflow": true,
+      "styles_no_overflow": true
+    },
+    "1280": {
+      "start_no_overflow": true,
+      "styles_no_overflow": true
+    }
+  }
+}

@@ -86,7 +86,8 @@ def run(page) -> dict:
 
     # ---- 10 compositions
     expect(page.get_by_test_id("proof-card")).to_have_count(10, timeout=GEN_TIMEOUT)
-    page.wait_for_selector('[data-testid="proof-card"] svg', timeout=60000)
+    # Previews load progressively; the evidence sheet must show all ten vectors.
+    expect(page.locator('[data-testid="proof-card"] svg')).to_have_count(10, timeout=120000)
     cards = page.get_by_test_id("proof-card").all_inner_texts()
     out["proof_cards"] = cards
     assert len(set(cards)) >= 8, "top-10 cards should read as different compositions"
