@@ -41,7 +41,12 @@ for text, slug in CASES.items():
     )
     entry = {
         "top_count": len(top),
-        "composition_families": sorted({c.recipe.composition for c in top}),
+        # Multi-name pieces (ADR-0006) carry their family in the layout —
+        # every composition-engine candidate shares the "multi_name" class.
+        "composition_families": sorted({
+            (f"multi_name:{c.recipe.multi_name['layout']}" if c.recipe.multi_name else c.recipe.composition)
+            for c in top
+        }),
         "dna_families": sorted({c.recipe.dna["family"] for c in top if c.recipe.dna}),
         "stylistic_families": stylistic,
         "fonts": sorted({c.recipe.font_id for c in top}),
