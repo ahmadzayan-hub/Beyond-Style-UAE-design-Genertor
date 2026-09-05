@@ -43,59 +43,15 @@ CAPABILITIES = {
 
 
 def inspect_binary(path: Path) -> dict:
-    from fontTools.ttLib import TTFont
+    from app.fonts.onboarding import inspect_binary as _inspect
 
-    tt = TTFont(str(path))
-    cmap = tt.getBestCmap() or {}
-    arabic_cps = [cp for cp in cmap if 0x0600 <= cp <= 0x06FF or 0xFB50 <= cp <= 0xFEFF]
-    missing_letters = [ch for ch in ARABIC_LETTERS if ord(ch) not in cmap]
-    features: set[str] = set()
-    if "GSUB" in tt:
-        for rec in tt["GSUB"].table.FeatureList.FeatureRecord:
-            features.add(rec.FeatureTag)
-    marks = "GPOS" in tt and any(
-        rec.FeatureTag in ("mark", "mkmk") for rec in tt["GPOS"].table.FeatureList.FeatureRecord
-    )
-    name = tt["name"]
-    version = name.getDebugName(5) or ""
-    return {
-        "family_name_in_file": name.getDebugName(1) or "",
-        "version": version,
-        "upem": tt["head"].unitsPerEm,
-        "glyph_count": len(tt.getGlyphOrder()),
-        "arabic_codepoints": len(arabic_cps),
-        "missing_arabic_letters": missing_letters,
-        "gsub_features": sorted(features),
-        "contextual_forms": all(f in features for f in REQUIRED_FEATURES),
-        "mark_positioning": bool(marks),
-        "latin_basic": all(ord(c) in cmap for c in "ABCabc"),
-    }
+    return _inspect(path.read_bytes())
 
 
 def shape_check(path: Path) -> dict:
-    """Shape the golden names straight from the binary: no .notdef, every
-    source character reaches a cluster."""
-    import uharfbuzz as hb
+    from app.fonts.onboarding import shape_check as _shape
 
-    blob = hb.Blob.from_file_path(str(path))
-    face = hb.Face(blob)
-    font = hb.Font(face)
-    results = []
-    for name in GOLDEN_NAMES:
-        buf = hb.Buffer()
-        buf.add_str(name)
-        buf.guess_segment_properties()
-        hb.shape(font, buf)
-        gids = [i.codepoint for i in buf.glyph_infos]
-        clusters = {i.cluster for i in buf.glyph_infos}
-        results.append({
-            "name": name,
-            "glyphs": len(gids),
-            "notdef": sum(1 for g in gids if g == 0),
-            "clusters_covered": len(clusters) >= 1 and max(clusters) < len(name),
-        })
-    ok = all(r["notdef"] == 0 and r["glyphs"] > 0 for r in results)
-    return {"ok": ok, "names": results}
+    return _shape(path.read_bytes())
 
 
 def build_entry(args, path: Path, report: dict, registry: dict) -> dict:

@@ -59,6 +59,9 @@ class FontRecord(BaseModel):
     #: vendoring a font never renumbers the existing ones and re-ranks
     #: previously generated designs.
     diversity_index: int = 0
+    #: Uploaded (licensed) fonts: declared web-use permission and owner.
+    web_use_permitted: bool = False
+    owner: str = ""
 
     @property
     def path(self) -> Path:
@@ -89,23 +92,34 @@ class FontRecord(BaseModel):
 
 
 class FontRegistry:
-    def __init__(self, registry_file: Path = REGISTRY_FILE, assets_dir: Path | None = None):
+    def __init__(self, registry_file: Path = REGISTRY_FILE, assets_dir: Path | None = None,
+                 overlay_file: Path | None = None):
         data = json.loads(registry_file.read_text(encoding="utf-8"))
         self._fonts: dict[str, FontRecord] = {}
         assets = assets_dir or ASSETS_DIR
         for entry in data["fonts"]:
-            record = FontRecord(**entry)
-            if assets_dir is not None:
-                object.__setattr__(record, "_assets_dir", assets_dir)
-            if not record.path.is_file():
-                raise FileNotFoundError(
-                    f"Registered font binary missing: {record.path}"
-                )
-            if not (assets / record.license_file).is_file():
-                raise FileNotFoundError(
-                    f"License file missing for {record.font_id}: {record.license_file}"
-                )
-            self._fonts[record.font_id] = record
+            self._add(entry, assets, assets_dir)
+        # Uploaded licensed fonts (private storage, never served by URL).
+        if overlay_file is None:
+            from .onboarding import overlay_file as _ov, private_fonts_dir
+
+            overlay_file = _ov()
+            private_dir = private_fonts_dir()
+        else:
+            private_dir = overlay_file.parent
+        if overlay_file.is_file():
+            for entry in json.loads(overlay_file.read_text(encoding="utf-8")).get("fonts", []):
+                self._add(entry, private_dir, private_dir)
+
+    def _add(self, entry: dict, assets: Path, assets_dir: Path | None) -> None:
+        record = FontRecord(**entry)
+        if assets_dir is not None:
+            object.__setattr__(record, "_assets_dir", assets_dir)
+        if not record.path.is_file():
+            raise FileNotFoundError(f"Registered font binary missing: {record.path}")
+        if not (assets / record.license_file).is_file():
+            raise FileNotFoundError(f"License file missing for {record.font_id}: {record.license_file}")
+        self._fonts[record.font_id] = record
 
     def get(self, font_id: str) -> FontRecord:
         if font_id not in self._fonts:

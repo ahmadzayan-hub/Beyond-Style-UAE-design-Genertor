@@ -9,7 +9,7 @@ from __future__ import annotations
 import os
 import secrets
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import Form, UploadFile, APIRouter, Depends, HTTPException, Request
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -461,3 +461,60 @@ def review_agreement(item_id: str, session: Session = Depends(get_session)):
     from ..services.curation_analysis import agreement_report
 
     return agreement_report(session, item_id)
+
+
+# ------------------------------------------------------------ font upload
+
+@router.post("/fonts", dependencies=[Depends(require_admin)], status_code=201)
+async def upload_font(
+    file: UploadFile,
+    font_id: str = Form(...),
+    family: str = Form(...),
+    license_name: str = Form(...),
+    license_text: str = Form(...),
+    source_url: str = Form(""),
+    rights: str = Form("COMMERCIAL_LICENSED"),
+    script_family: str = Form(...),
+    capability: str = Form(...),
+    style_influence: str | None = Form(None),
+    tags: str = Form(""),
+    owner: str = Form(""),
+    web_use: bool = Form(False),
+    redistribution: bool = Form(False),
+    dry_run: bool = Form(False),
+):
+    """Licensed font upload (TTF/OTF/WOFF/WOFF2). Inspects metadata, shapes
+    the golden names, records the declared license as evidence, stores the
+    binary in private storage and activates the capability immediately.
+    `dry_run=true` returns the inspection report without registering."""
+    import re
+
+    from ..fonts.onboarding import evaluate, register_upload
+
+    if not re.fullmatch(r"[a-z0-9][a-z0-9-]{1,48}", font_id):
+        raise HTTPException(422, "font_id must be lowercase letters, digits and hyphens.")
+    data = await file.read()
+    if len(data) > 12 * 1024 * 1024:
+        raise HTTPException(413, "Font file larger than 12 MB.")
+    suffix = "." + (file.filename or "").rsplit(".", 1)[-1].lower()
+    try:
+        if dry_run:
+            from fastapi.responses import JSONResponse
+
+            ev = evaluate(data, suffix)
+            return JSONResponse(status_code=200, content={
+                "dry_run": True, "usable": ev["usable"], "problems": ev["problems"],
+                "binary": ev["binary"], "shaping": ev["shaping"], "sha256": ev["sha256"]})
+        result = register_upload(
+            data, suffix, font_id=font_id, family=family, license_name=license_name, license_text=license_text,
+            source_url=source_url, rights=rights, script_family=script_family, capability=capability,
+            style_influence=style_influence or None, tags=[t for t in tags.split(",") if t], owner=owner,
+            web_use=web_use, redistribution=redistribution,
+        )
+    except ValueError as exc:
+        raise HTTPException(422, str(exc))
+    from ..fonts.capabilities import production_capability_map
+
+    return {"registered": True, "font_id": font_id, "production_capability": capability,
+            "production_use": rights in ("VERIFIED_OPEN_SOURCE", "COMMERCIAL_LICENSED", "CUSTOMER_OWNED"),
+            "capability_map": production_capability_map(), "binary": result["binary"], "shaping": result["shaping"]}
