@@ -57,7 +57,7 @@ def _dim_h(x1: float, x2: float, y: float, label: str) -> str:
         f'    <line x1="{x2}" y1="{y - 2}" x2="{x2}" y2="{y + 1}"/>\n'
         f"  </g>\n"
         f'  <text x="{mid}" y="{y + _DIM_TEXT + 0.8}" font-size="{_DIM_TEXT}" text-anchor="middle" '
-        f'font-family="{_FONT_STACK}" fill="#5a4620">{label}</text>\n'
+        f'font-family="{_FONT_STACK}" fill="#5a4620" direction="ltr" unicode-bidi="embed">{label}</text>\n'
     )
 
 
@@ -71,7 +71,7 @@ def _dim_v(x: float, y1: float, y2: float, label: str) -> str:
         f'    <line x1="{x - 1}" y1="{y2}" x2="{x + 2}" y2="{y2}"/>\n'
         f"  </g>\n"
         f'  <text x="{x + _DIM_TEXT + 0.5}" y="{mid}" font-size="{_DIM_TEXT}" text-anchor="middle" '
-        f'font-family="{_FONT_STACK}" fill="#5a4620" '
+        f'font-family="{_FONT_STACK}" fill="#5a4620" direction="ltr" unicode-bidi="embed" '
         f'transform="rotate(90 {x + _DIM_TEXT + 0.5} {mid})">{label}</text>\n'
     )
 
@@ -122,8 +122,8 @@ def export_agreement_proof_svg(
         band_local = affinity.translate(geom, xoff=-minx + ox, yoff=-miny + iy_top)
         inner_local = affinity.translate(inner_geom, xoff=-minx + ox, yoff=-miny + iy_top)
         inner_block = (
-            f'  <text x="{ox}" y="{iy_top - 1.2}" font-size="3.0" '
-            f'font-family="{_FONT_STACK}" fill="#5a4620" direction="rtl">'
+            f'  <text x="{ox + w}" y="{iy_top - 1.2}" font-size="3.0" text-anchor="start" '
+            f'font-family="{_FONT_STACK}" fill="#5a4620" direction="rtl" unicode-bidi="embed">'
             "الوجه الداخلي (نقش من الخلف)</text>\n"
             f'  <path d="{geometry_to_path_d(band_local, flip_y=2 * iy_top + h)}" '
             f'fill="#1a1a1a" fill-rule="evenodd" stroke="none"/>\n'
@@ -143,7 +143,7 @@ def export_agreement_proof_svg(
         rows.insert(2, ("الخامة", material_label))
 
     info_top = dim_y + _DIM_TEXT + 4.0 + inner_extra_h
-    info_h = _INFO_PAD * 2 + _INFO_ROW * len(rows) + 6.0
+    info_h = _INFO_PAD * 2 + _INFO_ROW * len(rows) + 9.6
     total_w = round(max(dim_x + _DIM_TEXT + 6.0, 78.0), PRECISION)
     total_h = round(info_top + info_h + _MARGIN, PRECISION)
 
@@ -151,15 +151,22 @@ def export_agreement_proof_svg(
     for i, (k, v) in enumerate(rows):
         ry = info_top + _INFO_PAD + _INFO_ROW * (i + 1) - 1.5
         info_rows += (
-            f'  <text x="{total_w - _INFO_PAD - 1}" y="{ry}" font-size="3.4" text-anchor="end" '
-            f'font-family="{_FONT_STACK}" fill="#3d3325" direction="rtl">'
+            # RTL rows are anchored at their START (the right edge) and flow
+            # leftwards; with direction="rtl", text-anchor="end" would put the
+            # row's left end at the right margin and run it off the sheet.
+            f'  <text x="{total_w - _INFO_PAD - 1}" y="{ry}" font-size="3.4" text-anchor="start" '
+            f'font-family="{_FONT_STACK}" fill="#3d3325" direction="rtl" unicode-bidi="embed">'
             f'<tspan font-weight="bold">{escape(k)}: </tspan>{escape(v)}</text>\n'
         )
     footer_y = info_top + _INFO_PAD + _INFO_ROW * len(rows) + 3.5
+    # Two centred lines: one line is wider than the 78 mm minimum sheet.
     footer = (
         f'  <text x="{total_w / 2}" y="{footer_y}" font-size="2.8" text-anchor="middle" '
-        f'font-family="{_FONT_STACK}" fill="#8a6d3b" direction="rtl">'
-        "رسم مرجعي بالأبعاد الحقيقية بالمليمتر — يُعتمد هذا التصميم قبل التصنيع</text>\n"
+        f'font-family="{_FONT_STACK}" fill="#8a6d3b" direction="rtl" unicode-bidi="embed">'
+        "رسم مرجعي بالأبعاد الحقيقية بالمليمتر</text>\n"
+        f'  <text x="{total_w / 2}" y="{footer_y + 3.6}" font-size="2.8" text-anchor="middle" '
+        f'font-family="{_FONT_STACK}" fill="#8a6d3b" direction="rtl" unicode-bidi="embed">'
+        "يُعتمد هذا التصميم قبل التصنيع</text>\n"
     )
 
     meta = {
