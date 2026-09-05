@@ -61,7 +61,7 @@ map, one repair service). Full readiness table with percentages and Critical/Hig
   on-body preview modes, Thuluth/Diwani true sources, gap-widening auto-repair,
   workshop calibration values. Production Monitor is red on every push because the deployment is
   unreachable — an operations task.
-- **Tests**: local full suite on `8c4bf41` — 511 passed, 0 failed, exit 0 (~35 min, 4 cores); slice tests: text_integrity 7, source_registry, font_onboarding 5, font_upload 3, composition_engine 4, manufacturing_gate 4, vector_edit 8, variants/long-text 3; acceptance E2E PASSED (localhost). CI runs 59–62 green on all four jobs (backend suite, evidence, frontend build, browser E2E incl. the approval link); runs 53–58 failed only on tests/evidence checks fixed in `8c4bf41` / `5686ce3`.
+- **Tests**: local full suite on `8c4bf41` — 511 passed, 0 failed, exit 0 (~35 min, 4 cores); on `9fd2379` 515 collected, 513 passed + the 2 png-contract tests updated in `3c513de` and passing (effective 515/515); slice tests: text_integrity 7, source_registry, font_onboarding 5, font_upload 3, composition_engine 4, manufacturing_gate 4, vector_edit 8, variants/long-text 3; acceptance E2E PASSED (localhost). CI runs 59–62 green on all four jobs (backend suite, evidence, frontend build, browser E2E incl. the approval link); runs 53–58 failed only on tests/evidence checks fixed in `8c4bf41` / `5686ce3`.
 
 ## Workshop OS + calibration kit (2026-09-02, assessment risks #3 and #7)
 **Workshop OS** (`services/workshop_service.py`, `api/workshop.py`, table `workshop_orders`,
