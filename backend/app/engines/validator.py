@@ -151,8 +151,9 @@ def validate(
             )
 
     # Weak bridges: erosion splits a connected part into multiple pieces.
+    # A single-part design was already eroded above — reuse that result.
     for p in parts:
-        local = _erosion_survivors(MultiPolygon([p]), half_stroke)
+        local = survivors if len(parts) == 1 else _erosion_survivors(MultiPolygon([p]), half_stroke)
         if len(local) > 1:
             violations.append(
                 Violation(

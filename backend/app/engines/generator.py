@@ -372,6 +372,43 @@ def diversity_score(selected: list[DesignCandidate]) -> float:
     return round(dmin, 4)
 
 
+def _build_workers() -> int:
+    """Composition builds are CPU-bound and independent per recipe. Use a
+    small fork pool (BS_BUILD_WORKERS, default min(4, cpus)); 1 = inline."""
+    import os
+
+    raw = os.environ.get("BS_BUILD_WORKERS")
+    if raw:
+        try:
+            return max(1, int(raw))
+        except ValueError:
+            return 1
+    return max(1, min(4, os.cpu_count() or 1))
+
+
+def _build_one(args):
+    design_id, source, recipe, rules = args
+    return build_candidate(design_id, source, recipe, rules)
+
+
+def _build_many(design_id: str, source: ImmutableSourceText, recipes, rules: WorkshopRules) -> list[DesignCandidate]:
+    """Deterministic, order-preserving parallel build. Falls back to the
+    inline loop when a pool cannot be created (restricted sandboxes) so the
+    result never depends on the executor."""
+    workers = _build_workers()
+    if workers <= 1 or len(recipes) < 4:
+        return [build_candidate(design_id, source, r, rules) for r in recipes]
+    try:
+        import multiprocessing as mp
+        from concurrent.futures import ProcessPoolExecutor
+
+        ctx = mp.get_context("fork")
+        with ProcessPoolExecutor(max_workers=min(workers, len(recipes)), mp_context=ctx) as pool:
+            return list(pool.map(_build_one, [(design_id, source, r, rules) for r in recipes]))
+    except Exception:  # noqa: BLE001 — any executor failure → identical inline result
+        return [build_candidate(design_id, source, r, rules) for r in recipes]
+
+
 def generate_candidates(
     design_id: str,
     source: ImmutableSourceText,
@@ -391,12 +428,19 @@ def generate_candidates(
     provenance for the audit event."""
     from .composition_engine import is_multi_name, multi_name_recipes
 
-    if is_multi_name(source.normalized_text):
-        # Multi-name pieces never fall back to ordinary stacked text: the
-        # Vector Composition Engine builds 6–12 variants per face from the
-        # same validated glyph vectors.
+    if is_multi_name(source.normalized_text, hints):
+        # Name lists go to the Vector Composition Engine (6–12 variants per
+        # face from the same validated glyph vectors). Only when it cannot
+        # supply `top_n` valid pieces is the pool topped up with the ordinary
+        # stacked recipes, so the customer still sees ten valid options.
         recipes = multi_name_recipes(hints)
-        all_candidates = [build_candidate(design_id, source, r, rules) for r in recipes]
+        all_candidates = _build_many(design_id, source, recipes, rules)
+        valid_n = sum(1 for c in all_candidates if c.validation and c.validation.passed)
+        if valid_n < top_n:
+            stacked = _build_many(design_id, source, expand_recipes(min_internal), rules)
+            all_candidates = all_candidates + stacked
+            if trace is not None:
+                trace["composition_topup"] = {"composition_valid": valid_n, "stacked_added": len(stacked)}
         from .ranking import DEFAULT_RANKING
 
         _apply_ranking(all_candidates, DEFAULT_RANKING)

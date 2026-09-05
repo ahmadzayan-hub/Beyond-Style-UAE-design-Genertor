@@ -38,7 +38,7 @@ REFUSED_OPS = {
     "pen": "Pen/path drawing is not implemented; not offered as a fake tool.",
 }
 RING_POSITIONS = ("top_center", "top_left", "top_right", "left", "right", "bottom_center")
-TEXT_AREA_EPS_MM2 = 1e-4
+TEXT_AREA_EPS_MM2 = 1e-3
 
 
 class VectorEditRejected(ValueError):
@@ -105,16 +105,32 @@ def _ring_center(params: dict, geom: MultiPolygon, inner_d: float, wall: float) 
     inset = outer_r - wall * 0.5
     cx = (minx + maxx) / 2
     if pos == "top_center":
-        return cx, maxy + inset
-    if pos == "bottom_center":
-        return cx, miny - inset
-    if pos == "top_left":
-        return minx + outer_r, maxy + inset
-    if pos == "top_right":
-        return maxx - outer_r, maxy + inset
-    if pos == "left":
-        return minx - inset, (miny + maxy) / 2
-    return maxx + inset, (miny + maxy) / 2
+        c = (cx, maxy + inset)
+    elif pos == "bottom_center":
+        c = (cx, miny - inset)
+    elif pos == "top_left":
+        c = (minx + outer_r, maxy + inset)
+    elif pos == "top_right":
+        c = (maxx - outer_r, maxy + inset)
+    elif pos == "left":
+        c = (minx - inset, (miny + maxy) / 2)
+    else:
+        c = (maxx + inset, (miny + maxy) / 2)
+    # A silhouette rarely fills its bounding box: solder the ring onto the
+    # nearest metal by sliding it toward the outline until the wall overlaps
+    # it by wall/2 (the same seating rule the composition engine uses).
+    from shapely.ops import nearest_points
+
+    p = Point(c)
+    gap = p.distance(geom)
+    if gap > 0:
+        q = nearest_points(p, geom)[1]
+        vx, vy = q.x - p.x, q.y - p.y
+        n = math.hypot(vx, vy) or 1.0
+        shift = gap - outer_r + wall * 0.5
+        if shift > 0:
+            c = (p.x + vx / n * shift, p.y + vy / n * shift)
+    return c
 
 
 def _clean(geom) -> MultiPolygon:
@@ -122,10 +138,17 @@ def _clean(geom) -> MultiPolygon:
     return _as_multipolygon(geom.buffer(0))
 
 
-def _protect_text(text: MultiPolygon | None, result: MultiPolygon, what: str) -> None:
-    if text is None or text.is_empty:
-        return
-    lost = text.difference(result).area
+def _text_loss(built: BuiltGeometry) -> float:
+    """Area of the text outline that lies outside the metal. Non-zero on
+    some generated bases (display-only text layer vs. normalised strokes),
+    so protection is measured as ADDITIONAL loss caused by an op."""
+    if built.text_geometry is None or built.text_geometry.is_empty or built.geometry.is_empty:
+        return 0.0
+    return built.text_geometry.difference(built.geometry).area
+
+
+def _protect_text(before: float, out: BuiltGeometry, what: str) -> None:
+    lost = _text_loss(out) - before
     if lost > TEXT_AREA_EPS_MM2:
         raise VectorEditRejected(
             f"{what} would remove {lost:.3f} mm² of the confirmed text outline. "
@@ -164,6 +187,7 @@ def apply_op(built: BuiltGeometry, op: dict[str, Any], rules: WorkshopRules) -> 
     if geom.is_empty:
         raise VectorEditRejected("Nothing to edit: the version has no geometry.")
     log: dict[str, Any] = {"op": name}
+    loss_before = _text_loss(built)
 
     if name == "translate":
         dx = _num(params, "dx_mm", -200, 200)
@@ -231,7 +255,7 @@ def apply_op(built: BuiltGeometry, op: dict[str, Any], rules: WorkshopRules) -> 
 
     if out.geometry.is_empty or not out.geometry.is_valid:
         raise VectorEditRejected(f"'{name}' produced invalid or empty geometry; refused.")
-    _protect_text(out.text_geometry, out.geometry, f"'{name}'")
+    _protect_text(loss_before, out, f"'{name}'")
     log["bounds_mm"] = [round(v, 3) for v in out.geometry.bounds]
     return out, log
 

@@ -189,9 +189,27 @@ def test_long_text_yields_10_valid_stacked_options(text):
     for c in top:
         assert c.validation.passed and c.identity_proof.verified
         assert c.features.width_mm <= DEFAULT_RULES.max_width_mm
-    # Stacked options dominate and are genuinely multi-line.
-    assert sum(1 for c in top if c.recipe.max_lines > 1) >= 6
-    assert len({c.recipe.composition for c in top}) >= 3
+    if text is PHRASE:
+        # A sentence keeps the stacked multi-line path: options dominate
+        # and are genuinely multi-line.
+        assert sum(1 for c in top if c.recipe.max_lines > 1) >= 6
+        assert len({c.recipe.composition for c in top}) >= 3
+    else:
+        # A list of names goes to the Vector Composition Engine (ADR-0006):
+        # welded multi-name compositions across several layouts.
+        multi = [c for c in top if c.recipe.composition == "multi_name"]
+        assert len(multi) >= 6
+        assert len({c.recipe.multi_name["layout"] for c in multi}) >= 3
+
+
+def test_phrase_versus_names_detection():
+    from app.engines.composition_engine import is_multi_name
+
+    assert is_multi_name(LONG_NAMES)
+    assert not is_multi_name(PHRASE)                      # حتى / هي mark a sentence
+    assert is_multi_name("سلام\nنور", None)                # newline-separated names
+    assert is_multi_name(PHRASE, {"text_kind": "names"})  # explicit brief hint wins
+    assert not is_multi_name(LONG_NAMES, {"text_kind": "phrase"})
 
 
 def test_variant_axes_visible_in_top10():

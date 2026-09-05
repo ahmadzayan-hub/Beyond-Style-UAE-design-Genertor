@@ -150,7 +150,7 @@ def test_vector_edit_versions_replays_and_protects(clean_tables, db_session):
         assert v4["edit_metadata"]["vector_ops_dropped"] == 1 and v4["immutable_source_text"] == "مهرة"
         # events carry the vector edit
         ev = c.get(f"/api/designs/{did}/events", headers=h).json()
-        kinds = [x for x in ev["events"] if x["event_type"] == "DESIGN_EDITED"]
+        kinds = [x for x in ev if x["event_type"] == "DESIGN_EDITED"]
         assert any((x.get("metadata") or {}).get("kind") == "vector" for x in kinds)
 
 
