@@ -5,6 +5,7 @@ from __future__ import annotations
 from fastapi.testclient import TestClient
 from shapely import affinity, wkt
 
+from app.db import models as m
 from app.exporters import fidelity as fid
 from app.exporters.dxf_exporter import export_dxf
 from app.exporters.pdf_exporter import export_pdf
@@ -105,3 +106,35 @@ def test_gate_endpoints(clean_tables, db_session):
         assert {e["format"] for e in ex} == {"svg", "dxf", "pdf"} and all(e["fidelity"]["status"] == "PASS" for e in ex)
         ready = c.get(f"/api/versions/{vid}/readiness", headers=h).json()
         assert ready["current_state"] == "WORKSHOP_READY"
+
+
+def test_png_preview_raster_export_passes_raster_fidelity(clean_tables, db_session):
+    """PNG = raster of the master at a declared scale (never manufacturing
+    truth): extent within a pixel, ink area within 1.5 %, hash chunk bound."""
+    from app.exporters.png_exporter import compare_raster, export_png, reimport_png
+    from shapely import wkt as shapely_wkt
+
+    with TestClient(app) as c:
+        created = c.post("/api/designs", json={"text": TEXT, "product_type": "pendant"}).json()
+        h = {"X-Session-Token": created["session_token"]}
+        did = created["design_id"]
+        c.post(f"/api/designs/{did}/confirm", json={"confirmed_text": TEXT}, headers=h)
+        gen = c.post(f"/api/designs/{did}/candidates", headers=h).json()
+        sel = c.post(f"/api/designs/{did}/select", json={"candidate_id": gen["top"][0]["candidate_id"]}, headers=h).json()
+        vid = sel["version_id"]
+        assert c.get(f"/api/versions/{vid}/export/png", headers=h).status_code == 423   # lock-gated like the vectors
+        c.post(f"/api/versions/{vid}/approve", json={"confirmed_text": TEXT, "source_text_sha256": sel["source_text_sha256"],
+                                                    "geometry_hash": sel["geometry_hash"], "approved_by": "customer"}, headers=h)
+        r = c.get(f"/api/versions/{vid}/export/png", headers=h)
+        assert r.status_code == 200 and r.headers["content-type"] == "image/png" and r.content[:8] == b"\x89PNG\r\n\x1a\n"
+        assert r.headers["X-Export-Fidelity"] == "PASS"
+        meta = reimport_png(r.content)
+        assert meta["present"] and meta["geometry_hash"] == sel["geometry_hash"] and meta["px_per_mm"] == 20
+        ex = [e for e in c.get(f"/api/versions/{vid}/exports", headers=h).json()["exports"] if e["format"] == "png"][0]
+        assert ex["fidelity"]["status"] == "PASS" and "not manufacturing truth" in ex["fidelity"]["note"]
+        # a tampered raster (hash chunk missing) fails the gate
+        v = c.get(f"/api/versions/{vid}", headers=h).json()
+        master = shapely_wkt.loads(db_session.get(m.DesignVersion, vid).geometry_wkt)
+        assert compare_raster(master, {"present": False}, v["geometry_hash"])["status"] == "FAIL"
+        # readiness still requires the vector exports, PNG alone is not WORKSHOP_READY
+        assert c.get(f"/api/versions/{vid}/readiness", headers=h).json()["current_state"] != "WORKSHOP_READY"

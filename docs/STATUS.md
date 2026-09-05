@@ -45,6 +45,11 @@ map, one repair service). Full readiness table with percentages and Critical/Hig
   (evidence `docs/evidence/acceptance-seven-*`, results JSON with the event trail); layout has no
   horizontal overflow at 360/390/768/1280. Local dev proxy needed `experimental.proxyTimeout`
   (`4b61409`) — production fetches the backend directly.
+- **PNG export** (`exporters/png_exporter.py`): VERIFIED — raster of the master vector at a declared
+  scale (20 px/mm, 4× supersampled, transparent, scale/version/hash in PNG text chunks, true-size dpi);
+  lock-gated like the vectors, recorded as `kind=preview`; raster fidelity = extent within a pixel +
+  coverage area within 1.5 % + hash chunk. Never manufacturing truth and never counts toward
+  WORKSHOP READY.
 - **Secure customer approval link** (`approval_links`, migration `d2e3f4a5b6c7`): VERIFIED — studio
   mints a single-use 72 h link bound to the version's geometry hash (`POST /api/versions/{id}/
   approval-link`); the customer opens `/approve/{token}` without a session, sees the exact text and
@@ -53,7 +58,7 @@ map, one repair service). Full readiness table with percentages and Critical/Hig
   revokes the older one, the ladder shows the channel. Tests `test_approval_link.py` 2/2; browser
   `e2e/approval_link_e2e.py` (in CI). Not done: OTP/identity check on the link holder.
 - **Not done (honest)**: node/pen editing, 10-step wizard (7 steps),
-  on-body preview modes, PNG export record, Thuluth/Diwani true sources, gap-widening auto-repair,
+  on-body preview modes, Thuluth/Diwani true sources, gap-widening auto-repair,
   workshop calibration values. Production Monitor is red on every push because the deployment is
   unreachable — an operations task.
 - **Tests**: local full suite on `8c4bf41` — 511 passed, 0 failed, exit 0 (~35 min, 4 cores); slice tests: text_integrity 7, source_registry, font_onboarding 5, font_upload 3, composition_engine 4, manufacturing_gate 4, vector_edit 8, variants/long-text 3; acceptance E2E PASSED (localhost). CI run 57 (`8c4bf41`) pending at the time of writing; runs 53–56 failed only on the three tests fixed in `8c4bf41`.

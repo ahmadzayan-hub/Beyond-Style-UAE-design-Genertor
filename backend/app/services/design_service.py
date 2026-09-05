@@ -981,7 +981,7 @@ def export_version(
 ) -> tuple[str, m.ExportRecord]:
     """Authorized production export. Requires APPROVED_LOCKED + hash
     re-verification + stored validation PASS + rights PASS."""
-    if fmt not in ("svg", "dxf", "pdf"):
+    if fmt not in ("svg", "dxf", "pdf", "png"):
         # Only deterministic vector formats are exportable. AI rasters
         # (ai_generations) are display artifacts and can never become a
         # manufacturing file — see ADR-0002.
@@ -1030,19 +1030,30 @@ def export_version(
     elif fmt == "dxf":
         content = export_dxf(candidate, source)
         reimported = fid.reimport_dxf(content)
-    else:
+    elif fmt == "pdf":
         content = export_pdf(candidate, source, version_id=str(version.id), geometry_hash=version.geometry_hash)
         reimported = fid.reimport_pdf(content)
+    else:
+        # PNG is a preview raster of the same master at a declared scale —
+        # shareable, printable at true size, never manufacturing truth.
+        from ..exporters.png_exporter import compare_raster, export_png, reimport_png
+
+        content = export_png(candidate, source, version_id=str(version.id), geometry_hash=version.geometry_hash)
+        reimported = None
     raw = content.encode("utf-8") if isinstance(content, str) else content
     content_sha = hashlib.sha256(raw).hexdigest()
     loops = (version.recipe or {}).get("loops", "none")
-    # Export Fidelity Gate: what was written must equal the master vector.
-    fidelity = fid.compare(master, reimported)
+    # Export Fidelity Gate: what was written must equal the master vector
+    # (vectors: re-import and compare; raster: extent + ink area + hash chunk).
+    if fmt == "png":
+        fidelity = compare_raster(master, reimport_png(raw), geometry_hash=version.geometry_hash)
+    else:
+        fidelity = fid.compare(master, reimported)
     features = ValidationReport(**version.validation)  # noqa: F841 (validated above)
     bounds = master.bounds
     record = m.ExportRecord(
         version_id=version.id,
-        kind="production",
+        kind="preview" if fmt == "png" else "production",
         format=fmt,
         content_sha256=content_sha,
         width_mm=round(bounds[2] - bounds[0], 3),

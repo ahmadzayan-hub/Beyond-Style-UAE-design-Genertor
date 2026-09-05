@@ -190,6 +190,7 @@ export const STRINGS = {
     link_invalid: "هذا الرابط غير صالح.",
     link_version: "النسخة",
     link_mismatch: "النص المكتوب لا يطابق النص المعتمد.",
+    download_png: "صورة PNG للمشاركة (معاينة بمقياس معلن — ليست ملف تصنيع)",
     support_detail: "رقم المرجع (للدعم الفني):",
   },
   en: {
@@ -381,6 +382,7 @@ export const STRINGS = {
     link_invalid: "This link is not valid.",
     link_version: "Version",
     link_mismatch: "The typed text does not match the approved text.",
+    download_png: "PNG for sharing (preview at a declared scale — not a manufacturing file)",
     support_detail: "Reference ID (for support):",
   },
 };

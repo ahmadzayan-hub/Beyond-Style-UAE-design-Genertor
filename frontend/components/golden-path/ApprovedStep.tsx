@@ -9,7 +9,7 @@ export interface ApprovedStepProps {
   t: Strings;
   selected: { svg?: string; version_number: number };
   approval: { approval_hash: string };
-  onDownload: (fmt: "svg" | "dxf" | "pdf") => void;
+  onDownload: (fmt: "svg" | "dxf" | "pdf" | "png") => void;
   lang: "ar" | "en";
   fidelity: Record<string, string>;
   ladder: Ladder | null;
@@ -69,6 +69,13 @@ export default function ApprovedStep({ t, selected, approval, onDownload, lang, 
         className="rounded-xl border border-brand-gold p-3 font-semibold text-brand-gold"
       >
         {t.download_pdf}
+      </button>
+      <button
+        data-testid="download-png"
+        onClick={() => onDownload("png")}
+        className="rounded-xl border border-brand-gold p-3 font-semibold text-brand-gold"
+      >
+        {t.download_png}
       </button>
       <button
         disabled

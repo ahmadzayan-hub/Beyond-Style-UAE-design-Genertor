@@ -406,7 +406,7 @@ def export(
             "export_id": str(record.id),
             "content_sha256": record.content_sha256,
         }
-    media = {"svg": "image/svg+xml", "dxf": "application/dxf", "pdf": "application/pdf"}[fmt]
+    media = {"svg": "image/svg+xml", "dxf": "application/dxf", "pdf": "application/pdf", "png": "image/png"}[fmt]
     return Response(
         content=content,
         media_type=media,

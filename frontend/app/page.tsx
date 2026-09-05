@@ -477,7 +477,7 @@ export default function GoldenPathPage() {
     }
   }
 
-  async function handleDownload(fmt: "svg" | "dxf" | "pdf") {
+  async function handleDownload(fmt: "svg" | "dxf" | "pdf" | "png") {
     if (!selected) return;
     try {
       const verdict = await api.downloadExport(selected.version_id, fmt);

@@ -289,7 +289,7 @@ export async function approveVersion(
   );
 }
 
-export type ExportFormat = "svg" | "dxf" | "pdf";
+export type ExportFormat = "svg" | "dxf" | "pdf" | "png";
 
 /** Workshop export. Resolves to the Export Fidelity Gate verdict the
  * backend computed by re-importing the file it just wrote. */
