@@ -5,39 +5,37 @@
   "internal": 24,
   "valid": 23,
   "top": 10,
-  "fonts_in_top": [
-   "amiri-regular",
-   "amoshref-thulth",
-   "katibeh"
-  ],
+  "top_by_font": {
+   "amoshref-thulth": 4,
+   "amiri-regular": 4,
+   "katibeh": 2
+  },
   "all_identity_verified": true
  },
  "thuluth-maitha": {
   "script_family": "thuluth",
   "text": "ميثه",
-  "internal": 58,
-  "valid": 46,
+  "internal": 114,
+  "valid": 84,
   "top": 10,
-  "fonts_in_top": [
-   "amiri-regular",
-   "amoshref-thulth",
-   "cairo",
-   "scheherazade-new"
-  ],
+  "top_by_font": {
+   "amoshref-thulth": 9,
+   "amiri-regular": 1
+  },
   "all_identity_verified": true
  },
  "ruqaa-noura": {
   "script_family": "ruqaa",
   "text": "نورة",
-  "internal": 63,
-  "valid": 56,
+  "internal": 279,
+  "valid": 225,
   "top": 10,
-  "fonts_in_top": [
-   "amiri-regular",
-   "aref-ruqaa",
-   "aref-ruqaa-ink-bold",
-   "cairo"
-  ],
+  "top_by_font": {
+   "aref-ruqaa-ink": 2,
+   "aref-ruqaa": 4,
+   "aref-ruqaa-ink-bold": 3,
+   "cairo": 1
+  },
   "all_identity_verified": true
  },
  "diwani-influenced-maitha": {
@@ -46,11 +44,23 @@
   "internal": 57,
   "valid": 50,
   "top": 10,
-  "fonts_in_top": [
-   "amiri-regular",
-   "cairo",
-   "lemonada"
-  ],
+  "top_by_font": {
+   "lemonada": 2,
+   "cairo": 2,
+   "amiri-regular": 6
+  },
+  "all_identity_verified": true
+ },
+ "thuluth-noura": {
+  "script_family": "thuluth",
+  "text": "نورة",
+  "internal": 114,
+  "valid": 72,
+  "top": 10,
+  "top_by_font": {
+   "amoshref-thulth": 9,
+   "amiri-regular": 1
+  },
   "all_identity_verified": true
  }
 }

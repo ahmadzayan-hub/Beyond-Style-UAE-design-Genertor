@@ -32,6 +32,17 @@ Al Majd* (1 & 2, 2015) carries no licence in its name table and the source page 
 held out of the registry (see `docs/FONT_LICENSING.md`). Customers get Diwani-inspired
 designs from the bridge fonts, clearly labelled.
 
+## The chosen calligraphy is what the customer sees
+
+When a style with a TRUE source is requested, the generator clones the whole archetype
+spread (plates, bars, frames, medallions, variants) onto that font and reserves 8 of the 10
+shown slots for it (valid + diverse); the remaining slots keep contrasting alternatives
+(`engines/generator.py::_select_with_script_priority`, `test_requested_true_script_dominates_the_shown_ten`).
+Measured on 2026-09-10: ميثه / نورة in Thuluth → 9 of 10 proofs in AMoshref Thulth (84 / 72
+valid of 114 internal); the seven-name pendant → 4 of 10 (the multi-name engine spreads over
+three faces); Ruqaa → 9 of 10 across the three Aref Ruqaa cuts. Inspired-only styles (Diwani)
+get no such dressing-up: the bridge fonts appear with their own names.
+
 ## Registry — OpenType sources (all vendored files carry their licence text)
 
 | font_id | Family | Script | Capability | Rights | Licence | Licence file | Arabic codepoints | Sweep score |

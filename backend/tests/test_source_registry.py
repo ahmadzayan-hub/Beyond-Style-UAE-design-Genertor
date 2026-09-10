@@ -70,3 +70,29 @@ def test_every_new_font_has_measured_recipes_and_joins_script_selection():
     fonts_for_naskh = {r["font_id"] for r in recipes_for_script("naskh")}
     assert {"lateef", "harmattan", "noto-naskh-arabic"} <= fonts_for_naskh
     assert {r["font_id"] for r in recipes_for_script("nastaliq")} >= {"gulzar", "mirza"}
+
+
+def test_requested_true_script_dominates_the_shown_ten():
+    """A customer who chooses Thuluth (TRUE source) sees Thuluth: the
+    archetype spread is cloned onto the true font and 8 of the 10 slots are
+    reserved for it (valid + diverse). Diwani (inspired-only) gets no such
+    dressing-up."""
+    from collections import Counter
+
+    from app.config import DEFAULT_RULES
+    from app.engines.generator import SCRIPT_PRIORITY_SLOTS, generate_candidates
+    from app.schemas.jewellery_design import ImmutableSourceText
+
+    src = ImmutableSourceText.create("ميثه", confirmed=True)
+    trace: dict = {}
+    all_c, top = generate_candidates("d-th", src, DEFAULT_RULES, hints={"script_family": "thuluth"}, trace=trace)
+    by_font = Counter(c.recipe.font_id for c in top)
+    assert len(top) == 10 and all(c.validation.passed and c.identity_proof.verified for c in top)
+    assert by_font["amoshref-thulth"] >= min(SCRIPT_PRIORITY_SLOTS, 6), by_font
+    assert len({c.recipe.composition for c in top if c.recipe.font_id == "amoshref-thulth"}) >= 3
+    assert trace["script_priority"]["fonts"] == ["amoshref-thulth"]
+    assert any(r.recipe.recipe_id.endswith("@amoshref-thulth") for r in all_c)
+
+    all_d, top_d = generate_candidates("d-dw", src, DEFAULT_RULES, hints={"script_family": "diwani"})
+    assert all(c.recipe.font_id != "amoshref-thulth" for c in top_d)
+    assert not any("@" in c.recipe.recipe_id for c in all_d)   # no cloning onto a bridge font

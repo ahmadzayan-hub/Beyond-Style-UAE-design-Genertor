@@ -466,7 +466,7 @@ def generate_candidates(
         recipes = recipes + extra
         if trace is not None:
             trace["retrieval"] = provenance
-        recipes = recipes + _script_recipes(hints, {r.recipe_id for r in recipes})
+        recipes = recipes + _script_recipes(hints, {r.recipe_id for r in recipes}, base_recipes=recipes)
     recipes = _adapt_for_text_length(recipes, source.normalized_text)
     all_candidates = [build_candidate(design_id, source, r, rules) for r in recipes]
     from .ranking import DEFAULT_RANKING, REFERENCE_RANKING
@@ -477,9 +477,48 @@ def generate_candidates(
     _apply_ranking(all_candidates, ranking_config)
     if hints:
         _apply_hint_bonus(all_candidates, hints)
-    top = select_diverse(all_candidates, top_n)
+    top = _select_with_script_priority(all_candidates, top_n, hints, trace)
     _attach_quality_reports(top)
     return all_candidates, top
+
+
+# Slots of the shown ten reserved for the customer's chosen script when a
+# TRUE (rights-cleared) source exists; the rest keeps contrast alternatives.
+SCRIPT_PRIORITY_SLOTS = 8
+
+
+def _true_script_fonts(hints: dict | None) -> list[str]:
+    family = (hints or {}).get("script_family")
+    if not family:
+        return []
+    from ..fonts.capabilities import resolve_script_request
+
+    res = resolve_script_request(family)
+    if res.get("outcome") != "AVAILABLE":
+        return []
+    return list(res.get("fonts") or ([res["font_id"]] if res.get("font_id") else []))
+
+
+def _select_with_script_priority(candidates: list[DesignCandidate], top_n: int, hints: dict | None,
+                                 trace: dict | None = None) -> list[DesignCandidate]:
+    """When the customer chose a calligraphy style that we hold as a TRUE
+    source, the shown set is drawn first from that script (diverse, valid),
+    then topped up with the best contrasting alternatives. Without a true
+    source (inspired-only styles) the ordinary diverse selection applies —
+    nothing is dressed up as the classical script."""
+    fonts = _true_script_fonts(hints)
+    if not fonts:
+        return select_diverse(candidates, top_n)
+    primary_pool = [c for c in candidates if c.recipe.font_id in fonts]
+    primary = select_diverse(primary_pool, min(top_n, SCRIPT_PRIORITY_SLOTS))
+    chosen = {c.candidate_id for c in primary}
+    rest = select_diverse([c for c in candidates if c.candidate_id not in chosen], top_n - len(primary))
+    merged = primary + rest
+    for rank, c in enumerate(merged):
+        c.diversity_rank = rank + 1
+    if trace is not None:
+        trace["script_priority"] = {"fonts": fonts, "reserved": len(primary), "filled": len(rest)}
+    return merged
 
 
 def _attach_quality_reports(top: list[DesignCandidate]) -> None:
@@ -508,16 +547,36 @@ def _attach_quality_reports(top: list[DesignCandidate]) -> None:
         )
 
 
-def _script_recipes(hints: dict, existing: set[str]) -> list[RecipeParams]:
+def _script_recipes(hints: dict, existing: set[str], base_recipes: list[RecipeParams] | None = None) -> list[RecipeParams]:
     """Curated script recipes for a customer-chosen script family. Kept out
     of the default pool on purpose (the golden fixtures pin it); added only
-    when the customer asked for that script."""
+    when the customer asked for that script.
+
+    When the family has a TRUE source, the whole archetype spread (plates,
+    bars, frames, medallions, variants) is additionally cloned onto that
+    font, so the customer's calligraphy gets the same compositional breadth
+    as the default pool instead of two sweep recipes. Font-specific axes and
+    feature sets are dropped on the clone (validated per font)."""
     family = hints.get("script_family")
     if not family:
         return []
     from ..fonts.capabilities import recipes_for_script
 
-    return [RecipeParams(**r) for r in recipes_for_script(family) if r["recipe_id"] not in existing]
+    out = [RecipeParams(**r) for r in recipes_for_script(family) if r["recipe_id"] not in existing]
+    seen = existing | {r.recipe_id for r in out}
+    for font_id in _true_script_fonts(hints):
+        for base in base_recipes or []:
+            if base.ring is not None or base.multi_name is not None or base.font_id == font_id:
+                continue
+            rid = f"{base.recipe_id}@{font_id}"
+            if rid in seen:
+                continue
+            seen.add(rid)
+            out.append(base.model_copy(update={
+                "recipe_id": rid, "font_id": font_id, "name": f"{base.name} · {font_id}",
+                "font_axes": {}, "ot_feature_set": "default",
+            }))
+    return out
 
 
 def _apply_hint_bonus(candidates: list[DesignCandidate], hints: dict) -> None:
