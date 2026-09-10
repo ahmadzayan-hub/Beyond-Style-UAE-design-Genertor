@@ -114,6 +114,51 @@ export default function GoldenPathPage() {
   const [innerText, setInnerText] = useState("");
   const [approval, setApproval] = useState<{ approval_hash: string } | null>(null);
   const [approvalLink, setApprovalLink] = useState<{ url: string; expires_at: string } | null>(null);
+  const [claimed, setClaimed] = useState(false);
+  const [resumed, setResumed] = useState(false);
+  const [hasCustomer, setHasCustomer] = useState(false);
+
+  /** Resume a claimed design from /me (?design=<id>): the per-request token
+   *  was just rotated onto this tab by resumeDesign(); rebuild the step from
+   *  the server state — never from a client-side cache. */
+  useEffect(() => {
+    setHasCustomer(!!api.getCustomerToken());
+    const id = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("design") : null;
+    if (!id || !api.getToken()) return;
+    (async () => {
+      setBusy(true);
+      try {
+        const d = await api.getDesign(id);
+        setDesignId(id);
+        setNormalizedText(d.source_text.normalized_text);
+        setText(d.source_text.normalized_text);
+        setResumed(true);
+        if (d.state === "CANDIDATES_GENERATED" || d.state === "SELECTED") {
+          const rows = await api.listCandidates(id);
+          const cards: ProofCard[] = rows
+            .filter((r: any) => r.diversity_rank)
+            .sort((a: any, b: any) => a.diversity_rank - b.diversity_rank)
+            .map((r: any) => ({
+              candidate_id: r.candidate_id, rank: r.diversity_rank, name: r.name ?? r.candidate_id,
+              composition: r.composition ?? "", width_mm: r.width_mm ?? 0, height_mm: r.height_mm ?? 0,
+            }));
+          setProofs(cards);
+          setStep("proofs");
+          cards.forEach(async (card) => {
+            try {
+              const svg = await api.candidateSvg(id, card.candidate_id, previewMaterial);
+              setProofs((prev) => prev.map((p) => (p.candidate_id === card.candidate_id ? { ...p, svg } : p)));
+            } catch {}
+          });
+        } else {
+          setStep("confirm");
+        }
+        setBusy(false);
+      } catch (e) {
+        fail(e);
+      }
+    })();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     document.documentElement.dir = t.dir;
@@ -155,6 +200,11 @@ export default function GoldenPathPage() {
           : text.trim();
       const created = await api.createDesign(fullText, productType);
       setDesignId(created.design_id);
+      // Logged-in customer → the design is linked to their account so it can
+      // be retrieved on any device. Failure here never blocks the design.
+      if (api.getCustomerToken()) {
+        try { await api.claimDesign(created.design_id); setClaimed(true); } catch { setClaimed(false); }
+      }
       setNormalizedText(created.normalized_text);
       setIntegrity(created.integrity || null);
       if (refFile) {
@@ -495,14 +545,25 @@ export default function GoldenPathPage() {
         <h1 className="font-serif text-xl font-bold tracking-tight text-brand-gold">
           BEYOND STYLE
         </h1>
-        <button
-          onClick={() => setLang(lang === "ar" ? "en" : "ar")}
-          className="rounded-full border border-brand-gold px-3 py-1 text-sm"
-          data-testid="lang-toggle"
-        >
-          {lang === "ar" ? "English" : "عربي"}
-        </button>
+        <span className="flex items-center gap-2">
+          <a href="/me" data-testid="me-link" className={`rounded-full border px-3 py-1 text-sm ${hasCustomer ? "border-brand-dark bg-brand-dark text-white" : "border-stone-300"}`}>
+            {t.me_link}
+          </a>
+          <button
+            onClick={() => setLang(lang === "ar" ? "en" : "ar")}
+            className="rounded-full border border-brand-gold px-3 py-1 text-sm"
+            data-testid="lang-toggle"
+          >
+            {lang === "ar" ? "English" : "عربي"}
+          </button>
+        </span>
       </header>
+      {claimed && step !== "start" && (
+        <p className="mb-3 rounded-lg bg-emerald-50 p-2 text-xs text-emerald-800" data-testid="claimed-note">✓ {t.me_claimed}</p>
+      )}
+      {resumed && step !== "start" && (
+        <p className="mb-3 rounded-lg bg-stone-100 p-2 text-xs text-stone-700" data-testid="resumed-note">↻ {t.me_resume}: {normalizedText}</p>
+      )}
 
       {error && (
         <div

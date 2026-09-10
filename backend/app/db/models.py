@@ -59,8 +59,50 @@ class DesignRequest(TimestampMixin, Base):
     # Anonymous session ownership: sha256 of the secret token issued at
     # creation. All request-scoped access must present the matching token.
     session_token_hash: Mapped[str | None] = mapped_column(String(64), index=True)
+    # Optional customer identity (claimed after login) — secure retrieval of
+    # a customer's own requests across devices. Anonymous requests keep
+    # working exactly as before.
+    customer_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("customers.id", ondelete="SET NULL"), index=True)
 
     candidates: Mapped[list["DesignCandidateRow"]] = relationship(back_populates="request")
+
+
+class Customer(TimestampMixin, Base):
+    """A customer identified by a verified contact (email or phone). Only a
+    salted sha256 of the normalised contact is stored, plus a masked form
+    for display — the platform never needs the raw contact after delivery."""
+
+    __tablename__ = "customers"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=_uuid)
+    contact_kind: Mapped[str] = mapped_column(String(8), nullable=False)
+    contact_hash: Mapped[str] = mapped_column(String(64), nullable=False, unique=True)
+    contact_masked: Mapped[str] = mapped_column(String(80), nullable=False)
+    display_name: Mapped[str | None] = mapped_column(String(120))
+    verified_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    last_login_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class CustomerLoginCode(TimestampMixin, Base):
+    __tablename__ = "customer_login_codes"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=_uuid)
+    customer_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("customers.id", ondelete="CASCADE"), nullable=False, index=True)
+    code_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    used_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    attempts: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    delivery_status: Mapped[str] = mapped_column(String(40), nullable=False)
+
+
+class CustomerSession(TimestampMixin, Base):
+    __tablename__ = "customer_sessions"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=_uuid)
+    customer_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("customers.id", ondelete="CASCADE"), nullable=False, index=True)
+    token_hash: Mapped[str] = mapped_column(String(64), nullable=False, unique=True)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
 
 class DesignCandidateRow(TimestampMixin, Base):

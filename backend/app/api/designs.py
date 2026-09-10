@@ -193,6 +193,12 @@ def list_candidates(
             "validation_passed": r.validation_passed,
             "diversity_rank": r.diversity_rank,
             "score": r.score,
+            # enough to rebuild the proof grid when a customer resumes a design
+            "name": (r.recipe or {}).get("name"),
+            "composition": (r.recipe or {}).get("composition"),
+            "font_id": (r.recipe or {}).get("font_id"),
+            "width_mm": (r.features or {}).get("width_mm"),
+            "height_mm": (r.features or {}).get("height_mm"),
         }
         for r in rows
         if include_invalid or r.validation_passed

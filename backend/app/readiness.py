@@ -103,6 +103,17 @@ def check_storage() -> dict:
         return {"status": "error", "detail": type(exc).__name__}
 
 
+def check_customer_auth() -> dict:
+    """Login-code delivery is an adapter; no provider is wired yet. The dev
+    echo flag must never be on in production."""
+    import os
+
+    provider = os.environ.get("AUTH_CODE_PROVIDER", "").strip() or None
+    echo = os.environ.get("AUTH_DEV_ECHO_CODE", "").strip() in ("1", "true", "yes")
+    return {"status": "ok", "code_delivery": provider or "SKIPPED_EXTERNAL_PROVIDER", "dev_echo_code": echo,
+            "warning": "AUTH_DEV_ECHO_CODE is on — login codes are returned in API responses (dev/CI only)" if echo else None}
+
+
 def check_rate_limiter() -> dict:
     from .security.ratelimit import status
 
@@ -130,6 +141,7 @@ def readiness_report(session: Session) -> dict:
         "geometry_and_manufacturing_engine": check_geometry_and_manufacturing(),
         "storage": check_storage(),
         "rate_limiter": check_rate_limiter(),
+        "customer_auth": check_customer_auth(),
         "design_generator": check_generator(),
     }
     overall_ok = all(c["status"] == "ok" for c in components.values())

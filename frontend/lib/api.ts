@@ -512,3 +512,97 @@ export async function approveViaLink(token: string, confirmedText: string, appro
     })
   );
 }
+
+// ------------------------------------------------------- customer identity
+// Passwordless login by contact + one-time code. The customer token is kept
+// in localStorage (30 days server-side) and sent as X-Customer-Token; it
+// lets a verified customer list and resume their own designs on any device.
+
+const CUSTOMER_TOKEN_KEY = "bs_customer_token";
+
+export function getCustomerToken(): string | null {
+  try {
+    return localStorage.getItem(CUSTOMER_TOKEN_KEY);
+  } catch {
+    return null;
+  }
+}
+
+export function setCustomerToken(token: string | null): void {
+  try {
+    if (token) localStorage.setItem(CUSTOMER_TOKEN_KEY, token);
+    else localStorage.removeItem(CUSTOMER_TOKEN_KEY);
+  } catch {
+    /* storage blocked — the customer stays anonymous for this tab */
+  }
+}
+
+function customerHeaders(): Record<string, string> {
+  const t = getCustomerToken();
+  return t ? { "X-Customer-Token": t } : {};
+}
+
+export async function loginStart(contact: string) {
+  return jsonOrThrow(
+    await doFetch(`/api/customers/login/start`, {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ contact }),
+    })
+  );
+}
+
+export async function loginVerify(contact: string, code: string, displayName?: string) {
+  const body = await jsonOrThrow(
+    await doFetch(`/api/customers/login/verify`, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ contact, code, display_name: displayName || null }),
+    })
+  );
+  setCustomerToken(body.customer_token);
+  return body;
+}
+
+export async function logoutCustomer() {
+  try {
+    await doFetch(`/api/customers/logout`, { method: "POST", headers: customerHeaders() });
+  } finally {
+    setCustomerToken(null);
+  }
+}
+
+export async function me() {
+  return jsonOrThrow(await doFetch(`/api/me`, { headers: customerHeaders() }));
+}
+
+export async function myDesigns() {
+  return jsonOrThrow(await doFetch(`/api/me/designs`, { headers: customerHeaders() }));
+}
+
+/** Bind the design this tab holds a session token for to the logged-in customer. */
+export async function claimDesign(designId: string) {
+  return jsonOrThrow(
+    await doFetch(`/api/customers/claim/${designId}`, { method: "POST", headers: { ...authHeaders(), ...customerHeaders() } })
+  );
+}
+
+/** Continue a claimed design on this device: the server rotates the
+ * per-request token and this tab adopts it. */
+export async function resumeDesign(designId: string) {
+  const body = await jsonOrThrow(
+    await doFetch(`/api/me/designs/${designId}/session`, { method: "POST", headers: customerHeaders() })
+  );
+  try {
+    sessionStorage.setItem(TOKEN_KEY, body.session_token);
+    sessionStorage.setItem(DESIGN_KEY, designId);
+  } catch {
+    /* ignore */
+  }
+  return body;
+}
+
+export async function listCandidates(designId: string) {
+  return jsonOrThrow(await doFetch(`/api/designs/${designId}/candidates`, { headers: { ...authHeaders(), ...customerHeaders() } }));
+}
+
+export async function getDesign(designId: string) {
+  return jsonOrThrow(await doFetch(`/api/designs/${designId}`, { headers: { ...authHeaders(), ...customerHeaders() } }));
+}
