@@ -1303,9 +1303,15 @@ PHRASE_ON_MESH_BRACELET_WITH_CHARMS = _owner_case(
         "Charm drops hang from rings integrated at the plate's bottom edge — placed under thick letters, never under a hairline or a dot.",
         "Bold Ruqaa with joined baselines survives as a plate; the shadda/dots are kept as raised islands only because the plate is solid behind them.",
     ],
-    evidence=[_ev("style_reference", "499857f32661c5bcb8c6f3db1a95f8b69b47d22fca58fc76ba2bcb9904fdbc33", 1448, 1086, 162352,
-                  PENDING_OBJECT_STORE, _MARKETING_NOTE + " — phrase plate on mesh band with hamsa and evil-eye drops")],
-    evidence_tier="MARKETING_RENDER_UNMANUFACTURED", manufactured=False,
+    evidence=[
+        _ev("style_reference", "499857f32661c5bcb8c6f3db1a95f8b69b47d22fca58fc76ba2bcb9904fdbc33", 1448, 1086, 162352,
+            PENDING_OBJECT_STORE, _MARKETING_NOTE + " — phrase plate on mesh band with hamsa and evil-eye drops"),
+        _ev("final_product", "72d8867fccb7e0d7564e4f91b3c5b687fc07762b9ee9303efe73b587ac53de7c", 1200, 1600, 190198,
+            PENDING_OBJECT_STORE, "finished gold and silver phrase-plate mesh bracelets on a display pillow (silver with hamsa + evil-eye drops)"),
+        _ev("final_product", "2a6ca22883110c274c4885e107bfe65739c0bde4c22bc1acfbe26c50c2acb022", 1254, 1254, 2105633,
+            PENDING_OBJECT_STORE, "studio product photo of the gold phrase-plate mesh bracelet on white"),
+    ],
+    workshop_changes=["gold version made without drops; silver version carries the hamsa and evil-eye drops — the plate outline is identical, the drop rings are optional islands"],
 )
 
 MARKET_REFERENCES_PEARL_STRAND_AND_BAR = _owner_case(
@@ -1369,6 +1375,147 @@ NECKLACE_LENGTH_GUIDES = _owner_case(
 )
 
 
+# ---------------------------------------------------------------------------
+# Owner sample batch 5 (2026-09-10): finished mesh bracelets (folded into
+# BS-GPC-0025), a retail-display survey of stock Arabic name jewellery
+# (photographed in a shop — design rights unknown, hash only, lessons only),
+# and the Beyond Style packaging board.
+# ---------------------------------------------------------------------------
+
+_RETAIL_SURVEY_NOTE = "retail-display survey photo taken by the owner in a shop — stock pieces of unknown design rights; hash only, construction lessons only, sample names on the stock not transcribed"
+
+RETAIL_SURVEY_STOCK_NAME_NECKLACES = _owner_case(
+    "BS-GPC-0029-retail-survey-stock-arabic-name-necklaces",
+    product_type="MARKET_REFERENCE_STOCK_NAME_NECKLACE", language="AR",
+    layout_style="BOLD_STOCK_NAME_ON_FINE_CHAIN_SIZE_GRADED", composition_type="SINGLE_NAME_END_RINGS",
+    construction=["NAME_BODY", "END_RINGS_AT_HIGHEST_OUTER_POINTS", "FINE_CABLE_CHAIN", "SIZE_GRADE_TAG"],
+    topology="CHAIN+RING+NAME+RING+CHAIN",
+    attachment_topology="RINGS_AT_BOTH_ENDS_OF_NAME",
+    attachment_points=[{"position": "name_left_end", "kind": "integrated_ring", "load": "chain"},
+                       {"position": "name_right_end", "kind": "integrated_ring", "load": "chain"}],
+    chain_topology="SINGLE_FINE_CHAIN",
+    material="gold_plated_stock", finish="polished", stones=None,
+    dna=_dna(product_type="necklace", script_family="kufi_naskh_hybrid", calligraphy_style="bold_stock_lettering",
+             composition="horizontal", shape_envelope="wide_horizontal", construction="plate",
+             stroke_character="bold_uniform", swashes="absent", tails="short", symmetry="asymmetric",
+             negative_space="open", frame="none", bail_loops="end_rings", chain_attachment="end_rings",
+             ornament="none", geometry_density="medium", luxury_score=0.3, minimal_score=0.7, heritage_score=0.5,
+             modern_score=0.6, manufacturing_complexity="low", orientation="square", reference_confidence=0.7,
+             copy_risk_indicators=["unknown_origin_stock"]),
+    keywords=["stock name necklace", "ready made name necklace", "bold arabic name", "display stand", "size L M",
+              "قلادة اسم جاهزة", "اسم عربي عريض"],
+    lessons=[
+        "Mass-market stock names use one bold uniform stroke (≈1.2–1.5 mm at 30–40 mm width) with every letter joined on a continuous baseline — that is why they survive plating and daily wear; the platform's bold recipes should sit in this stroke band.",
+        "The chain rings are placed at the highest outer points of the first and last letter so the name hangs level; when a name ends in a low letter, the ring is added to a raised terminal stroke instead.",
+        "Stock is graded L/M by name width (number of letters), not by chain length — the same construction is cut at two scales and re-checked for minimum stroke.",
+        "Two-line and descender-heavy names (e.g. names with a final ى/ي or a tall initial) are cut as one plate with the descender free-hanging below the chain line.",
+    ],
+    evidence=[
+        _ev("style_reference", "81dbeff324a7a74fa8ad22540bd9ce02012d93aa3b68be41fe78a078aaaa769e", 2992, 2992, 6480260, EXCLUDED_THIRD_PARTY, _RETAIL_SURVEY_NOTE + " — stand tagged L, pink velvet"),
+        _ev("style_reference", "d55cec35127e8fddf02dbe044e8da721f305cb2f5995b82f599bb932c8528b92", 2992, 2992, 5776797, EXCLUDED_THIRD_PARTY, _RETAIL_SURVEY_NOTE + " — cream suede stand, names with the initial م"),
+        _ev("style_reference", "1a1cd3ee27962f2e5b632e5d2bcb5f138ad394529f9af2f40eb39bbcccdf5803", 2992, 2992, 6381424, EXCLUDED_THIRD_PARTY, _RETAIL_SURVEY_NOTE + " — cream suede stand tagged H"),
+        _ev("style_reference", "fdeb93c13730442c4f4805d3448933e9c96d7e186b4ddb48606813db1cf08047", 2992, 2992, 6512388, EXCLUDED_THIRD_PARTY, _RETAIL_SURVEY_NOTE + " — cream suede stand, names with the initial ن"),
+        _ev("style_reference", "77ca57454a2c53dc0342cb4a5b010fd92007f684a19fddd756a9db9f8dae9b41", 2992, 2992, 6140355, EXCLUDED_THIRD_PARTY, _RETAIL_SURVEY_NOTE + " — stand tagged M"),
+        _ev("style_reference", "83e13822e21af485629e6be22738698bcf86a00e6f05ca5738c17d7533b26ce6", 2992, 2992, 6376068, EXCLUDED_THIRD_PARTY, _RETAIL_SURVEY_NOTE + " — cream suede stand, close-up"),
+    ],
+    evidence_tier="EXTERNAL_INSPIRATION", manufactured=False, rights_provenance="UNKNOWN_RIGHTS",
+    supplied_as="a retail-display survey",
+)
+
+RETAIL_SURVEY_ENGRAVED_BAR_PLATES = _owner_case(
+    "BS-GPC-0030-retail-survey-engraved-bar-plates",
+    product_type="MARKET_REFERENCE_ENGRAVED_BAR", language="MIXED",
+    layout_style="NAME_ENGRAVED_ON_RECTANGULAR_BAR_TWO_HOLES", composition_type="ENGRAVED_PLATE",
+    construction=["RECTANGULAR_BAR_PLATE", "ENGRAVED_NAME", "HOLE_AT_EACH_END", "DOUBLE_OR_SINGLE_CHAIN", "ROUND_DISC_VARIANT"],
+    topology="CHAIN+HOLE+BAR+HOLE+CHAIN",
+    attachment_topology="DRILLED_HOLE_AT_EACH_END",
+    attachment_points=[{"position": "bar_left_end", "kind": "drilled_hole", "load": "chain"},
+                       {"position": "bar_right_end", "kind": "drilled_hole", "load": "chain"}],
+    chain_topology="SINGLE_OR_DOUBLE_CHAIN_THROUGH_END_HOLES",
+    material="gold_plated_or_steel_stock", finish="mirror_polished", stones=None,
+    dna=_dna(product_type="necklace", script_family="naskh_or_latin_script", calligraphy_style="engraved_naskh_or_copperplate",
+             composition="horizontal", shape_envelope="wide_horizontal", construction="engraving",
+             stroke_character="engraved_line", swashes="present", tails="short", symmetry="symmetric",
+             negative_space="dense", frame="rectangular_plate", bail_loops="end_holes", chain_attachment="end_holes",
+             ornament="none", geometry_density="low", luxury_score=0.4, minimal_score=0.9, heritage_score=0.3,
+             modern_score=0.8, manufacturing_complexity="low", orientation="square", reference_confidence=0.7,
+             copy_risk_indicators=["unknown_origin_stock"]),
+    keywords=["bar necklace", "engraved bar", "name plate necklace", "rectangle plate", "double chain bar",
+              "قلادة بار", "لوحة اسم محفورة", "نقش"],
+    lessons=[
+        "An engraved rectangular bar (≈35×12 mm) with a hole at each end is the cheapest name product: text is engraved so Arabic and Latin share one plate geometry and no cut-out rules apply.",
+        "Arabic on a bar is engraved in a Naskh-like hand centred on the plate; Latin uses a copperplate script — both are engraving fonts, not the cut-out lettering library.",
+        "A double chain through the same two holes is a styling variant with no geometry change; a round disc with a top hole is the same product family.",
+    ],
+    evidence=[
+        _ev("style_reference", "9f761c280ec420a2ce6a9baa0fd2474de2f8163a1e1775426d69697c32943a0b", 2992, 2992, 6557800, EXCLUDED_THIRD_PARTY, _RETAIL_SURVEY_NOTE + " — engraved bars, gold and silver, plus round disc"),
+        _ev("style_reference", "20533d10853e193feff9cc195b72bb20b8e49a65dc470f433c4b6d06ec6274bb", 2992, 2992, 6400740, EXCLUDED_THIRD_PARTY, _RETAIL_SURVEY_NOTE + " — engraved bars close-up, double chains"),
+    ],
+    evidence_tier="EXTERNAL_INSPIRATION", manufactured=False, rights_provenance="UNKNOWN_RIGHTS",
+    supplied_as="a retail-display survey",
+)
+
+RETAIL_SURVEY_CORD_NAME_BRACELETS = _owner_case(
+    "BS-GPC-0031-retail-survey-cord-name-bracelets",
+    product_type="MARKET_REFERENCE_CORD_BRACELET", language="AR",
+    layout_style="CUTOUT_NAME_BETWEEN_CORD_END_CAPS", composition_type="SINGLE_NAME_END_RINGS",
+    construction=["NAME_BODY", "END_RINGS", "JUMP_RINGS", "CORD_END_CAPS", "COLOURED_TWISTED_CORD"],
+    topology="CORD+CAP+RING+NAME+RING+CAP+CORD",
+    attachment_topology="RINGS_AT_BOTH_ENDS_OF_NAME_TO_CORD_CAPS",
+    attachment_points=[{"position": "name_left_end", "kind": "integrated_ring", "load": "cord_cap"},
+                       {"position": "name_right_end", "kind": "integrated_ring", "load": "cord_cap"}],
+    chain_topology="CORD_WITH_METAL_END_CAPS",
+    material="gold_plated_stock_on_cord", finish="polished", stones=None,
+    dna=_dna(product_type="bracelet", script_family="kufi_naskh_hybrid", calligraphy_style="bold_stock_lettering",
+             composition="horizontal", shape_envelope="wide_horizontal", construction="plate",
+             stroke_character="bold_uniform", swashes="absent", tails="descender_below_cord",
+             symmetry="asymmetric", negative_space="open", frame="none", bail_loops="end_rings",
+             chain_attachment="cord_caps", ornament="coloured_cord", geometry_density="medium", luxury_score=0.3,
+             minimal_score=0.6, heritage_score=0.5, modern_score=0.7, manufacturing_complexity="low",
+             orientation="square", reference_confidence=0.7, copy_risk_indicators=["unknown_origin_stock"]),
+    keywords=["cord bracelet", "string bracelet", "name bracelet cord", "coloured cord", "kids name bracelet",
+              "سوار خيط", "سوار اسم بخيط", "خيط ملون"],
+    lessons=[
+        "A cut-out name on a coloured cord needs the same two end rings as a chain bracelet; the cord terminates in metal caps with rings, so the name's ring size must accept a jump ring (≥1.2 mm inner diameter).",
+        "Cord bracelets are sold in many cord colours from one metal outline — colour is a BOM option, never a geometry variant.",
+        "Descenders hang below the cord line and are the first thing to bend on a bracelet; keep them ≥1.2 mm stroke or shorten them in the bracelet recipe.",
+    ],
+    evidence=[
+        _ev("style_reference", "fd585f47030457c4af22860b9e70ec30d469e3c6b4d0081ceae796af3b190667", 2992, 2992, 4867989, EXCLUDED_PERSONAL_DATA, _RETAIL_SURVEY_NOTE + " — cord bracelet roll held in hand; hash only"),
+        _ev("style_reference", "d7ee6e6c8e9daaaff7c4c2922e174cbfd74c1379da6e622e4ac31c65bae6fb47", 2992, 2992, 5921593, EXCLUDED_PERSONAL_DATA, _RETAIL_SURVEY_NOTE + " — cord bracelet roll held in hand; hash only"),
+        _ev("style_reference", "5cac6c77df7a8e7e6e389efa3c15f96b932394a79b5003f95855bc5a215d049b", 2992, 2992, 5716660, EXCLUDED_PERSONAL_DATA, _RETAIL_SURVEY_NOTE + " — cord bracelet roll held in hand; hash only"),
+        _ev("style_reference", "127d44575136cf4acd0c811bb1d3e6994b2c9ccd2091e940ebbfe2122ed57f4f", 2992, 2992, 5683440, EXCLUDED_PERSONAL_DATA, _RETAIL_SURVEY_NOTE + " — cord bracelet roll held in hand; hash only"),
+        _ev("style_reference", "fa7252a2d6eed72981f891256ec7d98122e7fc27ba0240f304ea98a5c2e6ee4d", 2992, 2992, 4947156, EXCLUDED_PERSONAL_DATA, _RETAIL_SURVEY_NOTE + " — cord bracelet roll held in hand, close-up; hash only"),
+    ],
+    evidence_tier="EXTERNAL_INSPIRATION", manufactured=False, rights_provenance="UNKNOWN_RIGHTS",
+    supplied_as="a retail-display survey",
+)
+
+PACKAGING_MATERIALS_BOARD = _owner_case(
+    "BS-GPC-0032-packaging-materials-and-finishes-board",
+    product_type="PACKAGING_REFERENCE", language="NONE",
+    layout_style="NO_TEXT_PRODUCT", composition_type="BRAND_BOARD",
+    construction=["RIGID_BOX", "VELVET_INSERT", "TISSUE", "RIBBON", "STICKER", "ROPE_HANDLE_BAG"],
+    topology="NONE", attachment_topology="NONE", attachment_points=[], chain_topology="NONE",
+    material="paper_board_velvet", finish="champagne_gold_foil", stones=None,
+    dimensions={"source": "OWNER_BRAND_BOARD", "see": "app/data/product_catalogue.json#packaging"},
+    dna=_dna(product_type="packaging", audience="unisex", script_family="none", calligraphy_style="none",
+             composition="none", shape_envelope="none", construction="none", stroke_character="none",
+             swashes="absent", tails="none", symmetry="none", negative_space="none", frame="none",
+             bail_loops="none", chain_attachment="none", ornament="gold_foil_monogram", geometry_density="none",
+             luxury_score=0.8, minimal_score=0.7, heritage_score=0.3, modern_score=0.8,
+             manufacturing_complexity="low", orientation="square"),
+    keywords=["packaging", "gift box", "velvet insert", "tissue paper", "ribbon", "foil stamping", "brand colours",
+              "تغليف", "علبة هدايا", "شريط"],
+    lessons=[
+        "Brand palette is ivory / warm white / matte black / champagne gold; proof PDFs and the customer approval page should use the same palette so the on-screen proof matches the box the piece arrives in.",
+    ],
+    evidence=[_ev("style_reference", "f8df3df3784f78c4857114b2047f7551df5479dff505a63c20aea5e2118b7ffe", 1254, 1254, 1167694,
+                  PENDING_OBJECT_STORE, "Beyond Style 'Materials & Finishes' packaging board (owner brand creative)")],
+    evidence_tier="MARKETING_RENDER_UNMANUFACTURED", manufactured=False, supplied_as="the owner's packaging brand board",
+)
+
+
 GOLDEN_PRODUCTION_CASES = [
     ARABIC_LETTER_PEARL_EARRINGS,
     LAYERED_NAME_NECKLACE_ADAM_OMAR,
@@ -1397,4 +1544,8 @@ GOLDEN_PRODUCTION_CASES = [
     PHRASE_ON_MESH_BRACELET_WITH_CHARMS,
     MARKET_REFERENCES_PEARL_STRAND_AND_BAR,
     NECKLACE_LENGTH_GUIDES,
+    RETAIL_SURVEY_STOCK_NAME_NECKLACES,
+    RETAIL_SURVEY_ENGRAVED_BAR_PLATES,
+    RETAIL_SURVEY_CORD_NAME_BRACELETS,
+    PACKAGING_MATERIALS_BOARD,
 ]

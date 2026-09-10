@@ -288,6 +288,9 @@ def test_third_party_market_references_never_influence_generation():
     assert third_party
     for product in ("necklace", "bracelet", "cufflink", "pendant", "ring"):
         assert not third_party & {e["case_id"] for e in golden_case_influence(product)}
+    # Packaging / catalogue / size-guide reference cases are data, not designs.
+    for product in ("necklace", "bracelet", "hanger"):
+        assert not any("packaging" in e["case_id"] or "catalogue" in e["case_id"] for e in golden_case_influence(product))
 
 
 # --- boundaries that must not move -----------------------------------------

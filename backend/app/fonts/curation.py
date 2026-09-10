@@ -228,7 +228,7 @@ GOLDEN_PRODUCT_FAMILIES: dict[str, tuple[str, ...]] = {
 
 #: Case product_types that are reference data, not designs to learn
 #: construction from (catalogue pages, size guides, chain tables).
-_NON_DESIGN_CASE_TYPES = ("CATALOGUE", "WEARABILITY_REFERENCE", "CHAIN_CATALOGUE", "MARKET_REFERENCE")
+_NON_DESIGN_CASE_TYPES = ("CATALOGUE", "WEARABILITY_REFERENCE", "CHAIN_CATALOGUE", "MARKET_REFERENCE", "PACKAGING_REFERENCE")
 
 
 def _has_token(product_type: str, fragment: str) -> bool:

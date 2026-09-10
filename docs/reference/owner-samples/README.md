@@ -1,8 +1,8 @@
 # Owner samples — Beyond Style reference images (2026-09-10)
 
-Sixty-four images were supplied by the owner in four batches ("real samples to
+Eighty images were supplied by the owner in five batches ("real samples to
 LLM to learn"). They are ingested into the **Golden Production Memory**
-(`backend/app/data/golden_production_cases.py`, cases BS-GPC-0003 … BS-GPC-0028)
+(`backend/app/data/golden_production_cases.py`, cases BS-GPC-0003 … BS-GPC-0032)
 as *structured construction lessons*, not as pictures to copy:
 
 - **No text is read off any photo.** Every owner case seeds with
@@ -50,14 +50,15 @@ as *structured construction lessons*, not as pictures to copy:
 | 31 block name curb bracelet · 34 script name bracelet with birthstone | BS-GPC-0021 | MARKETING_RENDER |
 | 32 Arabic name with pearl stations · 33 monoline name with heart-stone drop | BS-GPC-0022 | MARKETING_RENDER |
 | 35 intertwined calligraphy name pendant ad | BS-GPC-0024 | MARKETING_RENDER |
-| 36 phrase plate on mesh bracelet with hamsa + evil eye | BS-GPC-0025 | MARKETING_RENDER |
+| 36 phrase plate on mesh bracelet ad · 46 finished gold + silver pieces · 47 studio photo | BS-GPC-0025 | MANUFACTURED_OWNER_SAMPLE |
+| 48 packaging materials & finishes board | BS-GPC-0032 → `product_catalogue.json#packaging` | MARKETING_RENDER |
 | 37–45 catalogue pages (rings p.19–21, brooches p.27, necklaces p.4/5/7/8/9) | BS-GPC-0023 → `app/data/product_catalogue.json` (75 items, AED starting prices, OWNER_CATALOGUE_STATED) | MARKETING_RENDER |
 
 Hash-only (not in this folder): pavé name necklace on a person (0004), engraved
 name+date keychain and pierced name disc with date (0011/0012), kids' name
 jewellery market photos (0018), men's cufflink market photos (0019), pearl-strand
 and ID-bar references (0026), necklace length-guide graphics (0028 → the
-industry-standard chart in `wearability.json`), Meta ad screenshot (0009).
+industry-standard chart in `wearability.json`), Meta ad screenshot (0009), retail-display survey of stock name necklaces / engraved bars / cord bracelets photographed in a shop (0029–0031: design rights unknown, several held in hand).
 
 How the memory is used: `golden_case_influence(product)` in
 `backend/app/fonts/curation.py` returns construction principles + lessons per
