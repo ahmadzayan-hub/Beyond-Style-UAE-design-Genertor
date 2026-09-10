@@ -129,7 +129,7 @@ export const STRINGS = {
     back: "رجوع",
     retry: "إعادة المحاولة",
     error_codes: {
-      CONNECTION_FAILED: "تعذر الاتصال بالخادم. تحقق من اتصالك بالإنترنت وحاول مرة أخرى.",
+      CONNECTION_FAILED: "خادم Beyond Style غير متاح حالياً — لم يصل الطلب إلى الخادم. المشكلة من جهتنا وليست من اتصالك؛ حاول مرة أخرى بعد قليل.",
       REFERENCE_NOT_READY: "الصورة المرجعية غير جاهزة بعد. حاول رفعها مرة أخرى.",
       GENERATION_FAILED: "تعذر توليد التصاميم. حاول مرة أخرى.",
       NO_VALID_CANDIDATES: "تعذر توليد تصاميم صالحة لهذا النص. جرّب نصاً مختلفاً.",
@@ -339,7 +339,7 @@ export const STRINGS = {
     back: "Back",
     retry: "Retry",
     error_codes: {
-      CONNECTION_FAILED: "Could not reach the server. Check your connection and try again.",
+      CONNECTION_FAILED: "The Beyond Style server is not reachable right now — the request never reached the backend. This is on our side, not your connection; please try again shortly.",
       REFERENCE_NOT_READY: "The reference image isn't ready yet. Try uploading it again.",
       GENERATION_FAILED: "Could not generate designs. Please try again.",
       NO_VALID_CANDIDATES: "Could not generate valid designs for this text. Try different text.",

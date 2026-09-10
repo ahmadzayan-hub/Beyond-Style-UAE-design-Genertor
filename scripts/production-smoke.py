@@ -26,6 +26,7 @@ Checks (exits non-zero on the first real failure):
 from __future__ import annotations
 
 import json
+import re
 import os
 import sys
 import urllib.error
@@ -90,8 +91,13 @@ def main() -> int:
         health_json = None
     is_ours = isinstance(health_json, dict) and health_json.get("status") == "ok" and "schema_version" in health_json
     if status == 200 and not is_ours:
+        # Show what actually answers so the operator can tell "another app
+        # occupies the subdomain" from "Replit placeholder / asleep" from
+        # "wrong URL" without opening a browser.
+        snippet = re.sub(r"\s+", " ", body.decode("utf-8", "replace") if isinstance(body, bytes) else str(body))[:160]
         check("B. backend /health", False,
-              "URL answers 200 but is NOT the Beyond Style backend (non-JSON/other app at this address)")
+              "URL answers 200 but is NOT the Beyond Style backend (non-JSON/other app at this address); "
+              f"body starts with: {snippet!r}")
         _summarize(); return 1
     check("B. backend /health", status == 200 and is_ours, f"status={status}")
 
