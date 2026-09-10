@@ -166,6 +166,21 @@ Modules: `engines/text_integrity.py`, `fonts/styles.py`, `fonts/onboarding.py`,
 `exporters/fidelity.py`. Frontend: `/styles` (style browser), `/admin/fonts` (upload),
 Pro-mode panel, integrity panel, jewelry check, readiness ladder, mobile action bar.
 
+## Canonical layout (audited 2026-09-10 — no conflicting scaffold)
+
+| Path | Role | Status |
+|---|---|---|
+| `backend/` | **The** FastAPI backend: `app/` (api, engines, exporters, fonts, services, security, db), `alembic/`, `tests/`, `requirements.txt`, `Dockerfile` | canonical — Replit `.replit` runs `cd backend && uvicorn app.main:app`, CI runs its suite |
+| `frontend/` | Next.js customer/studio UI (`app/`, `components/`, `lib/`) | canonical |
+| `services/hermes/` | OPTIONAL isolated orchestration runtime (ADR-0003), own pins, reached over HTTP with automatic in-process fallback | optional runtime, not a duplicate backend |
+| `e2e/`, `scripts/`, `docs/`, `deploy/` | browser E2E, operator CLIs, documentation/evidence, canonical production URLs | tooling |
+| `backend/var/` | runtime data (private uploads) — git-ignored | ephemeral on hosts; production uses object storage |
+
+There is exactly one `app/main.py` for the product (`backend/app/main.py`). The root `.replit`
+is a deployment stub pointing at it, not a second application; `replit.md` documents the import.
+The public API document is published from the code as `docs/api/openapi.json`
+(`scripts/export_openapi.py`, CI fails when stale) and served live at `/openapi.json` + `/docs`.
+
 ## Deferred (later slices)
 pgvector retrieval over a grown archetype library, designer copilot
 editor UI, WhatsApp channel integration, real malware scanner + S3,

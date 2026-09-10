@@ -1,0 +1,4924 @@
+{
+ "components": {
+  "schemas": {
+   "ApprovalLinkRequest": {
+    "properties": {
+     "created_by": {
+      "default": "designer",
+      "maxLength": 80,
+      "title": "Created By",
+      "type": "string"
+     },
+     "ttl_hours": {
+      "default": 72,
+      "maximum": 336.0,
+      "minimum": 1.0,
+      "title": "Ttl Hours",
+      "type": "integer"
+     }
+    },
+    "title": "ApprovalLinkRequest",
+    "type": "object"
+   },
+   "ApproveRequest": {
+    "properties": {
+     "approval_method": {
+      "default": "api",
+      "title": "Approval Method",
+      "type": "string"
+     },
+     "approved_by": {
+      "default": "customer",
+      "title": "Approved By",
+      "type": "string"
+     },
+     "confirmed_text": {
+      "title": "Confirmed Text",
+      "type": "string"
+     },
+     "geometry_hash": {
+      "title": "Geometry Hash",
+      "type": "string"
+     },
+     "source_text_sha256": {
+      "title": "Source Text Sha256",
+      "type": "string"
+     }
+    },
+    "required": [
+     "confirmed_text",
+     "source_text_sha256",
+     "geometry_hash"
+    ],
+    "title": "ApproveRequest",
+    "type": "object"
+   },
+   "Body_upload_font_api_admin_fonts_post": {
+    "properties": {
+     "capability": {
+      "title": "Capability",
+      "type": "string"
+     },
+     "dry_run": {
+      "default": false,
+      "title": "Dry Run",
+      "type": "boolean"
+     },
+     "family": {
+      "title": "Family",
+      "type": "string"
+     },
+     "file": {
+      "contentMediaType": "application/octet-stream",
+      "title": "File",
+      "type": "string"
+     },
+     "font_id": {
+      "title": "Font Id",
+      "type": "string"
+     },
+     "license_name": {
+      "title": "License Name",
+      "type": "string"
+     },
+     "license_text": {
+      "title": "License Text",
+      "type": "string"
+     },
+     "owner": {
+      "default": "",
+      "title": "Owner",
+      "type": "string"
+     },
+     "redistribution": {
+      "default": false,
+      "title": "Redistribution",
+      "type": "boolean"
+     },
+     "rights": {
+      "default": "COMMERCIAL_LICENSED",
+      "title": "Rights",
+      "type": "string"
+     },
+     "script_family": {
+      "title": "Script Family",
+      "type": "string"
+     },
+     "source_url": {
+      "default": "",
+      "title": "Source Url",
+      "type": "string"
+     },
+     "style_influence": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Style Influence"
+     },
+     "tags": {
+      "default": "",
+      "title": "Tags",
+      "type": "string"
+     },
+     "web_use": {
+      "default": false,
+      "title": "Web Use",
+      "type": "boolean"
+     }
+    },
+    "required": [
+     "file",
+     "font_id",
+     "family",
+     "license_name",
+     "license_text",
+     "script_family",
+     "capability"
+    ],
+    "title": "Body_upload_font_api_admin_fonts_post",
+    "type": "object"
+   },
+   "Body_upload_reference_api_designs__design_id__references_post": {
+    "properties": {
+     "customer_message": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Customer Message"
+     },
+     "file": {
+      "contentMediaType": "application/octet-stream",
+      "title": "File",
+      "type": "string"
+     },
+     "provenance": {
+      "default": "UNKNOWN",
+      "title": "Provenance",
+      "type": "string"
+     }
+    },
+    "required": [
+     "file"
+    ],
+    "title": "Body_upload_reference_api_designs__design_id__references_post",
+    "type": "object"
+   },
+   "BriefRequest": {
+    "properties": {
+     "band_height_mm": {
+      "anyOf": [
+       {
+        "maximum": 10.0,
+        "minimum": 5.0,
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Band Height Mm"
+     },
+     "customer_message": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Customer Message"
+     },
+     "deadline": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Deadline"
+     },
+     "delivery_emirate": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Delivery Emirate"
+     },
+     "language": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Language"
+     },
+     "material_preference": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Material Preference"
+     },
+     "product_type": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Product Type"
+     },
+     "quantity": {
+      "default": 1,
+      "maximum": 500.0,
+      "minimum": 1.0,
+      "title": "Quantity",
+      "type": "integer"
+     },
+     "ring_size_eu": {
+      "anyOf": [
+       {
+        "maximum": 70.0,
+        "minimum": 44.0,
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Ring Size Eu"
+     },
+     "script_family": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Script Family"
+     },
+     "style_intent": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Style Intent"
+     },
+     "style_strength": {
+      "default": 0.5,
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Style Strength",
+      "type": "number"
+     }
+    },
+    "title": "BriefRequest",
+    "type": "object"
+   },
+   "CalibrationApply": {
+    "properties": {
+     "manifest": {
+      "title": "Manifest",
+      "type": "object"
+     },
+     "material": {
+      "default": "silver-925",
+      "title": "Material",
+      "type": "string"
+     },
+     "operator": {
+      "maxLength": 80,
+      "minLength": 2,
+      "title": "Operator",
+      "type": "string"
+     },
+     "product": {
+      "default": "pendant",
+      "title": "Product",
+      "type": "string"
+     },
+     "results": {
+      "title": "Results",
+      "type": "object"
+     },
+     "write": {
+      "default": false,
+      "title": "Write",
+      "type": "boolean"
+     }
+    },
+    "required": [
+     "manifest",
+     "results",
+     "operator"
+    ],
+    "title": "CalibrationApply",
+    "type": "object"
+   },
+   "ChangeTextRequest": {
+    "properties": {
+     "confirmed": {
+      "default": false,
+      "title": "Confirmed",
+      "type": "boolean"
+     },
+     "created_by": {
+      "default": "designer",
+      "title": "Created By",
+      "type": "string"
+     },
+     "new_text": {
+      "maxLength": 120,
+      "minLength": 1,
+      "title": "New Text",
+      "type": "string"
+     }
+    },
+    "required": [
+     "new_text"
+    ],
+    "title": "ChangeTextRequest",
+    "type": "object"
+   },
+   "CreateDesignRequest": {
+    "properties": {
+     "product_type": {
+      "default": "pendant",
+      "title": "Product Type",
+      "type": "string"
+     },
+     "text": {
+      "maxLength": 120,
+      "minLength": 1,
+      "title": "Text",
+      "type": "string"
+     }
+    },
+    "required": [
+     "text"
+    ],
+    "title": "CreateDesignRequest",
+    "type": "object"
+   },
+   "CreateOrder": {
+    "properties": {
+     "actor": {
+      "default": "workshop_admin",
+      "title": "Actor",
+      "type": "string"
+     },
+     "material": {
+      "pattern": "^[a-z0-9\\-]+$",
+      "title": "Material",
+      "type": "string"
+     },
+     "notes": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notes"
+     },
+     "version_id": {
+      "title": "Version Id",
+      "type": "string"
+     }
+    },
+    "required": [
+     "version_id",
+     "material"
+    ],
+    "title": "CreateOrder",
+    "type": "object"
+   },
+   "CustomerResponseSubmission": {
+    "properties": {
+     "comment": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Comment"
+     },
+     "item_id": {
+      "title": "Item Id",
+      "type": "string"
+     },
+     "pack_id": {
+      "title": "Pack Id",
+      "type": "string"
+     },
+     "preferred_product": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Preferred Product"
+     },
+     "premium_feel": {
+      "title": "Premium Feel",
+      "type": "integer"
+     },
+     "price_band": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Price Band"
+     },
+     "readability": {
+      "title": "Readability",
+      "type": "integer"
+     },
+     "respondent_token": {
+      "title": "Respondent Token",
+      "type": "string"
+     },
+     "uniqueness": {
+      "title": "Uniqueness",
+      "type": "integer"
+     },
+     "would_buy": {
+      "title": "Would Buy",
+      "type": "string"
+     }
+    },
+    "required": [
+     "item_id",
+     "pack_id",
+     "respondent_token",
+     "would_buy",
+     "premium_feel",
+     "readability",
+     "uniqueness"
+    ],
+    "title": "CustomerResponseSubmission",
+    "type": "object"
+   },
+   "EditRequest": {
+    "properties": {
+     "created_by": {
+      "default": "designer",
+      "title": "Created By",
+      "type": "string"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     },
+     "recipe_overrides": {
+      "title": "Recipe Overrides",
+      "type": "object"
+     }
+    },
+    "title": "EditRequest",
+    "type": "object"
+   },
+   "FeedbackRequest": {
+    "properties": {
+     "event_type": {
+      "title": "Event Type",
+      "type": "string"
+     },
+     "metadata": {
+      "title": "Metadata",
+      "type": "object"
+     },
+     "version_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Version Id"
+     }
+    },
+    "required": [
+     "event_type"
+    ],
+    "title": "FeedbackRequest",
+    "type": "object"
+   },
+   "HTTPValidationError": {
+    "properties": {
+     "detail": {
+      "items": {
+       "$ref": "#/components/schemas/ValidationError"
+      },
+      "title": "Detail",
+      "type": "array"
+     }
+    },
+    "title": "HTTPValidationError",
+    "type": "object"
+   },
+   "InternalToolCallRequest": {
+    "properties": {
+     "agent_name": {
+      "title": "Agent Name",
+      "type": "string"
+     },
+     "input": {
+      "title": "Input",
+      "type": "object"
+     },
+     "job_id": {
+      "title": "Job Id",
+      "type": "string"
+     },
+     "request_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Request Id"
+     }
+    },
+    "required": [
+     "agent_name",
+     "job_id"
+    ],
+    "title": "InternalToolCallRequest",
+    "type": "object"
+   },
+   "JuryRequest": {
+    "properties": {
+     "tier": {
+      "default": "primary",
+      "title": "Tier",
+      "type": "string"
+     }
+    },
+    "title": "JuryRequest",
+    "type": "object"
+   },
+   "LinkApproveRequest": {
+    "properties": {
+     "accept_statement": {
+      "default": false,
+      "title": "Accept Statement",
+      "type": "boolean"
+     },
+     "approver_name": {
+      "default": "customer",
+      "maxLength": 120,
+      "title": "Approver Name",
+      "type": "string"
+     },
+     "confirmed_text": {
+      "maxLength": 400,
+      "minLength": 1,
+      "title": "Confirmed Text",
+      "type": "string"
+     }
+    },
+    "required": [
+     "confirmed_text"
+    ],
+    "title": "LinkApproveRequest",
+    "type": "object"
+   },
+   "RepairRequest": {
+    "properties": {
+     "created_by": {
+      "default": "customer",
+      "title": "Created By",
+      "type": "string"
+     },
+     "repair_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Repair Id"
+     }
+    },
+    "title": "RepairRequest",
+    "type": "object"
+   },
+   "ReviewSubmission": {
+    "properties": {
+     "decision": {
+      "title": "Decision",
+      "type": "string"
+     },
+     "engineering": {
+      "title": "Engineering",
+      "type": "object"
+     },
+     "feature_set": {
+      "default": "default",
+      "title": "Feature Set",
+      "type": "string"
+     },
+     "font_axes": {
+      "title": "Font Axes",
+      "type": "object"
+     },
+     "font_id": {
+      "title": "Font Id",
+      "type": "string"
+     },
+     "item_id": {
+      "title": "Item Id",
+      "type": "string"
+     },
+     "mode": {
+      "default": "quick",
+      "title": "Mode",
+      "type": "string"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     },
+     "product": {
+      "title": "Product",
+      "type": "string"
+     },
+     "recipe_hash": {
+      "title": "Recipe Hash",
+      "type": "string"
+     },
+     "reviewer": {
+      "title": "Reviewer",
+      "type": "string"
+     },
+     "scores": {
+      "anyOf": [
+       {
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Scores"
+     },
+     "source_text": {
+      "title": "Source Text",
+      "type": "string"
+     }
+    },
+    "required": [
+     "item_id",
+     "recipe_hash",
+     "product",
+     "font_id",
+     "source_text",
+     "reviewer",
+     "decision"
+    ],
+    "title": "ReviewSubmission",
+    "type": "object"
+   },
+   "SelectRequest": {
+    "properties": {
+     "candidate_id": {
+      "title": "Candidate Id",
+      "type": "string"
+     }
+    },
+    "required": [
+     "candidate_id"
+    ],
+    "title": "SelectRequest",
+    "type": "object"
+   },
+   "StartLogin": {
+    "properties": {
+     "contact": {
+      "maxLength": 120,
+      "minLength": 3,
+      "title": "Contact",
+      "type": "string"
+     }
+    },
+    "required": [
+     "contact"
+    ],
+    "title": "StartLogin",
+    "type": "object"
+   },
+   "Transition": {
+    "properties": {
+     "actor": {
+      "default": "workshop_staff",
+      "title": "Actor",
+      "type": "string"
+     },
+     "actual_received_date": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Actual Received Date"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     },
+     "receiver_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Receiver Name"
+     },
+     "staff_number": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Staff Number"
+     },
+     "to_state": {
+      "title": "To State",
+      "type": "string"
+     }
+    },
+    "required": [
+     "to_state"
+    ],
+    "title": "Transition",
+    "type": "object"
+   },
+   "ValidationError": {
+    "properties": {
+     "ctx": {
+      "title": "Context",
+      "type": "object"
+     },
+     "input": {
+      "title": "Input"
+     },
+     "loc": {
+      "items": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "integer"
+        }
+       ]
+      },
+      "title": "Location",
+      "type": "array"
+     },
+     "msg": {
+      "title": "Message",
+      "type": "string"
+     },
+     "type": {
+      "title": "Error Type",
+      "type": "string"
+     }
+    },
+    "required": [
+     "loc",
+     "msg",
+     "type"
+    ],
+    "title": "ValidationError",
+    "type": "object"
+   },
+   "VectorEditRequest": {
+    "properties": {
+     "created_by": {
+      "default": "designer",
+      "maxLength": 80,
+      "title": "Created By",
+      "type": "string"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "maxLength": 300,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     },
+     "ops": {
+      "items": {
+       "type": "object"
+      },
+      "maxItems": 50,
+      "minItems": 1,
+      "title": "Ops",
+      "type": "array"
+     }
+    },
+    "required": [
+     "ops"
+    ],
+    "title": "VectorEditRequest",
+    "type": "object"
+   },
+   "VerifyLogin": {
+    "properties": {
+     "code": {
+      "maxLength": 12,
+      "minLength": 4,
+      "title": "Code",
+      "type": "string"
+     },
+     "contact": {
+      "maxLength": 120,
+      "minLength": 3,
+      "title": "Contact",
+      "type": "string"
+     },
+     "display_name": {
+      "anyOf": [
+       {
+        "maxLength": 120,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Display Name"
+     }
+    },
+    "required": [
+     "contact",
+     "code"
+    ],
+    "title": "VerifyLogin",
+    "type": "object"
+   },
+   "VoteIn": {
+    "properties": {
+     "comment": {
+      "anyOf": [
+       {
+        "maxLength": 500,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Comment"
+     },
+     "item_id": {
+      "title": "Item Id",
+      "type": "string"
+     },
+     "pack_id": {
+      "title": "Pack Id",
+      "type": "string"
+     },
+     "preferred_product": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Preferred Product"
+     },
+     "premium_feel": {
+      "maximum": 5.0,
+      "minimum": 1.0,
+      "title": "Premium Feel",
+      "type": "integer"
+     },
+     "price_band": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Price Band"
+     },
+     "readability": {
+      "maximum": 5.0,
+      "minimum": 1.0,
+      "title": "Readability",
+      "type": "integer"
+     },
+     "respondent_token": {
+      "maxLength": 128,
+      "minLength": 8,
+      "title": "Respondent Token",
+      "type": "string"
+     },
+     "uniqueness": {
+      "maximum": 5.0,
+      "minimum": 1.0,
+      "title": "Uniqueness",
+      "type": "integer"
+     },
+     "website": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Website"
+     },
+     "would_buy": {
+      "title": "Would Buy",
+      "type": "string"
+     }
+    },
+    "required": [
+     "pack_id",
+     "item_id",
+     "respondent_token",
+     "would_buy",
+     "premium_feel",
+     "readability",
+     "uniqueness"
+    ],
+    "title": "VoteIn",
+    "type": "object"
+   },
+   "app__api__admin__ConfirmTextRequest": {
+    "description": "Owner enters the exact customer-confirmed text from the ORDER RECORD.\nVision/OCR can never be the authority (enforced in the service).",
+    "properties": {
+     "actor": {
+      "default": "workshop_admin",
+      "title": "Actor",
+      "type": "string"
+     },
+     "authority": {
+      "default": "ORDER_RECORD",
+      "title": "Authority",
+      "type": "string"
+     },
+     "order_reference": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Order Reference"
+     },
+     "text": {
+      "title": "Text",
+      "type": "string"
+     }
+    },
+    "required": [
+     "text"
+    ],
+    "title": "ConfirmTextRequest",
+    "type": "object"
+   },
+   "app__api__ai__PreviewRequest": {
+    "properties": {
+     "material": {
+      "default": "silver-925",
+      "title": "Material",
+      "type": "string"
+     },
+     "style": {
+      "default": "clean_product",
+      "title": "Style",
+      "type": "string"
+     }
+    },
+    "title": "PreviewRequest",
+    "type": "object"
+   },
+   "app__api__designs__ConfirmTextRequest": {
+    "properties": {
+     "confirmed_text": {
+      "title": "Confirmed Text",
+      "type": "string"
+     }
+    },
+    "required": [
+     "confirmed_text"
+    ],
+    "title": "ConfirmTextRequest",
+    "type": "object"
+   },
+   "app__api__visual__PreviewRequest": {
+    "properties": {
+     "finish": {
+      "default": "polished",
+      "title": "Finish",
+      "type": "string"
+     },
+     "material": {
+      "default": "silver-925",
+      "title": "Material",
+      "type": "string"
+     },
+     "orientation": {
+      "default": "front",
+      "title": "Orientation",
+      "type": "string"
+     },
+     "product_type": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Product Type"
+     },
+     "quality": {
+      "default": "DRAFT",
+      "title": "Quality",
+      "type": "string"
+     },
+     "scene": {
+      "default": "clean_design",
+      "title": "Scene",
+      "type": "string"
+     },
+     "stones": {
+      "items": {
+       "type": "string"
+      },
+      "title": "Stones",
+      "type": "array"
+     },
+     "use_reference_style": {
+      "default": false,
+      "title": "Use Reference Style",
+      "type": "boolean"
+     }
+    },
+    "title": "PreviewRequest",
+    "type": "object"
+   }
+  }
+ },
+ "info": {
+  "title": "Beyond Style UAE — AI Jewellery Designer API",
+  "version": "0.1.0"
+ },
+ "openapi": "3.1.0",
+ "paths": {
+  "/api/admin/calibration/apply": {
+   "post": {
+    "operationId": "calibration_apply_api_admin_calibration_apply_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CalibrationApply"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Calibration Apply",
+    "tags": [
+     "admin"
+    ]
+   }
+  },
+  "/api/admin/calibration/coupon": {
+   "post": {
+    "operationId": "calibration_coupon_api_admin_calibration_coupon_post",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "product",
+      "required": false,
+      "schema": {
+       "default": "pendant",
+       "title": "Product",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "material",
+      "required": false,
+      "schema": {
+       "default": "silver-925",
+       "title": "Material",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Calibration Coupon",
+    "tags": [
+     "admin"
+    ]
+   }
+  },
+  "/api/admin/calibration/profiles": {
+   "get": {
+    "operationId": "calibration_profiles_api_admin_calibration_profiles_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Calibration Profiles",
+    "tags": [
+     "admin"
+    ]
+   }
+  },
+  "/api/admin/curation": {
+   "get": {
+    "description": "Curation states across every variant set, with the count awaiting\nhuman aesthetic review.",
+    "operationId": "curation_report_api_admin_curation_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Curation Report",
+    "tags": [
+     "admin"
+    ]
+   }
+  },
+  "/api/admin/curation/analysis": {
+   "get": {
+    "description": "Aesthetic and commercial curation derived from human review evidence.\n\nEvery family claim is INSUFFICIENT_HUMAN_REVIEW_EVIDENCE until enough\ngenuine reviews exist; no engineering or AI value substitutes for one.",
+    "operationId": "curation_analysis_report_api_admin_curation_analysis_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Curation Analysis Report",
+    "tags": [
+     "admin"
+    ]
+   }
+  },
+  "/api/admin/customer-validation/pack": {
+   "get": {
+    "description": "The customer test pack. Engineering metadata is stripped: a customer\nreacts to the piece, not to its manufacturing report.",
+    "operationId": "customer_pack_api_admin_customer_validation_pack_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Customer Pack",
+    "tags": [
+     "admin"
+    ]
+   }
+  },
+  "/api/admin/customer-validation/response": {
+   "post": {
+    "description": "Record one anonymous customer response. Stored in its own table and\nnever merged into expert review scores.",
+    "operationId": "submit_customer_response_api_admin_customer_validation_response_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CustomerResponseSubmission"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Submit Customer Response",
+    "tags": [
+     "admin"
+    ]
+   }
+  },
+  "/api/admin/fonts": {
+   "post": {
+    "description": "Licensed font upload (TTF/OTF/WOFF/WOFF2). Inspects metadata, shapes\nthe golden names, records the declared license as evidence, stores the\nbinary in private storage and activates the capability immediately.\n`dry_run=true` returns the inspection report without registering.",
+    "operationId": "upload_font_api_admin_fonts_post",
+    "requestBody": {
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_upload_font_api_admin_fonts_post"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Upload Font",
+    "tags": [
+     "admin"
+    ]
+   }
+  },
+  "/api/admin/golden-cases": {
+   "get": {
+    "operationId": "list_golden_cases_api_admin_golden_cases_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "List Golden Cases",
+    "tags": [
+     "admin"
+    ]
+   }
+  },
+  "/api/admin/golden-cases/retrieve": {
+   "post": {
+    "description": "Rank golden cases for a prospective request — the same retrieval\nthe generator uses. Returns descriptors, never geometry.",
+    "operationId": "retrieve_api_admin_golden_cases_retrieve_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "title": "Query",
+        "type": "object"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Retrieve",
+    "tags": [
+     "admin"
+    ]
+   }
+  },
+  "/api/admin/golden-cases/{case_id}": {
+   "get": {
+    "description": "Full case view, grouped into the sections the admin screen renders:\nConcept · Reference Style · Layout Proof / Workshop Drawing · Final\nProduct · Customer Feedback · Production Result · DesignDNA ·\nLessons Learned.",
+    "operationId": "get_golden_case_api_admin_golden_cases__case_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "case_id",
+      "required": true,
+      "schema": {
+       "title": "Case Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Golden Case",
+    "tags": [
+     "admin"
+    ]
+   }
+  },
+  "/api/admin/golden-cases/{case_id}/confirm-text": {
+   "post": {
+    "description": "Promotes a PENDING_CUSTOMER_VERIFICATION golden case to production\ntraining memory once the exact text is supplied from an order record.",
+    "operationId": "confirm_golden_case_text_api_admin_golden_cases__case_id__confirm_text_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "case_id",
+      "required": true,
+      "schema": {
+       "title": "Case Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/app__api__admin__ConfirmTextRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Confirm Golden Case Text",
+    "tags": [
+     "admin"
+    ]
+   }
+  },
+  "/api/admin/review/agreement/{item_id}": {
+   "get": {
+    "description": "Mean, spread and per-dimension disagreement across independent\nreviewers. Available AFTER review — it is comparison, not anchoring.",
+    "operationId": "review_agreement_api_admin_review_agreement__item_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "item_id",
+      "required": true,
+      "schema": {
+       "title": "Item Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Review Agreement",
+    "tags": [
+     "admin"
+    ]
+   }
+  },
+  "/api/admin/review/decision": {
+   "post": {
+    "description": "Record one human decision. Append-only: a revised opinion is a new\nrecord, and the previous one stays readable.",
+    "operationId": "submit_review_api_admin_review_decision_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ReviewSubmission"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Submit Review",
+    "tags": [
+     "admin"
+    ]
+   }
+  },
+  "/api/admin/review/history/{item_id}": {
+   "get": {
+    "operationId": "review_item_history_api_admin_review_history__item_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "item_id",
+      "required": true,
+      "schema": {
+       "title": "Item Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Review Item History",
+    "tags": [
+     "admin"
+    ]
+   }
+  },
+  "/api/admin/review/pack": {
+   "get": {
+    "description": "The prioritised review pack, each item carrying its rendered proof.\n\nHuman decisions are read from the append-only review log; an item that\nnobody has reviewed reports HUMAN_REVIEW_PENDING rather than any\nprovisional verdict.",
+    "operationId": "review_pack_api_admin_review_pack_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "max_per_product",
+      "required": false,
+      "schema": {
+       "default": 3,
+       "title": "Max Per Product",
+       "type": "integer"
+      }
+     },
+     {
+      "in": "query",
+      "name": "reviewer",
+      "required": false,
+      "schema": {
+       "default": "",
+       "title": "Reviewer",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Review Pack",
+    "tags": [
+     "admin"
+    ]
+   }
+  },
+  "/api/admin/review/wave-1": {
+   "get": {
+    "description": "HUMAN_REVIEW_WAVE_1 — the prioritised first slate.\n\nBlinded by default: prior reviewers' opinions are withheld until this\nreviewer has submitted for an item.",
+    "operationId": "review_wave_1_api_admin_review_wave_1_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "reviewer",
+      "required": false,
+      "schema": {
+       "default": "",
+       "title": "Reviewer",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Review Wave 1",
+    "tags": [
+     "admin"
+    ]
+   }
+  },
+  "/api/admin/styles/{label_ar}": {
+   "get": {
+    "description": "Internal resolution of a customer style label into the curated\nfont + feature-set + axis-range bundle. Staff-only precisely because\nit exposes the raw OpenType layer the customer never sees.",
+    "operationId": "resolve_style_api_admin_styles__label_ar__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "label_ar",
+      "required": true,
+      "schema": {
+       "title": "Label Ar",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Resolve Style",
+    "tags": [
+     "admin"
+    ]
+   }
+  },
+  "/api/ai/memory/weights": {
+   "get": {
+    "description": "Diagnostic: learned recipe-family ranking weights + workshop\nfailure constraints (derived from append-only events).",
+    "operationId": "memory_weights_api_ai_memory_weights_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Memory Weights",
+    "tags": [
+     "ai"
+    ]
+   }
+  },
+  "/api/ai/status": {
+   "get": {
+    "description": "Honest per-model availability + license registry — covers the\nlocal Qwen/FLUX visual stack AND Claude/GPT-Image-2/Hermes. Never a\nfabricated PASS; deterministic_fallback is always available\nregardless of what any provider reports.",
+    "operationId": "status_api_ai_status_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Status",
+    "tags": [
+     "ai"
+    ]
+   }
+  },
+  "/api/ai/versions/{version_id}/photoreal-preview": {
+   "post": {
+    "description": "AI preview of a validated design. The generated image is display-only\n('AI preview' label in UI): it is identity-guarded against the canonical\ngeometry and NEVER feeds SVG/DXF/manufacturing.",
+    "operationId": "photoreal_preview_api_ai_versions__version_id__photoreal_preview_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "version_id",
+      "required": true,
+      "schema": {
+       "title": "Version Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/app__api__ai__PreviewRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Photoreal Preview",
+    "tags": [
+     "ai"
+    ]
+   }
+  },
+  "/api/approval-links/{token}": {
+   "get": {
+    "description": "Public (no session): what the customer approves — exact text, version\nfacts and the dimensioned agreement proof SVG. Invalid links report why.",
+    "operationId": "approval_link_view_api_approval_links__token__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "token",
+      "required": true,
+      "schema": {
+       "title": "Token",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Approval Link View",
+    "tags": [
+     "approval-links"
+    ]
+   }
+  },
+  "/api/approval-links/{token}/approve": {
+   "post": {
+    "description": "Customer approval through the link: exact text must be retyped/\nconfirmed byte-equal, statement accepted; creates the immutable lock with\napproval_method SECURE_LINK and consumes the link.",
+    "operationId": "approval_link_approve_api_approval_links__token__approve_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "token",
+      "required": true,
+      "schema": {
+       "title": "Token",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/LinkApproveRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Approval Link Approve",
+    "tags": [
+     "approval-links"
+    ]
+   }
+  },
+  "/api/customers/claim/{design_id}": {
+   "post": {
+    "description": "Bind the request I hold the per-request token for to my customer\nidentity (both headers required).",
+    "operationId": "claim_api_customers_claim__design_id__post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "design_id",
+      "required": true,
+      "schema": {
+       "title": "Design Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Claim",
+    "tags": [
+     "customers"
+    ]
+   }
+  },
+  "/api/customers/login/start": {
+   "post": {
+    "operationId": "login_start_api_customers_login_start_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/StartLogin"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Login Start",
+    "tags": [
+     "customers"
+    ]
+   }
+  },
+  "/api/customers/login/verify": {
+   "post": {
+    "operationId": "login_verify_api_customers_login_verify_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/VerifyLogin"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Login Verify",
+    "tags": [
+     "customers"
+    ]
+   }
+  },
+  "/api/customers/logout": {
+   "post": {
+    "operationId": "logout_api_customers_logout_post",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Logout",
+    "tags": [
+     "customers"
+    ]
+   }
+  },
+  "/api/designs": {
+   "post": {
+    "operationId": "create_design_api_designs_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CreateDesignRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Create Design",
+    "tags": [
+     "designs"
+    ]
+   }
+  },
+  "/api/designs/integrity/inspect": {
+   "post": {
+    "description": "Stateless pre-check for the Verify Spelling step: lists every\ncharacter and any hidden/control characters, never modifies the text.",
+    "operationId": "inspect_text_api_designs_integrity_inspect_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CreateDesignRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Inspect Text",
+    "tags": [
+     "designs"
+    ]
+   }
+  },
+  "/api/designs/{design_id}": {
+   "get": {
+    "operationId": "get_design_api_designs__design_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "design_id",
+      "required": true,
+      "schema": {
+       "title": "Design Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Design",
+    "tags": [
+     "designs"
+    ]
+   }
+  },
+  "/api/designs/{design_id}/brief": {
+   "get": {
+    "operationId": "get_brief_api_designs__design_id__brief_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "design_id",
+      "required": true,
+      "schema": {
+       "title": "Design Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Brief",
+    "tags": [
+     "intake"
+    ]
+   },
+   "put": {
+    "operationId": "update_brief_api_designs__design_id__brief_put",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "design_id",
+      "required": true,
+      "schema": {
+       "title": "Design Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/BriefRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Update Brief",
+    "tags": [
+     "intake"
+    ]
+   }
+  },
+  "/api/designs/{design_id}/candidates": {
+   "get": {
+    "operationId": "list_candidates_api_designs__design_id__candidates_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "design_id",
+      "required": true,
+      "schema": {
+       "title": "Design Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "include_invalid",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Include Invalid",
+       "type": "boolean"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Candidates",
+    "tags": [
+     "designs"
+    ]
+   },
+   "post": {
+    "operationId": "generate_api_designs__design_id__candidates_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "design_id",
+      "required": true,
+      "schema": {
+       "title": "Design Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Generate",
+    "tags": [
+     "designs"
+    ]
+   }
+  },
+  "/api/designs/{design_id}/candidates/{candidate_id}/svg": {
+   "get": {
+    "description": "Preview SVG for a generated candidate (pre-selection, not production).\n`?material=` returns the deterministic metal render of the same geometry.",
+    "operationId": "get_candidate_svg_api_designs__design_id__candidates__candidate_id__svg_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "design_id",
+      "required": true,
+      "schema": {
+       "title": "Design Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "candidate_id",
+      "required": true,
+      "schema": {
+       "title": "Candidate Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "material",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Material"
+      }
+     },
+     {
+      "in": "query",
+      "name": "scene",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Scene"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Candidate Svg",
+    "tags": [
+     "designs"
+    ]
+   }
+  },
+  "/api/designs/{design_id}/candidates/{candidate_id}/validation": {
+   "get": {
+    "operationId": "get_validation_api_designs__design_id__candidates__candidate_id__validation_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "design_id",
+      "required": true,
+      "schema": {
+       "title": "Design Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "candidate_id",
+      "required": true,
+      "schema": {
+       "title": "Candidate Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Validation",
+    "tags": [
+     "designs"
+    ]
+   }
+  },
+  "/api/designs/{design_id}/confirm": {
+   "post": {
+    "operationId": "confirm_text_api_designs__design_id__confirm_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "design_id",
+      "required": true,
+      "schema": {
+       "title": "Design Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/app__api__designs__ConfirmTextRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Confirm Text",
+    "tags": [
+     "designs"
+    ]
+   }
+  },
+  "/api/designs/{design_id}/events": {
+   "get": {
+    "operationId": "list_events_api_designs__design_id__events_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "design_id",
+      "required": true,
+      "schema": {
+       "title": "Design Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Events",
+    "tags": [
+     "designs"
+    ]
+   }
+  },
+  "/api/designs/{design_id}/feedback": {
+   "post": {
+    "operationId": "feedback_api_designs__design_id__feedback_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "design_id",
+      "required": true,
+      "schema": {
+       "title": "Design Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/FeedbackRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Feedback",
+    "tags": [
+     "reference-intelligence"
+    ]
+   }
+  },
+  "/api/designs/{design_id}/references": {
+   "delete": {
+    "description": "Privacy: purge this session's uploaded reference files.",
+    "operationId": "delete_references_api_designs__design_id__references_delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "design_id",
+      "required": true,
+      "schema": {
+       "title": "Design Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Delete References",
+    "tags": [
+     "intake"
+    ]
+   },
+   "post": {
+    "operationId": "upload_reference_api_designs__design_id__references_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "design_id",
+      "required": true,
+      "schema": {
+       "title": "Design Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_upload_reference_api_designs__design_id__references_post"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Upload Reference",
+    "tags": [
+     "intake"
+    ]
+   }
+  },
+  "/api/designs/{design_id}/references/{reference_id}/analyze": {
+   "post": {
+    "operationId": "analyze_api_designs__design_id__references__reference_id__analyze_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "design_id",
+      "required": true,
+      "schema": {
+       "title": "Design Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "reference_id",
+      "required": true,
+      "schema": {
+       "title": "Reference Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "require_model",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Require Model",
+       "type": "boolean"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Analyze",
+    "tags": [
+     "reference-intelligence"
+    ]
+   }
+  },
+  "/api/designs/{design_id}/references/{reference_id}/content": {
+   "get": {
+    "description": "Private media access — owner session only; no public URLs exist.",
+    "operationId": "reference_content_api_designs__design_id__references__reference_id__content_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "design_id",
+      "required": true,
+      "schema": {
+       "title": "Design Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "reference_id",
+      "required": true,
+      "schema": {
+       "title": "Reference Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Reference Content",
+    "tags": [
+     "intake"
+    ]
+   }
+  },
+  "/api/designs/{design_id}/select": {
+   "post": {
+    "operationId": "select_candidate_api_designs__design_id__select_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "design_id",
+      "required": true,
+      "schema": {
+       "title": "Design Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SelectRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Select Candidate",
+    "tags": [
+     "designs"
+    ]
+   }
+  },
+  "/api/fonts": {
+   "get": {
+    "operationId": "list_fonts_api_fonts_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "List Fonts",
+    "tags": [
+     "fonts"
+    ]
+   }
+  },
+  "/api/fonts/capabilities": {
+   "get": {
+    "description": "What the style picker may promise. Scripts we cannot truly render\nare reported LICENSE_REQUIRED with their closest licensed alternative —\na true Diwani/Thuluth request is never silently served by Amiri.",
+    "operationId": "font_capabilities_api_fonts_capabilities_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Font Capabilities",
+    "tags": [
+     "fonts"
+    ]
+   }
+  },
+  "/api/fonts/preview/{font_id}": {
+   "get": {
+    "description": "Vector preview of a registry font with the given text — shaped by\nHarfBuzz and outlined by the real engine (never browser text).",
+    "operationId": "font_preview_api_fonts_preview__font_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "font_id",
+      "required": true,
+      "schema": {
+       "title": "Font Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "text",
+      "required": false,
+      "schema": {
+       "default": "ميثه",
+       "title": "Text",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "material",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Material"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Font Preview",
+    "tags": [
+     "fonts"
+    ]
+   }
+  },
+  "/api/fonts/registry": {
+   "get": {
+    "description": "Font & Glyph Registry (name, script, source, version, license, use\nstatuses, hash, imported date, glyph count, shaping status).",
+    "operationId": "font_registry_view_api_fonts_registry_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Font Registry View",
+    "tags": [
+     "fonts"
+    ]
+   }
+  },
+  "/api/fonts/resolve/{script_family}": {
+   "get": {
+    "description": "Customer-facing resolution of a requested script family.",
+    "operationId": "resolve_script_api_fonts_resolve__script_family__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "script_family",
+      "required": true,
+      "schema": {
+       "title": "Script Family",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Resolve Script",
+    "tags": [
+     "fonts"
+    ]
+   }
+  },
+  "/api/fonts/styles": {
+   "get": {
+    "description": "Style Browser cards: availability derived from the rights-cleared\nregistry (AVAILABLE / INFLUENCED_ONLY / UPLOAD_REQUIRED /\nPARAMETRIC_NOT_BUILT / ENGINE), jewellery suitability and the sweep's\nmanufacturing score. Nothing here is declared by hand.",
+    "operationId": "style_browser_api_fonts_styles_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Style Browser",
+    "tags": [
+     "fonts"
+    ]
+   }
+  },
+  "/api/fonts/{font_id}/variants": {
+   "get": {
+    "operationId": "font_variants_api_fonts__font_id__variants_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "font_id",
+      "required": true,
+      "schema": {
+       "title": "Font Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Font Variants",
+    "tags": [
+     "fonts"
+    ]
+   }
+  },
+  "/api/me": {
+   "get": {
+    "operationId": "me_api_me_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Me",
+    "tags": [
+     "customers"
+    ]
+   }
+  },
+  "/api/me/designs": {
+   "get": {
+    "operationId": "my_designs_api_me_designs_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "My Designs",
+    "tags": [
+     "customers"
+    ]
+   }
+  },
+  "/api/me/designs/{design_id}/session": {
+   "post": {
+    "description": "Continue a claimed design on this device: rotates the per-request\ntoken (older devices lose it) and returns the new one.",
+    "operationId": "resume_design_api_me_designs__design_id__session_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "design_id",
+      "required": true,
+      "schema": {
+       "title": "Design Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Resume Design",
+    "tags": [
+     "customers"
+    ]
+   }
+  },
+  "/api/orchestration/internal/tools/{tool_name}": {
+   "post": {
+    "description": "MCP-style callback target for the isolated Hermes runtime\n(services/hermes/app/tool_client.py) — Hermes decides which tool to\ncall; this process is the only one that ever executes it (it owns\nthe DB session + deterministic engines, app/ai/tools.py). Closed by\ndefault: INTERNAL_TOOL_TOKEN is unset unless a deployment explicitly\nruns Hermes in isolated mode, in which case both processes must be\ngiven the same shared secret out of band (never checked into the\nrepo — see backend/.env.example).",
+    "operationId": "internal_tool_call_api_orchestration_internal_tools__tool_name__post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "tool_name",
+      "required": true,
+      "schema": {
+       "title": "Tool Name",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/InternalToolCallRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Internal Tool Call",
+    "tags": [
+     "orchestration"
+    ]
+   }
+  },
+  "/api/orchestration/status": {
+   "get": {
+    "description": "Hermes runtime + Claude routing + budgets + agent registry.\nNever exposes any API key — only booleans.",
+    "operationId": "status_api_orchestration_status_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Status",
+    "tags": [
+     "orchestration"
+    ]
+   }
+  },
+  "/api/validation/pack": {
+   "get": {
+    "operationId": "public_pack_api_validation_pack_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Public Pack",
+    "tags": [
+     "validation"
+    ]
+   }
+  },
+  "/api/validation/response": {
+   "post": {
+    "operationId": "public_response_api_validation_response_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/VoteIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Public Response",
+    "tags": [
+     "validation"
+    ]
+   }
+  },
+  "/api/versions/{version_id}": {
+   "get": {
+    "operationId": "get_version_api_versions__version_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "version_id",
+      "required": true,
+      "schema": {
+       "title": "Version Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Version",
+    "tags": [
+     "versions"
+    ]
+   }
+  },
+  "/api/versions/{version_id}/agreement-proof": {
+   "get": {
+    "description": "Owner-scoped dimensioned approval artifact: the design with its real\nmillimetre dimensions and spec block drawn on. What the customer sees at\nthe approval step; its sha256 is recorded on approval. Display artifact —\nnot a production export.",
+    "operationId": "version_agreement_proof_api_versions__version_id__agreement_proof_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "version_id",
+      "required": true,
+      "schema": {
+       "title": "Version Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Version Agreement Proof",
+    "tags": [
+     "versions"
+    ]
+   }
+  },
+  "/api/versions/{version_id}/approval-link": {
+   "post": {
+    "description": "Issue a single-use, expiring secure approval link for this exact\nversion (owner session required). The token is returned ONCE; only its\nhash is stored. Approval through it is recorded as SECURE_LINK.",
+    "operationId": "create_approval_link_api_versions__version_id__approval_link_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "version_id",
+      "required": true,
+      "schema": {
+       "title": "Version Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ApprovalLinkRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Create Approval Link",
+    "tags": [
+     "versions"
+    ]
+   }
+  },
+  "/api/versions/{version_id}/approve": {
+   "post": {
+    "operationId": "approve_api_versions__version_id__approve_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "version_id",
+      "required": true,
+      "schema": {
+       "title": "Version Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ApproveRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Approve",
+    "tags": [
+     "versions"
+    ]
+   }
+  },
+  "/api/versions/{version_id}/change-text": {
+   "post": {
+    "operationId": "change_text_api_versions__version_id__change_text_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "version_id",
+      "required": true,
+      "schema": {
+       "title": "Version Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ChangeTextRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Change Text",
+    "tags": [
+     "versions"
+    ]
+   }
+  },
+  "/api/versions/{version_id}/edit": {
+   "post": {
+    "operationId": "edit_version_api_versions__version_id__edit_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "version_id",
+      "required": true,
+      "schema": {
+       "title": "Version Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/EditRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Edit Version",
+    "tags": [
+     "versions"
+    ]
+   }
+  },
+  "/api/versions/{version_id}/export/{fmt}": {
+   "get": {
+    "operationId": "export_api_versions__version_id__export__fmt__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "version_id",
+      "required": true,
+      "schema": {
+       "title": "Version Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "fmt",
+      "required": true,
+      "schema": {
+       "title": "Fmt",
+       "type": "string"
+      }
+     },
+     {
+      "in": "header",
+      "name": "Idempotency-Key",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Idempotency-Key"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Export",
+    "tags": [
+     "versions"
+    ]
+   }
+  },
+  "/api/versions/{version_id}/exports": {
+   "get": {
+    "description": "Export records with their fidelity verdicts and manifests.",
+    "operationId": "list_exports_api_versions__version_id__exports_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "version_id",
+      "required": true,
+      "schema": {
+       "title": "Version Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Exports",
+    "tags": [
+     "versions"
+    ]
+   }
+  },
+  "/api/versions/{version_id}/integrity": {
+   "get": {
+    "description": "TEXT INTEGRITY: PASS / FAIL for this version — the contract text,\nits hash, glyph coverage (identity proof) and outline survival.",
+    "operationId": "version_integrity_api_versions__version_id__integrity_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "version_id",
+      "required": true,
+      "schema": {
+       "title": "Version Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Version Integrity",
+    "tags": [
+     "versions"
+    ]
+   }
+  },
+  "/api/versions/{version_id}/jewelry-qa": {
+   "get": {
+    "description": "JEWELRY QA: PASS / FAIL with plain-language explanations, attachment\nfacts and the geometry-based weight report.",
+    "operationId": "jewelry_qa_api_versions__version_id__jewelry_qa_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "version_id",
+      "required": true,
+      "schema": {
+       "title": "Version Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "material",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Material"
+      }
+     },
+     {
+      "in": "query",
+      "name": "thickness_mm",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "number"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Thickness Mm"
+      }
+     },
+     {
+      "in": "query",
+      "name": "target_weight_g",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "number"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Target Weight G"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Jewelry Qa",
+    "tags": [
+     "versions"
+    ]
+   }
+  },
+  "/api/versions/{version_id}/mesh3d": {
+   "get": {
+    "description": "Owner-scoped 3D visualization payload: canonical 2D polygons + real\nthickness/dimensions/bend radius + deterministic weight estimates. The\nbrowser extrudes it with Three.js; the 2D design graph stays canonical\nand nothing from the 3D view flows back into geometry.",
+    "operationId": "version_mesh3d_api_versions__version_id__mesh3d_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "version_id",
+      "required": true,
+      "schema": {
+       "title": "Version Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Version Mesh3D",
+    "tags": [
+     "versions"
+    ]
+   }
+  },
+  "/api/versions/{version_id}/readiness": {
+   "get": {
+    "description": "Readiness ladder derived from recorded facts (text, QA, approval,\nexport fidelity, workshop order).",
+    "operationId": "readiness_api_versions__version_id__readiness_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "version_id",
+      "required": true,
+      "schema": {
+       "title": "Version Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Readiness",
+    "tags": [
+     "versions"
+    ]
+   }
+  },
+  "/api/versions/{version_id}/repair": {
+   "post": {
+    "description": "Apply one validated repair as a NEW version (before/after = parent SVG\nvs new SVG). Historical/approved versions are never mutated.",
+    "operationId": "apply_repair_api_versions__version_id__repair_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "version_id",
+      "required": true,
+      "schema": {
+       "title": "Version Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RepairRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Apply Repair",
+    "tags": [
+     "versions"
+    ]
+   }
+  },
+  "/api/versions/{version_id}/repair-options": {
+   "get": {
+    "description": "Deterministic, validated repair proposals only. Every option was\ndry-run on this version: it is offered only when it reduces the number\nof manufacturing errors (or, for the thicken option, keeps it valid).\nEmpty list = nothing to offer.",
+    "operationId": "repair_options_api_versions__version_id__repair_options_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "version_id",
+      "required": true,
+      "schema": {
+       "title": "Version Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Repair Options",
+    "tags": [
+     "versions"
+    ]
+   }
+  },
+  "/api/versions/{version_id}/svg": {
+   "get": {
+    "description": "Owner-scoped PREVIEW render of a version (any status) — used for\nproof display and repair before/after. Not a production export: no\nexport record, and the production DXF path stays lock-gated.\n`?material=` returns the deterministic metal render of the same geometry.",
+    "operationId": "version_preview_svg_api_versions__version_id__svg_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "version_id",
+      "required": true,
+      "schema": {
+       "title": "Version Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "material",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Material"
+      }
+     },
+     {
+      "in": "query",
+      "name": "scene",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Scene"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Version Preview Svg",
+    "tags": [
+     "versions"
+    ]
+   }
+  },
+  "/api/versions/{version_id}/vector-edit": {
+   "post": {
+    "description": "Manual vector edit → NEW version (transforms, bridges, rings, union/\ncut shapes). Source text is untouched by construction; letters are\nprotected; a rejected op returns 422 with the reason and no version.",
+    "operationId": "vector_edit_api_versions__version_id__vector_edit_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "version_id",
+      "required": true,
+      "schema": {
+       "title": "Version Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/VectorEditRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Vector Edit",
+    "tags": [
+     "versions"
+    ]
+   }
+  },
+  "/api/versions/{version_id}/vector-edit/preview": {
+   "post": {
+    "description": "Dry run: same fail-safes and validation, nothing persisted. Returns\nthe would-be preview SVG and the error list so the designer can see\nbefore/after without creating a version.",
+    "operationId": "vector_edit_preview_api_versions__version_id__vector_edit_preview_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "version_id",
+      "required": true,
+      "schema": {
+       "title": "Version Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/VectorEditRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Vector Edit Preview",
+    "tags": [
+     "versions"
+    ]
+   }
+  },
+  "/api/versions/{version_id}/vector-ops": {
+   "get": {
+    "description": "Pro-mode tool catalogue for one version: what the vector editor can\ndo (with mm parameter contracts), what it refuses and why (no fake\ntools), the design bounds/rings to anchor ops, the lineage's cumulative\nops, and validator-proposed fixes expressed as ready-to-apply ops.",
+    "operationId": "vector_ops_catalogue_api_versions__version_id__vector_ops_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "version_id",
+      "required": true,
+      "schema": {
+       "title": "Version Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Vector Ops Catalogue",
+    "tags": [
+     "versions"
+    ]
+   }
+  },
+  "/api/visual/designs/{design_id}/lineage": {
+   "get": {
+    "operationId": "lineage_api_visual_designs__design_id__lineage_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "design_id",
+      "required": true,
+      "schema": {
+       "title": "Design Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Lineage",
+    "tags": [
+     "visual-studio"
+    ]
+   }
+  },
+  "/api/visual/designs/{design_id}/spend": {
+   "get": {
+    "operationId": "spend_api_visual_designs__design_id__spend_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "design_id",
+      "required": true,
+      "schema": {
+       "title": "Design Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Spend",
+    "tags": [
+     "visual-studio"
+    ]
+   }
+  },
+  "/api/visual/generations/{generation_id}/image": {
+   "get": {
+    "operationId": "generation_image_api_visual_generations__generation_id__image_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "generation_id",
+      "required": true,
+      "schema": {
+       "title": "Generation Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Generation Image",
+    "tags": [
+     "visual-studio"
+    ]
+   }
+  },
+  "/api/visual/options": {
+   "get": {
+    "operationId": "options_api_visual_options_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Options",
+    "tags": [
+     "visual-studio"
+    ]
+   }
+  },
+  "/api/visual/product-skills": {
+   "get": {
+    "operationId": "product_skills_api_visual_product_skills_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Product Skills",
+    "tags": [
+     "visual-studio"
+    ]
+   }
+  },
+  "/api/visual/product-skills/{product}": {
+   "get": {
+    "operationId": "product_skill_api_visual_product_skills__product__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "product",
+      "required": true,
+      "schema": {
+       "title": "Product",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Product Skill",
+    "tags": [
+     "visual-studio"
+    ]
+   }
+  },
+  "/api/visual/versions/{version_id}/confidence": {
+   "get": {
+    "operationId": "confidence_api_visual_versions__version_id__confidence_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "version_id",
+      "required": true,
+      "schema": {
+       "title": "Version Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Confidence",
+    "tags": [
+     "visual-studio"
+    ]
+   }
+  },
+  "/api/visual/versions/{version_id}/generations": {
+   "get": {
+    "operationId": "list_generations_api_visual_versions__version_id__generations_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "version_id",
+      "required": true,
+      "schema": {
+       "title": "Version Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Generations",
+    "tags": [
+     "visual-studio"
+    ]
+   }
+  },
+  "/api/visual/versions/{version_id}/jury": {
+   "post": {
+    "description": "Structured Design Jury (ONE Claude call, four normalized scores).\nAdvisory only — never overrides Arabic/manufacturing gates.",
+    "operationId": "jury_api_visual_versions__version_id__jury_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "version_id",
+      "required": true,
+      "schema": {
+       "title": "Version Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/JuryRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Jury",
+    "tags": [
+     "visual-studio"
+    ]
+   }
+  },
+  "/api/visual/versions/{version_id}/preview": {
+   "post": {
+    "operationId": "create_preview_api_visual_versions__version_id__preview_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "version_id",
+      "required": true,
+      "schema": {
+       "title": "Version Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/app__api__visual__PreviewRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Create Preview",
+    "tags": [
+     "visual-studio"
+    ]
+   }
+  },
+  "/api/workshop/orders": {
+   "get": {
+    "operationId": "list_orders_api_workshop_orders_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "List Orders",
+    "tags": [
+     "workshop"
+    ]
+   },
+   "post": {
+    "operationId": "create_order_api_workshop_orders_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CreateOrder"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Create Order",
+    "tags": [
+     "workshop"
+    ]
+   }
+  },
+  "/api/workshop/orders/{order_id}": {
+   "get": {
+    "operationId": "get_order_api_workshop_orders__order_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "order_id",
+      "required": true,
+      "schema": {
+       "title": "Order Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Order",
+    "tags": [
+     "workshop"
+    ]
+   }
+  },
+  "/api/workshop/orders/{order_id}/production-pack": {
+   "get": {
+    "operationId": "get_production_pack_api_workshop_orders__order_id__production_pack_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "order_id",
+      "required": true,
+      "schema": {
+       "title": "Order Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Production Pack",
+    "tags": [
+     "workshop"
+    ]
+   }
+  },
+  "/api/workshop/orders/{order_id}/transition": {
+   "post": {
+    "operationId": "transition_api_workshop_orders__order_id__transition_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "order_id",
+      "required": true,
+      "schema": {
+       "title": "Order Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/Transition"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Transition",
+    "tags": [
+     "workshop"
+    ]
+   }
+  },
+  "/api/workshop/states": {
+   "get": {
+    "operationId": "states_api_workshop_states_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "States",
+    "tags": [
+     "workshop"
+    ]
+   }
+  },
+  "/health": {
+   "get": {
+    "description": "Process-alive only — no dependency checks. See /ready for those.",
+    "operationId": "health_health_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Health"
+   }
+  },
+  "/ready": {
+   "get": {
+    "operationId": "ready_ready_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Ready"
+   }
+  }
+ }
+}
