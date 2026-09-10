@@ -216,13 +216,19 @@ def test_newly_real_scripts_are_backed_by_a_real_font():
 
 def test_true_thuluth_and_diwani_stay_license_required():
     caps = script_capability_map()
-    for family in ("thuluth", "thuluth_jali", "diwani", "diwani_jali"):
+    # Diwani: no rights-cleared source yet → licence required, bridge fonts only.
+    for family in ("diwani", "diwani_jali"):
         assert caps[family]["status"] == LICENSE_REQUIRED, family
         assert caps[family]["fonts"] == [], "a bridge font must never count as the true script"
         assert caps[family]["influenced_available"] is True
+    # Thuluth: TRUE via the OFL AMoshref Thulth (vendored 2026-09-10); the
+    # bridge font (Katibeh) still never counts as the true script.
+    for family in ("thuluth", "thuluth_jali"):
+        assert caps[family]["status"] == REAL, family
+        assert caps[family]["fonts"] == ["amoshref-thulth"]
 
     tokens = production_capability_map()
-    assert tokens["THULUTH"] == LICENSE_REQUIRED
+    assert tokens["THULUTH"] == REAL
     assert tokens["DIWANI"] == LICENSE_REQUIRED
     assert tokens["THULUTH_INFLUENCED"] == REAL
     assert tokens["DIWANI_INFLUENCED"] == REAL
@@ -247,10 +253,13 @@ def test_unavailable_true_style_returns_a_labelled_alternative():
 
 
 def test_diwani_request_is_never_silently_served_by_amiri():
-    for family in ("diwani", "diwani_jali", "thuluth", "thuluth_jali"):
+    for family in ("diwani", "diwani_jali"):
         result = resolve_script_request(family)
         assert result["font_id"] is None
         assert "amiri-regular" not in str(result.get("recommended_font_id"))
+    # Thuluth resolves to its rights-cleared true source, never to a Naskh face.
+    for family in ("thuluth", "thuluth_jali"):
+        assert resolve_script_request(family)["font_id"] == "amoshref-thulth"
 
 
 def test_available_style_resolves_to_its_real_font():

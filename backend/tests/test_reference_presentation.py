@@ -61,9 +61,14 @@ def test_brief_resolves_script_honestly(clean_tables, db_session):
     brief = upsert_brief(db_session, req.id, product_type="pendant", script_family="thuluth")
     res = brief.generation_hints["script_resolution"]
     assert brief.generation_hints["script_family"] == "thuluth"
-    assert res["outcome"] == "STYLE_NOT_AVAILABLE"  # no licensed true Thuluth
-    assert res["recommended_font_id"] == "katibeh"
-    assert brief.generation_hints["preferred_fonts"] == ["katibeh"]
+    assert res["outcome"] == "AVAILABLE"  # OFL AMoshref Thulth (2026-09-10)
+    assert res["font_id"] == "amoshref-thulth"
+    assert "amoshref-thulth" in brief.generation_hints["preferred_fonts"]
+
+    brief = upsert_brief(db_session, req.id, product_type="pendant", script_family="diwani")
+    res = brief.generation_hints["script_resolution"]
+    assert res["outcome"] == "STYLE_NOT_AVAILABLE"  # no rights-cleared true Diwani
+    assert res["recommended_font_id"] == "lemonada" and brief.generation_hints["preferred_fonts"] == ["lemonada"]
     assert "not" in res["message"].lower() or "closest" in res["message"].lower()
 
     brief = upsert_brief(db_session, req.id, product_type="pendant", script_family="kufi")

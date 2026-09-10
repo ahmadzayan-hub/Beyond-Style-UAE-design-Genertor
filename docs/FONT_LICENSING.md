@@ -41,3 +41,13 @@ For Diwani use `--script-family diwani --capability DIWANI`.
 ## 4. What the kit refuses
 `UNKNOWN_RIGHTS` / `INTERNAL_ONLY` rights, missing Arabic letters, fonts without contextual
 forms, golden names shaping to `.notdef`, and duplicate `font_id`s.
+
+
+## 2026-09-10 — owner-supplied fonts (arfonts.net downloads)
+
+| File | Family (name table) | Licence evidence | Decision |
+|---|---|---|---|
+| `amoshref-thulth.ttf` | AMoshref-Thulth v0.1, Ali Moshref | OFL 1.1 in name IDs 13/14 + `OFL.txt` in the download, Reserved Font Name "AMoshref-Thulth" | **Vendored** as `amoshref-thulth` (`VERIFIED_OPEN_SOURCE`, capability THULUTH). OFL permits bundling and commercial use; the Reserved Font Name is not used for any modified version. |
+| `aref-ruqaa-ink-bold.ttf` | Aref Ruqaa Ink Bold v1.008, Abdullah Aref | OFL 1.1 in name table + `OFL.txt`; Google Fonts family | **Vendored** as `aref-ruqaa-ink-bold` (`VERIFIED_OPEN_SOURCE`, capability RUQAA). |
+| `al-diwani-al-majd.ttf`, `al-diwani-al-majd-2.ttf` (three zips, same 2015 family "الديواني المجد") | no designer, no licence fields | `about_this_font.txt`: "We don't know any precise license for this font… Use it at your own risk." | **Not vendored, not registered.** Unknown rights can never back production; it is not even used for previews because a preview would show the customer a style we cannot manufacture. If a licence is obtained (or the designer grants one in writing), onboard it with `scripts/add_font.py --rights COMMERCIAL_LICENSED --capability DIWANI`. |
+| arfonts.net "Diwani Bent" (link only) | — | page not reachable from this environment (egress blocked); no file supplied | Not evaluated. Supply the file + its licence text and it goes through the same path. |

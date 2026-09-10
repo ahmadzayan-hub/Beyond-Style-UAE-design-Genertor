@@ -1,0 +1,56 @@
+{
+ "thuluth-seven-names": {
+  "script_family": "thuluth",
+  "text": "حامد محمد سلطان ميثه حمد خالد مهرة",
+  "internal": 24,
+  "valid": 23,
+  "top": 10,
+  "fonts_in_top": [
+   "amiri-regular",
+   "amoshref-thulth",
+   "katibeh"
+  ],
+  "all_identity_verified": true
+ },
+ "thuluth-maitha": {
+  "script_family": "thuluth",
+  "text": "ميثه",
+  "internal": 58,
+  "valid": 46,
+  "top": 10,
+  "fonts_in_top": [
+   "amiri-regular",
+   "amoshref-thulth",
+   "cairo",
+   "scheherazade-new"
+  ],
+  "all_identity_verified": true
+ },
+ "ruqaa-noura": {
+  "script_family": "ruqaa",
+  "text": "نورة",
+  "internal": 63,
+  "valid": 56,
+  "top": 10,
+  "fonts_in_top": [
+   "amiri-regular",
+   "aref-ruqaa",
+   "aref-ruqaa-ink-bold",
+   "cairo"
+  ],
+  "all_identity_verified": true
+ },
+ "diwani-influenced-maitha": {
+  "script_family": "diwani",
+  "text": "ميثه",
+  "internal": 57,
+  "valid": 50,
+  "top": 10,
+  "fonts_in_top": [
+   "amiri-regular",
+   "cairo",
+   "lemonada"
+  ],
+  "all_identity_verified": true
+ }
+}

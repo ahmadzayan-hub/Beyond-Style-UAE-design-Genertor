@@ -23,9 +23,9 @@ def test_style_catalogue_is_honest_about_availability():
     assert cards["ruqaa"]["status"] == "AVAILABLE" and cards["kufi_modern"]["status"] == "AVAILABLE"
     assert cards["nastaliq_persian"]["status"] == "AVAILABLE" and cards["decorative"]["status"] == "AVAILABLE"
     assert cards["bold"]["status"] == "AVAILABLE" and cards["geometric"]["status"] == "AVAILABLE"
-    # No licensed true Thuluth / Diwani: inspired only, with the honest action label.
-    assert cards["thuluth"]["status"] == "INFLUENCED_ONLY" and "upload" in cards["thuluth"]["action_en"].lower()
-    assert cards["diwani"]["status"] == "INFLUENCED_ONLY"
+    # Thuluth: TRUE via the OFL AMoshref Thulth; Diwani: no rights-cleared source → inspired only.
+    assert cards["thuluth"]["status"] == "AVAILABLE" and cards["thuluth"]["fonts"][0]["font_id"] == "amoshref-thulth"
+    assert cards["diwani"]["status"] == "INFLUENCED_ONLY" and "upload" in cards["diwani"]["action_en"].lower()
     assert cards["kufi_square"]["status"] == "PARAMETRIC_NOT_BUILT"
     assert cards["fatimid_foliated"]["status"] == "UPLOAD_REQUIRED"
     assert cards["experimental_composition"]["status"] == "ENGINE"

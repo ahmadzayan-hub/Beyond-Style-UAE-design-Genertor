@@ -62,7 +62,7 @@ def build_entry(args, path: Path, report: dict, registry: dict) -> dict:
         "style_family": args.style_family or args.script_family,
         "file": path.name,
         "license": args.license,
-        "license_file": Path(args.license_file).name,
+        "license_file": f"{args.font_id}-LICENSE{Path(args.license_file).suffix or '.txt'}",
         "source_url": args.source_url,
         "rights_status": args.rights,
         "redistribution_permitted": not args.no_redistribution,
@@ -127,7 +127,7 @@ def run(args) -> dict:
             raise SystemExit("refusing --write: " + "; ".join(problems))
         assets_dir.mkdir(parents=True, exist_ok=True)
         shutil.copy2(src, assets_dir / src.name)
-        shutil.copy2(lic, assets_dir / lic.name)
+        shutil.copy2(lic, assets_dir / entry["license_file"])
         registry["fonts"].append(entry)
         registry_path.write_text(json.dumps(registry, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         out["written"] = True

@@ -277,7 +277,7 @@ def test_classical_diwani_and_thuluth_cannot_be_selected_through_curation():
     """Curation must not become a back door to the unlicensed scripts."""
     from app.fonts.capabilities import LICENSE_REQUIRED, resolve_script_request
 
-    for family in ("diwani", "diwani_jali", "thuluth", "thuluth_jali"):
+    for family in ("diwani", "diwani_jali"):
         assert resolve_script_request(family)["font_id"] is None
     for label, spec in STYLE_LANGUAGE.items():
         for family in spec["script_families"]:
@@ -288,7 +288,7 @@ def test_classical_diwani_and_thuluth_cannot_be_selected_through_curation():
                 )
     from app.fonts.capabilities import script_capability_map
     caps = script_capability_map()
-    assert caps["thuluth"]["status"] == LICENSE_REQUIRED
+    assert caps["thuluth"]["status"] == "REAL"      # OFL AMoshref Thulth (2026-09-10)
     assert caps["diwani"]["status"] == LICENSE_REQUIRED
 
 

@@ -26,10 +26,10 @@ def private_dir(tmp_path, monkeypatch):
 
 
 def _form(**over):
-    base = {"font_id": "foundry-thuluth-test", "family": "Foundry Thuluth (test)", "license_name": "Foundry EULA",
+    base = {"font_id": "foundry-diwani-test", "family": "Foundry Diwani (test)", "license_name": "Foundry EULA",
             "license_text": "EULA: desktop + product license; outlines in physical goods permitted.",
-            "source_url": "https://foundry.example", "rights": "COMMERCIAL_LICENSED", "script_family": "thuluth",
-            "capability": "THULUTH", "tags": "thuluth,classic", "owner": "beyond-style"}
+            "source_url": "https://foundry.example", "rights": "COMMERCIAL_LICENSED", "script_family": "diwani",
+            "capability": "DIWANI", "tags": "diwani,classic", "owner": "beyond-style"}
     base.update(over)
     return base
 
@@ -38,23 +38,23 @@ def test_upload_activates_a_locked_style_immediately(private_dir):
     from app.fonts.capabilities import production_capability_map
     from app.fonts.styles import style_catalogue
 
-    assert production_capability_map()["THULUTH"] == "LICENSE_REQUIRED"
+    assert production_capability_map()["DIWANI"] == "LICENSE_REQUIRED"
     with TestClient(app) as c:
         h = {"X-Admin-Token": "admin-secret"}
         assert c.post("/api/admin/fonts", data=_form(), files={"file": ("x.ttf", KATIBEH.read_bytes())}).status_code == 403
         r = c.post("/api/admin/fonts", data=_form(), files={"file": ("Foundry.ttf", KATIBEH.read_bytes())}, headers=h)
         assert r.status_code == 201, r.text
         body = r.json()
-        assert body["registered"] and body["production_use"] and body["capability_map"]["THULUTH"] == "REAL"
+        assert body["registered"] and body["production_use"] and body["capability_map"]["DIWANI"] == "REAL"
         assert body["shaping"]["ok"] and body["binary"]["contextual_forms"]
-    assert (private_dir / "foundry-thuluth-test.ttf").exists() and (private_dir / "foundry-thuluth-test-LICENSE.txt").exists()
+    assert (private_dir / "foundry-diwani-test.ttf").exists() and (private_dir / "foundry-diwani-test-LICENSE.txt").exists()
     overlay = json.loads((private_dir / "uploaded_fonts.json").read_text())
     assert overlay["fonts"][0]["rights_status"] == "COMMERCIAL_LICENSED" and overlay["fonts"][0]["upstream_distribution"] == "UPLOAD"
     cards = {s["id"]: s for s in style_catalogue()}
-    assert cards["thuluth"]["status"] == "AVAILABLE" and cards["thuluth"]["fonts"][0]["font_id"] == "foundry-thuluth-test"
+    assert cards["diwani"]["status"] == "AVAILABLE" and cards["diwani"]["fonts"][0]["font_id"] == "foundry-diwani-test"
     with TestClient(app) as c:
         rows = c.get("/api/fonts/registry").json()["fonts"]
-        row = next(r for r in rows if r["font_id"] == "foundry-thuluth-test")
+        row = next(r for r in rows if r["font_id"] == "foundry-diwani-test")
         assert row["production_use"] and row["shaping_status"] == "VERIFIED" and row["hash_sha256"]
 
 
@@ -63,10 +63,10 @@ def test_unknown_rights_never_reach_production(private_dir):
 
     with TestClient(app) as c:
         h = {"X-Admin-Token": "admin-secret"}
-        r = c.post("/api/admin/fonts", data=_form(font_id="mystery-thuluth", rights="UNKNOWN_RIGHTS"),
+        r = c.post("/api/admin/fonts", data=_form(font_id="mystery-diwani", rights="UNKNOWN_RIGHTS"),
                    files={"file": ("m.ttf", KATIBEH.read_bytes())}, headers=h)
         assert r.status_code == 201 and r.json()["production_use"] is False
-    assert production_capability_map()["THULUTH"] == "LICENSE_REQUIRED"   # recorded, not activated
+    assert production_capability_map()["DIWANI"] == "LICENSE_REQUIRED"   # recorded, not activated
 
 
 def test_license_evidence_is_mandatory_and_woff2_is_unpacked(private_dir):

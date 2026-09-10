@@ -1440,6 +1440,86 @@
         "latin_basic": true
       },
       "diversity_index": 36
+    },
+    {
+      "font_id": "amoshref-thulth",
+      "family": "AMoshref Thulth",
+      "style_family": "thuluth",
+      "file": "amoshref-thulth.ttf",
+      "license": "SIL OFL 1.1 (Reserved Font Name AMoshref-Thulth)",
+      "license_file": "AMoshrefThulth-OFL.txt",
+      "source_url": "https://www.arfonts.net/amoshref-thulth-font",
+      "rights_status": "VERIFIED_OPEN_SOURCE",
+      "redistribution_permitted": true,
+      "scripts": [
+        "arab",
+        "latn"
+      ],
+      "supports_harakat": true,
+      "notes": "TRUE THULUTH — Ali Moshref, OFL 1.1 with Reserved Font Name (embedded name-table licence + OFL.txt in the download); owner-supplied 2026-09-10 from arfonts.net. Heavy classical Thuluth with ligatures (liga/clig/rclt), 646 Arabic codepoints.",
+      "script_family": "thuluth",
+      "style_influence": null,
+      "production_capability": "THULUTH",
+      "style_tags": [
+        "thuluth",
+        "classical",
+        "calligraphic",
+        "statement"
+      ],
+      "version": "Version 0.1 ",
+      "file_sha256": "8ef607c6b0b2e74594243a70476542922c9f8bd6c122cef1355ba161d3194e36",
+      "upstream_repo": "",
+      "upstream_distribution": "https://www.arfonts.net/amoshref-thulth-font (OFL 1.1, licence embedded in name table + OFL.txt)",
+      "upstream_path": "",
+      "upstream_ref": "",
+      "upstream_commit": null,
+      "upstream_commit_status": "",
+      "retrieved_at": "2026-09-10",
+      "script_coverage": {
+        "arabic_codepoints": 646,
+        "latin_basic": true
+      },
+      "diversity_index": 37
+    },
+    {
+      "font_id": "aref-ruqaa-ink-bold",
+      "family": "Aref Ruqaa Ink",
+      "style_family": "ruqaa",
+      "file": "aref-ruqaa-ink-bold.ttf",
+      "license": "SIL OFL 1.1",
+      "license_file": "ArefRuqaaInkBold-OFL.txt",
+      "source_url": "https://github.com/google/fonts/tree/main/ofl/arefruqaaink",
+      "rights_status": "VERIFIED_OPEN_SOURCE",
+      "redistribution_permitted": true,
+      "scripts": [
+        "arab",
+        "latn"
+      ],
+      "supports_harakat": true,
+      "notes": "RUQAA Bold weight (Abdullah Aref, OFL 1.1, Google Fonts family Aref Ruqaa Ink) — heavier strokes for cut-out jewellery; owner-supplied 2026-09-10.",
+      "script_family": "ruqaa",
+      "style_influence": null,
+      "production_capability": "RUQAA",
+      "style_tags": [
+        "ruqaa",
+        "ink",
+        "bold",
+        "manufacturing_safe"
+      ],
+      "version": "Version 1.008",
+      "file_sha256": "3f044b4c14457c96747f43cfcb7f80bf94db51951a3f8042e4ec522ba49601f1",
+      "upstream_repo": "",
+      "upstream_distribution": "https://github.com/google/fonts",
+      "upstream_path": "",
+      "upstream_ref": "",
+      "upstream_commit": null,
+      "upstream_commit_status": "",
+      "retrieved_at": "2026-09-10",
+      "script_coverage": {
+        "arabic_codepoints": 114,
+        "latin_basic": true
+      },
+      "diversity_index": 38
     }
   ]
 }

@@ -308,10 +308,16 @@ def test_customer_never_receives_numeric_axis_values():
 
 # --- boundaries that must not move -----------------------------------------
 
-def test_true_diwani_and_thuluth_status_unchanged():
-    from app.fonts.capabilities import LICENSE_REQUIRED, script_capability_map
+def test_true_diwani_status_unchanged_and_thuluth_only_via_rights_cleared_source():
+    from app.fonts.capabilities import LICENSE_REQUIRED, REAL, script_capability_map
+    from app.fonts.registry import get_registry
 
     caps = script_capability_map()
-    for family in ("diwani", "diwani_jali", "thuluth", "thuluth_jali"):
+    for family in ("diwani", "diwani_jali"):
         assert caps[family]["status"] == LICENSE_REQUIRED
         assert caps[family]["fonts"] == []
+    for family in ("thuluth", "thuluth_jali"):
+        assert caps[family]["status"] == REAL
+        assert caps[family]["fonts"] and all(
+            get_registry().get(fid).rights_status.value == "VERIFIED_OPEN_SOURCE" for fid in caps[family]["fonts"]
+        )

@@ -80,7 +80,7 @@ def test_write_registers_verifies_identity_and_unlocks_true_thuluth(tmp_path, ca
     rc = mod.main(_args(mod, tmp_path, **{"--write": True}))
     out = json.loads(capsys.readouterr().out)
     assert rc == 0 and out["written"] and out["identity_proof"]["all_verified"]
-    assert (assets / "EULA.txt").exists()
+    assert (assets / "test-thuluth-LICENSE.txt").exists()   # licence copied under the font id, never a generic name
 
     from app.fonts import capabilities as cap, registry as reg_mod
 
@@ -97,12 +97,17 @@ def test_write_registers_verifies_identity_and_unlocks_true_thuluth(tmp_path, ca
         cap.script_capability_map.cache_clear()
 
 
-def test_without_a_licensed_cut_thuluth_stays_influenced_only():
+def test_without_a_licensed_cut_diwani_stays_influenced_only():
+    """Diwani has no rights-cleared source (the owner-supplied Al Diwani Al
+    Majd carries no licence) → influenced only. Thuluth is now TRUE through
+    the OFL AMoshref Thulth."""
     from app.fonts import capabilities as cap
 
     cap.script_capability_map.cache_clear()
-    assert cap.production_capability_map()["THULUTH"] == cap.LICENSE_REQUIRED
-    assert cap.resolve_script_request("thuluth")["outcome"] == "STYLE_NOT_AVAILABLE"
+    assert cap.production_capability_map()["DIWANI"] == cap.LICENSE_REQUIRED
+    assert cap.resolve_script_request("diwani")["outcome"] == "STYLE_NOT_AVAILABLE"
+    assert cap.production_capability_map()["THULUTH"] == cap.REAL
+    assert cap.resolve_script_request("thuluth")["outcome"] == "AVAILABLE"
 
 
 def test_scene_grounds_change_only_the_background():
