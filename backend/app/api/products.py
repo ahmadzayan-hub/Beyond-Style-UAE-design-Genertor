@@ -96,3 +96,18 @@ def bracelet_size(wrist_cm: float, fit: str = "standard"):
     except ValueError:
         raise HTTPException(status_code=422, detail={"code": "UNKNOWN_FIT", "fit": fit,
                                                      "known": [r["fit"] for r in load_wearability()["bracelet_size_guide"]["fits"]]})
+
+
+@router.get("/specifications")
+def specifications(product: str | None = None, audience: str | None = None, material: str | None = None,
+                   text_length: int | None = None):
+    """Jewellery specification knowledge with evidence levels. With `product`
+    the response is the copilot's expert brief for that product; without it,
+    the whole knowledge base plus its (honest) online-research status."""
+    from ..services.specifications import expert_brief, load_specifications, research_status
+
+    if product is None:
+        data = load_specifications()
+        return {"specifications_version": data["specifications_version"], "research_status": research_status(),
+                "evidence_levels": data["evidence_levels"], "sections": data["sections"]}
+    return expert_brief(product, audience=audience, material=material, text_length=text_length)

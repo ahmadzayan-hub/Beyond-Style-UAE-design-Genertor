@@ -1,0 +1,157 @@
+{
+  "specifications_version": "2026-09-10",
+  "evidence_levels": {
+    "IN_REPO_VERIFIED": "value already enforced/tested by this platform (materials.json, workshop profiles, calibration coupons)",
+    "OWNER_STATED": "value taken from Beyond Style creatives/catalogue (see wearability.json / product_catalogue.json)",
+    "TRADE_STANDARD_UNVERIFIED_ONLINE": "widely used trade convention written from established jewellery practice; online source fetch was attempted on 2026-09-10 and BLOCKED by the network egress policy — verify_at lists the sources to confirm with scripts/verify_specification_sources.py before quoting to a customer as a standard"
+  },
+  "research_status": {
+    "attempted_at": "2026-09-10",
+    "result": "SKIPPED_NETWORK_BLOCKED",
+    "detail": "WebSearch returned unavailable; WebFetch to en.wikipedia.org, ganoksin.com and moiat.gov.ae was refused by the egress proxy (EGRESS_BLOCKED). No value below is presented as an online-verified fact.",
+    "how_to_verify": "python3 scripts/verify_specification_sources.py  (writes docs/evidence/specification_sources.json)"
+  },
+  "sections": {
+    "ring_sizing": {
+      "evidence_level": "TRADE_STANDARD_UNVERIFIED_ONLINE",
+      "verify_at": ["https://www.iso.org/standard/68440.html", "https://en.wikipedia.org/wiki/Ring_size"],
+      "standard": "ISO 8653 sizes a ring by its inner circumference in millimetres; EU sizes are that circumference; one full US size ≈ 2.55 mm of circumference (≈0.81 mm of diameter).",
+      "table": [
+        {"us": 4, "eu_circumference_mm": 46.8, "diameter_mm": 14.9, "uk_approx": "H"},
+        {"us": 5, "eu_circumference_mm": 49.3, "diameter_mm": 15.7, "uk_approx": "J½"},
+        {"us": 6, "eu_circumference_mm": 51.9, "diameter_mm": 16.5, "uk_approx": "L½"},
+        {"us": 7, "eu_circumference_mm": 54.4, "diameter_mm": 17.3, "uk_approx": "N½"},
+        {"us": 8, "eu_circumference_mm": 57.0, "diameter_mm": 18.1, "uk_approx": "P½"},
+        {"us": 9, "eu_circumference_mm": 59.5, "diameter_mm": 18.9, "uk_approx": "R½"},
+        {"us": 10, "eu_circumference_mm": 62.1, "diameter_mm": 19.8, "uk_approx": "T½"},
+        {"us": 11, "eu_circumference_mm": 64.6, "diameter_mm": 20.6, "uk_approx": "V½"},
+        {"us": 12, "eu_circumference_mm": 67.2, "diameter_mm": 21.4, "uk_approx": "Y"}
+      ],
+      "rules": [
+        "Bands wider than 6 mm fit tighter: recommend half a size up.",
+        "Comfort-fit band thickness 1.5–2.0 mm; flat band 1.2–1.5 mm minimum for engraving.",
+        "Outer-band text height ≈ 60–70 % of band width; a phrase line needs a band ≥ 5 mm; an inner engraving needs ≥ 3 mm band and ≥ 1.2 mm thickness.",
+        "Usable engraving length on the outside ≈ 80 % of the circumference; on the inside ≈ 60 % (leave the size stamp and hallmark area)."
+      ]
+    },
+    "sheet_thickness_and_cut_out_limits": {
+      "evidence_level": "IN_REPO_VERIFIED",
+      "verify_at": ["app/data/materials.json", "app/data/workshop_profiles.json"],
+      "gauge_to_mm": {"18_ga": 1.02, "19_ga": 0.91, "20_ga": 0.81, "21_ga": 0.72, "22_ga": 0.64, "24_ga": 0.51},
+      "rules": [
+        "Cut-out name pendants: 0.8–1.2 mm sheet (1.0 mm standard women's, 1.2–1.5 mm men's / statement / bracelet plates).",
+        "Minimum stroke, gap and bridge come from materials.json + the workshop profile (e.g. silver-925 min stroke 0.6 mm, min bridge 0.8 mm) — the platform's manufacturing gate enforces them; these numbers are not to be relaxed by the copilot.",
+        "Every closed counter (ه م و ص ف ق ة) is an island unless bridged; dots < 0.8 mm diameter are dropped from cut-out geometry only with explicit customer confirmation.",
+        "Polishing removes ≈ 0.05 mm per side; plating adds ≈ 0.003 mm — the outline is exported nominal, allowances live in the profile."
+      ]
+    },
+    "findings_and_attachments": {
+      "evidence_level": "TRADE_STANDARD_UNVERIFIED_ONLINE",
+      "verify_at": ["https://www.ganoksin.com/", "https://www.riogrande.com/"],
+      "rules": [
+        "Integrated ring holes on a cut-out piece: ≥ 1.2 mm inner diameter with ≥ 0.8 mm wall so a 0.8–1.0 mm jump ring passes.",
+        "Jump rings: 0.8–1.0 mm wire, 3–4 mm inner diameter for pendants; soldered closed for anything that carries a chain.",
+        "Bails should be ≥ 1.5 × the chain width; a fixed top loop sits on the vertical centre of gravity or the piece tilts.",
+        "Lobster clasps 9–12 mm (women), 12–16 mm (men); spring rings 5–6 mm; extender chain 3–5 cm with a drop tag.",
+        "Cufflink faces 15–18 mm on a soldered post/toggle; a solid 4 mm pad is reserved on the reverse centre.",
+        "Brooch bar pins: pin wire 0.8–1.0 mm, catch on the reverse of the structural bar, never on a letter.",
+        "Keychain discs 25–35 mm with a top ring ≥ 2 mm inner diameter for a split ring."
+      ]
+    },
+    "chains": {
+      "evidence_level": "OWNER_STATED_AND_TRADE",
+      "verify_at": ["app/data/wearability.json#chain_catalogue", "app/data/wearability.json#necklace_lengths_cm"],
+      "rules": [
+        "Women's name necklaces: cable chain 1.0–1.5 mm, 40–45 cm (+5 cm extender); kids 35–38 cm; men 55–65 cm with 2–6 mm curb/rope.",
+        "Bracelet chain: 16–21 cm total (wrist + 1–2 cm), name plate 25–35 mm wide; men's bracelets 21 cm per the owner's chain catalogue.",
+        "Lariat / Y drop 5–8 cm below the collarbone; station necklaces keep stations ≥ 4 cm apart or they stack.",
+        "Chain weight is added to the plate weight when quoting; the owner's stated per-length weights are in wearability.json."
+      ]
+    },
+    "stones_and_pearls": {
+      "evidence_level": "TRADE_STANDARD_UNVERIFIED_ONLINE",
+      "verify_at": ["https://www.gia.edu/", "https://en.wikipedia.org/wiki/Diamond_cut#Round_brilliant"],
+      "round_stone_mm_to_carat": {"1.0": 0.005, "1.5": 0.015, "2.0": 0.03, "2.5": 0.06, "3.0": 0.10, "3.5": 0.16, "4.0": 0.25, "5.0": 0.50, "6.5": 1.00},
+      "rules": [
+        "A stone that replaces a dot: 1.5–2.0 mm, prong or bezel seat = stone diameter + 0.6 mm; the stroke is widened locally to ≥ 2.6 mm around the seat.",
+        "Bezel wall 0.3–0.4 mm, at least 0.5 mm of metal around any stone; pavé uses 1.0–1.5 mm stones with ≈ 0.3 mm spacing and needs ≥ 1.2 mm plate thickness.",
+        "Pearls as chain stations 3–4 mm (freshwater), drops 6–8 mm; drilled pearls are chain parts, never cut geometry.",
+        "Coloured glass beads (evil eye, turquoise) are threaded stations or capped drops — a BOM item with a ring, not part of the outline."
+      ]
+    },
+    "enamel": {
+      "evidence_level": "TRADE_STANDARD_UNVERIFIED_ONLINE",
+      "verify_at": ["https://www.ganoksin.com/article/enameling-basics/"],
+      "rules": [
+        "Enamel needs closed cells: wall ≥ 0.4 mm (cold/resin enamel) or ≥ 0.6 mm (vitreous), recess 0.3–0.5 mm deep.",
+        "Colour is a finishing instruction; only cell walls are cut geometry (materials.json marks enamel as visual-preview-only for weight)."
+      ]
+    },
+    "metals_fineness_and_marking": {
+      "evidence_level": "TRADE_STANDARD_UNVERIFIED_ONLINE",
+      "verify_at": ["https://www.moiat.gov.ae/", "https://www.dm.gov.ae/", "https://en.wikipedia.org/wiki/Hallmark"],
+      "fineness": {"24K": 999, "22K": 916, "21K": 875, "18K": 750, "14K": 585, "9K": 375, "sterling_silver": 925},
+      "density_g_cm3": {"24K": 19.3, "22K": 17.8, "21K": 17.2, "18K_yellow": 15.5, "14K": 13.6, "silver_925": 10.36, "brass": 8.5, "stainless_316L": 7.9},
+      "rules": [
+        "Gulf customers commonly buy 21K and 18K gold; 925 silver (plain, gold-plated or rhodium-plated) is the everyday personalised line.",
+        "UAE: precious-metal articles are expected to carry a fineness stamp / hallmark — reserve a flat ≥ 3 × 1.5 mm area on the reverse (or inside a ring band) for the stamp; confirm the current UAE rule with MoIAT / Dubai Central Laboratory before claiming compliance.",
+        "Gold plating: flash < 0.5 µm, standard 1–2.5 µm; 'vermeil' means ≥ 2.5 µm gold over sterling (US FTC definition) — do not use the word otherwise.",
+        "White gold is rhodium-plated 0.5–1 µm; polishing allowance and plating allowance are already in materials.json."
+      ],
+      "weight_formula": "grams = area_mm2 × thickness_mm × density_g_cm3 / 1000 (the platform's weight report computes this from the real outline)"
+    },
+    "product_size_envelopes": {
+      "evidence_level": "OWNER_SAMPLES_AND_TRADE",
+      "verify_at": ["app/data/golden_production_cases.py", "app/data/workshop_profiles.json"],
+      "envelopes_mm": {
+        "name_necklace_women": {"width": [30, 45], "height": [8, 14], "thickness": [0.9, 1.2]},
+        "name_necklace_kids": {"width": [20, 30], "height": [7, 10], "thickness": [0.9, 1.1]},
+        "statement_pendant": {"width": [30, 45], "height": [40, 60], "thickness": [1.2, 1.5]},
+        "bracelet_plate": {"width": [25, 35], "height": [6, 10], "thickness": [1.0, 1.2]},
+        "cufflink_face": {"width": [15, 18], "height": [15, 18], "thickness": [1.2, 1.5]},
+        "keychain_disc": {"width": [25, 35], "height": [25, 35], "thickness": [1.2, 1.5]},
+        "brooch_bar": {"width": [45, 60], "height": [12, 20], "thickness": [1.0, 1.2]},
+        "car_mirror_hanger": {"width": [40, 60], "height": [90, 140], "thickness": [1.2, 1.5]},
+        "single_letter_earring": {"width": [8, 14], "height": [10, 18], "thickness": [0.8, 1.0]}
+      },
+      "rules": [
+        "Earrings: ≤ 2 g each for studs, ≤ 5 g for drops; post 0.8 mm × 10 mm.",
+        "A dainty name reads best at 30–35 mm wide × 1.0 mm thick; men's pieces go to 45 mm and 1.5 mm.",
+        "Kids: bold rounded lettering, stroke ≥ 1.0 mm, no free-hanging hairlines."
+      ]
+    },
+    "engraving": {
+      "evidence_level": "TRADE_STANDARD_UNVERIFIED_ONLINE",
+      "verify_at": ["https://www.ganoksin.com/"],
+      "rules": [
+        "Laser engraving: Latin text ≥ 1.0–1.5 mm cap height; Arabic ≥ 2.0 mm x-height so dots and teeth stay legible; line width ≈ 0.1–0.15 mm, depth 0.05–0.1 mm (hand engraving 0.2–0.3 mm).",
+        "Engraved text is never subject to cut-out connectivity rules, but it is still exact-text: the confirmed source text, shaping and order are locked exactly like a cut-out design.",
+        "Dates and short phrases go on discs and bar plates; a solid engraved disc can carry far denser text than a pierced plate of the same size."
+      ]
+    },
+    "arabic_text_on_jewellery": {
+      "evidence_level": "IN_REPO_VERIFIED",
+      "verify_at": ["app/engines/arabic_engine.py", "app/engines/text_integrity.py"],
+      "rules": [
+        "Source text is customer-confirmed Unicode, never read from a photo; shaping via HarfBuzz; identity is verified letter-by-letter before export.",
+        "Dots are structural islands: bridge to the body (preferred), fill into a plate, or replace one dot with a stone — every option is shown before/after and confirmed.",
+        "Harakat are optional ornament; dropping or keeping them is a customer decision recorded in the brief; sacred text keeps them exactly as in the canonical source.",
+        "Names ending in a low letter (ي ى ن) get the right-hand ring on a raised terminal stroke; multi-name and station layouts lock the reading order in the version hash."
+      ]
+    },
+    "customer_request_playbook": {
+      "evidence_level": "OWNER_SAMPLES",
+      "verify_at": ["docs/reference/owner-samples/README.md"],
+      "requests": [
+        {"ask": "same design, change the name", "route": "exact-text-replacement → keep construction + attachment, regenerate letterforms for the confirmed text, re-run the gate"},
+        {"ask": "name with a stone dot", "route": "thin naskh/diwani name, one 1.5–2.0 mm prong seat replacing a dot, stroke widened locally"},
+        {"ask": "two names / family", "route": "heart-joined pair, layered 2–3 chain set, or station necklace with reading order locked"},
+        {"ask": "name + prayer disc / date", "route": "cut-out name over an engraved disc (sacred text → enhanced verification) or engraved date line"},
+        {"ask": "kids bracelet / necklace", "route": "bold rounded script, stroke ≥ 1.0 mm, 35–38 cm chain or 14–16 cm bracelet, crown/heart/enamel accents at the ends"},
+        {"ask": "men's cufflinks / keychain / ring", "route": "relief on a darkened disc (dense text allowed) or engraved band; no cut-out hairlines"},
+        {"ask": "car mirror hanger / gift", "route": "stacked plates with centre-line rings; a brand logo request is an IP risk → inspired plain medallion instead"},
+        {"ask": "copy this branded piece", "route": "style-inspired-redesign only: extract DNA, never geometry; flag copyright/brand risk; offer inspired alternatives"}
+      ]
+    }
+  }
+}

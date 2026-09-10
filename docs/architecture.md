@@ -55,6 +55,10 @@ table, necklace lengths, men's chain length/weight) — served by
 Golden Production Memory cases (`app/data/golden_production_cases.py`) hold the
 owner's samples as construction lessons; see
 `docs/reference/owner-samples/README.md` for the privacy/rights rules.
+`app/data/jewellery_specifications.json` + `app/services/specifications.py`
+are the copilot's specification layer (evidence-labelled trade standards,
+owner values, in-repo limits) served through `retrieve_design_memory` and
+`/api/products/specifications`; deterministic engines always override it.
 Copilot: frontend panel (sliders/selects, undo/redo over immutable
 versions) driving the existing `/edit` endpoint — every accepted edit is
 a new DesignVersion.

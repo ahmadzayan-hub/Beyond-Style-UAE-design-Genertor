@@ -1,0 +1,130 @@
+{
+  "checked_at": "2026-09-10T11:22:27+00:00",
+  "specifications_version": "2026-09-10",
+  "reachable": 0,
+  "blocked_or_unreachable": 11,
+  "in_repo": 9,
+  "note": "REACHABLE only means the URL resolved; values must still be confirmed by a person before an evidence level is raised.",
+  "results": [
+    {
+      "url": "https://www.iso.org/standard/68440.html",
+      "status": "UNREACHABLE",
+      "detail": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+      "section": "ring_sizing"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Ring_size",
+      "status": "UNREACHABLE",
+      "detail": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+      "section": "ring_sizing"
+    },
+    {
+      "section": "sheet_thickness_and_cut_out_limits",
+      "url": "app/data/materials.json",
+      "status": "IN_REPO",
+      "exists": true
+    },
+    {
+      "section": "sheet_thickness_and_cut_out_limits",
+      "url": "app/data/workshop_profiles.json",
+      "status": "IN_REPO",
+      "exists": true
+    },
+    {
+      "url": "https://www.ganoksin.com/",
+      "status": "UNREACHABLE",
+      "detail": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+      "section": "findings_and_attachments"
+    },
+    {
+      "url": "https://www.riogrande.com/",
+      "status": "UNREACHABLE",
+      "detail": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+      "section": "findings_and_attachments"
+    },
+    {
+      "section": "chains",
+      "url": "app/data/wearability.json#chain_catalogue",
+      "status": "IN_REPO",
+      "exists": true
+    },
+    {
+      "section": "chains",
+      "url": "app/data/wearability.json#necklace_lengths_cm",
+      "status": "IN_REPO",
+      "exists": true
+    },
+    {
+      "url": "https://www.gia.edu/",
+      "status": "UNREACHABLE",
+      "detail": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+      "section": "stones_and_pearls"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Diamond_cut#Round_brilliant",
+      "status": "UNREACHABLE",
+      "detail": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+      "section": "stones_and_pearls"
+    },
+    {
+      "url": "https://www.ganoksin.com/article/enameling-basics/",
+      "status": "UNREACHABLE",
+      "detail": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+      "section": "enamel"
+    },
+    {
+      "url": "https://www.moiat.gov.ae/",
+      "status": "UNREACHABLE",
+      "detail": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+      "section": "metals_fineness_and_marking"
+    },
+    {
+      "url": "https://www.dm.gov.ae/",
+      "status": "UNREACHABLE",
+      "detail": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+      "section": "metals_fineness_and_marking"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Hallmark",
+      "status": "UNREACHABLE",
+      "detail": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+      "section": "metals_fineness_and_marking"
+    },
+    {
+      "section": "product_size_envelopes",
+      "url": "app/data/golden_production_cases.py",
+      "status": "IN_REPO",
+      "exists": true
+    },
+    {
+      "section": "product_size_envelopes",
+      "url": "app/data/workshop_profiles.json",
+      "status": "IN_REPO",
+      "exists": true
+    },
+    {
+      "url": "https://www.ganoksin.com/",
+      "status": "UNREACHABLE",
+      "detail": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+      "section": "engraving"
+    },
+    {
+      "section": "arabic_text_on_jewellery",
+      "url": "app/engines/arabic_engine.py",
+      "status": "IN_REPO",
+      "exists": true
+    },
+    {
+      "section": "arabic_text_on_jewellery",
+      "url": "app/engines/text_integrity.py",
+      "status": "IN_REPO",
+      "exists": true
+    },
+    {
+      "section": "customer_request_playbook",
+      "url": "docs/reference/owner-samples/README.md",
+      "status": "IN_REPO",
+      "exists": false
+    }
+  ]
+}

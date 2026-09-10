@@ -3511,6 +3511,102 @@
     ]
    }
   },
+  "/api/products/specifications": {
+   "get": {
+    "description": "Jewellery specification knowledge with evidence levels. With `product`\nthe response is the copilot's expert brief for that product; without it,\nthe whole knowledge base plus its (honest) online-research status.",
+    "operationId": "specifications_api_products_specifications_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "product",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Product"
+      }
+     },
+     {
+      "in": "query",
+      "name": "audience",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Audience"
+      }
+     },
+     {
+      "in": "query",
+      "name": "material",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Material"
+      }
+     },
+     {
+      "in": "query",
+      "name": "text_length",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Text Length"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Specifications",
+    "tags": [
+     "products"
+    ]
+   }
+  },
   "/api/validation/pack": {
    "get": {
     "operationId": "public_pack_api_validation_pack_get",

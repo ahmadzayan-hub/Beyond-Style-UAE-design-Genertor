@@ -64,19 +64,33 @@ def _analyze_reference(session: Session, reference_id: uuid.UUID) -> dict:
 
 
 class RetrieveDesignMemoryInput(BaseModel):
-    pass
+    #: Optional product focus. When given, the response also carries the
+    #: expert specification brief (trade standards with evidence levels +
+    #: proven lessons from the Golden Production Memory) for that product.
+    product: str | None = None
+    audience: str | None = None
+    material: str | None = None
+    text_length: int | None = None
 
 
 class RetrieveDesignMemoryOutput(BaseModel):
     recipe_family_weights: dict[str, float]
     workshop_failure_constraints: list[dict]
+    expert_brief: dict | None = None
 
 
-def _retrieve_design_memory(session: Session) -> dict:
-    return {
+def _retrieve_design_memory(session: Session, product: str | None = None, audience: str | None = None,
+                            material: str | None = None, text_length: int | None = None) -> dict:
+    from ..services.specifications import expert_brief
+
+    out = {
         "recipe_family_weights": dm_service.recipe_family_weights(session),
         "workshop_failure_constraints": dm_service.workshop_failure_constraints(session),
+        "expert_brief": None,
     }
+    if product:
+        out["expert_brief"] = expert_brief(product, audience=audience, material=material, text_length=text_length)
+    return out
 
 
 # --------------------------------------------------------- generate_design_recipes
