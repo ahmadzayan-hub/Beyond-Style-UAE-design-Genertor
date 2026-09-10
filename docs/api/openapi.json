@@ -3337,6 +3337,180 @@
     ]
    }
   },
+  "/api/products/catalogue": {
+   "get": {
+    "description": "Owner catalogue items with stated starting prices (AED).",
+    "operationId": "product_catalogue_api_products_catalogue_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "family",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Family"
+      }
+     },
+     {
+      "in": "query",
+      "name": "text_process",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Text Process"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Product Catalogue",
+    "tags": [
+     "products"
+    ]
+   }
+  },
+  "/api/products/catalogue/{code}": {
+   "get": {
+    "operationId": "product_catalogue_item_api_products_catalogue__code__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "code",
+      "required": true,
+      "schema": {
+       "title": "Code",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Product Catalogue Item",
+    "tags": [
+     "products"
+    ]
+   }
+  },
+  "/api/products/size-guide": {
+   "get": {
+    "description": "Bracelet fit table (owner-published), necklace length chart\n(industry standard) and the men's chain length/weight catalogue\n(owner-stated). Each table carries its own evidence_level.",
+    "operationId": "size_guide_api_products_size_guide_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Size Guide",
+    "tags": [
+     "products"
+    ]
+   }
+  },
+  "/api/products/size-guide/bracelet": {
+   "get": {
+    "operationId": "bracelet_size_api_products_size_guide_bracelet_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "wrist_cm",
+      "required": true,
+      "schema": {
+       "title": "Wrist Cm",
+       "type": "number"
+      }
+     },
+     {
+      "in": "query",
+      "name": "fit",
+      "required": false,
+      "schema": {
+       "default": "standard",
+       "title": "Fit",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Bracelet Size",
+    "tags": [
+     "products"
+    ]
+   }
+  },
   "/api/validation/pack": {
    "get": {
     "operationId": "public_pack_api_validation_pack_get",

@@ -46,6 +46,15 @@ canonical mm geometry; production exports stay single-silhouette.
 (family, purpose, products, text-length fit, constraints, rights).
 Long-text (>8 letters) gets a deterministic stroke/size adaptation.
 Golden visual regression fixture: `tests/golden/golden_visual.json`.
+
+Owner reference data (never computed, evidence level on every table):
+`app/data/product_catalogue.json` (catalogue codes, AR/EN titles, AED starting
+prices, text process per item) and `app/data/wearability.json` (bracelet fit
+table, necklace lengths, men's chain length/weight) — served by
+`app/api/products.py` (`/api/products/catalogue`, `/api/products/size-guide`).
+Golden Production Memory cases (`app/data/golden_production_cases.py`) hold the
+owner's samples as construction lessons; see
+`docs/reference/owner-samples/README.md` for the privacy/rights rules.
 Copilot: frontend panel (sliders/selects, undo/redo over immutable
 versions) driving the existing `/edit` endpoint — every accepted edit is
 a new DesignVersion.

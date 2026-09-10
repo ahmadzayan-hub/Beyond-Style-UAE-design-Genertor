@@ -1,0 +1,47 @@
+{
+  "wearability_version": "1.0.0",
+  "note": "Size and length reference used by the wearability score and the customer size guide. Every table names its evidence level: OWNER_PUBLISHED (from Beyond Style's own size-guide creative), OWNER_CATALOGUE_STATED (from the owner's catalogue/ads, not measured on this platform), INDUSTRY_STANDARD (common trade chart). Nothing here is measured by the platform.",
+  "bracelet_size_guide": {
+    "evidence_level": "OWNER_PUBLISHED",
+    "source_sha256": "8613fb79e94569970af550b9bdc3ff3833a4b59cdcb3114edf14cc4de32a6943",
+    "unit": "cm",
+    "how_to_measure": "Wrap a measuring tape or a thin strip of paper around the wrist just above the wrist bone, snug but not tight, and read in centimetres. Measure at the end of the day; if between two sizes choose the larger.",
+    "fits": [
+      {"fit": "snug", "label_en": "Snug Fit", "label_ar": "مقاس ضيق", "wrist_cm": [15, 16], "bracelet_cm": 16},
+      {"fit": "standard", "label_en": "Comfortable Fit (Standard)", "label_ar": "مقاس مريح (قياسي)", "wrist_cm": [16, 17], "bracelet_cm": 17},
+      {"fit": "slightly_loose", "label_en": "Slightly Loose", "label_ar": "واسع قليلاً", "wrist_cm": [17, 18], "bracelet_cm": 18},
+      {"fit": "loose", "label_en": "Loose Fit", "label_ar": "مقاس واسع", "wrist_cm": [18, 19], "bracelet_cm": 19},
+      {"fit": "very_loose", "label_en": "Very Loose", "label_ar": "واسع جداً", "wrist_cm": [19, 20], "bracelet_cm": 20},
+      {"fit": "extra_loose", "label_en": "Extra Loose", "label_ar": "واسع للغاية", "wrist_cm": [20, 21], "bracelet_cm": 21}
+    ],
+    "rule": "recommended bracelet length = wrist measurement + 1 to 2 cm depending on preferred fit"
+  },
+  "necklace_lengths_cm": {
+    "evidence_level": "INDUSTRY_STANDARD",
+    "note": "Standard trade chart (35–80 cm / 16–30 in). Third-party guide graphics supplied by the owner are registered by hash in golden case BS-GPC-0028 and not stored.",
+    "lengths": [
+      {"cm": 35, "inch": 14, "name_en": "collar", "sits": "tight at the base of the neck"},
+      {"cm": 40, "inch": 16, "name_en": "choker", "sits": "at the base of the neck"},
+      {"cm": 45, "inch": 18, "name_en": "princess", "sits": "on the collarbone — default for name necklaces (women)"},
+      {"cm": 50, "inch": 20, "name_en": "matinee short", "sits": "just below the collarbone"},
+      {"cm": 55, "inch": 22, "name_en": "matinee", "sits": "upper chest — default for men's pendants"},
+      {"cm": 60, "inch": 24, "name_en": "matinee long", "sits": "mid chest"},
+      {"cm": 70, "inch": 28, "name_en": "opera", "sits": "below the bust"},
+      {"cm": 80, "inch": 30, "name_en": "rope", "sits": "waist length"}
+    ],
+    "defaults_by_audience": {"women": 45, "men": 55, "kids": 35, "unisex": 50}
+  },
+  "chain_catalogue": {
+    "evidence_level": "OWNER_CATALOGUE_STATED",
+    "note": "Men's 925 silver chain profiles as stated in Beyond Style catalogue creatives (golden case BS-GPC-0017). Weights are the owner's stated values per length; a name pendant's weight is added on top when quoting.",
+    "unit": {"length": "cm", "weight": "g"},
+    "profiles": [
+      {"code": "C160",   "necklace": [[55, 26.1], [60, 28.4], [65, 31.2]], "bracelet": [[21, 9.8]]},
+      {"code": "GBD150", "necklace": [[55, 30.1], [60, 33.1], [65, 35.6]], "bracelet": [[21, 11.4]]},
+      {"code": "C200",   "necklace": [[55, 37.2], [60, 41.1], [65, 43.5]], "bracelet": [[21, 15.8]]},
+      {"code": "G150",   "necklace": [[55, 31.9], [60, 34.3], [65, 38.1]], "bracelet": [[21, 12.1]]},
+      {"code": "C140",   "necklace": [[55, 46.4], [60, 51.4], [65, 55.5]], "bracelet": [[21, 17.6]]}
+    ],
+    "men_default_lengths_cm": {"necklace": [55, 60, 65], "bracelet": 21}
+  }
+}

@@ -32,6 +32,13 @@ Al Majd* (1 & 2, 2015) carries no licence in its name table and the source page 
 held out of the registry (see `docs/FONT_LICENSING.md`). Customers get Diwani-inspired
 designs from the bridge fonts, clearly labelled.
 
+**Owner reference — DecoType Thuluth III (2026-09-10).** The owner supplied a specimen of
+*DecoType Thuluth III* (Tasmeem/WinSoft, commercial, licence-locked) among the sample
+images. It is kept as a *reference only* (`docs/reference/owner-samples/13-…`): the
+registry does not vendor it, no glyphs are traced from it, and the true-Thuluth capability
+comes solely from the OFL *AMoshref Thulth*. If the owner licenses DecoType, it is onboarded
+through `scripts/add_font.py` with its licence text like every other source.
+
 ## The chosen calligraphy is what the customer sees
 
 When a style with a TRUE source is requested, the generator clones the whole archetype

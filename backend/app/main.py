@@ -14,6 +14,7 @@ from .api.ai import ref_router as ai_ref_router, router as ai_router
 from .api.customers import me_router as customers_me_router, router as customers_router
 from .api.designs import approval_router, fonts_router, router as designs_router, versions_router
 from .api.intake import router as intake_router
+from .api.products import router as products_router
 from .api.visual import orchestration_router, router as visual_router
 from .api.workshop import router as workshop_router
 from .api.validation import router as validation_router
@@ -65,6 +66,7 @@ app.include_router(approval_router)
 app.include_router(customers_router)
 app.include_router(customers_me_router)
 app.include_router(fonts_router)
+app.include_router(products_router)
 app.include_router(ai_router)
 app.include_router(ai_ref_router)
 app.include_router(visual_router)

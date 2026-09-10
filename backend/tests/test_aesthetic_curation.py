@@ -267,8 +267,27 @@ def test_golden_case_influences_the_matching_products():
 
     necklace = golden_case_influence("necklace")
     assert any("OUTER_CHAIN" in e["construction_principles"] for e in necklace)
-    # A product neither case covers gets nothing invented for it.
-    assert golden_case_influence("cufflink") == []
+    # Manufactured evidence is listed before marketing renders.
+    tiers = [e["evidence_tier"] for e in necklace]
+    assert tiers == sorted(tiers, key=EVIDENCE_PRIORITY.index)
+    # A product no case covers gets nothing invented for it.
+    assert golden_case_influence("anklet") == []
+
+
+def test_owner_samples_inform_their_own_product_families_only():
+    ring = golden_case_influence("ring")
+    assert ring and all("RING" in e["case_id"].upper() or "ring" in e["case_id"] for e in ring)
+    assert not any("earring" in e["case_id"] for e in ring), "RING must not match EARRING"
+    assert golden_case_influence("keychain") and golden_case_influence("brooch") and golden_case_influence("bracelet")
+    assert all(e["evidence_tier"] == "MANUFACTURED_OWNER_SAMPLE" for e in golden_case_influence("cufflink"))
+
+
+def test_third_party_market_references_never_influence_generation():
+    from app.data.golden_production_cases import GOLDEN_PRODUCTION_CASES
+    third_party = {c["case_id"] for c in GOLDEN_PRODUCTION_CASES if c["rights_provenance"] != "BEYOND_STYLE_OWNED"}
+    assert third_party
+    for product in ("necklace", "bracelet", "cufflink", "pendant", "ring"):
+        assert not third_party & {e["case_id"] for e in golden_case_influence(product)}
 
 
 # --- boundaries that must not move -----------------------------------------

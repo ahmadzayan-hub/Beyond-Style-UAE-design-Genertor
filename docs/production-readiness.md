@@ -148,6 +148,16 @@ is never claimed for an area whose acceptance E2E has not passed.
 | Real selection lifecycle (who chose what, when) | WORKING | `design_process` + `variant_selection` per case; 3 lifecycle tests | Case 2's selected writing style is inferred from the finished piece, flagged as such |
 | Admin view | WORKING | real-uvicorn 403/200 smoke; `/admin/golden-cases` route in the Next.js build | Evidence binaries not uploaded, so the view lists descriptors, not images |
 
+### Owner sample ingestion (2026-09-10 — 64 images in four batches)
+| Capability | Status | Evidence | Honest limitation |
+|---|---|---|---|
+| 25 owner cases (BS-GPC-0003…0028) as structured construction lessons | WORKING | `test_golden_production_memory.py` (17 tests, 27 cases seed idempotently); `docs/reference/owner-samples/README.md` index | No text read off photos: every owner case is `customer_source_text=None`, pending tier; lessons are human-curated, not measured |
+| New evidence tiers `MANUFACTURED_OWNER_SAMPLE` (0.9) / `MARKETING_RENDER_UNMANUFACTURED` (0.3) | WORKING | `test_owner_sample_tiers_rank_between_customer_approved_and_ai`; `EVIDENCE_PRIORITY` extended | Weights are fixed constants |
+| Privacy: children / faces / on-body / customer name+date photos hash-only | WORKING | `test_third_party_and_personal_evidence_is_hash_only` (24 `EXCLUDED_*` items, none exported) | Owner-owned binaries still `PENDING_OBJECT_STORE_UPLOAD` (only downscaled docs copies exist) |
+| Rights: third-party / unknown-origin market photos never influence generation or export | WORKING | `test_third_party_references_never_reach_training_export`, `test_third_party_market_references_never_influence_generation` | Advisory retrieval for the designer only |
+| Generation influence for bracelet / ring / cufflink / keychain / brooch / hanger | WORKING | `golden_case_influence` product-family map, token-boundary matching (`RING` ≠ `EARRING`), ordered by evidence priority; `test_owner_samples_inform_their_own_product_families_only` | Lessons are surfaced to the copilot/curation layer; recipes for keychain/brooch/hanger geometry are not built |
+| Product catalogue (75 items, AED starting prices) + size guide API | WORKING | `GET /api/products/catalogue[/{code}]`, `GET /api/products/size-guide[/bracelet]`; `tests/test_products_api.py` (5 tests); OpenAPI 94 paths | Prices are OWNER_CATALOGUE_STATED, transcribed from catalogue screenshots (24/33 rings, 6/11 brooches, 45/57 necklaces seen) — never computed; chain weights are owner-stated, not weighed here |
+
 ## Known honest limitations
 - Deterministic dot/text bridges take the shortest path and can look crude (e.g. a diagonal chord inside a medallion ring) — aesthetic bridge routing is a future refinement; geometry is manufacturable.
 - Copilot edits are composition-level parameters; per-glyph move/tail/swash requires the glyph-variant library (later slice).

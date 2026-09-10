@@ -47,7 +47,8 @@ def _case(session, case_id) -> m.GoldenProductionCase:
 def test_seed_is_idempotent(seeded):
     assert seed_golden_cases(seeded) == []
     rows = seeded.execute(select(m.GoldenProductionCase)).scalars().all()
-    assert len(rows) == 2
+    from app.data.golden_production_cases import GOLDEN_PRODUCTION_CASES
+    assert len(rows) == len(GOLDEN_PRODUCTION_CASES) == 27
 
 
 def test_arabic_letter_earring_request_retrieves_the_real_case(seeded):
@@ -121,6 +122,7 @@ def test_manufactured_approved_memory_outranks_lower_evidence_tiers(seeded):
         seeded,
         {"product_type": "necklace", "script_family": "latin_script", "composition": "stacked",
          "keywords": ["layered necklace"]},
+        top_k=50,
     )
     ranked = [r["case_id"] for r in results]
     assert ranked.index(NECKLACE_CASE) < ranked.index("TEST-external-inspiration")
@@ -274,3 +276,50 @@ def test_proven_process_transfers_but_geometry_still_does_not(seeded):
     assert hints["proven_process"], "a proven process is reusable memory"
     assert hints["proven_process"][0]["actor"] == "customer"
     assert not (GEOMETRY_KEYS & set(hints))
+
+
+# --- owner sample batches (2026-09-10) ----------------------------------------
+
+def test_owner_samples_never_carry_customer_text_and_stay_pending(seeded):
+    """Text read off a photo is never source text: every owner sample seeds
+    with no customer_source_text and sits in the PENDING tier until the
+    customer confirms the exact text on the platform."""
+    rows = seeded.execute(select(m.GoldenProductionCase)).scalars().all()
+    owner = [r for r in rows if r.evidence_tier in ("MANUFACTURED_OWNER_SAMPLE", "MARKETING_RENDER_UNMANUFACTURED", "EXTERNAL_INSPIRATION")]
+    assert len(owner) == 25
+    for r in owner:
+        assert r.customer_source_text is None
+        assert r.source_text_status == "PENDING_CUSTOMER_VERIFICATION"
+        assert r.memory_tier == "GOLDEN_PRODUCTION_PENDING_TEXT_VERIFICATION"
+        assert r.customer_approved is False
+
+
+def test_owner_sample_tiers_rank_between_customer_approved_and_ai():
+    w = EVIDENCE_TIER_WEIGHTS
+    assert w["MANUFACTURED_CUSTOMER_APPROVED"] > w["MANUFACTURED_OWNER_SAMPLE"] > w["DESIGNER_APPROVED"]
+    assert w["AI_GENERATED_UNMANUFACTURED"] > w["MARKETING_RENDER_UNMANUFACTURED"] > w["EXTERNAL_INSPIRATION"]
+
+
+def test_third_party_and_personal_evidence_is_hash_only(seeded):
+    """Children's photos, on-body photos and third-party brand photos are
+    registered by sha256 only — never stored, never exported."""
+    from app.data.golden_production_cases import GOLDEN_PRODUCTION_CASES
+    excluded = [e for c in GOLDEN_PRODUCTION_CASES for e in c["evidence"] if e["storage_status"].startswith("EXCLUDED_")]
+    assert len(excluded) >= 20
+    assert all(e["storage_key"] is None and len(e["sha256"]) == 64 for e in excluded)
+    exported_shas = {e["sha256"] for c in golden_training_export(seeded) for e in c["evidence"]}
+    assert not exported_shas & {e["sha256"] for e in excluded}
+
+
+def test_third_party_references_never_reach_training_export(seeded):
+    from app.data.golden_production_cases import GOLDEN_PRODUCTION_CASES
+    third_party = {c["case_id"] for c in GOLDEN_PRODUCTION_CASES if c["rights_provenance"] not in ("BEYOND_STYLE_OWNED", "CUSTOMER_OWNED", "LICENSED")}
+    assert third_party, "the kids/cufflink/size-guide market references must be registered as third-party"
+    assert not third_party & {c["case_id"] for c in golden_training_export(seeded)}
+
+
+def test_owner_samples_are_retrievable_for_new_product_families(seeded):
+    hits = retrieve_golden_cases(seeded, {"product_type": "keychain", "keywords": ["keychain", "engraved disc"]}, top_k=3)
+    assert hits and hits[0]["case_id"].startswith("BS-GPC-0011")
+    hits = retrieve_golden_cases(seeded, {"product_type": "brooch", "keywords": ["hijab pin", "name brooch"]}, top_k=3)
+    assert any(h["case_id"].startswith("BS-GPC-0015") for h in hits)

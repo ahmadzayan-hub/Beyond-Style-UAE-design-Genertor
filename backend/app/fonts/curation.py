@@ -209,23 +209,58 @@ def aesthetic_gate(validation_passed: bool, aesthetic_score: float | None) -> di
     return {"selectable": True, "reason": None, "aesthetic_score": aesthetic_score}
 
 
+#: Platform product id → golden-case product_type fragments it learns from.
+#: Construction principles transfer within a product family; geometry never
+#: does. Keys are the ids used by the generator/recipes.
+GOLDEN_PRODUCT_FAMILIES: dict[str, tuple[str, ...]] = {
+    "single_letter_earring": ("EARRING", "EARRINGS"),
+    "drop_earring": ("EARRING", "EARRINGS"),
+    "necklace": ("NECKLACE", "NAME_BAR_PENDANT", "LARIAT", "KIDS_NAME_JEWELLERY"),
+    "pendant": ("NECKLACE", "PENDANT", "NAME_BAR_PENDANT", "CUTOUT_NAME_DISC"),
+    "multi_name": ("NECKLACE", "NAME_BAR_PENDANT"),
+    "bracelet": ("BRACELET", "KIDS_NAME_JEWELLERY"),
+    "ring": ("RING",),
+    "cufflink": ("CUFFLINK",),
+    "keychain": ("KEYCHAIN", "CUTOUT_NAME_DISC"),
+    "brooch": ("BROOCH",),
+    "hanger": ("CAR_MIRROR_HANGER",),
+}
+
+#: Case product_types that are reference data, not designs to learn
+#: construction from (catalogue pages, size guides, chain tables).
+_NON_DESIGN_CASE_TYPES = ("CATALOGUE", "WEARABILITY_REFERENCE", "CHAIN_CATALOGUE", "MARKET_REFERENCE")
+
+
+def _has_token(product_type: str, fragment: str) -> bool:
+    """`RING` must not match `EARRING`: fragments match on `_`-delimited
+    token boundaries."""
+    return f"_{fragment}_" in f"_{product_type}_"
+
+
 def golden_case_influence(product: str) -> list[dict]:
-    """Proven lessons from real manufactured, customer-approved orders that
-    apply to this product.
+    """Proven lessons from real orders and owner samples that apply to this
+    product.
 
     Evidence priority (highest first): manufactured + customer-approved,
-    workshop-approved, designer-approved, AI aesthetic opinion. AI taste
-    ranks last and is advisory; a lesson from a delivered piece outranks it.
-    Construction principles transfer — geometry never does."""
+    manufactured owner sample, workshop-approved, designer-approved,
+    marketing render, AI aesthetic opinion. AI taste ranks last and is
+    advisory; a lesson from a delivered piece outranks it. Third-party /
+    unknown-rights references never influence generation (rights), and
+    construction principles transfer — geometry never does."""
     from ..data.golden_production_cases import GOLDEN_PRODUCTION_CASES
+    from ..services.golden_memory import REUSABLE_PROVENANCE
 
-    earring_products = {"single_letter_earring", "drop_earring"}
-    necklace_products = {"necklace", "pendant", "multi_name"}
+    fragments = GOLDEN_PRODUCT_FAMILIES.get(product, ())
+    if not fragments:
+        return []
     out = []
     for case in GOLDEN_PRODUCTION_CASES:
-        is_earring = "EARRING" in case["product_type"]
-        applies = earring_products if is_earring else necklace_products
-        if product not in applies:
+        ptype = case["product_type"]
+        if any(tag in ptype for tag in _NON_DESIGN_CASE_TYPES):
+            continue
+        if case["rights_provenance"] not in REUSABLE_PROVENANCE:
+            continue
+        if not any(_has_token(ptype, frag) for frag in fragments):
             continue
         out.append({
             "case_id": case["case_id"],
@@ -234,14 +269,18 @@ def golden_case_influence(product: str) -> list[dict]:
             "lessons": list(case["lessons_learned"]),
             "geometry_copied": False,
         })
+    out.sort(key=lambda e: EVIDENCE_PRIORITY.index(e["evidence_tier"]) if e["evidence_tier"] in EVIDENCE_PRIORITY else len(EVIDENCE_PRIORITY))
     return out
 
 
 #: Evidence ranks. AI aesthetic opinion is last and advisory only.
 EVIDENCE_PRIORITY = [
     "MANUFACTURED_CUSTOMER_APPROVED",
+    "MANUFACTURED_OWNER_SAMPLE",
     "WORKSHOP_APPROVED",
     "DESIGNER_APPROVED",
+    "MARKETING_RENDER_UNMANUFACTURED",
+    "EXTERNAL_INSPIRATION",
     "AI_AESTHETIC_OPINION",
 ]
 

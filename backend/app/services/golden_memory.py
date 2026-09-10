@@ -39,10 +39,22 @@ from .design_service import _emit
 #: memory is weighted above everything an engine merely generated.
 EVIDENCE_TIER_WEIGHTS = {
     "MANUFACTURED_CUSTOMER_APPROVED": 1.0,
+    # A piece Beyond Style actually made (owner-supplied photo of the
+    # finished product) whose customer text is not yet confirmed on the
+    # platform — construction lessons are proven, text is not.
+    "MANUFACTURED_OWNER_SAMPLE": 0.9,
     "DESIGNER_APPROVED": 0.7,
     "AI_GENERATED_UNMANUFACTURED": 0.4,
+    # Brand product-line creatives (AI-composited ads, catalogue pages):
+    # merchandising memory only — never construction or dimension truth.
+    "MARKETING_RENDER_UNMANUFACTURED": 0.3,
     "EXTERNAL_INSPIRATION": 0.2,
 }
+
+#: Rights under which a case may influence generation or be exported for
+#: training. Third-party / unknown-rights market references are retrievable
+#: for the designer (advisory) but never feed generation or export.
+REUSABLE_PROVENANCE = frozenset({"BEYOND_STYLE_OWNED", "CUSTOMER_OWNED", "LICENSED"})
 
 GOLDEN_TIER = "GOLDEN_PRODUCTION"
 PENDING_TIER = "GOLDEN_PRODUCTION_PENDING_TEXT_VERIFICATION"
@@ -147,7 +159,7 @@ def seed_golden_cases(session: Session) -> list[str]:
                 "evidence_tier": row.evidence_tier,
                 "source_text_status": row.source_text_status,
                 "excluded_personal_evidence": sum(
-                    1 for e in row.evidence if e["storage_status"] == "EXCLUDED_PERSONAL_DATA"
+                    1 for e in row.evidence if e["storage_status"].startswith("EXCLUDED_")
                 ),
             },
         )
@@ -341,7 +353,7 @@ def golden_training_export(session: Session) -> list[dict]:
     Excluded: any case not at the GOLDEN_PRODUCTION tier (i.e. whose
     source text is unverified), any case without reusable rights, and
     every evidence item marked EXCLUDED_PERSONAL_DATA."""
-    allowed_provenance = {"BEYOND_STYLE_OWNED", "CUSTOMER_OWNED", "LICENSED"}
+    allowed_provenance = REUSABLE_PROVENANCE
     out = []
     for row in session.execute(select(m.GoldenProductionCase)).scalars().all():
         if row.memory_tier != GOLDEN_TIER:
@@ -362,7 +374,7 @@ def golden_training_export(session: Session) -> list[dict]:
                 "tier_weight": EVIDENCE_TIER_WEIGHTS[row.evidence_tier],
                 "evidence": [
                     e for e in row.evidence
-                    if e["storage_status"] != "EXCLUDED_PERSONAL_DATA"
+                    if not e["storage_status"].startswith("EXCLUDED_")
                 ],
             }
         )
