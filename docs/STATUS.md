@@ -671,6 +671,8 @@ Golden Path is untouched: no generation, validation, approval or export code cha
 - Production smoke / 7-name browser Golden Path **not run against real URLs** — `BLOCKED`, no real backend URL exists; local/CI results are not counted as production evidence.
 
 ## Deployment Readiness (this slice, see docs/DEPLOYMENT.md)
+**2026-09-10 13:55 UTC — Vercel check (owner: "run the project on vercel").** Vercel project `frontend` (`prj_qf9LfOdeVRzfYTZ39sS6pja9iDCm`, team `celia2026-3923s-projects`, Hobby plan) is linked to this repository and auto-deploys pushes; the latest production deployment `dpl_F2YVh5tXi6Fvhsw3nJKCpEseebjJ` was built from `6ab90e0` on `claude/p0-golden-path-audit-jtyduw` (target=production, READY in 30 s, region iad1). `https://frontend-sigma-sable-22.vercel.app/` returns 200 with the Golden Path page (RTL Arabic UI, security headers, CSP `connect-src` = the Replit backend origin); no runtime errors in the last 24 h. **Access:** Vercel Authentication (SSO) is enabled for all deployments except custom domains, so the `*.vercel.app` URLs open only for logged-in team members — customers need either the protection turned off or the custom domain. **Backend:** the Replit origin could not be probed from this environment (egress blocked), so backend reachability from the live frontend is UNVERIFIED here.
+
 | Component | Status | Detail |
 |---|---|---|
 | Root cause of reported "تعذر توليد التصاميم" identified | VERIFIED_LOCAL | `lib/api.ts` used relative fetch paths with no `NEXT_PUBLIC_API_URL`; no CORS middleware existed at all; both fixed — see `docs/DEPLOYMENT.md` |
