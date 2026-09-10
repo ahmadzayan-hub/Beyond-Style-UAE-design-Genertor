@@ -45,6 +45,40 @@ map, one repair service). Full readiness table with percentages and Critical/Hig
   (evidence `docs/evidence/acceptance-seven-*`, results JSON with the event trail); layout has no
   horizontal overflow at 360/390/768/1280. Local dev proxy needed `experimental.proxyTimeout`
   (`4b61409`) — production fetches the backend directly.
+- **Workshop profile pinning from real cutting tests** (2026-09-10): the calibration kit is now
+  reachable from the admin API — `POST /api/admin/calibration/coupon` (dimensioned SVG/DXF +
+  manifest), `POST /api/admin/calibration/apply` (results → measured limits × 1.15 safety
+  margin; `write=true` pins a new `profiles_version` with operator/date/coupon-sha provenance,
+  refused while any feature class is UNRESOLVED), `GET /api/admin/calibration/profiles`.
+  `WORKSHOP_PROFILES_PATH` selects the file (staging copies never touch the repo file). JEWELRY
+  QA now reports `calibration_status` for the limits used. **BLOCKED on data**: no coupon has been
+  cut by Beyond Style's workshop yet — every profile is still `INDUSTRY_TYPICAL_UNCALIBRATED`
+  (wp-1.0.0). Tests `test_calibration_admin.py` 2/2 + kit 6/6.
+- **OpenAPI publishing + canonical layout** (2026-09-10): `docs/api/openapi.json` is generated from
+  the code (`scripts/export_openapi.py`, 90 paths) and CI fails when it is stale; live at
+  `/openapi.json` and `/docs`. Layout audit in `docs/architecture.md`: `backend/` is the only
+  application, `services/hermes/` is the optional runtime, no conflicting scaffold exists; the
+  root `.replit` is a deployment stub. Production URLs (Replit/Vercel) are unreachable from this
+  environment, so live publishing could not be verified here (Production Monitor stays red).
+- **Customer identity + secure retrieval** (2026-09-10, migration `e3f4a5b6c7d8`): VERIFIED_LOCAL —
+  passwordless login by phone/e-mail + one-time code (hashed, 10 min, 5 attempts, single use;
+  only a peppered sha256 + masked contact stored), 30-day customer token (hash only), claim of
+  an anonymous request (both tokens required), `GET /api/me/designs`, resume on another device
+  (rotates the per-request token — the old device loses access), events REQUEST_CLAIMED /
+  SESSION_REISSUED, per-IP start/verify limits through the shared limiter. Frontend `/me` page,
+  auto-claim after start, `?design=` resume. Honest delivery: **no SMS/e-mail provider is wired**
+  — `delivery.status=SKIPPED_EXTERNAL_PROVIDER`; `AUTH_DEV_ECHO_CODE=1` (dev/CI/E2E only) echoes
+  the code and `/ready → customer_auth` warns while it is on. Tests `test_customer_identity.py`
+  3/3; browser `e2e/customer_identity_e2e.py` (in CI). Not done: provider integration, OTP on
+  the approval link, account deletion/export UI.
+- **Shared rate limiter + object storage** (2026-09-10): VERIFIED_LOCAL — one registry
+  (`security/ratelimit.py`, memory | Redis via RATE_LIMIT_BACKEND/REDIS_URL, degrade-not-block),
+  S3 private store proven with a botocore stub, `/ready` reports storage backend/durability and
+  limiter backend. Replit production must set OBJECT_STORAGE=s3 (instance disk is ephemeral).
+- **Calligraphy sources** (2026-09-10): Thuluth TRUE via OFL AMoshref Thulth (sweep 1.00), Aref
+  Ruqaa Ink Bold added, Diwani stays inspired-only (owner-supplied Al Diwani Al Majd has no
+  licence → held out); the chosen script now dominates the shown ten (9/10 measured). See
+  `docs/CALLIGRAPHY_SOURCES.md`, `docs/FONT_LICENSING.md`, `docs/evidence/fonts/`.
 - **PNG export** (`exporters/png_exporter.py`): VERIFIED — raster of the master vector at a declared
   scale (20 px/mm, 4× supersampled, transparent, scale/version/hash in PNG text chunks, true-size dpi);
   lock-gated like the vectors, recorded as `kind=preview`; raster fidelity = extent within a pixel +

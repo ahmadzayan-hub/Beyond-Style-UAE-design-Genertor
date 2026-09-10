@@ -37,38 +37,7 @@ def _find(data, product, material):
     raise SystemExit(f"no profile for {product}/{material}")
 
 
-def _svg(cut, engrave, w, h, manifest) -> str:
-    from app.exporters.svg_exporter import geometry_to_path_d
-
-    labels = "".join(
-        f'<text x="{3 + (f["ticks"] - 1) * 12}" y="{h - 1.5}" font-size="2" font-family="sans-serif">'
-        f'</text>' for f in manifest["features"].values()
-    )
-    return (
-        f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}mm" height="{h}mm" viewBox="0 0 {w} {h}">\n'
-        f'<metadata>{json.dumps({"calibration_coupon": True, "profile": manifest["profile_name"], "units": "mm"})}</metadata>\n'
-        f'<path d="{geometry_to_path_d(cut, flip_y=h)}" fill="#1a1a1a" fill-rule="evenodd"/>\n'
-        f'<path d="{geometry_to_path_d(engrave, flip_y=h)}" fill="#f5efe2" fill-rule="evenodd"/>\n'
-        f"{labels}</svg>\n"
-    )
-
-
-def _dxf(cut, engrave) -> str:
-    import io
-
-    import ezdxf
-
-    doc = ezdxf.new("R2010", setup=False)
-    doc.header["$INSUNITS"] = 4
-    doc.layers.add("CUT", color=1); doc.layers.add("HOLES", color=5); doc.layers.add("ENGRAVE", color=3)
-    msp = doc.modelspace()
-    for poly in cut.geoms:
-        msp.add_lwpolyline(list(poly.exterior.coords), close=True, dxfattribs={"layer": "CUT"})
-        for ring in poly.interiors:
-            msp.add_lwpolyline(list(ring.coords), close=True, dxfattribs={"layer": "HOLES"})
-    for poly in engrave.geoms:
-        msp.add_lwpolyline(list(poly.exterior.coords), close=True, dxfattribs={"layer": "ENGRAVE"})
-    buf = io.StringIO(); doc.write(buf); return buf.getvalue()
+from app.engines.calibration import coupon_dxf as _dxf, coupon_svg as _svg, write_profile  # noqa: E402
 
 
 def main() -> int:
@@ -97,13 +66,8 @@ def main() -> int:
     print(json.dumps(outcome["report"], indent=2))
     print("promoted:", outcome["promoted"], "→", outcome["profile"]["calibration_status"])
     if args.write:
-        for i, p in enumerate(data["profiles"]):
-            if p is profile:
-                data["profiles"][i] = outcome["profile"]
-        major, minor, patch = data["profiles_version"].split(".")
-        data["profiles_version"] = f"{major}.{int(minor) + 1}.0"
-        path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-        print(f"profile written: {path} (profiles_version {data['profiles_version']})")
+        written = write_profile(args.product, args.material, outcome["profile"])
+        print(f"profile written: {written['path']} (profiles_version {written['profiles_version']})")
     return 0
 
 

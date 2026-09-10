@@ -188,3 +188,67 @@ def calibrate(profile: dict, manifest: dict, results: dict, operator: str, when:
         "unresolved": unresolved,
     }
     return {"profile": new_profile, "report": report, "promoted": promoted}
+
+
+# ---------------------------------------------------------------- persistence
+
+def profiles_path():
+    from ..config import workshop_profiles_path
+
+    return workshop_profiles_path()
+
+
+def write_profile(product: str, material: str, new_profile: dict) -> dict:
+    """Replace one product×material profile with its calibrated version and
+    bump profiles_version (minor). Returns {path, profiles_version}. The
+    running process keeps the rules it loaded at start-up (DEFAULT_RULES);
+    a restart picks the new file up — the caller reports that honestly."""
+    import json
+
+    path = profiles_path()
+    data = json.loads(path.read_text(encoding="utf-8"))
+    replaced = False
+    for i, p in enumerate(data["profiles"]):
+        if p["product"] == product and p["material"] == material:
+            data["profiles"][i] = new_profile
+            replaced = True
+    if not replaced:
+        raise KeyError(f"no profile for {product}/{material}")
+    major, minor, _patch = data["profiles_version"].split(".")
+    data["profiles_version"] = f"{major}.{int(minor) + 1}.0"
+    path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    return {"path": str(path), "profiles_version": data["profiles_version"]}
+
+
+def coupon_svg(cut, engrave, w: float, h: float, manifest: dict) -> str:
+    """Dimensioned calibration coupon as SVG (mm), same renderer for the CLI
+    and the admin API."""
+    import json
+
+    from ..exporters.svg_exporter import geometry_to_path_d
+
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}mm" height="{h}mm" viewBox="0 0 {w} {h}">\n'
+        f'<metadata>{json.dumps({"calibration_coupon": True, "profile": manifest["profile_name"], "units": "mm"})}</metadata>\n'
+        f'<path d="{geometry_to_path_d(cut, flip_y=h)}" fill="#1a1a1a" fill-rule="evenodd"/>\n'
+        f'<path d="{geometry_to_path_d(engrave, flip_y=h)}" fill="#f5efe2" fill-rule="evenodd"/>\n'
+        "</svg>\n"
+    )
+
+
+def coupon_dxf(cut, engrave) -> str:
+    import io
+
+    import ezdxf
+
+    doc = ezdxf.new("R2010", setup=False)
+    doc.header["$INSUNITS"] = 4
+    doc.layers.add("CUT", color=1); doc.layers.add("HOLES", color=5); doc.layers.add("ENGRAVE", color=3)
+    msp = doc.modelspace()
+    for poly in cut.geoms:
+        msp.add_lwpolyline(list(poly.exterior.coords), close=True, dxfattribs={"layer": "CUT"})
+        for ring in poly.interiors:
+            msp.add_lwpolyline(list(ring.coords), close=True, dxfattribs={"layer": "HOLES"})
+    for poly in engrave.geoms:
+        msp.add_lwpolyline(list(poly.exterior.coords), close=True, dxfattribs={"layer": "ENGRAVE"})
+    buf = io.StringIO(); doc.write(buf); return buf.getvalue()

@@ -518,3 +518,73 @@ async def upload_font(
     return {"registered": True, "font_id": font_id, "production_capability": capability,
             "production_use": rights in ("VERIFIED_OPEN_SOURCE", "COMMERCIAL_LICENSED", "CUSTOMER_OWNED"),
             "capability_map": production_capability_map(), "binary": result["binary"], "shaping": result["shaping"]}
+
+
+# ------------------------------------------------------------ calibration
+# Pin workshop profiles from REAL cutting tests: download the coupon, cut
+# and engrave it, record which features came out clean, apply. Nothing is
+# promoted without a results file; unresolved feature classes keep the
+# profile at CALIBRATION_INCOMPLETE.
+
+
+class CalibrationApply(BaseModel):
+    product: str = "pendant"
+    material: str = "silver-925"
+    manifest: dict
+    results: dict
+    operator: str = Field(min_length=2, max_length=80)
+    write: bool = False
+
+
+@router.get("/calibration/profiles", dependencies=[Depends(require_admin)])
+def calibration_profiles():
+    from ..config import load_workshop_profiles
+
+    data = load_workshop_profiles()
+    return {"profiles_version": data["profiles_version"], "profiles": [
+        {k: p.get(k) for k in ("profile_name", "product", "material", "calibration_status", "is_production_profile",
+                               "min_stroke_mm", "min_gap_mm", "min_bridge_mm", "kerf_mm", "material_thickness_mm", "calibration")}
+        for p in data["profiles"]
+    ]}
+
+
+@router.post("/calibration/coupon", dependencies=[Depends(require_admin)])
+def calibration_coupon(product: str = "pendant", material: str = "silver-925"):
+    from ..config import load_workshop_profiles
+    from ..engines.calibration import build_coupon, coupon_dxf, coupon_sha256, coupon_svg
+
+    data = load_workshop_profiles()
+    profile = next((p for p in data["profiles"] if p["product"] == product and p["material"] == material), None)
+    if profile is None:
+        raise HTTPException(404, f"No workshop profile for {product}/{material}.")
+    kit = build_coupon(profile)
+    w, h = kit["manifest"]["plate_mm"]
+    return {"manifest": kit["manifest"], "coupon_sha256": coupon_sha256(kit["manifest"]),
+            "svg": coupon_svg(kit["cut"], kit["engrave"], w, h, kit["manifest"]),
+            "dxf": coupon_dxf(kit["cut"], kit["engrave"]),
+            "instructions_en": "Cut + engrave this plate once in the target material. Record every feature id that came out clean and to size in results.clean, then POST /api/admin/calibration/apply.",
+            "instructions_ar": "اقطع وانقش هذه اللوحة مرة واحدة في الخامة المستهدفة. سجّل كل معرّف خرج نظيفاً وبالمقاس في results.clean ثم أرسل apply."}
+
+
+@router.post("/calibration/apply", dependencies=[Depends(require_admin)])
+def calibration_apply(req: CalibrationApply):
+    from ..config import load_workshop_profiles
+    from ..engines.calibration import calibrate, write_profile
+
+    data = load_workshop_profiles()
+    profile = next((p for p in data["profiles"] if p["product"] == req.product and p["material"] == req.material), None)
+    if profile is None:
+        raise HTTPException(404, f"No workshop profile for {req.product}/{req.material}.")
+    try:
+        outcome = calibrate(profile, req.manifest, req.results, operator=req.operator)
+    except (ValueError, KeyError) as exc:
+        raise HTTPException(422, str(exc))
+    out = {"report": outcome["report"], "promoted": outcome["promoted"],
+           "calibration_status": outcome["profile"]["calibration_status"], "profile": outcome["profile"], "written": None}
+    if req.write:
+        if not outcome["promoted"]:
+            raise HTTPException(422, {"code": "CALIBRATION_INCOMPLETE", "unresolved": outcome["profile"]["calibration"]["unresolved"],
+                                      "detail": "Re-cut the unresolved feature classes at larger sizes before pinning the profile."})
+        out["written"] = write_profile(req.product, req.material, outcome["profile"])
+        out["note"] = "Profile pinned. Running instances keep the rules loaded at start-up — restart the backend to serve the calibrated profile."
+    return out

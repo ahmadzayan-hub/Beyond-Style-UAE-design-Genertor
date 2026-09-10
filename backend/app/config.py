@@ -67,12 +67,21 @@ class WorkshopRules(BaseModel):
         return f"{self.profile_name}@{digest}"
 
 
-def load_workshop_profiles() -> dict:
-    import json
+def workshop_profiles_path():
+    """The versioned profile file; WORKSHOP_PROFILES_PATH overrides it
+    (staging copies, tests) so a calibration write never touches the repo
+    file by accident."""
+    import os
     from pathlib import Path
 
-    path = Path(__file__).resolve().parent / "data" / "workshop_profiles.json"
-    return json.loads(path.read_text(encoding="utf-8"))
+    override = os.environ.get("WORKSHOP_PROFILES_PATH")
+    return Path(override) if override else Path(__file__).resolve().parent / "data" / "workshop_profiles.json"
+
+
+def load_workshop_profiles() -> dict:
+    import json
+
+    return json.loads(workshop_profiles_path().read_text(encoding="utf-8"))
 
 
 def get_profile(product: str = "pendant", material: str = "silver-925") -> WorkshopRules:

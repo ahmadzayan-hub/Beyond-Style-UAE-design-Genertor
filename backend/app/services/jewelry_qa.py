@@ -32,6 +32,20 @@ def _explain(code: str) -> tuple[str, str]:
     return EXPLAIN.get(code, (code.replace("_", " ").capitalize() + ".", code))
 
 
+def _calibration_status(rules_profile: str | None) -> str | None:
+    """Honest provenance of the limits used: INDUSTRY_TYPICAL_UNCALIBRATED
+    until a real coupon from Beyond Style's workshop pins the profile."""
+    if not rules_profile:
+        return None
+    from ..config import load_workshop_profiles
+
+    name = rules_profile.split("@")[0]
+    for p in load_workshop_profiles()["profiles"]:
+        if p.get("profile_name") == name:
+            return p.get("calibration_status")
+    return None
+
+
 def jewelry_qa_report(version, *, material_id: str | None = None, thickness_mm: float | None = None,
                       target_weight_g: float | None = None) -> dict:
     validation = version.validation or {}
@@ -69,6 +83,7 @@ def jewelry_qa_report(version, *, material_id: str | None = None, thickness_mm: 
         "summary_en": summary_en, "summary_ar": summary_ar,
         "text_identity_verified": bool(version.identity_verified),
         "rules_profile": validation.get("rules_profile"),
+        "calibration_status": _calibration_status(validation.get("rules_profile")),
         "measurements": validation.get("measurements"),
         "errors": errors, "warnings": warnings,
         "attachment": attachment,
