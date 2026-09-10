@@ -15,3 +15,6 @@ frontend/next-env.d.ts
 *.pem
 *.key
 .vercel
+
+# written by the Replit deployment build step (see .replit) — never committed
+backend/app/BUILD_SHA

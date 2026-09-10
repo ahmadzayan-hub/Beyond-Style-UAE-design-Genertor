@@ -101,6 +101,22 @@ def main() -> int:
         _summarize(); return 1
     check("B. backend /health", status == 200 and is_ours, f"status={status}")
 
+    # B2. GitHub ↔ Replit synchronisation — informational, never fabricated.
+    # The deployed backend reports the commit it was built from; GitHub
+    # tells us the commit that was just pushed. A mismatch is not a code
+    # failure (Replit redeploys are manual) but it is exactly what the owner
+    # asked to be able to see.
+    deployed_sha = (health_json or {}).get("build_sha", "unknown")
+    pushed_sha = os.environ.get("GITHUB_SHA", "")
+    if deployed_sha == "unknown":
+        print("[INFO] B2. sync — deployed backend does not report build_sha (deployed before the build step recorded it, or built without git)")
+    elif pushed_sha and deployed_sha.startswith(pushed_sha[: len(deployed_sha)]) or (pushed_sha and pushed_sha.startswith(deployed_sha)):
+        print(f"[INFO] B2. sync — IN_SYNC: deployed {deployed_sha[:7]} == pushed {pushed_sha[:7]}")
+    elif pushed_sha:
+        print(f"[WARN] B2. sync — BEHIND: deployed {deployed_sha[:7]} != pushed {pushed_sha[:7]} — open Replit → Git → Pull, then Deployments → Redeploy")
+    else:
+        print(f"[INFO] B2. sync — deployed {deployed_sha[:7]} (no GITHUB_SHA to compare against)")
+
     # C. backend /ready
     status, _, body = request("GET", f"{BACKEND_URL}/ready")
     ready_ok = status == 200

@@ -156,3 +156,20 @@ def _new_session(client, text="ميثة"):
     h = {"X-Session-Token": r.json()["session_token"]}
     client.post(f"/api/designs/{design_id}/confirm", headers=h, json={"confirmed_text": text})
     return design_id, h
+
+
+def test_health_reports_the_running_commit_honestly(client, monkeypatch, tmp_path):
+    """/health carries build_sha so the Production Monitor can say whether
+    Replit is in sync with GitHub; without a recorded build it says
+    'unknown' rather than inventing one."""
+    from app import build_info
+
+    monkeypatch.delenv("BUILD_SHA", raising=False)
+    monkeypatch.setattr(build_info, "BUILD_SHA_FILE", tmp_path / "BUILD_SHA")
+    assert client.get("/health").json()["build_sha"] == "unknown"
+    (tmp_path / "BUILD_SHA").write_text("abc1234def5678\n")
+    assert client.get("/health").json()["build_sha"] == "abc1234def5678"
+    (tmp_path / "BUILD_SHA").write_text("not a sha\n")
+    assert client.get("/health").json()["build_sha"] == "unknown"
+    monkeypatch.setenv("BUILD_SHA", "0123456789abcdef0123456789abcdef01234567")
+    assert client.get("/health").json()["build_sha"].startswith("0123456")

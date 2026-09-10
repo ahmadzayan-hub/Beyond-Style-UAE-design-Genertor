@@ -31,4 +31,5 @@ jobs:
         env:
           FRONTEND_URL: ${{ steps.urls.outputs.frontend }}
           BACKEND_URL: ${{ steps.urls.outputs.backend }}
+          GITHUB_SHA: ${{ github.sha }}
         run: python3 scripts/production-smoke.py

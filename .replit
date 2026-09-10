@@ -13,7 +13,7 @@ channel = "stable-24_05"
 # to 0.0.0.0 (required for external traffic), no --reload in production.
 [deployment]
 deploymentTarget = "cloudrun"
-build = ["sh", "-c", "cd backend && pip install -r requirements.txt"]
+build = ["sh", "-c", "(git rev-parse HEAD 2>/dev/null || echo unknown) > backend/app/BUILD_SHA; cd backend && pip install -r requirements.txt"]
 run = ["sh", "-c", "cd backend && python -m alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT"]
 
 [[ports]]

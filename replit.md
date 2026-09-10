@@ -29,3 +29,17 @@ GitHub → Actions → **Production Monitor** → latest run must be green:
 frontend loads, `/health` is ours, `/ready` reports the database, CORS
 allows the frontend origin, and the seven-name Arabic scenario round-trips
 byte-for-byte.
+
+## Keep Replit in sync with GitHub
+GitHub is the source of truth; this repository has one branch
+(`claude/p0-golden-path-audit-jtyduw`, the default), so an import always
+gets the same code Vercel builds. Replit does **not** pull or redeploy by
+itself. After every push that touches `backend/`:
+1. Replit → **Git** pane → **Pull** (origin = this GitHub repo).
+2. **Deployments** → **Redeploy**. The build step records the commit in
+   `backend/app/BUILD_SHA` and `/health` reports it as `build_sha`.
+3. GitHub → Actions → **Production Monitor**: line `B2. sync` says
+   `IN_SYNC: deployed <sha> == pushed <sha>` or `BEHIND: …` with the two
+   commits — that is the measured answer to "is Replit the same as GitHub".
+Never edit code inside Replit; if you must, commit and push from the Git
+pane so GitHub stays ahead, never behind.

@@ -132,7 +132,9 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
 @app.get("/health")
 def health():
     """Process-alive only — no dependency checks. See /ready for those."""
-    return {"status": "ok", "schema_version": SCHEMA_VERSION}
+    from .build_info import build_sha
+
+    return {"status": "ok", "schema_version": SCHEMA_VERSION, "build_sha": build_sha()}
 
 
 @app.get("/ready")
