@@ -286,9 +286,15 @@ def test_golden_case_pattern_is_flagged_where_relevant():
     earring = build_review_item("aref-ruqaa", "single_letter_earring", "ع", "bare")
     assert earring is not None
     assert earring["golden_production_pattern"], "the manufactured earring case must show"
+    # Cufflinks now have a manufactured owner sample (enamel calligraphy
+    # cufflinks) and a relief-disc line; the manufactured case leads.
     cufflink = build_review_item("aref-ruqaa", "cufflink", "محمد", "plate_rect")
     assert cufflink is not None
-    assert cufflink["golden_production_pattern"] == []
+    assert cufflink["golden_production_pattern"][0].startswith("BS-GPC-0007")
+    # A product no golden case covers gets nothing invented for it.
+    medallion = build_review_item("aref-ruqaa", "medallion", "محمد", "frame_circle")
+    if medallion is not None:
+        assert medallion["golden_production_pattern"] == []
 
 
 # --- boundaries that must not move -----------------------------------------
