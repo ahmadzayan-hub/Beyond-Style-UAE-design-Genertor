@@ -1,8 +1,8 @@
 # Owner samples — Beyond Style reference images (2026-09-10)
 
-Ninety-six images were supplied by the owner in six batches ("real samples to
+112 images were supplied by the owner in seven batches ("real samples to
 LLM to learn"). They are ingested into the **Golden Production Memory**
-(`backend/app/data/golden_production_cases.py`, cases BS-GPC-0003 … BS-GPC-0038)
+(`backend/app/data/golden_production_cases.py`, cases BS-GPC-0003 … BS-GPC-0040)
 as *structured construction lessons*, not as pictures to copy:
 
 - **No text is read off any photo.** Every owner case seeds with
@@ -60,7 +60,7 @@ Hash-only (not in this folder): pavé name necklace on a person (0004), engraved
 name+date keychain and pierced name disc with date (0011/0012), kids' name
 jewellery market photos (0018), men's cufflink market photos (0019), pearl-strand
 and ID-bar references (0026), necklace length-guide graphics (0028 → the
-industry-standard chart in `wearability.json`), Meta ad screenshot (0009), retail-display survey of stock name necklaces / engraved bars / cord bracelets photographed in a shop (0029–0031: design rights unknown, several held in hand), a branded framed-calligraphy pendant on a person (0036), third-party font tables / font comparison sheets (0037: unidentified commercial fonts, nothing traced), calligraphy phrase-library screenshots incl. a Qur'anic verse (0038: sacred-text path, third-party vectors), a WhatsApp lariat reference on a person (under 0013).
+industry-standard chart in `wearability.json`), Meta ad screenshot (0009), retail-display survey of stock name necklaces / engraved bars / cord bracelets photographed in a shop (0029–0031: design rights unknown, several held in hand), a branded framed-calligraphy pendant on a person (0036), third-party font tables / font comparison sheets (0037: unidentified commercial fonts, nothing traced), calligraphy phrase-library screenshots incl. a Qur'anic verse (0038: sacred-text path, third-party vectors), a WhatsApp lariat reference on a person (under 0013), the Top Style retail stock survey (0039: third-party carded stock incl. a pavé sacred word → sacred-text path), supplier renders of a leather-strap phrase plate, rope cuff with pavé name and pavé halo frame (0040: unknown rights), the brand mood board with AI-composited faces (under 0032).
 
 How the memory is used: `golden_case_influence(product)` in
 `backend/app/fonts/curation.py` returns construction principles + lessons per

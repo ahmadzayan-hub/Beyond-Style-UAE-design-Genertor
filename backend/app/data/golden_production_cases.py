@@ -1328,6 +1328,8 @@ PHRASE_ON_MESH_BRACELET_WITH_CHARMS = _owner_case(
             PENDING_OBJECT_STORE, "studio product photo of the gold phrase-plate mesh bracelet on white"),
         _ev("final_product", "ca345faf77688c9b152cd93db29203a3ead9c5ffdd071fc17a19881f149229d3", 2268, 4032, 881973,
             PENDING_OBJECT_STORE, "two finished name plates (Latin script and Arabic) on gold mesh bands, held on a studio glove — same band construction as the phrase plate"),
+        _ev("style_reference", "bb5af27318aa14cad2d7a64e8c6945855c483867ae5a9974adcf482605fdad4e", 2048, 2048, 2887110,
+            EXCLUDED_PERSONAL_DATA, "same phrase plate with hamsa + evil-eye drops on a green mesh band worn on a wrist — provenance of the photo not established; hash only"),
     ],
     workshop_changes=["gold version made without drops; silver version carries the hamsa and evil-eye drops — the plate outline is identical, the drop rings are optional islands"],
 )
@@ -1527,9 +1529,14 @@ PACKAGING_MATERIALS_BOARD = _owner_case(
               "تغليف", "علبة هدايا", "شريط"],
     lessons=[
         "Brand palette is ivory / warm white / matte black / champagne gold; proof PDFs and the customer approval page should use the same palette so the on-screen proof matches the box the piece arrives in.",
+        "The mood board extends the palette with deep blue and sand and positions the line as calligraphy medallions and signet rings for the modern Arab woman — a merchandising direction, not a construction rule.",
     ],
-    evidence=[_ev("style_reference", "f8df3df3784f78c4857114b2047f7551df5479dff505a63c20aea5e2118b7ffe", 1254, 1254, 1167694,
-                  PENDING_OBJECT_STORE, "Beyond Style 'Materials & Finishes' packaging board (owner brand creative)")],
+    evidence=[
+        _ev("style_reference", "f8df3df3784f78c4857114b2047f7551df5479dff505a63c20aea5e2118b7ffe", 1254, 1254, 1167694,
+            PENDING_OBJECT_STORE, "Beyond Style 'Materials & Finishes' packaging board (owner brand creative)"),
+        _ev("style_reference", "e90e32adbd33512819f4cfafc16b6ec93ea2bf63c632fb5aa51f9f43fec462df", 5504, 3072, 20888152,
+            PENDING_OBJECT_STORE, "'Beyond Jewellery' brand mood board — AI-composited model imagery (synthetic faces, not customers), calligraphy medallions and signet rings, palette gold / black / cream / deep blue / sand; not copied into docs because it carries faces"),
+    ],
     evidence_tier="MARKETING_RENDER_UNMANUFACTURED", manufactured=False, supplied_as="the owner's packaging brand board",
 )
 
@@ -1692,6 +1699,100 @@ CALLIGRAPHY_PHRASE_LIBRARY_SCREENSHOTS = _owner_case(
 )
 
 
+# ---------------------------------------------------------------------------
+# Owner sample batch 7 (2026-09-10): Top Style retail stock survey and
+# supplier-catalogue renders (unknown rights) — lessons only, hash only.
+# ---------------------------------------------------------------------------
+
+_TOP_STYLE_NOTE = "third-party retail brand ('Top Style' carded stock, made in P.R.C.) photographed/collected by the owner as a market reference — rights not ours, never copied, hash only"
+
+TOP_STYLE_RETAIL_STOCK_SURVEY = _owner_case(
+    "BS-GPC-0039-top-style-retail-stock-survey",
+    product_type="MARKET_REFERENCE_RETAIL_STOCK", language="AR",
+    layout_style="STACKED_PHRASE_PENDANTS_PAVE_FRAMES_AND_SETS", composition_type="MIXED",
+    construction=["STACKED_TWO_WORD_PENDANT_WITH_ENAMEL_OUTLINE", "BAIL_ON_TALLEST_STROKE", "PAVE_RECTANGULAR_FRAME_WITH_INNER_WORD",
+                  "PAVE_WORD_WITH_STONE_DROP", "MATCHING_EARRING_AND_NECKLACE_SET", "FLOWING_PHRASE_WITH_END_RINGS",
+                  "DOUBLE_CHAIN_WITH_FACETED_BEAD_STATIONS"],
+    topology="MIXED",
+    attachment_topology="PER_ITEM",
+    attachment_points=[{"position": "frame_top_corners", "kind": "integrated_ring", "load": "chain"},
+                       {"position": "tallest_stroke_top", "kind": "bail", "load": "chain"}],
+    chain_topology="MIXED",
+    material="brass_or_stainless_stock_plated", finish="polished_with_enamel_or_pave", stones={"type": "cz_pave_or_turquoise_pave", "count": "n/a", "placement": "frame_or_word", "setting": "bead_set"},
+    dna=_dna(product_type="necklace", script_family="diwani", calligraphy_style="stacked_diwani_and_flowing_phrase",
+             composition="stacked_or_framed", shape_envelope="mixed", construction="plate", stroke_character="bold_uniform",
+             swashes="present", tails="interlocked", symmetry="asymmetric", negative_space="dense", frame="pave_rectangle_or_none",
+             bail_loops="bail_or_end_rings", chain_attachment="mixed", stones="pave_accent", enamel="white_outline",
+             ornament="stone_drop", geometry_density="high", luxury_score=0.4, minimal_score=0.3, heritage_score=0.5,
+             modern_score=0.7, manufacturing_complexity="medium", orientation="square", reference_confidence=0.7,
+             copy_risk_indicators=["third_party_brand_card", "mass_market_stock", "sacred_word_in_pave"]),
+    keywords=["stacked phrase pendant", "enamel outline pendant", "pave frame", "allah pendant", "turquoise pave set",
+              "earring necklace set", "double chain", "stainless phrase necklace", "قلادة عبارة", "طقم", "إطار مرصع"],
+    lessons=[
+        "Stacked two-word pendants read top-to-bottom and hang from a bail on the tallest vertical stroke; a thin white enamel outline along one word separates the two words visually without adding geometry — the outline is a recess in the plate, not a second part.",
+        "A pavé rectangular frame with a word inside: the inner word must touch the frame at ≥ 2 points (or sit on a hidden bar) and the chain rings are at the frame's top corners, so the frame carries the load and the word can be delicate.",
+        "The sacred word الله appears on mass-market stock as pavé inside a frame — on the platform it takes the sacred-text path (exact canonical spelling, no stylised distortion, enhanced verification, explicit approval).",
+        "Matching earring + necklace sets are one word outline cut at two scales (≈ 12 mm and ≈ 30 mm); the earring scale must be re-checked for minimum stroke and gets a single post pad instead of end rings.",
+        "Pavé words carry one small prong-set stone drop from the lowest stroke; turquoise-coloured pavé is a bead-set colour option, not a geometry change.",
+        "Flowing multi-word phrases in a Diwani-like hand are sold as stainless stock with end rings on the first and last strokes — the phrase must be one connected outline; the platform's connectivity gate reproduces exactly that constraint.",
+        "A double-layer chain with faceted bar-bead stations is a chain-only product (no text): stations are threaded parts, never cut geometry.",
+    ],
+    evidence=[
+        _ev("style_reference", "94e45bc9d7aaf21eeb5718719c22a31682bc7a979833036aa35ffaa55ef05e2d", 1080, 2316, 921085, EXCLUDED_THIRD_PARTY, _TOP_STYLE_NOTE + " — social story screenshot: double-layer chain with faceted bar-bead stations"),
+        _ev("style_reference", "60e473730996a0e4e574793a38453a78a02b1dd880e03f20b252d10d4343c9c0", 2048, 2048, 1613569, EXCLUDED_THIRD_PARTY, _TOP_STYLE_NOTE + " — catalogue render: flowing phrase necklace with end rings, silver tone"),
+        _ev("style_reference", "145c1cdb894c2b3267f0e44717d8f4fba399034ffb14e3a480bcb7eab0220dbe", 2048, 2048, 1174539, EXCLUDED_THIRD_PARTY, _TOP_STYLE_NOTE + " — catalogue render: stacked two-word pendant, white enamel outline, three stones, bail"),
+        _ev("style_reference", "1074cb2c291bff1880703708563e3dd170937321109c34d5d7fd90a857641210", 2048, 2048, 2721839, EXCLUDED_PERSONAL_DATA, _TOP_STYLE_NOTE + " — same pendant on a model's neck ('Approx Size'); hash only"),
+        _ev("style_reference", "9f0fef768ef0159184a21ec1dbbb2c70ad445246f1125db65c48cc26a6990c84", 2048, 2048, 2960461, EXCLUDED_THIRD_PARTY, _TOP_STYLE_NOTE + " — same pendant in a gift box render"),
+        _ev("style_reference", "9e35ed90d9f689ec9a4555b5cdd4b4692a9ffa55a37576999aa916003fb1ac94", 2992, 2992, 6589202, EXCLUDED_THIRD_PARTY, _TOP_STYLE_NOTE + " — carded stock of the same pendant, held in hand"),
+        _ev("style_reference", "876a2d252a57953df4a5659312185554245be275777d41a4f571b7c9bbad683a", 2992, 2992, 5648960, EXCLUDED_THIRD_PARTY, _TOP_STYLE_NOTE + " — carded stock: pavé rectangular frame with pavé sacred word inside"),
+        _ev("style_reference", "f5dc0fa370c01612d1bc3524a3ce47905d087cb2d129aa476e3d92e1057c998b", 2992, 2992, 6487644, EXCLUDED_THIRD_PARTY, _TOP_STYLE_NOTE + " — carded stock: turquoise pavé word earrings + necklace set with stone drops, silver tone"),
+        _ev("style_reference", "7175831f6bb82a627c10dfbdb6b00162c2d8ae4a64185e9430121d8ea214459e", 2992, 2992, 6130481, EXCLUDED_THIRD_PARTY, _TOP_STYLE_NOTE + " — carded stock: same set in gold tone"),
+        _ev("style_reference", "8731d40d6d205e381acca8e934e1f9433dd2b95ecbe9890f8341227ff6ba8523", 2992, 2992, 6854024, EXCLUDED_THIRD_PARTY, _TOP_STYLE_NOTE + " — carded stock: flowing phrase necklace, gold tone, 'MADE IN P.R.C' card"),
+    ],
+    evidence_tier="EXTERNAL_INSPIRATION", manufactured=False, rights_provenance="THIRD_PARTY_NO_COPY",
+    supplied_as="a third-party retail stock survey",
+)
+
+_SUPPLIER_RENDER_NOTE = "supplier/marketplace product render of unknown origin supplied by the owner as a style reference — rights not established, never copied, hash only"
+
+SUPPLIER_CATALOGUE_RENDERS_STRAP_CUFF_FRAME = _owner_case(
+    "BS-GPC-0040-supplier-renders-leather-strap-rope-cuff-pave-frame",
+    product_type="MARKET_REFERENCE_SUPPLIER_RENDERS", language="AR",
+    layout_style="PHRASE_ON_STRAP_NAME_IN_CUFF_WORD_IN_FRAME", composition_type="MIXED",
+    construction=["PHRASE_PLATE_RIVETED_ON_LEATHER_STRAP", "TWO_DROP_RINGS_UNDER_PLATE", "HAMSA_CHARM", "EVIL_EYE_BEAD",
+                  "OPEN_ROPE_TWIST_CUFF", "PAVE_NAME_SPANNING_BETWEEN_CUFF_WIRES", "PAVE_HALO_FRAME_WITH_INNER_WORD"],
+    topology="MIXED",
+    attachment_topology="PER_ITEM",
+    attachment_points=[{"position": "plate_reverse", "kind": "rivet_to_strap", "load": "strap"},
+                       {"position": "name_both_ends", "kind": "soldered_to_cuff_wires", "load": "cuff"},
+                       {"position": "word_to_frame", "kind": "two_contact_points", "load": "frame"}],
+    chain_topology="STRAP_OR_CUFF_OR_CHAIN",
+    material="plated_brass_market_samples", finish="polished_or_pave", stones={"type": "cz_pave", "count": "n/a", "placement": "name_or_frame", "setting": "bead_set"},
+    dna=_dna(product_type="bracelet", script_family="diwani", calligraphy_style="bold_diwani_phrase_or_pave_name",
+             composition="horizontal", shape_envelope="wide_horizontal", construction="plate", stroke_character="bold_uniform",
+             swashes="present", tails="short", symmetry="asymmetric", negative_space="open", frame="rope_cuff_or_pave_rectangle",
+             bail_loops="two_bottom_drop_rings", chain_attachment="strap_or_cuff", stones="pave", ornament="hamsa_and_evil_eye",
+             geometry_density="medium", luxury_score=0.5, minimal_score=0.4, heritage_score=0.6, modern_score=0.7,
+             manufacturing_complexity="medium", orientation="square", reference_confidence=0.6,
+             copy_risk_indicators=["unknown_origin_render"]),
+    keywords=["leather bracelet", "mashallah leather strap", "rope cuff", "bangle name", "pave name cuff", "pave frame",
+              "love pendant frame", "سوار جلد", "أسورة اسم", "إسوارة مرصعة", "إطار"],
+    lessons=[
+        "A phrase plate can be riveted onto a leather strap with a buckle — the plate needs two flat feet for rivets and its drop rings hang below the strap edge so the charms swing free of the leather.",
+        "An open rope-twist cuff can carry a pavé name spanning between the two twisted wires: the name is soldered at both ends to the wires, so the outline needs a straight solid terminal at each end and no free-hanging descender below the lower wire.",
+        "A pavé halo frame with an inner word is the premium version of the frame construction: the frame carries the stones and the load; the inner word connects at two points and stays plain polished for contrast.",
+    ],
+    evidence=[
+        _ev("style_reference", "dda25b3a0843d46c0ccd2a75dec758b8e22ea33902d8992a221a2a87cf1d89d4", 2048, 2048, 2343332, EXCLUDED_THIRD_PARTY, _SUPPLIER_RENDER_NOTE + " — pavé halo rectangular frame with an inner cursive word, gold"),
+        _ev("style_reference", "9e97dd6ec603fbc1ff0f19143424bf0c4faff3439ae1236e190f7bc695b753b9", 2048, 2048, 2728325, EXCLUDED_THIRD_PARTY, _SUPPLIER_RENDER_NOTE + " — phrase plate on burgundy leather strap with hamsa + evil-eye drops"),
+        _ev("style_reference", "122f0182ab3609cd7ad09888078aaa84c46b4a66c524aa03de0d72bf4b583438", 2048, 2048, 2541149, EXCLUDED_PERSONAL_DATA, _SUPPLIER_RENDER_NOTE + " — same leather strap on a wrist ('Approx Size'); hash only"),
+        _ev("style_reference", "1902e4508b55a766fe257b08c49e9ef2ef5035cf633cf5c7bb035af4545eecb7", 2048, 2048, 2538322, EXCLUDED_THIRD_PARTY, _SUPPLIER_RENDER_NOTE + " — open rope-twist cuff with a pavé Arabic name spanning the wires"),
+    ],
+    evidence_tier="EXTERNAL_INSPIRATION", manufactured=False, rights_provenance="UNKNOWN_RIGHTS",
+    supplied_as="a supplier-render market reference",
+)
+
+
 GOLDEN_PRODUCTION_CASES = [
     ARABIC_LETTER_PEARL_EARRINGS,
     LAYERED_NAME_NECKLACE_ADAM_OMAR,
@@ -1729,4 +1830,6 @@ GOLDEN_PRODUCTION_CASES = [
     FRAMED_CALLIGRAPHY_PLATE_MARKET_REFERENCE,
     VENDOR_FONT_TABLES_AND_COMPARISON_SHEETS,
     CALLIGRAPHY_PHRASE_LIBRARY_SCREENSHOTS,
+    TOP_STYLE_RETAIL_STOCK_SURVEY,
+    SUPPLIER_CATALOGUE_RENDERS_STRAP_CUFF_FRAME,
 ]

@@ -1055,6 +1055,18 @@
       "branded tissue paper",
       "matte gold sticker"
     ],
-    "note": "Packaging is a BOM/branding reference only — it never affects geometry, pricing math or approval."
+    "note": "Packaging is a BOM/branding reference only — it never affects geometry, pricing math or approval.",
+    "brand_mood_board": {
+      "source_sha256": "e90e32adbd33512819f4cfafc16b6ec93ea2bf63c632fb5aa51f9f43fec462df",
+      "palette": [
+        "gold",
+        "black",
+        "cream",
+        "deep_blue",
+        "sand"
+      ],
+      "positioning": "jewellery with meaning — calligraphy medallions and signet rings for the modern Arab woman",
+      "note": "AI-composited model imagery; merchandising direction only"
+    }
   }
 }
