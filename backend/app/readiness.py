@@ -88,9 +88,27 @@ def check_storage() -> dict:
         storage = get_storage()
         key = storage.put(b"readiness-probe", ".txt")
         ok = storage.get(key) == b"readiness-probe"
-        return {"status": "ok" if ok else "error"}
+        storage.delete(key)
+        backend = "s3" if type(storage).__name__ == "S3PrivateStorage" else "local"
+        out = {"status": "ok" if ok else "error", "backend": backend}
+        if backend == "local":
+            # Honest operational note: a local private directory is fine for
+            # dev/CI; on ephemeral hosts (Replit redeploys) customer images
+            # do not survive — production must set OBJECT_STORAGE=s3.
+            out["durability"] = "PROCESS_LOCAL_DISK"
+        else:
+            out["durability"] = "OBJECT_STORAGE"
+        return out
     except Exception as exc:  # noqa: BLE001
         return {"status": "error", "detail": type(exc).__name__}
+
+
+def check_rate_limiter() -> dict:
+    from .security.ratelimit import status
+
+    st = status()
+    return {"status": "ok", "backend": st["backend"], "shared_across_instances": st["shared_across_instances"],
+            "configured": st["configured"], "last_failure": st["last_failure"]}
 
 
 def check_generator() -> dict:
@@ -111,6 +129,7 @@ def readiness_report(session: Session) -> dict:
         "arabic_shaping_engine": check_arabic_engine(),
         "geometry_and_manufacturing_engine": check_geometry_and_manufacturing(),
         "storage": check_storage(),
+        "rate_limiter": check_rate_limiter(),
         "design_generator": check_generator(),
     }
     overall_ok = all(c["status"] == "ok" for c in components.values())

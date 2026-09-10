@@ -28,6 +28,9 @@ pillow==12.3.0
 # Object storage (OBJECT_STORAGE=s3: AWS S3 / Cloudflare R2 / MinIO) —
 # imported lazily, unused in local/CI default.
 boto3==1.43.86
+# Shared rate limiting across processes/instances (RATE_LIMIT_BACKEND=redis + REDIS_URL);
+# in-memory fallback when unset — the limiter never blocks the product on Redis.
+redis==5.2.1
 # Persistence (PostgreSQL source of truth)
 sqlalchemy==2.0.35
 alembic==1.13.3

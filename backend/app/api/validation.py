@@ -18,12 +18,12 @@ from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from ..db.base import get_session
-from ..security.sessions import RateLimiter
+from ..security.ratelimit import get_limiter
 
 router = APIRouter(prefix="/api/validation", tags=["validation"])
 
-VOTE_LIMITER = RateLimiter(
-    int(os.environ.get("VOTE_RATE_MAX", "60")), float(os.environ.get("VOTE_RATE_WINDOW_S", "600"))
+VOTE_LIMITER = get_limiter(
+    "vote", int(os.environ.get("VOTE_RATE_MAX", "60")), float(os.environ.get("VOTE_RATE_WINDOW_S", "600"))
 )
 
 

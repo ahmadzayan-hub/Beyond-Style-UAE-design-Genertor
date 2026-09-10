@@ -30,14 +30,15 @@ from ..schemas.jewellery_design import (
     TextIdentityProof,
     ValidationReport,
 )
-from ..security.sessions import GENERATE_LIMITER, RateLimiter, issue_token
+from ..security.ratelimit import get_limiter
+from ..security.sessions import GENERATE_LIMITER, issue_token
 from ..services import design_service as svc
 from .auth import require_owned_request, require_owned_version
 
 router = APIRouter(prefix="/api/designs", tags=["designs"])
 versions_router = APIRouter(prefix="/api/versions", tags=["versions"])
 approval_router = APIRouter(prefix="/api/approval-links", tags=["approval-links"])
-APPROVAL_LINK_LIMITER = RateLimiter(20, 60.0)
+APPROVAL_LINK_LIMITER = get_limiter("approval_link", 20, 60.0)
 fonts_router = APIRouter(prefix="/api/fonts", tags=["fonts"])
 
 
