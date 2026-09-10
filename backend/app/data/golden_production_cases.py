@@ -640,7 +640,12 @@ LATIN_SCRIPT_NAME_BRACELET = _owner_case(
     ],
     evidence=[_ev("final_product", "0f9fb8e74a3ba229df11af6f706ef6dbf98f17f01043c2d40fa5971ee79519fc",
                   2268, 4032, 533528, PENDING_OBJECT_STORE,
-                  "product photo on a black box — docs/reference/owner-samples/14-latin-script-name-bracelet-product.jpg")],
+                  "product photo on a black box — docs/reference/owner-samples/14-latin-script-name-bracelet-product.jpg"),
+        _ev("final_product", "a830c3dfa9286a687954e78d04d05a9e8072f8b6083fdf4eb5f1e674fcd73d42", 2268, 4032, 497082,
+            PENDING_OBJECT_STORE, "same script name bracelet in its gift box"),
+        _ev("final_product", "1b9383513c633d7a7a295fd33e9e3fc261459d38a90b331b06246a4e97f83502", 2268, 4032, 886399,
+            PENDING_OBJECT_STORE, "same script name bracelet laid on the box, clasp and end rings visible"),
+    ],
 )
 
 OPEN_NAME_RING_WITH_HEART = _owner_case(
@@ -879,8 +884,12 @@ LARIAT_SEPARATED_LETTER_NECKLACE = _owner_case(
         "Reading order on a lariat follows the chain, so the order of stations must be locked to the confirmed text order (LTR for Latin, RTL for Arabic when the piece is read facing the wearer).",
         "Station letters need a larger minimum stroke than a joined name because each one is a free-hanging part.",
     ],
-    evidence=[_ev("style_reference", "2a8fca03bfa7070a5917ff9e0f22728c3cd22a85d0a430d7c399e828a3acf8cf", 1024, 1280, 88253,
-                  PENDING_OBJECT_STORE, _MARKETING_NOTE + " — lariat with separate Latin letters as chain stations")],
+    evidence=[
+        _ev("style_reference", "2a8fca03bfa7070a5917ff9e0f22728c3cd22a85d0a430d7c399e828a3acf8cf", 1024, 1280, 88253,
+            PENDING_OBJECT_STORE, _MARKETING_NOTE + " — lariat with separate Latin letters as chain stations"),
+        _ev("reference_image", "269ee801af8c56dee2aae5ecae50bb56ec0777460b5c8ec6738e61b1815c3b67", 716, 1600, 54536,
+            EXCLUDED_PERSONAL_DATA, "WhatsApp screenshot of a third-party lariat: single Arabic letter station with pearl stations and a cord choker with letter + pearl, worn on a person — hash only, never copied"),
+    ],
     evidence_tier="MARKETING_RENDER_UNMANUFACTURED", manufactured=False,
 )
 
@@ -1040,9 +1049,14 @@ CAR_MIRROR_HANGER_LINE = _owner_case(
         "Load is cumulative — the top plate's bottom ring carries everything below it, so its bridge width must be sized for the whole stack, not one plate.",
         "Phrase plates are wide and short; calligraphic name plates are square-ish — the stack alternates widths deliberately to read as one composition.",
         "A non-metal drop (wood/stone) attaches with a ring through a drilled hole; it is not part of the cut geometry.",
+        "A customer may ask for a car-brand logo as the bottom medallion — that is a third-party trademark: flag copyright/brand risk, never cut the logo without rights, and propose an inspired plain medallion or the customer's own initial instead.",
     ],
-    evidence=[_ev("style_reference", "5e698d391e41dff049ccb0f441e08a0e6aa05639a7a2024468661e4b4fb97110", 1122, 1402, 2104035,
-                  PENDING_OBJECT_STORE, _MARKETING_NOTE + " — car mirror hanger: hands-heart plate, phrase plate, name plate, wood drop")],
+    evidence=[
+        _ev("style_reference", "5e698d391e41dff049ccb0f441e08a0e6aa05639a7a2024468661e4b4fb97110", 1122, 1402, 2104035,
+            PENDING_OBJECT_STORE, _MARKETING_NOTE + " — car mirror hanger: hands-heart plate, phrase plate, name plate, wood drop"),
+        _ev("style_reference", "04bc4d3d50701979e9c30569ac55d4b692600c8c92c9ee4f637ccaa786925654", 1254, 1254, 123881,
+            PENDING_OBJECT_STORE, _MARKETING_NOTE + " — car mirror hanger: calligraphy phrase plate with heart over a car-brand star medallion. BRAND RISK: the medallion reproduces a third-party automotive trademark; the platform flags logo requests as IP risk and offers a plain ring/medallion alternative"),
+    ],
     evidence_tier="MARKETING_RENDER_UNMANUFACTURED", manufactured=False,
 )
 
@@ -1191,6 +1205,7 @@ MENS_CALLIGRAPHY_CUFFLINK_MARKET_REFERENCES = _owner_case(
     evidence=[
         _ev("style_reference", "d50d71332d940ff87a241828f1ee64c9054b104b12d8af707bab9b605fbbdaaa", 640, 640, 34594, EXCLUDED_THIRD_PARTY, _THIRD_PARTY_NOTE + " — branded round relief-name cufflink on a darkened disc"),
         _ev("style_reference", "56e78e7a1866de96253cf86d504565b8feb123d53f5d6ca03dc1d6c596c7cbc4", 720, 717, 17864, EXCLUDED_THIRD_PARTY, _THIRD_PARTY_NOTE + " — openwork calligraphic monogram cufflink, origin unknown"),
+        _ev("style_reference", "4e407d8290d76dc7261ec9c8cbfbd9726072cc8f5a0edce940b51797a49de115", 533, 768, 41145, EXCLUDED_PERSONAL_DATA, _THIRD_PARTY_NOTE + " — round relief-calligraphy face on a black recess held in fingers (video frame), origin unknown; hash only"),
     ],
     evidence_tier="EXTERNAL_INSPIRATION", manufactured=False, rights_provenance="THIRD_PARTY_NO_COPY",
     supplied_as="a third-party market reference",
@@ -1302,6 +1317,7 @@ PHRASE_ON_MESH_BRACELET_WITH_CHARMS = _owner_case(
         "A phrase plate can be mounted on a mesh band instead of hung from a chain: the plate needs no end rings, but its reverse must have a flat solid zone for fixing to the band.",
         "Charm drops hang from rings integrated at the plate's bottom edge — placed under thick letters, never under a hairline or a dot.",
         "Bold Ruqaa with joined baselines survives as a plate; the shadda/dots are kept as raised islands only because the plate is solid behind them.",
+        "The same mesh-band mount carries a Latin script name or an Arabic name: the plate must be one connected piece with two flat feet on the reverse; free-hanging descenders and swashes are fine because the band, not a chain, takes the load.",
     ],
     evidence=[
         _ev("style_reference", "499857f32661c5bcb8c6f3db1a95f8b69b47d22fca58fc76ba2bcb9904fdbc33", 1448, 1086, 162352,
@@ -1310,6 +1326,8 @@ PHRASE_ON_MESH_BRACELET_WITH_CHARMS = _owner_case(
             PENDING_OBJECT_STORE, "finished gold and silver phrase-plate mesh bracelets on a display pillow (silver with hamsa + evil-eye drops)"),
         _ev("final_product", "2a6ca22883110c274c4885e107bfe65739c0bde4c22bc1acfbe26c50c2acb022", 1254, 1254, 2105633,
             PENDING_OBJECT_STORE, "studio product photo of the gold phrase-plate mesh bracelet on white"),
+        _ev("final_product", "ca345faf77688c9b152cd93db29203a3ead9c5ffdd071fc17a19881f149229d3", 2268, 4032, 881973,
+            PENDING_OBJECT_STORE, "two finished name plates (Latin script and Arabic) on gold mesh bands, held on a studio glove — same band construction as the phrase plate"),
     ],
     workshop_changes=["gold version made without drops; silver version carries the hamsa and evil-eye drops — the plate outline is identical, the drop rings are optional islands"],
 )
@@ -1516,6 +1534,164 @@ PACKAGING_MATERIALS_BOARD = _owner_case(
 )
 
 
+# ---------------------------------------------------------------------------
+# Owner sample batch 6 (2026-09-10): relief cufflinks creative, letter-station
+# bead necklace, vendor font tables / font comparison sheets, a framed
+# calligraphy pendant and phrase-library screenshots.
+# ---------------------------------------------------------------------------
+
+RELIEF_CALLIGRAPHY_DISC_CUFFLINKS_LINE = _owner_case(
+    "BS-GPC-0033-relief-calligraphy-disc-cufflinks-line",
+    product_type="RELIEF_CALLIGRAPHY_CUFFLINKS", language="AR",
+    layout_style="PHRASE_AS_RELIEF_ON_DARKENED_DISC", composition_type="DISC_RELIEF",
+    construction=["ROUND_DISC", "RAISED_CALLIGRAPHY_RELIEF", "DARKENED_RECESS", "POLISHED_RIM", "CUFFLINK_BACK"],
+    topology="DISC+RELIEF+CUFFLINK_BACK",
+    attachment_topology="CUFFLINK_POST_ON_REVERSE",
+    attachment_points=[{"position": "reverse_center", "kind": "soldered_post_and_toggle", "load": "cuff"}],
+    chain_topology="NONE",
+    material="925_silver_or_silver_tone", finish="polished_relief_oxidised_recess", stones=None,
+    dna=_dna(product_type="cufflinks", audience="men", material="silver", metal_color="silver",
+             script_family="thuluth", calligraphy_style="compact_thuluth_stacked", composition="stacked",
+             shape_envelope="circle", construction="relief", stroke_character="modulated_calligraphic",
+             swashes="present", tails="curled_inside_disc", symmetry="asymmetric", negative_space="dense",
+             frame="circular_rim", bail_loops="none", chain_attachment="cufflink_post", ornament="minimal",
+             geometry_density="high", luxury_score=0.7, minimal_score=0.5, heritage_score=0.8, modern_score=0.4,
+             manufacturing_complexity="medium", orientation="square"),
+    keywords=["cufflinks", "men cufflinks", "relief cufflinks", "calligraphy disc", "phrase cufflinks", "thuluth cufflinks",
+              "كبك", "كبك خط عربي", "أزرار أكمام"],
+    lessons=[
+        "Relief on a solid disc is the men's calligraphy format: the raised text is polished, the recess darkened, and the rim stays a clean polished ring — no connectivity rule applies because the disc carries everything.",
+        "A stacked Thuluth phrase fills a 16–18 mm disc; the same disc geometry serves cufflinks, ring faces and keychains.",
+    ],
+    evidence=[_ev("style_reference", "05efe79ba4d89f7678c94b7f74723c77fa857645213f17e3230597b328db8e8c", 1024, 1280, 127050,
+                  PENDING_OBJECT_STORE, _MARKETING_NOTE + " — round relief calligraphy cufflinks with darkened recess on a shirt cuff")],
+    evidence_tier="MARKETING_RENDER_UNMANUFACTURED", manufactured=False,
+)
+
+LETTER_STATIONS_BEAD_NECKLACE = _owner_case(
+    "BS-GPC-0034-arabic-letter-stations-bead-necklace",
+    product_type="LETTER_STATION_NECKLACE", language="AR",
+    layout_style="THREE_SHORT_ARABIC_STATIONS_WITH_BEAD_STATIONS", composition_type="LETTER_STATIONS",
+    construction=["SHORT_ARABIC_LETTER_OR_WORD_PLATES", "RING_PER_STATION_END", "BOX_CHAIN", "BEAD_STATIONS"],
+    topology="CHAIN+BEADS+STATION+CHAIN+BEADS+STATION+CHAIN+STATION+CHAIN",
+    attachment_topology="EACH_STATION_HAS_TWO_RINGS_INLINE_WITH_CHAIN",
+    attachment_points=[{"position": "each_station_left_and_right", "kind": "integrated_ring", "load": "chain"}],
+    chain_topology="BOX_CHAIN_WITH_LETTER_AND_BEAD_STATIONS",
+    material="925_silver", finish="polished",
+    stones={"type": "turquoise_bead", "count": 8, "placement": "paired_stations_on_chain", "setting": "threaded"},
+    dna=_dna(product_type="necklace", material="silver", metal_color="silver", script_family="naskh",
+             calligraphy_style="thin_naskh_letter_stations", composition="stations", shape_envelope="linear_stations",
+             construction="openwork", stroke_character="thin_uniform", swashes="absent", tails="short",
+             symmetry="asymmetric", negative_space="open", frame="none", bail_loops="two_rings_per_station",
+             chain_attachment="stations", stones="bead_stations", ornament="minimal", geometry_density="low",
+             luxury_score=0.5, minimal_score=0.8, heritage_score=0.4, modern_score=0.8,
+             manufacturing_complexity="medium", orientation="portrait"),
+    keywords=["station necklace", "letter stations", "initials necklace", "turquoise beads", "family initials",
+              "three names necklace", "قلادة حروف", "حروف عائلة", "فيروز"],
+    lessons=[
+        "Several short Arabic words/letters can be separate stations on one chain, each with two integrated rings; bead pairs between stations set the spacing so the stations do not slide together.",
+        "Station order along the chain is the reading order — it must be locked to the confirmed text order in the version lock, exactly like a multi-name layout.",
+        "Thin single letters need a solid tail/loop to carry the ring; a lone dot can never be a station on its own.",
+    ],
+    evidence=[_ev("final_product", "2dd60816c76e1f9a9219d57df0846968cac6d969a312679ad36a339b9676b5c0", 720, 1280, 59141,
+                  PENDING_OBJECT_STORE, "finished silver letter-station necklace with turquoise bead pairs on a display bust")],
+)
+
+
+FRAMED_CALLIGRAPHY_PLATE_MARKET_REFERENCE = _owner_case(
+    "BS-GPC-0036-framed-calligraphy-plate-pendant-market-reference",
+    product_type="MARKET_REFERENCE_FRAMED_PLATE", language="AR",
+    layout_style="PHRASE_FILLING_RECTANGULAR_FRAME", composition_type="FRAMED_OPENWORK_PLATE",
+    construction=["RECTANGULAR_FRAME", "PIERCED_CALLIGRAPHY_FILL", "TOP_RING", "CORD_WITH_BAIL"],
+    topology="FRAME+PIERCED_FILL+TOP_RING",
+    attachment_topology="SINGLE_TOP_RING_TO_BAIL",
+    attachment_points=[{"position": "top_center", "kind": "integrated_ring", "load": "cord_bail"}],
+    chain_topology="CORD_THROUGH_BAIL",
+    material="silver_market_sample", finish="polished", stones=None,
+    dna=_dna(product_type="pendant", material="silver", metal_color="silver", script_family="nastaliq",
+             calligraphy_style="dense_nastaliq_texture", composition="framed", shape_envelope="tall_rectangle",
+             construction="openwork", stroke_character="modulated_calligraphic", swashes="present",
+             tails="interlocked", symmetry="asymmetric", negative_space="dense", frame="rectangular",
+             bail_loops="top_ring", chain_attachment="bail", ornament="none", geometry_density="high",
+             luxury_score=0.6, minimal_score=0.3, heritage_score=0.8, modern_score=0.6,
+             manufacturing_complexity="high", orientation="portrait", reference_confidence=0.6,
+             copy_risk_indicators=["third_party_brand_watermark"]),
+    keywords=["framed calligraphy", "rectangle pendant", "poetry pendant", "nastaliq pendant", "cord pendant",
+              "تعليقة مستطيلة", "خط نستعليق", "إطار"],
+    lessons=[
+        "A rectangular frame lets dense calligraphy be pierced as a texture: every stroke must touch the frame or a neighbour, so the frame is the structural member and the text can be as dense as legibility allows.",
+        "Framed plates hang from a single top ring on a cord bail — a tall plate needs the ring on the centre line and a thickness ≥1.0 mm or it twists.",
+    ],
+    evidence=[_ev("style_reference", "4bf3290b4d0e80eac2b70eae9c18ded27ede2cc4b52cfa2a5a1fcdde234c2b6d", 1116, 1304, 165086,
+                  EXCLUDED_PERSONAL_DATA, _THIRD_PARTY_NOTE + " — branded gallery watermark, framed pierced calligraphy plate on a cord worn on a person; hash only")],
+    evidence_tier="EXTERNAL_INSPIRATION", manufactured=False, rights_provenance="THIRD_PARTY_NO_COPY",
+    supplied_as="a third-party market reference",
+)
+
+_FONT_SHEET_NOTE = "font comparison sheet supplied by the owner — one name set in many fonts; the fonts themselves are not identified or licensed here, so nothing is traced from the sheet"
+
+VENDOR_FONT_TABLES_AND_COMPARISON_SHEETS = _owner_case(
+    "BS-GPC-0037-vendor-font-tables-and-font-comparison-sheets",
+    product_type="MARKET_REFERENCE_FONT_TABLE", language="MIXED",
+    layout_style="ONE_NAME_IN_MANY_FONTS", composition_type="STYLE_PICKER_SHEET",
+    construction=["NUMBERED_FONT_TABLE", "DEFAULT_FONT_RULE", "ORDER_NOTE_TEXT_CONFIRMATION"],
+    topology="NONE", attachment_topology="NONE", attachment_points=[], chain_topology="NONE",
+    material=None, finish=None, stones=None,
+    dna=_dna(product_type="style_sheet", audience="unisex", script_family="mixed", calligraphy_style="mixed",
+             composition="grid", shape_envelope="none", construction="none", stroke_character="mixed",
+             swashes="mixed", tails="mixed", symmetry="none", negative_space="none", frame="none",
+             bail_loops="none", chain_attachment="none", ornament="none", geometry_density="none",
+             luxury_score=0.5, minimal_score=0.5, heritage_score=0.5, modern_score=0.5,
+             manufacturing_complexity="low", orientation="landscape", reference_confidence=0.8,
+             copy_risk_indicators=["unidentified_commercial_fonts"]),
+    keywords=["font table", "font chart", "choose font", "default font", "font number", "style picker", "script fonts",
+              "جدول خطوط", "اختيار الخط", "الخط الافتراضي"],
+    lessons=[
+        "Mass-market sellers let the customer pick a font by number from a fixed table and fall back to a default when no choice is given — the platform's style picker already does this with named, licensed styles; a numbered shortcut (1–16) is a valid customer-facing alias, never a new font source.",
+        "The order note 'please note the text you need' is the sellers' version of exact-text confirmation; the platform requires the confirmed text before any proof, not as a free-text remark.",
+        "A proof sheet showing one name in 12–16 fonts at equal size is the sellers' 'diverse options' step; the platform's 10 diverse proofs must differ in construction, not only in font.",
+        "Latin script fonts on these sheets are unidentified commercial faces — they are references for the look (brush script, copperplate, slab, rounded sans), not sources: the platform renders only registry fonts with recorded rights.",
+    ],
+    evidence=[
+        _ev("style_reference", "1c0292ef6102581160c213d23ef021d1aa3c9edb3626a4ffaae482307ee8618b", 1080, 1030, 67608, EXCLUDED_THIRD_PARTY, "third-party seller 'Arabic font table' (16 numbered fonts, default 5) — hash only (supplied twice)"),
+        _ev("style_reference", "ad224ddd27f2f3598ddef1186f6802fc7a8fa94d20967bcb524647e36ea1a2ce", 861, 602, 51872, EXCLUDED_THIRD_PARTY, _FONT_SHEET_NOTE + " — one Arabic name in 13 Arabic fonts"),
+        _ev("style_reference", "9138f490a619c50191fdee3fdc397d80222d2a502ef34fdb6e11bf3aa1c2d9a3", 1600, 900, 88274, EXCLUDED_THIRD_PARTY, _FONT_SHEET_NOTE + " — one short Latin name in 12 script/sans fonts"),
+        _ev("style_reference", "d8d87f2ca7fdf8f519d2b41596e4df5a5064c33a1aaab04be751ebd1a9ff7bde", 1600, 900, 145988, EXCLUDED_THIRD_PARTY, _FONT_SHEET_NOTE + " — one long Latin name in 12 script/sans fonts"),
+    ],
+    evidence_tier="EXTERNAL_INSPIRATION", manufactured=False, rights_provenance="UNKNOWN_RIGHTS",
+    supplied_as="a market font-table reference",
+)
+
+CALLIGRAPHY_PHRASE_LIBRARY_SCREENSHOTS = _owner_case(
+    "BS-GPC-0038-calligraphy-phrase-library-screenshots",
+    product_type="MARKET_REFERENCE_PHRASE_LIBRARY", language="AR",
+    layout_style="PHRASE_AS_CIRCULAR_OR_FREE_THULUTH_COMPOSITION", composition_type="CALLIGRAPHY_ARTWORK",
+    construction=["STACKED_THULUTH_COMPOSITION", "CIRCULAR_ENVELOPE", "HARAKAT_AS_ORNAMENT"],
+    topology="NONE", attachment_topology="NONE", attachment_points=[], chain_topology="NONE",
+    material=None, finish=None, stones=None,
+    dna=_dna(product_type="artwork", audience="unisex", script_family="thuluth", calligraphy_style="classical_thuluth_composition",
+             composition="stacked", shape_envelope="circle_or_free", construction="none",
+             stroke_character="modulated_calligraphic", swashes="present", tails="interlocked", symmetry="asymmetric",
+             negative_space="dense", frame="none", bail_loops="none", chain_attachment="none", harakat_style="full_ornamental",
+             ornament="harakat", geometry_density="high", luxury_score=0.8, minimal_score=0.1, heritage_score=1.0,
+             modern_score=0.2, manufacturing_complexity="high", orientation="square", reference_confidence=0.6,
+             copy_risk_indicators=["third_party_vector_library", "sacred_text"]),
+    keywords=["phrase library", "calligraphy artwork", "thuluth composition", "quran verse", "greeting phrase",
+              "eid phrase", "مكتبة عبارات", "خط الثلث", "آية", "كل عام وأنتم بخير"],
+    lessons=[
+        "Phrase artworks from a calligraphy library are third-party vectors until their licence is recorded — they can inspire a composition envelope (circle, stacked) but are never cut as-is.",
+        "One of the two screenshots is a Qur'anic verse: sacred text takes the enhanced path — no paraphrase, no generative rewriting, verified letter-by-letter against the canonical text, explicit approval before any proof.",
+        "Full harakat drawn as ornament is a Thuluth-artwork convention; on jewellery each mark becomes a free island that must be bridged or dropped, and dropping harakat needs the customer's explicit confirmation.",
+    ],
+    evidence=[
+        _ev("style_reference", "95c3fa18101e3065c91acfa8fc9a29ba446c0078388722bdeaec019f441855e0", 480, 618, 20928, EXCLUDED_THIRD_PARTY, "screenshot of a third-party calligraphy library entry — Qur'anic verse in a free Thuluth composition; hash only, sacred-text path"),
+        _ev("style_reference", "3e44a45d6abb81987ef6f6c16a1b0041ee179679b9a33ef29eabe0ff2d8fcfe9", 569, 661, 34659, EXCLUDED_THIRD_PARTY, "screenshot of a third-party calligraphy library entry — greeting phrase in a circular Thuluth composition; hash only"),
+    ],
+    evidence_tier="EXTERNAL_INSPIRATION", manufactured=False, rights_provenance="UNKNOWN_RIGHTS",
+    supplied_as="a third-party phrase-library reference",
+)
+
+
 GOLDEN_PRODUCTION_CASES = [
     ARABIC_LETTER_PEARL_EARRINGS,
     LAYERED_NAME_NECKLACE_ADAM_OMAR,
@@ -1548,4 +1724,9 @@ GOLDEN_PRODUCTION_CASES = [
     RETAIL_SURVEY_ENGRAVED_BAR_PLATES,
     RETAIL_SURVEY_CORD_NAME_BRACELETS,
     PACKAGING_MATERIALS_BOARD,
+    RELIEF_CALLIGRAPHY_DISC_CUFFLINKS_LINE,
+    LETTER_STATIONS_BEAD_NECKLACE,
+    FRAMED_CALLIGRAPHY_PLATE_MARKET_REFERENCE,
+    VENDOR_FONT_TABLES_AND_COMPARISON_SHEETS,
+    CALLIGRAPHY_PHRASE_LIBRARY_SCREENSHOTS,
 ]

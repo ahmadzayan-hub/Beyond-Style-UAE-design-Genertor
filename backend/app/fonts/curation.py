@@ -220,7 +220,7 @@ GOLDEN_PRODUCT_FAMILIES: dict[str, tuple[str, ...]] = {
     "multi_name": ("NECKLACE", "NAME_BAR_PENDANT"),
     "bracelet": ("BRACELET", "KIDS_NAME_JEWELLERY"),
     "ring": ("RING",),
-    "cufflink": ("CUFFLINK",),
+    "cufflink": ("CUFFLINK", "CUFFLINKS"),
     "keychain": ("KEYCHAIN", "CUTOUT_NAME_DISC"),
     "brooch": ("BROOCH",),
     "hanger": ("CAR_MIRROR_HANGER",),

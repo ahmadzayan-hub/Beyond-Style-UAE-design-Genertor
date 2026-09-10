@@ -48,7 +48,7 @@ def test_seed_is_idempotent(seeded):
     assert seed_golden_cases(seeded) == []
     rows = seeded.execute(select(m.GoldenProductionCase)).scalars().all()
     from app.data.golden_production_cases import GOLDEN_PRODUCTION_CASES
-    assert len(rows) == len(GOLDEN_PRODUCTION_CASES) == 31
+    assert len(rows) == len(GOLDEN_PRODUCTION_CASES) == 36
 
 
 def test_arabic_letter_earring_request_retrieves_the_real_case(seeded):
@@ -286,7 +286,7 @@ def test_owner_samples_never_carry_customer_text_and_stay_pending(seeded):
     customer confirms the exact text on the platform."""
     rows = seeded.execute(select(m.GoldenProductionCase)).scalars().all()
     owner = [r for r in rows if r.evidence_tier in ("MANUFACTURED_OWNER_SAMPLE", "MARKETING_RENDER_UNMANUFACTURED", "EXTERNAL_INSPIRATION")]
-    assert len(owner) == 29
+    assert len(owner) == 34
     for r in owner:
         assert r.customer_source_text is None
         assert r.source_text_status == "PENDING_CUSTOMER_VERIFICATION"

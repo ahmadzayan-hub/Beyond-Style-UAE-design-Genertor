@@ -279,7 +279,10 @@ def test_owner_samples_inform_their_own_product_families_only():
     assert ring and all("RING" in e["case_id"].upper() or "ring" in e["case_id"] for e in ring)
     assert not any("earring" in e["case_id"] for e in ring), "RING must not match EARRING"
     assert golden_case_influence("keychain") and golden_case_influence("brooch") and golden_case_influence("bracelet")
-    assert all(e["evidence_tier"] == "MANUFACTURED_OWNER_SAMPLE" for e in golden_case_influence("cufflink"))
+    cuff = golden_case_influence("cufflink")
+    assert cuff, "the manufactured enamel cufflinks and the relief-disc line must inform cufflinks"
+    assert cuff[0]["evidence_tier"] == "MANUFACTURED_OWNER_SAMPLE"
+    assert all(e["evidence_tier"] in ("MANUFACTURED_OWNER_SAMPLE", "MARKETING_RENDER_UNMANUFACTURED") for e in cuff)
 
 
 def test_third_party_market_references_never_influence_generation():
