@@ -11,6 +11,7 @@ on:
     branches: ["**"]
   schedule:
     - cron: "0 6 * * *"
+  workflow_dispatch: {}   # on-demand probe after a Replit publish, no push needed
 
 jobs:
   smoke:
