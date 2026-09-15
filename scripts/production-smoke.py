@@ -83,7 +83,15 @@ def main() -> int:
     # answered". A 200 HTML page here means another application occupies
     # the URL (seen in production: an AI-scaffolded SPA on the Replit
     # subdomain), which is the single most misleading failure mode.
-    status, _, body = request("GET", f"{BACKEND_URL}/health")
+    # An autoscale deployment may be cold: give /health up to three tries
+    # (each with its own 15 s timeout) before calling it down. A retry can
+    # only turn "no answer" into a real answer — it never softens the check.
+    status, body = None, b""
+    for attempt in range(3):
+        status, _, body = request("GET", f"{BACKEND_URL}/health", timeout=25.0)
+        if status is not None:
+            break
+        print(f"[INFO] B. backend /health — attempt {attempt + 1} got no response ({body[:120]!r}); retrying")
     health_json = None
     try:
         health_json = json.loads(body)
@@ -135,7 +143,9 @@ def main() -> int:
         headers={"Origin": origin, "Access-Control-Request-Method": "POST"},
     )
     allow_origin = headers.get("access-control-allow-origin") or headers.get("Access-Control-Allow-Origin")
-    check("D. CORS allows the frontend origin", allow_origin == origin, f"got={allow_origin!r}")
+    check("D. CORS allows the frontend origin", allow_origin == origin,
+          f"got={allow_origin!r} status={status} origin={origin} "
+          f"headers={ {k: v for k, v in headers.items() if k.lower().startswith(('access-control', 'server', 'x-request', 'allow'))} }")
 
     # E. Arabic multi-name generation request (the real production case).
     status, _, body = request(
