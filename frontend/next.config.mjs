@@ -74,6 +74,9 @@ const nextConfig = {
     return [
       ...diag,
       { source: "/api/:path*", destination: `${backend}/api/:path*` },
+      // Local only: the staff dashboard (/admin) reads the public probes.
+      { source: "/health", destination: `${backend}/health` },
+      { source: "/ready", destination: `${backend}/ready` },
     ];
   },
 };

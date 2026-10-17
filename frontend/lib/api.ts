@@ -606,3 +606,40 @@ export async function listCandidates(designId: string) {
 export async function getDesign(designId: string) {
   return jsonOrThrow(await doFetch(`/api/designs/${designId}`, { headers: { ...authHeaders(), ...customerHeaders() } }));
 }
+
+// ---- Staff dashboard (/admin) — every number comes from a real endpoint ----
+
+/** Process-alive probe: {status, schema_version, build_sha}. */
+export async function health() {
+  return jsonOrThrow(await doFetch("/health"));
+}
+
+/** Dependency readiness. /ready answers 503 when something is down, and
+ * the body still carries every component, so the dashboard reads the
+ * body either way instead of hiding the broken component. */
+export async function serviceReadiness() {
+  const res = await doFetch("/ready");
+  try {
+    return (await res.json()) as { status: string; components: Record<string, { status: string; [k: string]: unknown }> };
+  } catch {
+    throw new ApiError(`HTTP ${res.status}`, "BACKEND_UNAVAILABLE", res.status);
+  }
+}
+
+/** Per-provider AI availability (never a fabricated PASS). */
+export async function aiStatus() {
+  return jsonOrThrow(await doFetch("/api/ai/status"));
+}
+
+export async function workshopOrders(token: string) {
+  return jsonOrThrow(await doFetch("/api/workshop/orders", { headers: adminHeaders(token) }));
+}
+
+export async function reviewWave1(token: string) {
+  return jsonOrThrow(await doFetch("/api/admin/review/wave-1", { headers: adminHeaders(token) }));
+}
+
+/** Slow (renders the review pack); the dashboard loads it on demand. */
+export async function curationAnalysis(token: string) {
+  return jsonOrThrow(await doFetch("/api/admin/curation/analysis", { headers: adminHeaders(token) }));
+}

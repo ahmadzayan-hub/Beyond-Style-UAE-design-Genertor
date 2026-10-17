@@ -194,6 +194,34 @@ failure.
 `frontend_url`/`backend_url` inputs. Runs
 `scripts/production-smoke.py` against the real deployed URLs.
 
+## Installable app (Windows, Android, iOS) — PWA
+
+The customer UI ships as a Progressive Web App since the 2026-10-17 UI
+redesign: `frontend/public/manifest.webmanifest` (name, `display:
+standalone`, `dir: rtl`, `lang: ar`, theme/background `#FAF7F1`, 192/512
+px icons plus a maskable 512), Apple touch icon and `appleWebApp`
+metadata in `app/layout.tsx`, and `viewportFit: cover` with `pb-safe` on
+the fixed action bar. Fonts (Cairo, Amiri — SIL OFL) are self-hosted via
+`next/font/local`, so the CSP stays `font-src 'self'`.
+
+What this gives today, with no extra build:
+
+| Platform | How the customer installs | Status |
+|---|---|---|
+| Android (Chrome, Samsung Internet) | "Install app" prompt / menu → Install | works from the Vercel deployment over HTTPS |
+| iOS / iPadOS (Safari) | Share → Add to Home Screen; opens standalone with the Apple icon | works; no push notifications (not used) |
+| Windows (Edge, Chrome) | Address-bar install icon → installs as a desktop app with its own window | works |
+
+Honest limits: there is **no offline mode** (no service worker is
+registered on purpose — every screen talks to the backend and a cached
+shell would mask an outage), and there are **no App Store / Play Store /
+Microsoft Store builds**. Store distribution would be a separate Capacitor
+(or TWA for Android) project wrapping the same Next.js output; it is not
+claimed until it exists and passes a device test.
+
+Verification: `curl -sf https://<frontend>/manifest.webmanifest | jq .`
+and Lighthouse → "Installable" on the production URL.
+
 ## Vercel
 
 Project already exists and is linked to this GitHub repo (Vercel's own

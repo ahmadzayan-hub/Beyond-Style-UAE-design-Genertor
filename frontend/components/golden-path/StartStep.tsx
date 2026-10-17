@@ -2,10 +2,12 @@
 
 import { useRef } from "react";
 import type { Strings } from "./types";
+import { Button, Card, Chip, Field, Hero, Input, Range, Select, TextArea } from "@/components/ui";
 
 /** Step 1 of the Golden Path: customer text, optional reference image with
  * style strength + message, product choice (ring fields), style intent.
- * Extracted verbatim from app/page.tsx — every data-testid is unchanged. */
+ * Every data-testid is unchanged from the original screen — the E2E suite
+ * drives this step by test id. */
 export interface StartStepProps {
   t: Strings;
   text: string; setText: (v: string) => void;
@@ -27,6 +29,12 @@ export interface StartStepProps {
   onStart: () => void;
 }
 
+const FAMILY_IMAGES: Record<string, string> = {
+  necklace: "/brand/family-necklace.jpg",
+  bracelet: "/brand/family-bracelet.jpg",
+  cufflinks: "/brand/family-cufflinks.jpg",
+};
+
 export default function StartStep({
   t, text, setText, message, setMessage, refFile, setRefFile, refPreview, setRefPreview,
   styleStrength, setStyleStrength, styleIntent, setStyleIntent, scriptFamily, setScriptFamily,
@@ -35,236 +43,237 @@ export default function StartStep({
   busy, busyLabel, onStart,
 }: StartStepProps) {
   const fileInput = useRef<HTMLInputElement>(null);
+  const ar = lang === "ar";
   return (
-    <section className="flex flex-col gap-5">
-      <div>
-        <h2 className="text-2xl font-bold">{t.start_title}</h2>
-        <p className="mt-1 text-sm text-stone-500">{t.start_subtitle}</p>
-      </div>
-      <input
-        data-testid="text-input"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder={t.text_placeholder}
-        className="rounded-xl border border-stone-300 bg-white p-4 text-lg focus:border-brand-gold focus:outline-none"
+    <section className="flex flex-col gap-6 animate-fade-up">
+      <Hero
+        title={t.hero_title}
+        subtitle={t.hero_subtitle}
+        points={t.hero_points}
+        imageLabel={t.hero_image_label}
       />
-      <div className="rounded-xl border border-dashed border-stone-300 bg-white p-4">
-        <button
-          onClick={() => fileInput.current?.click()}
-          className="w-full text-start text-sm font-medium text-brand-gold"
-          data-testid="upload-button"
-        >
-          {t.upload_reference}
-        </button>
-        <p className="mt-1 text-xs text-stone-400">{t.upload_hint}</p>
-        <input
-          ref={fileInput}
-          data-testid="file-input"
-          type="file"
-          accept="image/jpeg,image/png,image/webp"
-          className="hidden"
-          onChange={(e) => {
-            const f = e.target.files?.[0] || null;
-            setRefFile(f);
-            setRefPreview(f ? URL.createObjectURL(f) : null);
-          }}
-        />
-        {refPreview && (
-          <img
-            src={refPreview}
-            alt="reference"
-            data-testid="reference-preview"
-            className="mt-3 max-h-40 rounded-lg object-contain"
-          />
-        )}
-        {refFile && (
-          <label className="mt-3 block text-xs">
-            <span className="flex justify-between">
-              <span>{t.strength_original}</span>
-              <span className="font-medium">{t.style_strength}</span>
-              <span>{t.strength_similar}</span>
-            </span>
-            <input
-              type="range" data-testid="style-strength"
-              min={0} max={1} step={0.1} value={styleStrength}
-              onChange={(e) => setStyleStrength(Number(e.target.value))}
-              className="w-full accent-brand-gold"
-            />
-          </label>
-        )}
-        {refFile && (
-          <textarea
-            data-testid="message-input"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder={t.message_placeholder}
-            className="mt-3 w-full rounded-lg border border-stone-200 p-3 text-sm"
-            rows={2}
-          />
-        )}
-      </div>
-      <div>
-        <p className="mb-2 text-sm font-medium">{t.product_label}</p>
-        <div className="flex flex-wrap gap-2">
-          {(["pendant", "ring"] as const).map((p) => (
-            <button
-              key={p}
-              data-testid={`product-${p}`}
-              onClick={() => setProductType(p)}
-              className={`rounded-full border px-4 py-2 text-sm ${
-                productType === p
-                  ? "border-brand-gold bg-brand-gold text-white"
-                  : "border-stone-300 bg-white"
-              }`}
-            >
-              {t.products[p]}
-            </button>
-          ))}
-        </div>
-        {productType === "ring" && (
-          <div className="mt-3 flex flex-wrap gap-3">
-            <label className="flex-1 text-xs">
-              {t.ring_size_label}
-              <select
-                data-testid="ring-size"
-                value={ringSize}
-                onChange={(e) => setRingSize(Number(e.target.value))}
-                className="mt-1 w-full rounded border border-stone-300 p-2"
-              >
-                {Array.from({ length: 27 }, (_, i) => 44 + i).map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="flex-1 text-xs">
-              {t.inner_engraving_label}
-              <input
-                data-testid="inner-text-input"
-                value={innerText}
-                onChange={(e) => setInnerText(e.target.value)}
-                placeholder={t.inner_engraving_hint}
-                className="mt-1 w-full rounded border border-stone-300 p-2"
+
+      <div className="grid gap-6 md:grid-cols-[1fr_300px] md:items-start">
+        <div className="flex flex-col gap-5">
+          <Card padding="lg">
+            <div className="mb-4">
+              <h2 className="font-display text-2xl text-ink-900">{t.start_title}</h2>
+              <p className="mt-1 text-sm text-ink-500">{t.start_subtitle}</p>
+            </div>
+            <Field htmlFor="gp-text">
+              <Input
+                id="gp-text"
+                size="lg"
+                data-testid="text-input"
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                placeholder={t.text_placeholder}
+                autoComplete="off"
+                className="font-display"
               />
-            </label>
-            <label className="flex-1 text-xs">
-              {t.band_height_label}
-              <select
-                data-testid="band-height"
-                value={bandHeight}
-                onChange={(e) => setBandHeight(Number(e.target.value))}
-                className="mt-1 w-full rounded border border-stone-300 p-2"
+            </Field>
+
+            <div className="mt-4 rounded-xl border border-dashed border-ink-200 bg-cream-50 p-4">
+              <button
+                type="button"
+                onClick={() => fileInput.current?.click()}
+                className="flex w-full items-center gap-3 text-start text-sm font-semibold text-gold-700"
+                data-testid="upload-button"
               >
-                {[5.5, 6.5, 7.5, 8.5].map((h) => (
-                  <option key={h} value={h}>
-                    {h}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
-        )}
-      </div>
-      <div>
-        <p className="mb-2 text-sm font-medium">{t.script_label}</p>
-        <div className="flex flex-wrap gap-2">
-          {styleCards && styleCards.length > 0
-            ? styleCards.filter((c) => c.status !== "ENGINE").map((c) => {
-                const locked = c.status === "UPLOAD_REQUIRED" || c.status === "PARAMETRIC_NOT_BUILT";
-                const key = c.id === "kufi_traditional" ? "kufi" : c.id === "nastaliq_persian" ? "nastaliq" : c.id;
-                return (
-                  <button
-                    key={c.id}
-                    data-testid={`script-${key}`}
-                    disabled={locked}
-                    title={lang === "ar" ? c.action_ar : c.action_en}
-                    onClick={() => setScriptFamily(scriptFamily === key ? null : key)}
-                    className={`rounded-full border px-4 py-2 text-sm ${
-                      scriptFamily === key
-                        ? "border-brand-gold bg-brand-gold text-white"
-                        : locked ? "border-dashed border-stone-300 bg-stone-50 text-stone-400" : "border-stone-300 bg-white"
-                    }`}
-                  >
-                    {lang === "ar" ? c.name_ar : c.name_en}
-                    {c.status === "INFLUENCED_ONLY" && <span className="ms-1 text-[10px] opacity-70">({t.style_status.INFLUENCED_ONLY})</span>}
-                    {locked && <span className="ms-1 text-[10px]">🔒</span>}
-                  </button>
-                );
-              })
-            : Object.entries(t.scripts).map(([key, label]) => (
-            <button
-              key={key}
-              data-testid={`script-${key}`}
-              onClick={() => setScriptFamily(scriptFamily === key ? null : key)}
-              className={`rounded-full border px-4 py-2 text-sm ${
-                scriptFamily === key
-                  ? "border-brand-gold bg-brand-gold text-white"
-                  : "border-stone-300 bg-white"
-              }`}
-            >
-              {label}
-            </button>
-          ))}
+                <span aria-hidden className="flex h-9 w-9 items-center justify-center rounded-full bg-gold-50 text-base">⇡</span>
+                <span>
+                  {t.upload_reference}
+                  <span className="block text-xs font-normal text-ink-500">{t.upload_hint}</span>
+                </span>
+              </button>
+              <input
+                ref={fileInput}
+                data-testid="file-input"
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0] || null;
+                  setRefFile(f);
+                  setRefPreview(f ? URL.createObjectURL(f) : null);
+                }}
+              />
+              {refPreview && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={refPreview}
+                  alt="reference"
+                  data-testid="reference-preview"
+                  className="mt-3 max-h-40 rounded-lg object-contain"
+                />
+              )}
+              {refFile && (
+                <div className="mt-3 flex flex-col gap-3">
+                  <Range
+                    data-testid="style-strength"
+                    label={`${t.strength_original} ↔ ${t.strength_similar}`}
+                    valueLabel={`${t.style_strength} ${Math.round(styleStrength * 100)}%`}
+                    min={0} max={1} step={0.1} value={styleStrength}
+                    onChange={(e) => setStyleStrength(Number(e.target.value))}
+                  />
+                  <TextArea
+                    data-testid="message-input"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder={t.message_placeholder}
+                    rows={2}
+                  />
+                </div>
+              )}
+            </div>
+          </Card>
+
+          <Card title={t.product_label}>
+            <div className="flex flex-wrap gap-2">
+              {(["pendant", "ring"] as const).map((p) => (
+                <Chip key={p} data-testid={`product-${p}`} selected={productType === p} onClick={() => setProductType(p)}>
+                  {t.products[p]}
+                </Chip>
+              ))}
+            </div>
+            {productType === "ring" && (
+              <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                <Field label={t.ring_size_label}>
+                  <Select data-testid="ring-size" value={ringSize} onChange={(e) => setRingSize(Number(e.target.value))}>
+                    {Array.from({ length: 27 }, (_, i) => 44 + i).map((s) => (
+                      <option key={s} value={s}>{s}</option>
+                    ))}
+                  </Select>
+                </Field>
+                <Field label={t.inner_engraving_label}>
+                  <Input
+                    data-testid="inner-text-input"
+                    value={innerText}
+                    onChange={(e) => setInnerText(e.target.value)}
+                    placeholder={t.inner_engraving_hint}
+                  />
+                </Field>
+                <Field label={t.band_height_label}>
+                  <Select data-testid="band-height" value={bandHeight} onChange={(e) => setBandHeight(Number(e.target.value))}>
+                    {[5.5, 6.5, 7.5, 8.5].map((h) => (
+                      <option key={h} value={h}>{h}</option>
+                    ))}
+                  </Select>
+                </Field>
+              </div>
+            )}
+          </Card>
+
+          <Card
+            title={t.script_label}
+            action={
+              <a href="/styles" className="text-xs font-medium text-gold-700 underline-offset-2 hover:underline" data-testid="style-browser-link">
+                {t.style_browser_link}
+              </a>
+            }
+          >
+            <div className="flex flex-wrap gap-2">
+              {styleCards && styleCards.length > 0
+                ? styleCards.filter((c) => c.status !== "ENGINE").map((c) => {
+                    const locked = c.status === "UPLOAD_REQUIRED" || c.status === "PARAMETRIC_NOT_BUILT";
+                    const key = c.id === "kufi_traditional" ? "kufi" : c.id === "nastaliq_persian" ? "nastaliq" : c.id;
+                    return (
+                      <Chip
+                        key={c.id}
+                        data-testid={`script-${key}`}
+                        disabled={locked}
+                        locked={locked}
+                        selected={scriptFamily === key}
+                        title={ar ? c.action_ar : c.action_en}
+                        onClick={() => setScriptFamily(scriptFamily === key ? null : key)}
+                        trailing={
+                          c.status === "INFLUENCED_ONLY"
+                            ? <span className="text-[10px] opacity-70">({t.style_status.INFLUENCED_ONLY})</span>
+                            : locked ? <span className="text-[10px]" aria-hidden>🔒</span> : undefined
+                        }
+                      >
+                        {ar ? c.name_ar : c.name_en}
+                      </Chip>
+                    );
+                  })
+                : Object.entries(t.scripts).map(([key, label]) => (
+                    <Chip key={key} data-testid={`script-${key}`} selected={scriptFamily === key} onClick={() => setScriptFamily(scriptFamily === key ? null : key)}>
+                      {label}
+                    </Chip>
+                  ))}
+            </div>
+            {(scriptFamily === "thuluth" || scriptFamily === "diwani") && (
+              <p className="mt-3 text-xs text-ink-500" data-testid="script-influenced-note">
+                {t.script_note_influenced}
+              </p>
+            )}
+          </Card>
+
+          <Card title={t.material_label}>
+            <div className="flex flex-wrap gap-2">
+              {Object.entries(t.materials).map(([key, label]) => (
+                <Chip
+                  key={key}
+                  data-testid={`material-${key}`}
+                  selected={material === key}
+                  onClick={() => setMaterial(key)}
+                  leading={<span aria-hidden className={`h-3 w-3 rounded-full ring-1 ring-black/10 ${MATERIAL_SWATCH[key] ?? "bg-ink-300"}`} />}
+                >
+                  {label}
+                </Chip>
+              ))}
+            </div>
+          </Card>
+
+          <Card title={t.style_label}>
+            <div className="flex flex-wrap gap-2">
+              {Object.entries(t.styles).map(([key, label]) => (
+                <Chip key={key} data-testid={`style-${key}`} selected={styleIntent === key} onClick={() => setStyleIntent(styleIntent === key ? null : key)}>
+                  {label}
+                </Chip>
+              ))}
+            </div>
+          </Card>
+
+          {busyLabel && (
+            <p className="text-center text-sm text-ink-600" data-testid="busy-label" role="status">
+              {busyLabel}
+            </p>
+          )}
+          <Button
+            size="lg"
+            block
+            data-testid="start-continue"
+            disabled={!text.trim() || busy}
+            loading={busy}
+            onClick={onStart}
+          >
+            {t.continue}
+          </Button>
         </div>
-        <a href="/styles" className="mt-2 inline-block text-xs text-brand-gold underline" data-testid="style-browser-link">{t.style_browser_link}</a>
-        {(scriptFamily === "thuluth" || scriptFamily === "diwani") && (
-          <p className="mt-2 text-xs text-stone-500" data-testid="script-influenced-note">
-            {t.script_note_influenced}
-          </p>
-        )}
+
+        <aside className="hidden md:block">
+          <Card padding="sm" title={t.product_families_title} subtitle={t.product_families_note}>
+            <ul className="flex flex-col gap-2">
+              {(Object.keys(FAMILY_IMAGES) as Array<keyof typeof FAMILY_IMAGES>).map((k) => (
+                <li key={k} className="flex items-center gap-3 rounded-xl bg-cream-50 p-2">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={FAMILY_IMAGES[k]} alt="" aria-hidden loading="lazy" decoding="async" className="h-14 w-14 rounded-lg object-cover" />
+                  <span className="text-sm font-medium text-ink-800">{t.product_families[k as "necklace" | "bracelet" | "cufflinks"]}</span>
+                </li>
+              ))}
+            </ul>
+          </Card>
+        </aside>
       </div>
-      <div>
-        <p className="mb-2 text-sm font-medium">{t.material_label}</p>
-        <div className="flex flex-wrap gap-2">
-          {Object.entries(t.materials).map(([key, label]) => (
-            <button
-              key={key}
-              data-testid={`material-${key}`}
-              onClick={() => setMaterial(key)}
-              className={`rounded-full border px-4 py-2 text-sm ${
-                material === key
-                  ? "border-brand-gold bg-brand-gold text-white"
-                  : "border-stone-300 bg-white"
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      </div>
-      <div>
-        <p className="mb-2 text-sm font-medium">{t.style_label}</p>
-        <div className="flex flex-wrap gap-2">
-          {Object.entries(t.styles).map(([key, label]) => (
-            <button
-              key={key}
-              data-testid={`style-${key}`}
-              onClick={() => setStyleIntent(styleIntent === key ? null : key)}
-              className={`rounded-full border px-4 py-2 text-sm ${
-                styleIntent === key
-                  ? "border-brand-gold bg-brand-gold text-white"
-                  : "border-stone-300 bg-white"
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      </div>
-      {busyLabel && (
-        <p className="text-center text-sm text-brand-dark/70" data-testid="busy-label">
-          {busyLabel}
-        </p>
-      )}
-      <button
-        data-testid="start-continue"
-        disabled={!text.trim() || busy}
-        onClick={onStart}
-        className="rounded-xl bg-brand-dark p-4 text-lg font-semibold text-white disabled:opacity-40"
-      >
-        {t.continue}
-      </button>
     </section>
   );
 }
+
+const MATERIAL_SWATCH: Record<string, string> = {
+  "silver-925": "bg-[#d9d9d9]",
+  "gold-18k-yellow": "bg-[#d4b55f]",
+  "gold-18k-rose": "bg-[#d8a08a]",
+  "gold-18k-white": "bg-[#e9e9ea]",
+  platinum: "bg-[#c7c9cc]",
+};

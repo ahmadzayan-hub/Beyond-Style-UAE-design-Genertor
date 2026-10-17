@@ -2,6 +2,7 @@
 
 import IntegrityPanel, { IntegrityReport } from "./IntegrityPanel";
 import type { Strings } from "./types";
+import { Button, Card, Checkbox } from "@/components/ui";
 
 /** Exact-text confirmation gate (the text shown is the normalized source
  * text the backend will lock — never an AI rewrite). */
@@ -20,38 +21,33 @@ export default function ConfirmStep({
   t, lang, integrity, normalizedText, confirmChecked, setConfirmChecked, busy, onConfirm, onBack,
 }: ConfirmStepProps) {
   return (
-    <section className="flex flex-col gap-5">
-      <h2 className="text-xl font-bold">{t.confirm_title}</h2>
+    <section className="flex flex-col gap-5 animate-fade-up">
+      <div>
+        <h2 className="font-display text-2xl text-ink-900">{t.confirm_title}</h2>
+        <p className="mt-1 text-sm text-ink-500">{t.confirm_hint}</p>
+      </div>
       <div
         data-testid="confirm-text-display"
         dir="auto"
-        className="rounded-xl border-2 border-brand-gold bg-white p-6 text-center text-4xl font-bold whitespace-pre-line"
+        className="surface-paper rounded-3xl border-2 border-gold-400 bg-white p-8 text-center font-display text-4xl text-ink-900 shadow-soft whitespace-pre-line sm:text-5xl"
       >
         {normalizedText}
       </div>
-      <p className="text-sm text-stone-500">{t.confirm_hint}</p>
       {integrity && <IntegrityPanel t={t} lang={lang} report={integrity} />}
-      <label className="flex items-center gap-3 text-sm font-medium">
-        <input
-          type="checkbox"
+      <Card tone="gold" padding="sm">
+        <Checkbox
           data-testid="confirm-checkbox"
           checked={confirmChecked}
           onChange={(e) => setConfirmChecked(e.target.checked)}
-          className="h-5 w-5 accent-brand-gold"
+          label={t.confirm_exact}
         />
-        {t.confirm_exact}
-      </label>
-      <button
-        data-testid="confirm-continue"
-        disabled={!confirmChecked || busy}
-        onClick={onConfirm}
-        className="rounded-xl bg-brand-dark p-4 text-lg font-semibold text-white disabled:opacity-40"
-      >
+      </Card>
+      <Button size="lg" block data-testid="confirm-continue" disabled={!confirmChecked || busy} loading={busy} onClick={onConfirm}>
         {t.continue}
-      </button>
-      <button className="text-sm text-stone-400" onClick={onBack}>
+      </Button>
+      <Button variant="ghost" size="sm" onClick={onBack} className="self-center">
         {t.back}
-      </button>
+      </Button>
     </section>
   );
 }

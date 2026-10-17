@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Lang, STRINGS } from "@/lib/i18n";
 import type { Strings } from "./types";
+import { Button, Card, Checkbox, Input } from "@/components/ui";
 
 /** Customer approval: dimensioned agreement proof + exact text + bilingual
  * approval statement. Approval creates the immutable version lock. */
@@ -27,91 +28,76 @@ export default function ApproveStep({
 }: ApproveStepProps) {
   const [copied, setCopied] = useState(false);
   return (
-    <section className="flex flex-col gap-5">
-      <h2 className="text-xl font-bold">{t.approve_title}</h2>
-      <div
-        className="proof-svg-large rounded-xl border border-stone-200 bg-white p-4"
-        data-testid="agreement-proof"
-      >
+    <section className="flex flex-col gap-5 animate-fade-up">
+      <div>
+        <h2 className="font-display text-2xl text-ink-900">{t.approve_title}</h2>
+        <p className="mt-1 text-xs text-ink-500">{t.agreement_note}</p>
+      </div>
+      <Card padding="md" className="proof-svg-large" data-testid="agreement-proof">
         {(agreementSvg ?? selected.svg) && (
           <div dangerouslySetInnerHTML={{ __html: agreementSvg ?? selected.svg ?? "" }} />
         )}
-      </div>
-      <p className="text-xs text-stone-500">{t.agreement_note}</p>
+      </Card>
       <div
         data-testid="approve-text-display"
         dir="auto"
-        className="rounded-xl border-2 border-brand-gold bg-white p-5 text-center text-3xl font-bold whitespace-pre-line"
+        className="surface-paper rounded-3xl border-2 border-gold-400 bg-white p-6 text-center font-display text-3xl text-ink-900 shadow-soft whitespace-pre-line sm:text-4xl"
       >
         {normalizedText}
       </div>
-      <div className="rounded-xl border border-stone-200 bg-white p-4" data-testid="secure-link-box">
-        <p className="text-sm font-bold">{t.link_title}</p>
-        <p className="mt-1 text-[11px] text-stone-500">{t.link_note}</p>
+      <Card title={t.link_title} subtitle={t.link_note} data-testid="secure-link-box">
         {!link ? (
-          <button
-            data-testid="create-approval-link"
-            disabled={busy}
-            onClick={onCreateLink}
-            className="mt-3 rounded-lg border border-brand-gold px-4 py-2 text-sm font-semibold text-brand-gold disabled:opacity-40"
-          >
+          <Button variant="secondary" size="sm" data-testid="create-approval-link" disabled={busy} onClick={onCreateLink}>
             {t.link_create}
-          </button>
+          </Button>
         ) : (
-          <div className="mt-3 flex flex-col gap-2">
-            <input readOnly dir="ltr" value={link.url} data-testid="approval-link-url"
-                   className="w-full rounded border border-stone-300 p-2 text-xs" onFocus={(e) => e.currentTarget.select()} />
-            <p className="text-[11px] text-stone-500">{t.link_expires}: {new Date(link.expires_at).toLocaleString()}</p>
+          <div className="flex flex-col gap-2">
+            <Input readOnly dir="ltr" value={link.url} data-testid="approval-link-url" className="font-mono text-xs" onFocus={(e) => e.currentTarget.select()} />
+            <p className="text-[11px] text-ink-500">{t.link_expires}: {new Date(link.expires_at).toLocaleString()}</p>
             <div className="flex gap-2">
-              <button
+              <Button
+                variant="secondary" size="sm" className="flex-1"
                 data-testid="copy-approval-link"
                 onClick={async () => {
                   try { await navigator.clipboard.writeText(link.url); setCopied(true); } catch { setCopied(false); }
                 }}
-                className="flex-1 rounded-lg border border-stone-300 py-2 text-sm"
               >
                 {copied ? t.link_copied : t.link_copy}
-              </button>
+              </Button>
               <a
                 data-testid="whatsapp-approval-link"
                 href={`https://wa.me/?text=${encodeURIComponent(link.url)}`}
                 target="_blank" rel="noreferrer"
-                className="flex-1 rounded-lg bg-emerald-700 py-2 text-center text-sm font-semibold text-white"
+                className="inline-flex h-9 flex-1 items-center justify-center rounded-lg bg-ok-600 px-3 text-sm font-semibold text-white hover:bg-ok-800"
               >
                 {t.link_whatsapp}
               </a>
             </div>
           </div>
         )}
-      </div>
-      <p className="text-xs text-stone-500">{t.link_or_internal}</p>
-      <label className="flex items-center gap-3 rounded-lg bg-white p-4 text-sm font-medium">
-        <input
-          type="checkbox"
+        <p className="mt-3 text-xs text-ink-500">{t.link_or_internal}</p>
+      </Card>
+      <Card tone="gold" padding="sm">
+        <Checkbox
           data-testid="approve-checkbox"
           checked={approveChecked}
           onChange={(e) => setApproveChecked(e.target.checked)}
-          className="h-5 w-5 accent-brand-gold"
+          label={
+            <>
+              {t.approve_statement}
+              <span className="mt-1 block text-xs font-normal text-ink-500">
+                {lang === "ar" ? STRINGS.en.approve_statement : STRINGS.ar.approve_statement}
+              </span>
+            </>
+          }
         />
-        <span>
-          {t.approve_statement}
-          <br />
-          <span className="text-xs text-stone-400">
-            {lang === "ar" ? STRINGS.en.approve_statement : STRINGS.ar.approve_statement}
-          </span>
-        </span>
-      </label>
-      <button
-        data-testid="approve-button"
-        disabled={!approveChecked || busy}
-        onClick={onApprove}
-        className="rounded-xl bg-brand-dark p-4 text-lg font-semibold text-white disabled:opacity-40"
-      >
+      </Card>
+      <Button size="lg" block variant="gold" data-testid="approve-button" disabled={!approveChecked || busy} loading={busy} onClick={onApprove}>
         {t.approve_btn}
-      </button>
-      <button className="text-sm text-stone-400" onClick={onBack}>
+      </Button>
+      <Button variant="ghost" size="sm" onClick={onBack} className="self-center">
         {t.back}
-      </button>
+      </Button>
     </section>
   );
 }

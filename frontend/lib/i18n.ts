@@ -3,6 +3,23 @@ export type Lang = "ar" | "en";
 export const STRINGS = {
   ar: {
     dir: "rtl" as const,
+    nav_styles: "الأنماط",
+    hero_title: "اسمك، بخطٍّ عربيٍّ أصيل، قطعةً تُصنع لك",
+    hero_subtitle: "اكتب الاسم أو العبارة، اختر المنتج والخط والمعدن، واحصل على عشرة تصاميم مختلفة فعلاً — كلّها مفحوصة للتصنيع ومحفوظة بنصّك الدقيق.",
+    hero_points: [
+      "النص كما كتبته حرفاً بحرف — لا يُغيّره الذكاء الاصطناعي أبداً",
+      "كل تصميم يمرّ على فحص التصنيع (السماكة، الوصلات، النقاط) قبل أن تراه",
+      "تصاميم أصلية من خطوط مرخّصة — لا نسخ لأعمال الآخرين",
+    ],
+    hero_image_label: "صورة توضيحية مولّدة بالذكاء الاصطناعي",
+    steps: ["النص", "التأكيد", "التصاميم", "التعديل", "الموافقة", "الورشة"],
+    product_families_title: "ماذا نصنع",
+    product_families: {
+      necklace: "قلادات الأسماء",
+      bracelet: "أساور وعبارات",
+      cufflinks: "إكسسوارات رجالية",
+    },
+    product_families_note: "الصور للتوضيح فقط — تصميمك يُبنى من نصّك أنت.",
     appTitle: "بيوند ستايل — صمّم قطعتك",
     start_title: "صمّم قطعتك",
     start_subtitle: "حوّل اسمك إلى مجوهرات تحكي قصتك",
@@ -213,6 +230,23 @@ export const STRINGS = {
   },
   en: {
     dir: "ltr" as const,
+    nav_styles: "Styles",
+    hero_title: "Your name, in true Arabic calligraphy, made into a piece for you",
+    hero_subtitle: "Type the name or phrase, pick the product, script and metal, and get ten genuinely different designs — every one manufacturing-checked and locked to your exact text.",
+    hero_points: [
+      "Your text, letter for letter — the AI never alters it",
+      "Every design passes the manufacturing check (stroke, joins, dots) before you see it",
+      "Original designs from licensed fonts — nobody's work is copied",
+    ],
+    hero_image_label: "AI-generated illustration",
+    steps: ["Text", "Confirm", "Designs", "Refine", "Approve", "Workshop"],
+    product_families_title: "What we make",
+    product_families: {
+      necklace: "Name necklaces",
+      bracelet: "Bracelets & phrases",
+      cufflinks: "Men's accessories",
+    },
+    product_families_note: "Illustrations only — your design is built from your own text.",
     appTitle: "Beyond Style — Design Your Piece",
     start_title: "Design your piece",
     start_subtitle: "Turn your name into jewellery that tells your story",

@@ -1,0 +1,69 @@
+{
+  "generated_at": "2026-10-17",
+  "generator": "Figma generate_image (connector), model gpt-image-2.5-sunburst — text-to-image, placed in Figma file gwB1wrv6mY5TP1PFPqKwPv, retrieved via get_screenshot at source resolution",
+  "gpt_image_2": "The platform's own GPT-Image-2 path stays SKIPPED_NO_CREDENTIALS (no OpenAI key in this environment). These images came from the Figma connector's gpt-image-2.5-sunburst model. The Canva connector also generated three variants (media ids MAHYOehWfFI, MAHYOcs4Ig0, MAHYOQhSWwo) but only 200 px thumbnails were retrievable here, so they are not shipped.",
+  "figma_file": "https://www.figma.com/design/gwB1wrv6mY5TP1PFPqKwPv",
+  "rules": [
+    "AI-generated marketing illustration only — never manufacturing truth, never a product promise, never a reference for customer text",
+    "prompts asked for abstract calligraphic strokes with no readable letters; nothing in these images was read, transcribed or stored as source text",
+    "no people, no logos, no third-party artwork"
+  ],
+  "images": [
+    {
+      "file": "public/brand/hero-name-necklace.jpg",
+      "use": "landing hero: gold Arabic-calligraphy-style name necklace on cream silk, navy + sand accents",
+      "figma_node": "1:2",
+      "source_px": [
+        1536,
+        864
+      ],
+      "stored_px": [
+        1536,
+        864
+      ],
+      "bytes": 209079,
+      "sha256": "80ed92f61596ccd24d21a23c556a8aef2dd84fe981b28bc258b4ee5dc61738e2"
+    },
+    {
+      "file": "public/brand/family-bracelet.jpg",
+      "use": "product family card: silver mesh phrase bracelet with hamsa + evil-eye drops",
+      "figma_node": "2:2",
+      "source_px": [
+        1024,
+        1024
+      ],
+      "stored_px": [
+        900,
+        900
+      ],
+      "bytes": 154737,
+      "sha256": "862f0fb61cfe76859ff2363d0a49847b0f4ad02c759e63cbbc261d49b79ee11a"
+    },
+    {
+      "file": "public/brand/family-cufflinks.jpg",
+      "use": "product family card: silver relief-calligraphy cufflinks on black box",
+      "figma_node": "3:2",
+      "source_px": [
+        1024,
+        1024
+      ],
+      "stored_px": [
+        900,
+        900
+      ],
+      "bytes": 108450,
+      "sha256": "a295a4ef416a7879b2a19ac268c7b31e1ce7f921846618a85b0ed757c505166b"
+    },
+    {
+      "file": "public/brand/family-necklace.jpg",
+      "use": "product family card: centre crop of the hero render",
+      "figma_node": "1:2 (crop)",
+      "stored_px": [
+        666,
+        666
+      ],
+      "bytes": 89379,
+      "sha256": "7b2bb7962ccdfa2b1e943d22ddf7c18a2844df53cd4840cd393ab0920edb7f29"
+    }
+  ]
+}

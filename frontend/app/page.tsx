@@ -13,6 +13,7 @@ import ActionBar from "@/components/golden-path/ActionBar";
 import JewelryCheck, { QaReport } from "@/components/golden-path/JewelryCheck";
 import type { IntegrityReport } from "@/components/golden-path/IntegrityPanel";
 import type { Ladder } from "@/components/golden-path/ReadinessLadder";
+import { Alert, AppHeader, Badge, Button, Card, Skeleton, Stepper } from "@/components/ui";
 
 // Three.js is heavy — load the 3D viewer only when its tab is opened.
 const Viewer3D = dynamic(() => import("@/components/Viewer3D"), { ssr: false });
@@ -539,54 +540,50 @@ export default function GoldenPathPage() {
     }
   }
 
+  const STEP_INDEX: Record<Step, number> = { start: 0, confirm: 1, generating: 2, proofs: 2, selected: 3, approve: 4, approved: 5 };
+  const stepperSteps = t.steps.map((label, i) => ({ key: String(i), label }));
+
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-lg flex-col px-4 pb-24 pt-6">
-      <header className="mb-6 flex items-center justify-between">
-        <h1 className="font-serif text-xl font-bold tracking-tight text-brand-gold">
-          BEYOND STYLE
-        </h1>
-        <span className="flex items-center gap-2">
-          <a href="/me" data-testid="me-link" className={`rounded-full border px-3 py-1 text-sm ${hasCustomer ? "border-brand-dark bg-brand-dark text-white" : "border-stone-300"}`}>
-            {t.me_link}
-          </a>
-          <button
-            onClick={() => setLang(lang === "ar" ? "en" : "ar")}
-            className="rounded-full border border-brand-gold px-3 py-1 text-sm"
-            data-testid="lang-toggle"
-          >
-            {lang === "ar" ? "English" : "عربي"}
-          </button>
-        </span>
-      </header>
+    <main className="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-4 pb-28 md:pb-10">
+      <AppHeader
+        lang={lang}
+        onToggleLang={() => setLang(lang === "ar" ? "en" : "ar")}
+        meLabel={t.me_link}
+        stylesLabel={t.nav_styles}
+        hasCustomer={hasCustomer}
+        active="home"
+      />
+      <Stepper steps={stepperSteps} current={STEP_INDEX[step]} className="mb-6" />
+
       {claimed && step !== "start" && (
-        <p className="mb-3 rounded-lg bg-emerald-50 p-2 text-xs text-emerald-800" data-testid="claimed-note">✓ {t.me_claimed}</p>
+        <Alert tone="success" className="mb-3" data-testid="claimed-note">{t.me_claimed}</Alert>
       )}
       {resumed && step !== "start" && (
-        <p className="mb-3 rounded-lg bg-stone-100 p-2 text-xs text-stone-700" data-testid="resumed-note">↻ {t.me_resume}: {normalizedText}</p>
+        <Alert tone="info" className="mb-3" data-testid="resumed-note">{t.me_resume}: {normalizedText}</Alert>
       )}
 
       {error && (
-        <div
-          role="alert"
+        <Alert
+          tone="danger"
+          className="mb-4"
           data-testid="error-banner"
-          className="mb-4 rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-800"
+          action={
+            <Button variant="ghost" size="sm" onClick={() => { setError(null); setRequestId(null); }}>
+              {t.retry}
+            </Button>
+          }
         >
           {error}
-          <button className="ms-3 underline" onClick={() => { setError(null); setRequestId(null); }}>
-            {t.retry}
-          </button>
           {requestId && (
-            <p className="mt-1 text-xs text-red-800/60" data-testid="error-request-id">
+            <p className="mt-1 text-xs opacity-70" data-testid="error-request-id">
               {t.support_detail} {requestId}
             </p>
           )}
-        </div>
+        </Alert>
       )}
 
       {copyNotice && step !== "start" && (
-        <div className="mb-4 rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">
-          {t.copy_risk_notice}
-        </div>
+        <Alert tone="warning" className="mb-4">{t.copy_risk_notice}</Alert>
       )}
 
       {step === "start" && (
@@ -613,13 +610,16 @@ export default function GoldenPathPage() {
       )}
 
       {step === "generating" && (
-        <section className="flex flex-col items-center gap-6 pt-16" data-testid="generating">
-          <div className="h-12 w-12 animate-spin rounded-full border-4 border-brand-gold border-t-transparent" />
-          <p className="text-lg font-medium">{t.generating}</p>
-          <ol className="text-sm text-stone-500">
+        <section className="flex flex-col items-center gap-6 pt-16 animate-fade-up" data-testid="generating">
+          <div className="relative flex h-20 w-20 items-center justify-center">
+            <div className="absolute inset-0 animate-spin rounded-full border-4 border-gold-200 border-t-gold-500" />
+            <span className="font-display text-2xl text-gold-600" aria-hidden>ب</span>
+          </div>
+          <p className="font-display text-xl text-ink-900">{t.generating}</p>
+          <ol className="flex flex-col gap-1.5 text-sm text-ink-500">
             {t.generating_steps.map((s, i) => (
-              <li key={s} className={i <= genStep ? "font-semibold text-brand-dark" : ""}>
-                {i <= genStep ? "● " : "○ "}
+              <li key={s} className={`flex items-center gap-2 ${i <= genStep ? "font-semibold text-ink-900" : ""}`}>
+                <span aria-hidden className={`h-2 w-2 rounded-full ${i <= genStep ? "bg-gold-500" : "bg-cream-300"}`} />
                 {s}
               </li>
             ))}
@@ -628,49 +628,45 @@ export default function GoldenPathPage() {
       )}
 
       {step === "proofs" && (
-        <section>
-          <h2 className="mb-2 text-xl font-bold">{t.proofs_title}</h2>
-          <div className="mb-3 flex flex-wrap gap-1 text-[10px]" data-testid="trust-badges">
-            {refUnderstood && <span className="rounded-full bg-emerald-50 px-2 py-1 text-emerald-800">{t.badge_ref}</span>}
-            <span className="rounded-full bg-emerald-50 px-2 py-1 text-emerald-800">{t.badge_arabic}</span>
-            <span className="rounded-full bg-emerald-50 px-2 py-1 text-emerald-800">{t.badge_mfg}</span>
-            <span className="rounded-full bg-emerald-50 px-2 py-1 text-emerald-800">{t.badge_original}</span>
+        <section className="animate-fade-up">
+          <h2 className="font-display text-2xl text-ink-900">{t.proofs_title}</h2>
+          <div className="mb-4 mt-2 flex flex-wrap gap-1.5" data-testid="trust-badges">
+            {refUnderstood && <Badge tone="ok">{t.badge_ref}</Badge>}
+            <Badge tone="ok">{t.badge_arabic}</Badge>
+            <Badge tone="ok">{t.badge_mfg}</Badge>
+            <Badge tone="ok">{t.badge_original}</Badge>
           </div>
-          <div className="grid grid-cols-2 gap-3" data-testid="proof-grid">
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4" data-testid="proof-grid">
             {proofs.map((p) => (
-              <div
-                key={p.candidate_id}
-                data-testid="proof-card"
-                className="flex flex-col rounded-xl border border-stone-200 bg-white p-3"
-              >
-                <div className="proof-svg flex min-h-[100px] items-center justify-center">
+              <Card key={p.candidate_id} data-testid="proof-card" padding="sm" className="flex flex-col transition-shadow hover:shadow-lift">
+                <div className="proof-svg surface-paper flex min-h-[100px] items-center justify-center rounded-xl">
                   {p.svg ? (
                     <div dangerouslySetInnerHTML={{ __html: p.svg }} />
                   ) : (
-                    <div className="h-16 w-full animate-pulse rounded bg-stone-100" />
+                    <Skeleton className="h-16 w-full" />
                   )}
                 </div>
-                <p className="mt-2 text-xs font-semibold">
+                <p className="mt-2 text-xs font-semibold text-ink-900">
                   {p.rank}. {p.name}
                 </p>
-                <p className="text-[10px] text-emerald-700">{t.mfg_ok}</p>
-                <button
+                <p className="text-[10px] text-ok-800">{t.mfg_ok}</p>
+                <Button
+                  variant="gold" size="sm" block className="mt-2"
                   data-testid={`choose-${p.rank}`}
                   disabled={busy}
                   onClick={() => handleChoose(p.candidate_id)}
-                  className="mt-2 rounded-lg bg-brand-gold py-2 text-sm font-semibold text-white disabled:opacity-40"
                 >
                   {t.choose}
-                </button>
-              </div>
+                </Button>
+              </Card>
             ))}
           </div>
         </section>
       )}
 
       {step === "selected" && selected && (
-        <section className="flex flex-col gap-4">
-          <h2 className="text-xl font-bold">{t.selected_title}</h2>
+        <section className="flex flex-col gap-4 animate-fade-up">
+          <h2 className="font-display text-2xl text-ink-900">{t.selected_title}</h2>
           <div className="flex gap-2 text-xs" data-testid="studio-tabs">
             {(["2d", "3d", "photoreal"] as const).map((tab) => (
               <button
@@ -686,8 +682,8 @@ export default function GoldenPathPage() {
                     }
                   }
                 }}
-                className={`rounded-full border px-3 py-1 ${
-                  studioTab === tab ? "border-brand-gold bg-brand-gold text-white" : "border-stone-300 bg-white"
+                className={`h-9 rounded-full border px-4 font-medium transition-colors ${
+                  studioTab === tab ? "border-ink-900 bg-ink-900 text-cream-50" : "border-ink-200 bg-white text-ink-700 hover:bg-cream-200"
                 }`}
               >
                 {tab === "2d" ? t.tab_2d : tab === "3d" ? t.tab_3d : t.tab_photoreal}
@@ -695,21 +691,21 @@ export default function GoldenPathPage() {
             ))}
           </div>
           {studioTab === "2d" ? (
-            <div className={`${previewMode === "actual" ? "proof-actual" : "proof-svg-large"} rounded-xl border border-stone-200 bg-white p-4`} data-testid="selected-preview">
+            <div className={`${previewMode === "actual" ? "proof-actual" : "proof-svg-large"} rounded-2xl border border-ink-100 bg-white p-4 shadow-soft`} data-testid="selected-preview">
               <div className="mb-2 flex flex-wrap items-center gap-2 text-xs" data-testid="preview-mode">
-                <span className="text-stone-500">{t.preview_mode}:</span>
+                <span className="text-ink-500">{t.preview_mode}:</span>
                 {(["fit", "actual"] as const).map((m) => (
                   <button
                     key={m}
                     data-testid={`preview-mode-${m}`}
                     onClick={() => setPreviewMode(m)}
-                    className={`rounded-full border px-3 py-1 ${previewMode === m ? "border-brand-dark bg-brand-dark text-white" : "border-stone-300 bg-white"}`}
+                    className={`h-8 rounded-full border px-3 ${previewMode === m ? "border-ink-900 bg-ink-900 text-cream-50" : "border-ink-200 bg-white text-ink-700"}`}
                   >
                     {m === "fit" ? t.preview_fit : t.preview_actual}
                   </button>
                 ))}
               </div>
-              {previewMode === "actual" && <p className="mb-2 text-[11px] text-stone-500">{t.preview_actual_note}</p>}
+              {previewMode === "actual" && <p className="mb-2 text-[11px] text-ink-500">{t.preview_actual_note}</p>}
               {selected.svg && <div dangerouslySetInnerHTML={{ __html: selected.svg }} />}
               <div className="mt-3 flex flex-wrap gap-2">
                 {Object.entries(t.materials).map(([key, label]) => (
@@ -717,18 +713,18 @@ export default function GoldenPathPage() {
                     key={key}
                     data-testid={`studio-material-${key}`}
                     onClick={() => changeMaterial(key)}
-                    className={`rounded-full border px-3 py-1 text-xs ${
-                      previewMaterial === key ? "border-brand-gold bg-brand-gold text-white" : "border-stone-300 bg-white"
+                    className={`h-8 rounded-full border px-3 text-xs font-medium ${
+                      previewMaterial === key ? "border-gold-500 bg-gold-500 text-white shadow-gold" : "border-ink-200 bg-white text-ink-700 hover:bg-gold-50"
                     }`}
                   >
                     {label}
                   </button>
                 ))}
               </div>
-              <p className="mt-2 text-[11px] text-stone-500">{t.render_note}</p>
+              <p className="mt-2 text-[11px] text-ink-500">{t.render_note}</p>
             </div>
           ) : studioTab === "3d" ? (
-            <div className="flex flex-col gap-3 rounded-xl border border-stone-200 bg-white p-4" data-testid="viewer3d-panel">
+            <div className="flex flex-col gap-3 rounded-2xl border border-ink-100 bg-white p-4 shadow-soft" data-testid="viewer3d-panel">
               {mesh3d ? (
                 <>
                   <Viewer3D payload={mesh3d} material={previewMaterial} />
@@ -742,13 +738,13 @@ export default function GoldenPathPage() {
                       ? `${mesh3d.weight_estimate_g[previewMaterial].toFixed(2)} g`
                       : "—"}
                   </p>
-                  <label className="text-xs">
+                  <label className="text-xs text-ink-700">
                     {t.studio_material}
                     <select
                       data-testid="viewer3d-material"
                       value={previewMaterial}
                       onChange={(e) => setPreviewMaterial(e.target.value)}
-                      className="mt-1 w-full rounded border border-stone-300 p-2"
+                      className="mt-1 h-11 w-full rounded-xl border border-ink-200 bg-white px-3 text-sm focus:border-gold-500 focus:outline-none focus:ring-2 focus:ring-gold-500/25"
                     >
                       {["silver-925", "gold-18k-yellow", "gold-18k-rose", "gold-18k-white", "platinum"].map((m) => (
                         <option key={m} value={m}>
@@ -757,14 +753,14 @@ export default function GoldenPathPage() {
                       ))}
                     </select>
                   </label>
-                  <p className="text-[11px] text-stone-500">{t.viewer3d_note}</p>
+                  <p className="text-[11px] text-ink-500">{t.viewer3d_note}</p>
                 </>
               ) : (
-                <div className="h-40 w-full animate-pulse rounded bg-stone-100" />
+                <div className="skeleton h-40 w-full rounded-xl" />
               )}
             </div>
           ) : (
-            <div className="flex flex-col gap-3 rounded-xl border border-stone-200 bg-white p-4" data-testid="photoreal-panel">
+            <div className="flex flex-col gap-3 rounded-2xl border border-ink-100 bg-white p-4 shadow-soft" data-testid="photoreal-panel">
               {previewUrl ? (
                 <img src={previewUrl} alt="AI preview" className="w-full rounded-lg" data-testid="photoreal-image" />
               ) : studioSvg ? (
@@ -777,41 +773,41 @@ export default function GoldenPathPage() {
                 </div>
               )}
               {previewNote && (
-                <p className="text-[11px] text-stone-500" data-testid="preview-note">{previewNote}</p>
+                <p className="text-[11px] text-ink-500" data-testid="preview-note">{previewNote}</p>
               )}
-              <label className="text-xs">
+              <label className="text-xs text-ink-700">
                 {t.studio_material}
                 <select
                   data-testid="preview-material"
                   value={previewMaterial}
                   onChange={(e) => setPreviewMaterial(e.target.value)}
-                  className="mt-1 w-full rounded border border-stone-300 p-2"
+                  className="mt-1 h-11 w-full rounded-xl border border-ink-200 bg-white px-3 text-sm focus:border-gold-500 focus:outline-none focus:ring-2 focus:ring-gold-500/25"
                 >
                   {["silver-925", "gold-18k-yellow", "gold-18k-rose", "gold-18k-white", "platinum", "two-tone", "enamel"].map((mm) => (
                     <option key={mm} value={mm}>{mm}</option>
                   ))}
                 </select>
               </label>
-              <label className="text-xs">
+              <label className="text-xs text-ink-700">
                 {t.studio_scene}
                 <select
                   data-testid="preview-scene"
                   value={previewScene}
                   onChange={(e) => setPreviewScene(e.target.value)}
-                  className="mt-1 w-full rounded border border-stone-300 p-2"
+                  className="mt-1 h-11 w-full rounded-xl border border-ink-200 bg-white px-3 text-sm focus:border-gold-500 focus:outline-none focus:ring-2 focus:ring-gold-500/25"
                 >
                   {["clean_design", "studio_white", "luxury_black", "beyond_style_gold", "on_body_neck", "on_body_ear", "on_body_hand", "on_body_wrist", "packaging", "macro_detail"].map((sc) => (
                     <option key={sc} value={sc}>{sc}</option>
                   ))}
                 </select>
               </label>
-              <label className="text-xs">
+              <label className="text-xs text-ink-700">
                 {t.studio_quality}
                 <select
                   data-testid="preview-quality"
                   value={previewQuality}
                   onChange={(e) => setPreviewQuality(e.target.value)}
-                  className="mt-1 w-full rounded border border-stone-300 p-2"
+                  className="mt-1 h-11 w-full rounded-xl border border-ink-200 bg-white px-3 text-sm focus:border-gold-500 focus:outline-none focus:ring-2 focus:ring-gold-500/25"
                 >
                   {["DRAFT", "STANDARD", "FINAL"].map((q) => (
                     <option key={q} value={q}>{q}</option>
@@ -822,30 +818,30 @@ export default function GoldenPathPage() {
                 data-testid="generate-preview"
                 disabled={busy}
                 onClick={handleGeneratePreview}
-                className="rounded-lg bg-brand-dark py-3 text-sm font-semibold text-white disabled:opacity-40"
+                className="h-11 rounded-xl bg-ink-900 text-sm font-semibold text-cream-50 shadow-soft hover:bg-ink-800 disabled:opacity-40"
               >
                 {t.studio_generate}
               </button>
             </div>
           )}
-          <div dir="auto" className="rounded-lg bg-white p-3 text-center text-2xl font-bold" data-testid="selected-text">
+          <div dir="auto" className="surface-paper rounded-2xl border border-ink-100 bg-white p-4 text-center font-display text-3xl text-ink-900" data-testid="selected-text">
             {normalizedText}
           </div>
 
           {qa && <JewelryCheck t={t} lang={lang} report={qa} thickness={thickness} setThickness={changeThickness} />}
           {repair.available && !repair.applied && (
-            <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 whitespace-pre-line" data-testid="repair-box">
-              <p className="text-sm font-medium text-emerald-900">{t.improve_available}</p>
+            <div className="rounded-2xl border border-ok-600/20 bg-ok-50 p-4 whitespace-pre-line" data-testid="repair-box">
+              <p className="text-sm font-medium text-ok-800">{t.improve_available}</p>
               {!repair.afterSvg ? (
                 <div className="mt-2 flex flex-col gap-2" data-testid="repair-options">
-                  <p className="text-xs text-emerald-900">{t.repair_choose}</p>
+                  <p className="text-xs text-ok-800">{t.repair_choose}</p>
                   {repair.options.filter((o) => o.available).map((o) => (
                     <button
                       key={o.repair_id}
                       data-testid={`repair-preview-${o.repair_id}`}
                       disabled={busy}
                       onClick={() => handleApplyRepair(o.repair_id)}
-                      className="rounded-lg bg-emerald-700 px-4 py-2 text-start text-sm font-semibold text-white disabled:opacity-40"
+                      className="rounded-lg bg-ok-600 px-4 py-2 text-start text-sm font-semibold text-white disabled:opacity-40"
                     >
                       {lang === "ar" ? o.label_ar : o.label_en}
                       {o.errors_after != null && (
@@ -856,7 +852,7 @@ export default function GoldenPathPage() {
                     </button>
                   ))}
                   {repair.options.filter((o) => !o.available).map((o) => (
-                    <p key={o.repair_id} className="text-[11px] text-stone-500" data-testid={`repair-unavailable-${o.repair_id}`}>
+                    <p key={o.repair_id} className="text-[11px] text-ink-500" data-testid={`repair-unavailable-${o.repair_id}`}>
                       {t.repair_unavailable} {lang === "ar" ? o.label_ar : o.label_en} — {o.reason}
                     </p>
                   ))}
@@ -865,11 +861,11 @@ export default function GoldenPathPage() {
                 <div className="mt-3">
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <p className="text-xs text-stone-500">{t.before}</p>
+                      <p className="text-xs text-ink-500">{t.before}</p>
                       <div className="proof-svg rounded bg-white p-2" dangerouslySetInnerHTML={{ __html: repair.beforeSvg! }} />
                     </div>
                     <div>
-                      <p className="text-xs text-stone-500">{t.after}</p>
+                      <p className="text-xs text-ink-500">{t.after}</p>
                       <div className="proof-svg rounded bg-white p-2" dangerouslySetInnerHTML={{ __html: repair.afterSvg! }} />
                     </div>
                   </div>
@@ -877,14 +873,14 @@ export default function GoldenPathPage() {
                     <button
                       data-testid="repair-accept"
                       onClick={acceptRepairVersion}
-                      className="flex-1 rounded-lg bg-emerald-700 py-2 text-sm font-semibold text-white"
+                      className="flex-1 rounded-lg bg-ok-600 py-2 text-sm font-semibold text-white"
                     >
                       {t.apply_fix}
                     </button>
                     <button
                       data-testid="repair-keep"
                       onClick={() => setRepair((r) => ({ ...r, applied: true }))}
-                      className="flex-1 rounded-lg border border-stone-300 py-2 text-sm"
+                      className="flex-1 rounded-lg border border-ink-200 bg-white py-2 text-sm"
                     >
                       {t.keep_original}
                     </button>
@@ -894,7 +890,7 @@ export default function GoldenPathPage() {
             </div>
           )}
 
-          <div className="flex items-center justify-between rounded-lg bg-white p-2 text-sm" data-testid="version-bar">
+          <div className="flex items-center justify-between rounded-xl border border-ink-100 bg-white px-3 py-2 text-sm" data-testid="version-bar">
             <span>
               {t.version_label} <b data-testid="current-version">{selected.version_number}</b>
               {!selected.validation_passed && " ⚠"}
@@ -904,7 +900,7 @@ export default function GoldenPathPage() {
                 data-testid="undo"
                 disabled={histIdx <= 0 || busy}
                 onClick={() => { setHistIdx(histIdx - 1); setEditParams({ ...history[histIdx - 1].recipe }); }}
-                className="rounded border border-stone-300 px-3 py-1 disabled:opacity-30"
+                className="h-8 rounded-lg border border-ink-200 px-3 text-xs font-medium disabled:opacity-30"
               >
                 {t.undo}
               </button>
@@ -912,7 +908,7 @@ export default function GoldenPathPage() {
                 data-testid="redo"
                 disabled={histIdx >= history.length - 1 || busy}
                 onClick={() => { setHistIdx(histIdx + 1); setEditParams({ ...history[histIdx + 1].recipe }); }}
-                className="rounded border border-stone-300 px-3 py-1 disabled:opacity-30"
+                className="h-8 rounded-lg border border-ink-200 px-3 text-xs font-medium disabled:opacity-30"
               >
                 {t.redo}
               </button>
@@ -922,14 +918,14 @@ export default function GoldenPathPage() {
           <button
             data-testid="edit-toggle"
             onClick={() => setEditOpen(!editOpen)}
-            className="rounded-xl border border-brand-gold p-3 text-sm font-semibold text-brand-gold"
+            className="h-11 rounded-xl border border-gold-500 bg-white text-sm font-semibold text-gold-700 hover:bg-gold-50"
           >
             {t.edit_open}
           </button>
 
           {editOpen && (
-            <div className="flex flex-col gap-3 rounded-xl border border-stone-200 bg-white p-4" data-testid="copilot-panel">
-              <p className="text-sm font-bold">{t.edit_title}</p>
+            <div className="flex flex-col gap-3 rounded-2xl border border-ink-100 bg-white p-4 shadow-soft" data-testid="copilot-panel">
+              <p className="text-sm font-bold text-ink-900">{t.edit_title}</p>
               {([
                 ["stroke_delta_mm", t.edit_thickness, 0, 0.5, 0.01],
                 ["letter_spacing_mm", t.edit_spacing, -0.3, 1.5, 0.05],
@@ -937,7 +933,7 @@ export default function GoldenPathPage() {
                 ["y_scale", t.edit_height_scale, 0.8, 1.4, 0.01],
                 ["target_height_mm", t.edit_size, 8, 20, 0.5],
               ] as [string, string, number, number, number][]).map(([key, label, min, max, step_]) => (
-                <label key={key} className="text-xs">
+                <label key={key} className="text-xs text-ink-700">
                   <span className="flex justify-between">
                     <span>{label}</span>
                     <span className="tabular-nums">{Number(editParams[key] ?? 0).toFixed(2)}</span>
@@ -948,50 +944,50 @@ export default function GoldenPathPage() {
                     min={min} max={max} step={step_}
                     value={editParams[key] ?? 0}
                     onChange={(e) => setEditParams({ ...editParams, [key]: Number(e.target.value) })}
-                    className="w-full accent-brand-gold"
+                    className="w-full accent-gold-500"
                   />
                 </label>
               ))}
-              <label className="text-xs">
+              <label className="text-xs text-ink-700">
                 {t.edit_composition}
                 <select
                   data-testid="select-composition"
                   value={editParams.composition ?? "bare"}
                   onChange={(e) => setEditParams({ ...editParams, composition: e.target.value })}
-                  className="mt-1 w-full rounded border border-stone-300 p-2"
+                  className="mt-1 h-11 w-full rounded-xl border border-ink-200 bg-white px-3 text-sm focus:border-gold-500 focus:outline-none focus:ring-2 focus:ring-gold-500/25"
                 >
                   {["bare", "baseline_bar", "underline_bar", "top_bar", "plate_oval", "plate_rect", "frame_circle", "frame_rect"].map((c) => (
                     <option key={c} value={c}>{c}</option>
                   ))}
                 </select>
               </label>
-              <label className="text-xs">
+              <label className="text-xs text-ink-700">
                 {t.edit_dot_style}
                 <select
                   data-testid="select-dot-style"
                   value={editParams.dot_style ?? "round"}
                   onChange={(e) => setEditParams({ ...editParams, dot_style: e.target.value })}
-                  className="mt-1 w-full rounded border border-stone-300 p-2"
+                  className="mt-1 h-11 w-full rounded-xl border border-ink-200 bg-white px-3 text-sm focus:border-gold-500 focus:outline-none focus:ring-2 focus:ring-gold-500/25"
                 >
                   {["round", "diamond", "square", "petal"].map((c) => (
                     <option key={c} value={c}>{c}</option>
                   ))}
                 </select>
               </label>
-              <label className="text-xs">
+              <label className="text-xs text-ink-700">
                 {t.edit_swash}
                 <select
                   data-testid="select-swash"
                   value={editParams.swash ?? "none"}
                   onChange={(e) => setEditParams({ ...editParams, swash: e.target.value })}
-                  className="mt-1 w-full rounded border border-stone-300 p-2"
+                  className="mt-1 h-11 w-full rounded-xl border border-ink-200 bg-white px-3 text-sm focus:border-gold-500 focus:outline-none focus:ring-2 focus:ring-gold-500/25"
                 >
                   {["none", "underline_flourish", "tail_sweep", "double_flourish"].map((c) => (
                     <option key={c} value={c}>{c}</option>
                   ))}
                 </select>
               </label>
-              <label className="text-xs">
+              <label className="text-xs text-ink-700">
                 <span className="flex justify-between">
                   <span>{t.edit_kashida}</span>
                   <span className="tabular-nums">{editParams.kashida_count ?? 0}</span>
@@ -1002,29 +998,29 @@ export default function GoldenPathPage() {
                   min={0} max={3} step={1}
                   value={editParams.kashida_count ?? 0}
                   onChange={(e) => setEditParams({ ...editParams, kashida_count: Number(e.target.value) })}
-                  className="w-full accent-brand-gold"
+                  className="w-full accent-gold-500"
                 />
               </label>
-              <label className="text-xs">
+              <label className="text-xs text-ink-700">
                 {t.edit_lines}
                 <select
                   data-testid="select-lines"
                   value={editParams.max_lines ?? 1}
                   onChange={(e) => setEditParams({ ...editParams, max_lines: Number(e.target.value) })}
-                  className="mt-1 w-full rounded border border-stone-300 p-2"
+                  className="mt-1 h-11 w-full rounded-xl border border-ink-200 bg-white px-3 text-sm focus:border-gold-500 focus:outline-none focus:ring-2 focus:ring-gold-500/25"
                 >
                   {[1, 2, 3, 4].map((c) => (
                     <option key={c} value={c}>{c}</option>
                   ))}
                 </select>
               </label>
-              <label className="text-xs">
+              <label className="text-xs text-ink-700">
                 {t.edit_loops}
                 <select
                   data-testid="select-loops"
                   value={editParams.loops ?? "top"}
                   onChange={(e) => setEditParams({ ...editParams, loops: e.target.value })}
-                  className="mt-1 w-full rounded border border-stone-300 p-2"
+                  className="mt-1 h-11 w-full rounded-xl border border-ink-200 bg-white px-3 text-sm focus:border-gold-500 focus:outline-none focus:ring-2 focus:ring-gold-500/25"
                 >
                   {["top", "left_right", "upper_left_right", "none"].map((c) => (
                     <option key={c} value={c}>{c}</option>
@@ -1035,7 +1031,7 @@ export default function GoldenPathPage() {
                 data-testid="apply-edit"
                 disabled={busy}
                 onClick={applyCopilotEdit}
-                className="rounded-lg bg-brand-dark py-3 text-sm font-semibold text-white disabled:opacity-40"
+                className="h-11 rounded-xl bg-ink-900 text-sm font-semibold text-cream-50 shadow-soft hover:bg-ink-800 disabled:opacity-40"
               >
                 {t.edit_apply}
               </button>
@@ -1045,7 +1041,7 @@ export default function GoldenPathPage() {
           <button
             data-testid="pro-toggle"
             onClick={() => setProOpen(!proOpen)}
-            className="rounded-xl border border-stone-400 p-3 text-sm font-semibold text-stone-700"
+            className="h-11 rounded-xl border border-ink-200 bg-white text-sm font-semibold text-ink-700 hover:bg-cream-200"
           >
             {t.pro_open}
           </button>
@@ -1069,11 +1065,11 @@ export default function GoldenPathPage() {
                 setAgreementSvg(null);
               }
             }}
-            className="rounded-xl bg-brand-dark p-4 text-lg font-semibold text-white disabled:opacity-40"
+            className="h-14 rounded-2xl bg-ink-900 text-base font-semibold text-cream-50 shadow-soft hover:bg-ink-800 disabled:opacity-40"
           >
             {t.continue}
           </button>
-          <button className="text-sm text-stone-400" onClick={() => setStep("proofs")}>
+          <button className="self-center text-sm text-ink-500 hover:text-ink-900" onClick={() => setStep("proofs")}>
             {t.back}
           </button>
         </section>

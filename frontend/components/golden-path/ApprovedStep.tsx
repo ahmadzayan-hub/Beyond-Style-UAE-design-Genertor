@@ -2,6 +2,7 @@
 
 import ReadinessLadder, { Ladder } from "./ReadinessLadder";
 import type { Strings } from "./types";
+import { Badge, Button, Card } from "@/components/ui";
 
 /** Locked version: hash, workshop downloads. The "make it" button stays
  * honestly disabled — customer ordering is not built. */
@@ -18,73 +19,46 @@ export interface ApprovedStepProps {
 export default function ApprovedStep({ t, selected, approval, onDownload, lang, fidelity, ladder }: ApprovedStepProps) {
   const workshopReady = ladder?.rungs.find((r) => r.state === "WORKSHOP_READY")?.reached;
   return (
-    <section className="flex flex-col gap-5" data-testid="approved">
-      <h2 className="text-2xl font-bold text-emerald-700">{t.approved_title}</h2>
-      <div className="proof-svg-large rounded-xl border border-stone-200 bg-white p-4">
-        {selected.svg && <div dangerouslySetInnerHTML={{ __html: selected.svg }} />}
+    <section className="flex flex-col gap-5 animate-fade-up" data-testid="approved">
+      <div className="flex items-center gap-3">
+        <span aria-hidden className="flex h-10 w-10 items-center justify-center rounded-full bg-ok-50 text-lg text-ok-800">✓</span>
+        <h2 className="font-display text-2xl text-ok-800">{t.approved_title}</h2>
       </div>
-      <div className="rounded-lg bg-white p-4 text-sm">
-        <p>
+      <Card className="proof-svg-large">
+        {selected.svg && <div dangerouslySetInnerHTML={{ __html: selected.svg }} />}
+      </Card>
+      <Card padding="sm" tone="muted">
+        <p className="text-sm text-ink-800">
           {t.approved_version}: <b data-testid="locked-version">{selected.version_number}</b>
         </p>
-        <p className="mt-1 break-all text-[10px] text-stone-400" data-testid="approval-hash">
+        <p className="mt-1 break-all font-mono text-[10px] text-ink-400" data-testid="approval-hash">
           {approval.approval_hash}
         </p>
-        <p className="mt-2 text-[11px] text-stone-500">{t.approval_internal_note}</p>
-      </div>
+        <p className="mt-2 text-[11px] text-ink-500">{t.approval_internal_note}</p>
+      </Card>
       {Object.keys(fidelity).length > 0 && (
-        <div className="flex flex-wrap gap-2 text-xs" data-testid="fidelity-badges">
+        <div className="flex flex-wrap gap-2" data-testid="fidelity-badges">
           {Object.entries(fidelity).map(([fmt, status]) => (
-            <span key={fmt} data-testid={`fidelity-${fmt}`}
-                  className={`rounded-full px-3 py-1 font-semibold ${status === "PASS" ? "bg-emerald-50 text-emerald-800" : "bg-red-50 text-red-800"}`}>
+            <Badge key={fmt} data-testid={`fidelity-${fmt}`} tone={status === "PASS" ? "ok" : "danger"}>
               {fmt.toUpperCase()} · {status === "PASS" ? t.fidelity_pass : t.fidelity_fail}
-            </span>
+            </Badge>
           ))}
         </div>
       )}
-      <p className="text-[11px] text-stone-500">{t.fidelity_note}</p>
+      <p className="text-[11px] text-ink-500">{t.fidelity_note}</p>
       {ladder && <ReadinessLadder t={t} lang={lang} ladder={ladder} />}
-      <p data-testid="workshop-ready" className={`text-sm font-bold ${workshopReady ? "text-emerald-700" : "text-stone-500"}`}>
+      <p data-testid="workshop-ready" className={`text-sm font-bold ${workshopReady ? "text-ok-800" : "text-ink-500"}`}>
         {workshopReady ? t.workshop_ready : t.not_workshop_ready}
       </p>
-      <div className="flex gap-3">
-        <button
-          data-testid="download-svg"
-          onClick={() => onDownload("svg")}
-          className="flex-1 rounded-xl border border-brand-gold p-3 font-semibold text-brand-gold"
-        >
-          {t.download_svg}
-        </button>
-        <button
-          data-testid="download-dxf"
-          onClick={() => onDownload("dxf")}
-          className="flex-1 rounded-xl bg-brand-gold p-3 font-semibold text-white"
-        >
-          {t.download_dxf}
-        </button>
+      <div className="grid grid-cols-2 gap-3">
+        <Button variant="secondary" data-testid="download-svg" onClick={() => onDownload("svg")}>{t.download_svg}</Button>
+        <Button variant="gold" data-testid="download-dxf" onClick={() => onDownload("dxf")}>{t.download_dxf}</Button>
+        <Button variant="secondary" data-testid="download-pdf" onClick={() => onDownload("pdf")}>{t.download_pdf}</Button>
+        <Button variant="secondary" data-testid="download-png" onClick={() => onDownload("png")}>{t.download_png}</Button>
       </div>
-      <button
-        data-testid="download-pdf"
-        onClick={() => onDownload("pdf")}
-        className="rounded-xl border border-brand-gold p-3 font-semibold text-brand-gold"
-      >
-        {t.download_pdf}
-      </button>
-      <button
-        data-testid="download-png"
-        onClick={() => onDownload("png")}
-        className="rounded-xl border border-brand-gold p-3 font-semibold text-brand-gold"
-      >
-        {t.download_png}
-      </button>
-      <button
-        disabled
-        title="coming soon"
-        data-testid="make-it-disabled"
-        className="rounded-xl bg-stone-300 p-4 text-lg font-semibold text-stone-500"
-      >
+      <Button size="lg" block disabled title="coming soon" data-testid="make-it-disabled" className="bg-cream-300 text-ink-500">
         {t.make_it}
-      </button>
+      </Button>
     </section>
   );
 }

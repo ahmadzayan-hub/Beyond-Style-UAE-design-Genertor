@@ -1,5 +1,7 @@
 "use client";
 
+import { Button } from "@/components/ui";
+
 /** Mobile-first sticky bottom action bar: one primary action per step so
  *  the Golden Path is thumb-reachable at 360 px. Hidden on md+ where the
  *  inline buttons are visible. Never renders a fake action: when the step
@@ -9,18 +11,12 @@ export default function ActionBar({
 }: { label: string; onClick: () => void; disabled?: boolean; testId: string }) {
   return (
     <div
-      className="fixed inset-x-0 bottom-0 z-30 border-t border-stone-200 bg-white/95 p-3 backdrop-blur md:hidden"
-      style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
+      className="pb-safe fixed inset-x-0 bottom-0 z-30 border-t border-cream-300 bg-cream-50/95 p-3 backdrop-blur md:hidden"
       data-testid="action-bar"
     >
-      <button
-        data-testid={testId}
-        disabled={disabled}
-        onClick={onClick}
-        className="w-full rounded-xl bg-brand-dark py-3 text-base font-semibold text-white disabled:opacity-40"
-      >
+      <Button size="lg" block data-testid={testId} disabled={disabled} onClick={onClick}>
         {label}
-      </button>
+      </Button>
     </div>
   );
 }

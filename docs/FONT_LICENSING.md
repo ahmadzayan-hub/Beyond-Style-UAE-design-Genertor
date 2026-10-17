@@ -51,3 +51,14 @@ forms, golden names shaping to `.notdef`, and duplicate `font_id`s.
 | `aref-ruqaa-ink-bold.ttf` | Aref Ruqaa Ink Bold v1.008, Abdullah Aref | OFL 1.1 in name table + `OFL.txt`; Google Fonts family | **Vendored** as `aref-ruqaa-ink-bold` (`VERIFIED_OPEN_SOURCE`, capability RUQAA). |
 | `al-diwani-al-majd.ttf`, `al-diwani-al-majd-2.ttf` (three zips, same 2015 family "الديواني المجد") | no designer, no licence fields | `about_this_font.txt`: "We don't know any precise license for this font… Use it at your own risk." | **Not vendored, not registered.** Unknown rights can never back production; it is not even used for previews because a preview would show the customer a style we cannot manufacture. If a licence is obtained (or the designer grants one in writing), onboard it with `scripts/add_font.py --rights COMMERCIAL_LICENSED --capability DIWANI`. |
 | arfonts.net "Diwani Bent" (link only) | — | page not reachable from this environment (egress blocked); no file supplied | Not evaluated. Supply the file + its licence text and it goes through the same path. |
+
+## 2026-10-17 — the two OFL fonts also used as web fonts in the customer UI
+
+The redesigned frontend self-hosts **Cairo** (UI text, variable 200–900)
+and **Amiri Regular** (display serif for Arabic headlines and the
+customer's exact text) from `frontend/app/fonts/`, loaded with
+`next/font/local`. Both are SIL Open Font License 1.1; the OFL permits
+web embedding and bundling, and the licence texts travel with the files
+(`frontend/app/fonts/*OFL.txt`). Nothing else is loaded from a font CDN
+(CSP `font-src 'self'`). No locked commercial font is imitated in the UI:
+the fonts on screen are the same registry fonts the engine renders with.

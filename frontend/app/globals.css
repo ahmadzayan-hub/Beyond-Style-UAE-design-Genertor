@@ -4,10 +4,41 @@
 
 :root {
   color-scheme: light;
+  --ring: #b08d3e;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
 }
 
 body {
-  @apply bg-brand-cream text-brand-dark antialiased;
+  @apply bg-cream-100 text-ink-900 antialiased;
+  font-family: var(--font-sans), Tahoma, Arial, sans-serif;
+  font-feature-settings: "kern", "liga", "calt";
+}
+
+/* Keyboard focus is always visible; mouse focus stays quiet. */
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: 0.5rem;
+}
+
+/* Respect reduced motion everywhere — animations collapse to instant. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Large Arabic display text (confirm / approve screens) uses the calligraphic
+   serif; UI chrome stays in the sans. */
+.text-display {
+  font-family: var(--font-display), Georgia, serif;
 }
 
 .proof-svg svg {
@@ -34,4 +65,30 @@ body {
   width: auto;
   height: auto;
   max-height: none;
+}
+
+/* Subtle paper texture for hero/approval surfaces — pure CSS, no asset. */
+.surface-paper {
+  background-image:
+    radial-gradient(1200px 400px at 10% -10%, rgba(176, 141, 62, 0.10), transparent 60%),
+    radial-gradient(800px 300px at 100% 0%, rgba(27, 42, 74, 0.06), transparent 60%);
+}
+
+/* Skeleton shimmer */
+.skeleton {
+  background: linear-gradient(90deg, #efe9de 0%, #f7f2e9 50%, #efe9de 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s linear infinite;
+}
+
+/* Hide number-input spinners inside compact controls. */
+input[type="number"].compact::-webkit-outer-spin-button,
+input[type="number"].compact::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Safe-area padding helper for the fixed mobile action bar. */
+.pb-safe {
+  padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
 }

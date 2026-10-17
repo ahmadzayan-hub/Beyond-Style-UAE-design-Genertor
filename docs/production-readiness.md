@@ -159,6 +159,14 @@ is never claimed for an area whose acceptance E2E has not passed.
 | Jewellery specification knowledge → copilot expert brief | WORKING (online research SKIPPED_NETWORK_BLOCKED) | `app/data/jewellery_specifications.json` (11 evidence-labelled sections), `services/specifications.py`, `retrieve_design_memory(product=…)` → `expert_brief`, `GET /api/products/specifications`; `tests/test_specifications.py` (6); `docs/evidence/specification_sources.json` (0 reachable / 11 blocked) | Trade values are unverified online (egress blocked); verifier + human confirmation needed before quoting a value as a standard; UAE hallmark rule flagged for confirmation |
 | Product catalogue (75 items, AED starting prices) + size guide API | WORKING | `GET /api/products/catalogue[/{code}]`, `GET /api/products/size-guide[/bracelet]`; `tests/test_products_api.py` (5 tests); OpenAPI 94 paths | Prices are OWNER_CATALOGUE_STATED, transcribed from catalogue screenshots (24/33 rings, 6/11 brooches, 45/57 necklaces seen) — never computed; chain weights are owner-stated, not weighed here |
 
+## UI redesign evidence (2026-10-17)
+- Design system + redesigned Golden Path (React/Next 15, Tailwind tokens, Cairo/Amiri self-hosted, CSP `font-src 'self'` unchanged). `npx tsc --noEmit` 0 errors · `npm run build` 11 routes green.
+- Browser E2E on the rebuilt UI (local PostgreSQL 16, backend :8000, frontend :3000): golden_path (text / reference / desktop flows), copilot (edited v2 locked), approval_link (SECURE_LINK), customer_identity, acceptance_seven_names (7-name text byte-for-byte, weight 5.85 g, readiness "جاهز للورشة") — 5/5 PASSED; evidence PNGs/JSON in `docs/evidence/` refreshed and `docs/evidence/ui-redesign-2026-10-17/`.
+- Staff dashboard `/admin` on real endpoints only (38 seeded golden cases rendered from `/api/admin/golden-cases`); slow review endpoints on demand.
+- PWA manifest + icons (installable on Android/iOS/Windows); store builds not claimed.
+- Figma: tokens + components + Start screen in file `gwB1wrv6mY5TP1PFPqKwPv`; brand images generated there with provenance.
+- Project skills: `.claude/skills/ui-ux-promax`, `.claude/skills/dashboards` (no catalogue skill by those names exists).
+
 ## Known honest limitations
 - Deterministic dot/text bridges take the shortest path and can look crude (e.g. a diagonal chord inside a medallion ring) — aesthetic bridge routing is a future refinement; geometry is manufacturable.
 - Copilot edits are composition-level parameters; per-glyph move/tail/swash requires the glyph-variant library (later slice).
