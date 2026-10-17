@@ -165,6 +165,7 @@ is never claimed for an area whose acceptance E2E has not passed.
 - Staff dashboard `/admin` on real endpoints only (38 seeded golden cases rendered from `/api/admin/golden-cases`); slow review endpoints on demand.
 - PWA manifest + icons (installable on Android/iOS/Windows); store builds not claimed.
 - Figma: tokens + components + Start screen in file `gwB1wrv6mY5TP1PFPqKwPv`; brand images generated there with provenance.
+- CI run 90 (`176a8c2`) green on all four jobs; Vercel production READY for the same commit.
 - Project skills: `.claude/skills/ui-ux-promax`, `.claude/skills/dashboards` (no catalogue skill by those names exists).
 
 ## Known honest limitations
