@@ -56,7 +56,7 @@ committed file)
 |---|---|---|
 | `DATABASE_URL` | yes | PostgreSQL 16. Never SQLite in production. |
 | `ALLOWED_ORIGINS` | yes | Comma-separated exact origins, e.g. `https://www.beyondstyle.ae,https://beyondstyle.ae`. No `*` — see CORS below. |
-| `APP_ENV` | recommended | `production` — informational; no code branches on it yet. |
+| `APP_ENV` | **yes** | `production` turns on the identity fail-closed rules: `AUTH_DEV_ECHO_CODE` is ignored and readiness errors while it is set; login answers 503 `IDENTITY_NOT_CONFIGURED` until `CONTACT_HASH_PEPPER` holds a private value. |
 | `SECRET_KEY` | reserved | Not yet consumed by any code path (anonymous session tokens are sha256-hashed, no signing secret in this slice) — set a random value now so nothing else needs to change when a future slice adds signed sessions/CSRF. |
 | `AI_PROVIDER` | reserved | `anthropic` — informational; this app only supports the Claude provider (`ANTHROPIC_API_KEY`-gated), no other provider is wired. |
 | `ANTHROPIC_API_KEY` | optional | Enables real Claude calls. Absent → honest `SKIPPED_EXTERNAL_MODEL`/`SKIPPED_NO_CREDENTIALS`, Golden Path unaffected. |
@@ -86,9 +86,9 @@ Do not add them to the Vercel project.
 | `SECURE_HSTS` | `false` | Set `true` on HTTPS-terminated deployments (Replit) to emit Strict-Transport-Security. All other security headers (nosniff, DENY framing, no-referrer, restrictive CSP for API responses) are always on. |
 | `CLAMD_HOST` / `CLAMD_PORT` | unset / `3310` | ClamAV daemon reachable over TCP (INSTREAM). Unset → uploads are stored `PENDING_SCAN` (dev/CI only). |
 | `REQUIRE_MALWARE_SCAN` | `false` | **Set `true` in production once clamd runs**: any upload not positively `CLEAN` is refused; an infected file is always refused regardless of this flag. |
-| `AUTH_CODE_PROVIDER` | — | Login-code delivery provider for customer identity. None is wired in the repository yet: unset → `POST /api/customers/login/start` answers `delivery.status=SKIPPED_EXTERNAL_PROVIDER` (honest, no fake send); `/ready → customer_auth` shows it. |
-| `AUTH_DEV_ECHO_CODE` | unset | `1` returns the login code in the API response — local dev, CI and browser E2E only. **Never in production**; readiness carries a warning while it is on. |
-| `CONTACT_HASH_PEPPER` | dev default | Secret pepper for the sha256 of customer contacts (only the hash + a masked form are stored). Set a long random value in production. |
+| `AUTH_CODE_PROVIDER` | — | Login-code delivery. `whatsapp_cloud` (phone contacts: `WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_AUTH_TEMPLATE` an approved Meta *authentication* template with a copy-code button, optional `WHATSAPP_AUTH_TEMPLATE_LANG`, `WHATSAPP_API_VERSION`) or `smtp` (e-mail contacts: `SMTP_HOST`, `SMTP_FROM`, optional `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`; STARTTLS always). Unset → `delivery.status=SKIPPED_EXTERNAL_PROVIDER`. `SENT` means the provider accepted the message; live delivery is not yet verified with a real account. |
+| `AUTH_DEV_ECHO_CODE` | unset | `1` returns the login code in the API response: local dev, CI and browser E2E only. Ignored when `APP_ENV=production`. |
+| `CONTACT_HASH_PEPPER` | dev default | Secret pepper for the sha256 of customer contacts. Required in production: the dev default is public and is refused. **Changing it orphans existing customer records**, so if a production database already holds customers hashed with the dev default, decide the migration before setting it. |
 | `LOGIN_RATE_MAX` / `LOGIN_VERIFY_RATE_MAX` / `LOGIN_RATE_WINDOW_S` | 10 / 30 / 600 | Per-IP windows for starting / verifying a login (through the shared limiter). |
 | `RATE_LIMIT_BACKEND` | `memory` | `redis` shares every rate limiter (upload, generate, vote, approval link) across uvicorn workers and instances through `REDIS_URL` (sorted-set sliding window). Any Redis failure degrades that call to the in-process window and is reported under `/ready → rate_limiter.last_failure`; the product never stalls on the limiter. |
 | `REDIS_URL` | — | e.g. `redis://:password@host:6379/0`; required when `RATE_LIMIT_BACKEND=redis`. |
