@@ -193,3 +193,12 @@ is never claimed for an area whose acceptance E2E has not passed.
 ## Blockers
 None for the next slice. P0 overall remains incomplete (see NOT_STARTED rows).
 
+
+
+## Production smoke safety gate — 2026-10-23
+
+The existing push/scheduled Production Monitor invoked a real generation POST during run39976241649 at commit31717c1. The request returned404 from the suspended backend; no successful generation was observed. This was production HTTP activity, not an isolated test. The monitor remains enabled, but `scripts/production-smoke.py` now defaults to GET/OPTIONS only and labels skipped mutating checks explicitly. A green read-only probe is not workflow acceptance.
+
+Manual write testing requires named owner approval for the exact backend and synthetic write/provider scope (including any cost), then the manual Deployment Smoke Test input `allow_writes=true` plus `approved_backend_url` matching the target. CLI equivalents are `SMOKE_ALLOW_WRITES=1` and `SMOKE_APPROVED_BACKEND_URL` equal to `BACKEND_URL`. Those flags are an execution gate, not permission by themselves. No write opt-in was used in this repair. Do not run against customer accounts or incur provider charges without separate approval.
+
+Four no-network standard-library safety regressions passed: default read-only methods, direct transport write denial, mismatched target rejection before requests, and matching-target path using a synthetic404 stub. Command: `python -m unittest discover -s backend/tests -p test_production_smoke_safety.py -v`. The test file is also included in the existing backend pytest collection. SMTP regressions remain five passed; full hosted/backend CI acceptance is reported separately.
