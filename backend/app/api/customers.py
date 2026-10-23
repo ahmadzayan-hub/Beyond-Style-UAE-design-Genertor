@@ -9,6 +9,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from ..db.base import get_session
+from ..security import customer_auth as ca
 from ..security.ratelimit import get_limiter
 from ..services import customer_service as cs
 from .auth import CUSTOMER_HEADER, require_owned_request
@@ -50,6 +51,8 @@ def login_start(req: StartLogin, request: Request, session: Session = Depends(ge
         return cs.start_login(session, req.contact)
     except cs.LoginRejected as exc:
         raise HTTPException(422, {"code": exc.code, "detail": str(exc)})
+    except ca.IdentityNotConfigured as exc:
+        raise HTTPException(503, {"code": "IDENTITY_NOT_CONFIGURED", "detail": str(exc)})
 
 
 @router.post("/login/verify")
@@ -61,6 +64,8 @@ def login_verify(req: VerifyLogin, request: Request, session: Session = Depends(
     except cs.LoginRejected as exc:
         status = 429 if exc.code == "TOO_MANY_ATTEMPTS" else 422
         raise HTTPException(status, {"code": exc.code, "detail": str(exc)})
+    except ca.IdentityNotConfigured as exc:
+        raise HTTPException(503, {"code": "IDENTITY_NOT_CONFIGURED", "detail": str(exc)})
     if req.display_name and not customer.display_name:
         customer.display_name = req.display_name.strip()[:120]
     return {"customer_token": token, "customer_id": str(customer.id), "contact_masked": customer.contact_masked,

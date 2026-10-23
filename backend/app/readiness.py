@@ -104,14 +104,31 @@ def check_storage() -> dict:
 
 
 def check_customer_auth() -> dict:
-    """Login-code delivery is an adapter; no provider is wired yet. The dev
-    echo flag must never be on in production."""
+    """Login-code delivery is an adapter. In production the dev echo is refused and the contact
+    pepper must be private; either problem makes the component an error, not a warning."""
     import os
 
+    from .security import customer_auth as ca
+
     provider = os.environ.get("AUTH_CODE_PROVIDER", "").strip() or None
-    echo = os.environ.get("AUTH_DEV_ECHO_CODE", "").strip() in ("1", "true", "yes")
-    return {"status": "ok", "code_delivery": provider or "SKIPPED_EXTERNAL_PROVIDER", "dev_echo_code": echo,
-            "warning": "AUTH_DEV_ECHO_CODE is on — login codes are returned in API responses (dev/CI only)" if echo else None}
+    out = {"status": "ok", "code_delivery": provider or "SKIPPED_EXTERNAL_PROVIDER",
+           "dev_echo_code": ca.dev_echo_enabled(), "production": ca.is_production(), "warning": None}
+    if ca.is_production():
+        problems = []
+        if ca.dev_echo_requested():
+            problems.append("AUTH_DEV_ECHO_CODE is set in production; it is ignored and must be removed")
+        try:
+            ca.contact_pepper()
+        except ca.IdentityNotConfigured as exc:
+            problems.append(str(exc))
+        if problems:
+            out["status"] = "error"
+            out["detail"] = "; ".join(problems)
+        elif provider is None:
+            out["warning"] = "No login-code provider configured: customers cannot sign in"
+    elif out["dev_echo_code"]:
+        out["warning"] = "AUTH_DEV_ECHO_CODE is on — login codes are returned in API responses (dev/CI only)"
+    return out
 
 
 def check_rate_limiter() -> dict:
