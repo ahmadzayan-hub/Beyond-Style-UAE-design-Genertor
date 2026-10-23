@@ -1,5 +1,19 @@
 # Production Readiness
 
+## SMTP transport repair — 2026-10-23
+
+- The SMTP adapter now verifies the relay certificate and hostname using
+  `ssl.create_default_context()` before credentials or the OTP are sent.
+  Recipient refusal is reported as FAILED, not SENT.
+- Five isolated transport regressions passed on Python 3.12.14:
+  `cd backend && python -m unittest discover -s tests -p test_smtp_transport.py -v`.
+  Fake transports only: trusted-context settings, certificate/hostname failures,
+  sanitized errors and recipient refusal. No sockets or provider calls.
+- The existing SMTP test fake accepts and verifies the SSL context.
+- Full PostgreSQL/API/browser suites and live approved SMTP delivery have not
+  been executed for this repair. Backend deployment/readiness, provider approval,
+  existing contact-pepper migration and production release remain separate gates.
+
 Updated: 2026-09-05 · Latest slice: **Arabic Calligraphy Source Registry + Text Integrity Engine +
 Vector Composition Engine + Jewelry Manufacturing Gate** (ADR-0006, six increments on top of the
 jewellery-realism slice, ADR-0005). The report below is the honest readiness picture for the
@@ -178,3 +192,4 @@ is never claimed for an area whose acceptance E2E has not passed.
 
 ## Blockers
 None for the next slice. P0 overall remains incomplete (see NOT_STARTED rows).
+
