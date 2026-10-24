@@ -20,6 +20,7 @@ import hashlib
 import os
 import re
 import secrets
+import ssl
 
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 CODE_TTL_MINUTES = 10
@@ -158,11 +159,14 @@ def _smtp(kind: str, normalized: str, code: str, smtp_factory) -> dict:
     )
     try:
         with smtp_factory(host, int(os.environ.get("SMTP_PORT", "587")), timeout=10) as client:
-            client.starttls()
+            # Authenticate the relay before sending credentials or the one-time code.
+            client.starttls(context=ssl.create_default_context())
             user = os.environ.get("SMTP_USER", "").strip()
             if user:
                 client.login(user, os.environ.get("SMTP_PASSWORD", ""))
-            client.send_message(message)
+            refused = client.send_message(message)
+            if refused:
+                return {"status": "FAILED", "provider": "smtp", "detail": "SMTP relay refused the recipient."}
     except Exception as exc:  # noqa: BLE001
         return {"status": "FAILED", "provider": "smtp", "detail": f"Transport error: {type(exc).__name__}"}
     return {"status": "SENT", "provider": "smtp"}
@@ -194,3 +198,4 @@ def dev_echo_requested() -> bool:
 def dev_echo_enabled() -> bool:
     """Never in production, whatever the flag says."""
     return dev_echo_requested() and not is_production()
+

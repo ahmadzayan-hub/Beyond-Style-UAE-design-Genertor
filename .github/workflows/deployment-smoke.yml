@@ -12,12 +12,23 @@ on:
         description: "Real production backend URL (e.g. https://<app>.repl.co)"
         required: true
 
+      allow_writes:
+        description: "Owner approved synthetic design/upload/generation writes to this backend (may incur provider cost)"
+        type: boolean
+        required: true
+        default: false
+      approved_backend_url:
+        description: "For approved writes only: repeat the exact backend URL; otherwise leave blank"
+        required: false
+
 jobs:
   smoke:
     runs-on: ubuntu-24.04
     env:
       FRONTEND_URL: ${{ inputs.frontend_url }}
       BACKEND_URL: ${{ inputs.backend_url }}
+      SMOKE_ALLOW_WRITES: ${{ inputs.allow_writes && '1' || '0' }}
+      SMOKE_APPROVED_BACKEND_URL: ${{ inputs.approved_backend_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -27,3 +38,4 @@ jobs:
         run: pip install pillow==10.4.0
       - name: Run production smoke test
         run: python3 scripts/production-smoke.py
+

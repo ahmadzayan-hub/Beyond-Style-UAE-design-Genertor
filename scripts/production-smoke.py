@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-"""Production smoke test — the release gate for a real deployment.
+"""Read-only production health probe; writes require explicit target-bound approval.
 
 Zero external dependencies (stdlib only) so it can run anywhere without
 a pip install step first. Exercises the exact production symptom this
 deployment slice fixed: a real Arabic multi-name generation request
-through the real frontend/backend origins, not a local mock.
+through the real frontend/backend origins only when separately approved.
+Default mode never creates designs, uploads references, or calls generation.
+An all-green read-only probe is NOT workflow/operational acceptance.
 
 Usage:
   FRONTEND_URL=https://www.beyondstyle.ae BACKEND_URL=https://<replit>.repl.co \
@@ -15,7 +17,7 @@ Checks (exits non-zero on the first real failure):
   B. backend /health
   C. backend /ready (200, status: ready)
   D. CORS preflight from FRONTEND_URL's origin succeeds
-  E. Arabic generation request (real multi-name text)
+  E. Arabic generation request (explicit write opt-in only)
   F. exactly 10 candidate designs returned
   G. reference upload request
   H. candidate select
@@ -52,7 +54,15 @@ def check(name: str, ok: bool, detail: str = "") -> None:
     print(f"[{'PASS' if ok else 'FAIL'}] {name}" + (f" — {detail}" if detail else ""))
 
 
+def writes_approved() -> bool:
+    return (os.environ.get("SMOKE_ALLOW_WRITES") == "1"
+            and bool(BACKEND_URL)
+            and os.environ.get("SMOKE_APPROVED_BACKEND_URL", "").rstrip("/") == BACKEND_URL)
+
+
 def request(method: str, url: str, headers: dict | None = None, body: bytes | None = None, timeout: float = 15.0):
+    if method.upper() not in {"GET", "HEAD", "OPTIONS"} and not writes_approved():
+        raise PermissionError("Smoke-test writes require explicit approval for this backend URL")
     req = urllib.request.Request(url, data=body, method=method, headers=headers or {})
     try:
         with urllib.request.urlopen(req, timeout=timeout) as resp:
@@ -71,8 +81,13 @@ def assert_no_secrets(label: str, raw: bytes) -> None:
 
 
 def main() -> int:
+    results.clear()
     if not FRONTEND_URL or not BACKEND_URL:
         print("FRONTEND_URL and BACKEND_URL must both be set — refusing to guess a production URL.")
+        return 2
+
+    if os.environ.get("SMOKE_ALLOW_WRITES") == "1" and not writes_approved():
+        print("Write opt-in requires SMOKE_APPROVED_BACKEND_URL to match BACKEND_URL exactly.")
         return 2
 
     # A. frontend loads
@@ -140,12 +155,26 @@ def main() -> int:
     origin = f"{urlparse(FRONTEND_URL).scheme}://{urlparse(FRONTEND_URL).netloc}"
     status, headers, _ = request(
         "OPTIONS", f"{BACKEND_URL}/api/designs",
-        headers={"Origin": origin, "Access-Control-Request-Method": "POST"},
+        headers={"Origin": origin, "Access-Control-Request-Method": "POST",
+                 "Access-Control-Request-Headers": "content-type,x-session-token,x-customer-token"},
     )
-    allow_origin = headers.get("access-control-allow-origin") or headers.get("Access-Control-Allow-Origin")
-    check("D. CORS allows the frontend origin", allow_origin == origin,
+    cors_headers = {k.lower(): v for k, v in headers.items()}
+    allow_origin = cors_headers.get("access-control-allow-origin")
+    allowed_methods = {v.strip().upper() for v in cors_headers.get("access-control-allow-methods", "").split(",")}
+    allowed_headers = {v.strip().lower() for v in cors_headers.get("access-control-allow-headers", "").split(",")}
+    cors_ok = (status is not None and 200 <= status < 300 and allow_origin == origin
+               and "POST" in allowed_methods
+               and {"content-type", "x-session-token", "x-customer-token"} <= allowed_headers)
+    check("D. CORS allows the frontend origin and customer headers", cors_ok,
           f"got={allow_origin!r} status={status} origin={origin} "
           f"headers={ {k: v for k, v in headers.items() if k.lower().startswith(('access-control', 'server', 'x-request', 'allow'))} }")
+
+    if not writes_approved():
+        status, _, body = request("GET", f"{BACKEND_URL}/api/ai/status")
+        check("J. external AI status endpoint reachable", status == 200, f"status={status}")
+        assert_no_secrets("/api/ai/status", body)
+        print("[SKIP] Mutating design/upload/generation checks: read-only mode; not workflow acceptance.")
+        return _summarize()
 
     # E. Arabic multi-name generation request (the real production case).
     status, _, body = request(
@@ -259,3 +288,4 @@ def _summarize() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+
