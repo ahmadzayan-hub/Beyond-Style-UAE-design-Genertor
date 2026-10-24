@@ -1,9 +1,24 @@
 # Production Readiness
 
-Updated: 2026-09-05 · Latest slice: **Arabic Calligraphy Source Registry + Text Integrity Engine +
+Updated: 2026-10-24 (UI/docs slice below) · Previous: 2026-09-05 · Latest engine slice: **Arabic Calligraphy Source Registry + Text Integrity Engine +
 Vector Composition Engine + Jewelry Manufacturing Gate** (ADR-0006, six increments on top of the
 jewellery-realism slice, ADR-0005). The report below is the honest readiness picture for the
 owner specification; earlier slice tables follow unchanged.
+
+## UI and docs slice — 2026-10-24 (Style Browser on the design system, README)
+
+Scope: frontend presentation and docs only. No backend, Arabic engine, manufacturing or approval logic changed.
+
+| Change | Evidence (executed) | Caveat |
+|---|---|---|
+| `/styles` rebuilt on `components/ui` (AppHeader nav, labelled Field/Input/Select, Chip filters with `aria-pressed`, design tokens instead of `stone-*`/`brand-*`) | `npx tsc --noEmit` clean; `npm run build` green (11 routes); Playwright at 1440 and 390 px against local backend + PostgreSQL 16: 24 styles, 3 real font previews rendered, no horizontal overflow | `npm run lint` is not configured in this repo (Next prompts interactively); unchanged |
+| Honest catalogue states: loading skeleton, error alert naming `GET /api/fonts/styles` with Retry, "no match" empty state with Clear filters, live "Showing N of M" count | Playwright with `/api/fonts/styles` forced to 503: error alert shown, Retry recovers to 24/24; search with no match shows the empty state; Clear filters restores 24/24 | before this change a failed fetch rendered an empty grid (looked like "no styles") |
+| Per-card preview loading and failure message; previews cleared when the preview text or material changes (stale SVGs no longer shown for different inputs) | manual Playwright run | preview text is sent to the backend exactly as typed; no client-side text change |
+| Material select shows localised labels (`STRINGS.materials`) instead of raw ids; category tags localised in Arabic | screenshot `docs/assets/screenshots/styles-*.png` | proof titles from the backend are still English in Arabic mode (unchanged) |
+| Header wordmark: `dir="ltr"` on the link so it reads "BEYOND STYLE" inside the RTL page (it rendered as "STYLE BEYOND" before) | Playwright: computed direction `ltr` | — |
+| README rewrite, banner `docs/assets/banner.svg`, real screenshots `docs/assets/screenshots/` (home, confirm, 10 proofs, styles; desktop + mobile) | screenshots captured from the local production build; proofs are real engine output for ميثه | screenshots are local, not from the Vercel deployment |
+
+Test ids: every id used by `e2e/*.py` is preserved; new ids are `style-material`, `style-count`, `style-clear-filters`, `style-loading`, `style-error`, `style-retry`, `style-empty`. Targeted backend tests (`test_text_integrity.py`, `test_source_registry.py`, `test_font_capability.py`): 44 passed on PostgreSQL 16. The full backend suite and the Python browser E2E were not re-run in this slice (no backend change).
 
 ## Readiness report — 2026-09-05 (spec "BEYOND STYLE ARABIC JEWELRY DESIGNER")
 
