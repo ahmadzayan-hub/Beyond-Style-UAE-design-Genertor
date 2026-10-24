@@ -22,7 +22,11 @@ class SmokeSafetyTests(unittest.TestCase):
     def response(method, url, **kwargs):
         if url.endswith('/health'): return 200, {}, b'{"status":"ok","schema_version":"synthetic"}'
         if url.endswith('/ready'): return 200, {}, b'{"status":"ready"}'
-        if method == 'OPTIONS': return 200, {'access-control-allow-origin': 'https://frontend.invalid'}, b''
+        if method == 'OPTIONS': return 200, {
+            'access-control-allow-origin': 'https://frontend.invalid',
+            'access-control-allow-methods': 'GET, POST',
+            'access-control-allow-headers': 'content-type,x-session-token,x-customer-token',
+        }, b''
         if method == 'POST': return 404, {}, b'{}'
         return 200, {}, b'{}'
 
@@ -35,6 +39,23 @@ class SmokeSafetyTests(unittest.TestCase):
         with patch.object(smoke.urllib.request, "urlopen") as network:
             with self.assertRaises(PermissionError): smoke.request('POST', smoke.BACKEND_URL + '/api/designs')
             network.assert_not_called()
+
+    def test_rejected_preflight_with_allowed_origin_is_not_a_pass(self):
+        def rejected(method, url, **kwargs):
+            status, headers, body = self.response(method, url, **kwargs)
+            return (400, headers, b'Disallowed CORS headers') if method == 'OPTIONS' else (status, headers, body)
+        with patch.object(smoke, 'request', side_effect=rejected):
+            self.assertEqual(smoke.main(), 1)
+
+    def test_preflight_must_allow_customer_token(self):
+        def missing(method, url, **kwargs):
+            status, headers, body = self.response(method, url, **kwargs)
+            if method == 'OPTIONS':
+                self.assertIn('x-customer-token', kwargs['headers']['Access-Control-Request-Headers'])
+                headers['access-control-allow-headers'] = 'content-type,x-session-token'
+            return status, headers, body
+        with patch.object(smoke, 'request', side_effect=missing):
+            self.assertEqual(smoke.main(), 1)
 
     def test_mismatched_approved_target_refused_before_network(self):
         os.environ.update(SMOKE_ALLOW_WRITES='1', SMOKE_APPROVED_BACKEND_URL='https://other.invalid')

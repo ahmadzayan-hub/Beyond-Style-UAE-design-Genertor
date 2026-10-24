@@ -1,5 +1,32 @@
 # Production Readiness
 
+## Customer CORS repair — 2026-10-24 (not deployed)
+
+- Independent review of PR2 head `317009a6c8abbd2d7f243ab39e6c75df995d8ef2`
+  reproduced a real cross-origin failure: the frontend sends `X-Customer-Token`
+  for account, saved-design, claim and resume requests, but the backend omitted
+  it from its CORS header allowlist. Starlette returned 400 for both GET and
+  POST preflights. Add only that existing authentication header; origins,
+  credential policy and server-side token verification remain unchanged.
+- The read-only production probe now requests the real session/customer/content
+  headers and requires a successful preflight, POST permission and all requested
+  headers. Previously an error response carrying allow-origin was a false pass.
+- Fourteen isolated tests pass: three real-Starlette CORS contract tests (including
+  denied foreign origin/unlisted header), six smoke safety tests and five SMTP
+  TLS tests. The customer GET/POST regression failed before the fix. No sockets,
+  OTPs, customer messages, provider calls or live business data were used.
+  Commands from `backend`: `python -m unittest discover -s tests -p
+  test_customer_cors_contract.py -v`, likewise `test_production_smoke_safety.py`
+  and `test_smtp_transport.py`. These are not full-stack or browser acceptance.
+- Fresh hosting metadata: Vercel frontend production remains
+  `d36d20a00ac1c3b1ca6f29a2e9b56563f134cb4e`, not this PR. Replit reports
+  deployment `c6cda896-bae1-4ce3-98f2-c9246dc4876a` **suspended** for the canonical
+  backend. Its deployed source SHA/root is not established by publish-status
+  metadata. Do not infer healthy backend or functional login from frontend READY.
+- No merge, deployment, hosting/settings/credential changes or migration was
+  performed. Resume/release approval, exact backend source verification,
+  existing contact-pepper migration, backup and provider acceptance remain gates.
+
 ## SMTP transport repair — 2026-10-23
 
 - The SMTP adapter now verifies the relay certificate and hostname using

@@ -51,7 +51,7 @@ app.add_middleware(
     allow_origins=_allowed_origins,
     allow_credentials=False,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["Content-Type", "X-Session-Token", "X-Request-ID", "X-Admin-Token"],
+    allow_headers=["Content-Type", "X-Session-Token", "X-Customer-Token", "X-Request-ID", "X-Admin-Token"],
     expose_headers=["X-Request-ID"],
 )
 app.add_middleware(CorrelationIdMiddleware)
@@ -147,3 +147,4 @@ def ready(session: Session = Depends(get_session)):
 # GET /api/ai/status is served by api/ai.py's router (extended this
 # slice to also cover Claude/GPT-Image-2/Hermes, not just the local
 # Qwen/FLUX stack) — see app.include_router(ai_router) above.
+

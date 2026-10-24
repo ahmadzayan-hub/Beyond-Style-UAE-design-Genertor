@@ -155,10 +155,17 @@ def main() -> int:
     origin = f"{urlparse(FRONTEND_URL).scheme}://{urlparse(FRONTEND_URL).netloc}"
     status, headers, _ = request(
         "OPTIONS", f"{BACKEND_URL}/api/designs",
-        headers={"Origin": origin, "Access-Control-Request-Method": "POST"},
+        headers={"Origin": origin, "Access-Control-Request-Method": "POST",
+                 "Access-Control-Request-Headers": "content-type,x-session-token,x-customer-token"},
     )
-    allow_origin = headers.get("access-control-allow-origin") or headers.get("Access-Control-Allow-Origin")
-    check("D. CORS allows the frontend origin", allow_origin == origin,
+    cors_headers = {k.lower(): v for k, v in headers.items()}
+    allow_origin = cors_headers.get("access-control-allow-origin")
+    allowed_methods = {v.strip().upper() for v in cors_headers.get("access-control-allow-methods", "").split(",")}
+    allowed_headers = {v.strip().lower() for v in cors_headers.get("access-control-allow-headers", "").split(",")}
+    cors_ok = (status is not None and 200 <= status < 300 and allow_origin == origin
+               and "POST" in allowed_methods
+               and {"content-type", "x-session-token", "x-customer-token"} <= allowed_headers)
+    check("D. CORS allows the frontend origin and customer headers", cors_ok,
           f"got={allow_origin!r} status={status} origin={origin} "
           f"headers={ {k: v for k, v in headers.items() if k.lower().startswith(('access-control', 'server', 'x-request', 'allow'))} }")
 
