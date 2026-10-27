@@ -6,6 +6,8 @@
 
 Turn a customer's exact Arabic or English name into ten different, manufacturable 2D jewellery proofs, then lock the approved version and hand the workshop dimensioned SVG, DXF and PDF files in millimetres.
 
+<p align="center"><img src="docs/assets/hero.jpg" alt="Concept image (AI-generated). Not a product screenshot." width="100%"><br><sub><em>Concept image (AI-generated). Not a product screenshot.</em></sub></p>
+
 ![Next.js](https://img.shields.io/badge/Next.js-15.5-000000?logo=nextdotjs&logoColor=white)
 ![React](https://img.shields.io/badge/React-18.3-61DAFB?logo=react&logoColor=black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178C6?logo=typescript&logoColor=white)
