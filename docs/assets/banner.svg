@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="400" viewBox="0 0 1280 400" role="img" aria-labelledby="t d">
+  <title id="t">Beyond Style UAE AI Jewellery Designer</title>
+  <desc id="d">Exact Arabic name to ten manufacturable 2D proofs and millimetre SVG/DXF workshop files.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#141210"/>
+      <stop offset="1" stop-color="#2A2622"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#E6D199"/>
+      <stop offset="0.5" stop-color="#B08D3E"/>
+      <stop offset="1" stop-color="#8F7030"/>
+    </linearGradient>
+    <pattern id="mm" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M20 0H0V20" fill="none" stroke="#B08D3E" stroke-opacity="0.08" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1280" height="400" fill="url(#bg)"/>
+  <rect x="760" y="0" width="520" height="400" fill="url(#mm)"/>
+
+  <!-- Chain arc and pendant: clean geometry, no lettering -->
+  <path d="M790 -10 Q1010 250 1230 -10" fill="none" stroke="url(#gold)" stroke-width="2.5" stroke-dasharray="7 5"/>
+  <circle cx="1010" cy="118" r="9" fill="none" stroke="url(#gold)" stroke-width="3"/>
+  <circle cx="1010" cy="232" r="104" fill="none" stroke="url(#gold)" stroke-width="5"/>
+  <circle cx="1010" cy="232" r="84" fill="none" stroke="#B08D3E" stroke-opacity="0.45" stroke-width="1.5"/>
+  <path d="M942 252 C962 196 1000 196 1010 232 C1020 268 1058 268 1078 212" fill="none" stroke="url(#gold)" stroke-width="9" stroke-linecap="round"/>
+  <circle cx="985" cy="282" r="6" fill="#D4B55F"/>
+  <circle cx="1036" cy="178" r="6" fill="#D4B55F"/>
+
+  <!-- Dimension lines (millimetre workshop handoff) -->
+  <g stroke="#D8D2C8" stroke-opacity="0.55" stroke-width="1.2" fill="none">
+    <path d="M906 360H1114"/>
+    <path d="M906 352V368M1114 352V368"/>
+    <path d="M1146 128V336"/>
+    <path d="M1138 128H1154M1138 336H1154"/>
+  </g>
+  <text x="1010" y="386" fill="#B6AEA4" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" text-anchor="middle">40.0 mm</text>
+  <text x="1168" y="236" fill="#B6AEA4" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13">40.0 mm</text>
+
+  <!-- Wordmark and value statement -->
+  <text x="72" y="118" font-family="Georgia, 'Times New Roman', serif" font-size="58"><tspan font-weight="700" fill="#D4B55F">BEYOND</tspan><tspan dx="14" letter-spacing="9" fill="#FAF7F1">STYLE</tspan></text>
+  <text x="74" y="158" font-family="Helvetica, Arial, sans-serif" font-size="17" letter-spacing="4" fill="#B08D3E">UAE · AI JEWELLERY DESIGNER</text>
+  <text x="72" y="222" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="#EDE8DF">Exact Arabic text to 10 manufacturable 2D proofs</text>
+  <text x="72" y="256" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="#EDE8DF">and millimetre SVG / DXF workshop files.</text>
+  <text x="72" y="320" direction="rtl" text-anchor="end" font-family="'Noto Naskh Arabic', 'Geeza Pro', 'Segoe UI', Tahoma, sans-serif" font-size="26" fill="#D4B55F">نصّك كما كتبته حرفًا بحرف، وتصميم جاهز للورشة</text>
+</svg>
