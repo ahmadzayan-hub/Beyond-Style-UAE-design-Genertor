@@ -1,5 +1,19 @@
 # STATUS
 
+## W3 status reconciliation — 2026-11-02
+PR #2 (verified SMTP transport and opt-in production writes) is already merged
+into this repository's default branch. The read-only smoke safety tests can
+be run without a database/provider via `python -m unittest discover -s
+backend/tests -p test_production_smoke_safety.py -v`.
+
+There are no remaining NOT_STARTED capability rows in this file. The old
+Copilot UI NOT_STARTED note in `production-readiness.md` is superseded by the
+2026-10-17 UI evidence and the composition-level Copilot flow. Node/pen editing
+remains NOT_IMPLEMENTED, workshop profiles remain uncalibrated, and photoreal
+provider acceptance remains credential-dependent. No live write smoke or paid
+provider call was run in this reconciliation. Historical evidence below is
+retained with its original dates; it is not a fresh production certification.
+
 Statuses (general sections below): VERIFIED (automated tests + evidence) / PARTIAL / FALLBACK / DISABLED / UNAVAILABLE / NOT_IMPLEMENTED.
 Statuses (External AI / Real Tool Wiring sections, precise per-claim vocabulary):
   VERIFIED_LOCAL — real code path executed against a real local dependency (PostgreSQL, engines) in this environment.

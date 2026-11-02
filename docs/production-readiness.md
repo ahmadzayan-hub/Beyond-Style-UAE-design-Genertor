@@ -171,7 +171,7 @@ is never claimed for an area whose acceptance E2E has not passed.
 | API golden path | WORKING | `tests/test_api_golden_path.py` | create→confirm→generate→select→approve→export E2E on PostgreSQL incl. refusal paths | no auth, no rate limits |
 | Docker reproducibility | PARTIAL | — | Pinned requirements.txt + Dockerfile (manylinux wheels bundle HarfBuzz/GEOS) | Image not built/run in CI yet |
 | Approval + immutable version lock | WORKING | see Slice 2 table | — | — |
-| Designer edit versioning (persistence) | WORKING | see Slice 2 table | Copilot UI/UX itself still NOT_STARTED | UI later slice |
+| Designer edit versioning (persistence) | WORKING | see Slice 2 table; `docs/STATUS.md` UI redesign evidence (2026-10-17), `scripts/copilot_e2e.py` | Composition-level Copilot UI shipped; per-glyph/node/pen editing remains NOT_IMPLEMENTED | UI evidence is local/CI history, not a new production verification |
 | Reference/WhatsApp intake | WORKING | see Slice 3 table | — | WhatsApp channel integration itself is P1 (uploads are the intake path) |
 | Frontend (mobile+desktop) | WORKING | see Slice 3 table | browser E2E on mobile + desktop viewports | visual polish; plate-relief proofs render as silhouette (text not visually distinct) |
 
@@ -218,7 +218,12 @@ is never claimed for an area whose acceptance E2E has not passed.
 - Approval identity is a free-text reference; authentication/session binding is a later slice.
 
 ## Blockers
-None for the next slice. P0 overall remains incomplete (see NOT_STARTED rows).
+P0 is frozen/stable at the repository's recorded evidence baseline (see
+`docs/STATUS.md`, "P0 STATUS: FROZEN/STABLE"). The former Copilot UI
+NOT_STARTED note above was stale. This reconciliation does not certify the
+current deployment: production workflow acceptance still needs an available
+backend and an explicitly approved write smoke. Workshop calibration needs
+owner measurements; external model acceptance needs configured providers.
 
 
 
