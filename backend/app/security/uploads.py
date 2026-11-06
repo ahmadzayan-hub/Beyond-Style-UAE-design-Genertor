@@ -16,8 +16,12 @@ from typing import Protocol
 
 from PIL import Image
 
+from ..platform import cap_body_bytes, writable_root
+
 # Configurable limits (development defaults).
-MAX_UPLOAD_BYTES = int(os.environ.get("MAX_UPLOAD_BYTES", 8 * 1024 * 1024))
+# On Vercel the platform caps request bodies, so the app limit is capped too
+# (see app/platform.py) and the customer gets our clear 413 message.
+MAX_UPLOAD_BYTES = cap_body_bytes(int(os.environ.get("MAX_UPLOAD_BYTES", 8 * 1024 * 1024)))
 
 #: verified media types we accept for reference images. SVG deliberately
 #: excluded from customer uploads in this slice (no sanitizer needed yet).
@@ -95,7 +99,7 @@ class LocalPrivateStorage:
 
     def __init__(self, root: Path | None = None):
         self.root = root or Path(
-            os.environ.get("PRIVATE_STORAGE_DIR", Path(__file__).resolve().parents[2] / "var" / "private_uploads")
+            os.environ.get("PRIVATE_STORAGE_DIR", writable_root() / "private_uploads")
         )
         self.root.mkdir(parents=True, exist_ok=True)
 

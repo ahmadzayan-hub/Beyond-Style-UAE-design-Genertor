@@ -96,6 +96,13 @@ def check_storage() -> dict:
             # dev/CI; on ephemeral hosts (Replit redeploys) customer images
             # do not survive — production must set OBJECT_STORAGE=s3.
             out["durability"] = "PROCESS_LOCAL_DISK"
+            from .platform import has_durable_local_disk
+
+            if not has_durable_local_disk():
+                # On Vercel a local write lands in this instance's /tmp: customer
+                # images would be lost and invisible to other instances.
+                out["status"] = "error"
+                out["detail"] = "OBJECT_STORAGE=s3 is required on this host"
         else:
             out["durability"] = "OBJECT_STORAGE"
         return out
@@ -162,4 +169,6 @@ def readiness_report(session: Session) -> dict:
         "design_generator": check_generator(),
     }
     overall_ok = all(c["status"] == "ok" for c in components.values())
-    return {"status": "ready" if overall_ok else "not_ready", "components": components}
+    from .platform import info as platform_info
+
+    return {"status": "ready" if overall_ok else "not_ready", "components": components, "platform": platform_info()}

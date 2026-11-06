@@ -19,7 +19,13 @@ _SessionLocal = None
 def get_engine():
     global _engine, _SessionLocal
     if _engine is None:
-        _engine = create_engine(DATABASE_URL, pool_pre_ping=True, future=True)
+        from ..platform import on_vercel
+
+        # Serverless instances are many and short-lived: keep each one's pool
+        # small and recycle connections, so a burst of instances does not
+        # exhaust the database (use the provider's pooled connection string).
+        pool = {"pool_size": 2, "max_overflow": 3, "pool_recycle": 300} if on_vercel() else {}
+        _engine = create_engine(DATABASE_URL, pool_pre_ping=True, future=True, **pool)
         _SessionLocal = sessionmaker(bind=_engine, expire_on_commit=False, future=True)
     return _engine
 

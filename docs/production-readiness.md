@@ -5,6 +5,19 @@ Vector Composition Engine + Jewelry Manufacturing Gate** (ADR-0006, six incremen
 jewellery-realism slice, ADR-0005). The report below is the honest readiness picture for the
 owner specification; earlier slice tables follow unchanged.
 
+## Backend hosting slice — 2026-11-06 (Vercel Function replacing Replit)
+
+| Item | Evidence | Status |
+|---|---|---|
+| Replit backend answers 404 on /health, /ready, /api/ai/status, CORS | Production Monitor run 42225428764 (3/7 probes) | Root cause on Replit not reachable from sessions |
+| Backend runs as a Vercel Python Function (`backend/vercel.json`, `.python-version` 3.12, `app/platform.py`) | `tests/test_vercel_platform.py` 9/9; local VERCEL=1 run: `/health` ok with build_sha, `/ready` not_ready only on storage | Code ready, **not deployed** |
+| Bundle size | production deps 303 MB + app 14 MB, under Vercel's 500 MB Python limit | Measured locally |
+| Durable state on a read-only host | local storage fails readiness on Vercel; font registration and calibration pin refuse with 409 READ_ONLY_DEPLOYMENT | Tested |
+| Request body cap | uploads capped at 4 MB on Vercel (platform limit 4.5 MB) | Tested |
+| Migrations without a release phase | `.github/workflows/migrate-database.yml` (fails loudly if the secret is missing) | Not run: needs PRODUCTION_DATABASE_URL |
+| Seven-name generation latency, inline | 46 to 49 s locally under contention; real Vercel timing not measured | maxDuration 300 s; smoke step allows 180 s |
+| Cutover | `docs/DEPLOYMENT-VERCEL-BACKEND.md` | Needs owner approval (Supabase + Vercel resources, env vars) |
+
 ## UI and docs slice — 2026-10-24 (Style Browser on the design system, README)
 
 Scope: frontend presentation and docs only. No backend, Arabic engine, manufacturing or approval logic changed.
