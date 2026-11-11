@@ -1,6 +1,47 @@
 # Production Readiness
 
-Updated: 2026-10-24 (UI/docs slice below) · Previous: 2026-09-05 · Latest engine slice: **Arabic Calligraphy Source Registry + Text Integrity Engine +
+## Customer CORS repair — 2026-10-24 (not deployed)
+
+- Independent review of PR2 head `317009a6c8abbd2d7f243ab39e6c75df995d8ef2`
+  reproduced a real cross-origin failure: the frontend sends `X-Customer-Token`
+  for account, saved-design, claim and resume requests, but the backend omitted
+  it from its CORS header allowlist. Starlette returned 400 for both GET and
+  POST preflights. Add only that existing authentication header; origins,
+  credential policy and server-side token verification remain unchanged.
+- The read-only production probe now requests the real session/customer/content
+  headers and requires a successful preflight, POST permission and all requested
+  headers. Previously an error response carrying allow-origin was a false pass.
+- Fourteen isolated tests pass: three real-Starlette CORS contract tests (including
+  denied foreign origin/unlisted header), six smoke safety tests and five SMTP
+  TLS tests. The customer GET/POST regression failed before the fix. No sockets,
+  OTPs, customer messages, provider calls or live business data were used.
+  Commands from `backend`: `python -m unittest discover -s tests -p
+  test_customer_cors_contract.py -v`, likewise `test_production_smoke_safety.py`
+  and `test_smtp_transport.py`. These are not full-stack or browser acceptance.
+- Fresh hosting metadata: Vercel frontend production remains
+  `d36d20a00ac1c3b1ca6f29a2e9b56563f134cb4e`, not this PR. Replit reports
+  deployment `c6cda896-bae1-4ce3-98f2-c9246dc4876a` **suspended** for the canonical
+  backend. Its deployed source SHA/root is not established by publish-status
+  metadata. Do not infer healthy backend or functional login from frontend READY.
+- No merge, deployment, hosting/settings/credential changes or migration was
+  performed. Resume/release approval, exact backend source verification,
+  existing contact-pepper migration, backup and provider acceptance remain gates.
+
+## SMTP transport repair — 2026-10-23
+
+- The SMTP adapter now verifies the relay certificate and hostname using
+  `ssl.create_default_context()` before credentials or the OTP are sent.
+  Recipient refusal is reported as FAILED, not SENT.
+- Five isolated transport regressions passed on Python 3.12.14:
+  `cd backend && python -m unittest discover -s tests -p test_smtp_transport.py -v`.
+  Fake transports only: trusted-context settings, certificate/hostname failures,
+  sanitized errors and recipient refusal. No sockets or provider calls.
+- The existing SMTP test fake accepts and verifies the SSL context.
+- Full PostgreSQL/API/browser suites and live approved SMTP delivery have not
+  been executed for this repair. Backend deployment/readiness, provider approval,
+  existing contact-pepper migration and production release remain separate gates.
+
+Updated: 2026-09-05 · Latest slice: **Arabic Calligraphy Source Registry + Text Integrity Engine +
 Vector Composition Engine + Jewelry Manufacturing Gate** (ADR-0006, six increments on top of the
 jewellery-realism slice, ADR-0005). The report below is the honest readiness picture for the
 owner specification; earlier slice tables follow unchanged.
@@ -158,7 +199,7 @@ is never claimed for an area whose acceptance E2E has not passed.
 | API golden path | WORKING | `tests/test_api_golden_path.py` | create→confirm→generate→select→approve→export E2E on PostgreSQL incl. refusal paths | no auth, no rate limits |
 | Docker reproducibility | PARTIAL | — | Pinned requirements.txt + Dockerfile (manylinux wheels bundle HarfBuzz/GEOS) | Image not built/run in CI yet |
 | Approval + immutable version lock | WORKING | see Slice 2 table | — | — |
-| Designer edit versioning (persistence) | WORKING | see Slice 2 table | Copilot UI/UX itself still NOT_STARTED | UI later slice |
+| Designer edit versioning (persistence) | WORKING | see Slice 2 table; `docs/STATUS.md` UI redesign evidence (2026-10-17), `scripts/copilot_e2e.py` | Composition-level Copilot UI shipped; per-glyph/node/pen editing remains NOT_IMPLEMENTED | UI evidence is local/CI history, not a new production verification |
 | Reference/WhatsApp intake | WORKING | see Slice 3 table | — | WhatsApp channel integration itself is P1 (uploads are the intake path) |
 | Frontend (mobile+desktop) | WORKING | see Slice 3 table | browser E2E on mobile + desktop viewports | visual polish; plate-relief proofs render as silhouette (text not visually distinct) |
 
@@ -205,4 +246,19 @@ is never claimed for an area whose acceptance E2E has not passed.
 - Approval identity is a free-text reference; authentication/session binding is a later slice.
 
 ## Blockers
-None for the next slice. P0 overall remains incomplete (see NOT_STARTED rows).
+P0 is frozen/stable at the repository's recorded evidence baseline (see
+`docs/STATUS.md`, "P0 STATUS: FROZEN/STABLE"). The former Copilot UI
+NOT_STARTED note above was stale. This reconciliation does not certify the
+current deployment: production workflow acceptance still needs an available
+backend and an explicitly approved write smoke. Workshop calibration needs
+owner measurements; external model acceptance needs configured providers.
+
+
+
+## Production smoke safety gate — 2026-10-23
+
+The existing push/scheduled Production Monitor invoked a real generation POST during run39976241649 at commit31717c1. The request returned404 from the suspended backend; no successful generation was observed. This was production HTTP activity, not an isolated test. The monitor remains enabled, but `scripts/production-smoke.py` now defaults to GET/OPTIONS only and labels skipped mutating checks explicitly. A green read-only probe is not workflow acceptance.
+
+Manual write testing requires named owner approval for the exact backend and synthetic write/provider scope (including any cost), then the manual Deployment Smoke Test input `allow_writes=true` plus `approved_backend_url` matching the target. CLI equivalents are `SMOKE_ALLOW_WRITES=1` and `SMOKE_APPROVED_BACKEND_URL` equal to `BACKEND_URL`. Those flags are an execution gate, not permission by themselves. No write opt-in was used in this repair. Do not run against customer accounts or incur provider charges without separate approval.
+
+Four no-network standard-library safety regressions passed: default read-only methods, direct transport write denial, mismatched target rejection before requests, and matching-target path using a synthetic404 stub. Command: `python -m unittest discover -s backend/tests -p test_production_smoke_safety.py -v`. The test file is also included in the existing backend pytest collection. SMTP regressions remain five passed; full hosted/backend CI acceptance is reported separately.

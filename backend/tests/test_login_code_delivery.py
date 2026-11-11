@@ -50,7 +50,11 @@ class FakeSmtp:
     def __exit__(self, *exc):
         return False
 
-    def starttls(self):
+    def starttls(self, *, context):
+        import ssl
+
+        assert context.verify_mode == ssl.CERT_REQUIRED
+        assert context.check_hostname is True
         self.tls = True
 
     def login(self, user, password):
@@ -169,3 +173,4 @@ def test_readiness_marks_production_misconfiguration_as_an_error(monkeypatch):
     assert report["status"] == "error"
     assert "AUTH_DEV_ECHO_CODE" in report["detail"] and "CONTACT_HASH_PEPPER" in report["detail"]
     assert report["dev_echo_code"] is False
+
