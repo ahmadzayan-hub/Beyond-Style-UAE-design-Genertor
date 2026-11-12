@@ -158,7 +158,8 @@ No credentials in this environment: report `SKIPPED_EXTERNAL_MODEL` /
 ## Deployment
 GitHub = source + CI/CD · Vercel = Next.js frontend (direct browser→backend
 fetch via `NEXT_PUBLIC_API_URL`, CORS — never a Vercel-side proxy in
-production) · Replit = FastAPI backend + PostgreSQL. Full env contract,
+production) · FastAPI backend + PostgreSQL on a Vercel Python Function
+(`docs/DEPLOYMENT-VERCEL-BACKEND.md`), with Replit kept as the rollback. Full env contract,
 CORS, health/readiness, error-code taxonomy, CI workflows, secret-leak
 prevention and the release gate are in `docs/DEPLOYMENT.md` — do not
 restate it here.

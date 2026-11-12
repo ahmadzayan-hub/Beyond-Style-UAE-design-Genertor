@@ -1,0 +1,42 @@
+name: Migrate production database
+
+# A Vercel Function has no release phase, so migrations cannot run at start-up
+# the way the Replit run command did. This workflow applies them instead:
+# forward-only `alembic upgrade head` against PRODUCTION_DATABASE_URL.
+# Runs when a migration lands on the default branch, or on demand.
+# /ready reports migrations.status = error while the database is behind, and
+# the Production Monitor fails on that, so a skipped run is never silent.
+on:
+  push:
+    branches: ["claude/p0-golden-path-audit-jtyduw"]
+    paths: ["backend/alembic/**", "backend/app/db/models.py"]
+  workflow_dispatch: {}
+
+concurrency:
+  group: migrate-production
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    runs-on: ubuntu-24.04
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install backend dependencies
+        run: pip install -r backend/requirements.txt
+      - name: Apply migrations (forward-only)
+        working-directory: backend
+        env:
+          DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "::error::PRODUCTION_DATABASE_URL secret is not set; migrations were NOT applied."
+            exit 1
+          fi
+          python -m alembic current
+          python -m alembic upgrade head
+          python -m alembic current

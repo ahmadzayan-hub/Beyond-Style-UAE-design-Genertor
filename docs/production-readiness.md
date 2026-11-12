@@ -46,6 +46,34 @@ Vector Composition Engine + Jewelry Manufacturing Gate** (ADR-0006, six incremen
 jewellery-realism slice, ADR-0005). The report below is the honest readiness picture for the
 owner specification; earlier slice tables follow unchanged.
 
+## Backend hosting slice — 2026-11-06 (Vercel Function replacing Replit)
+
+| Item | Evidence | Status |
+|---|---|---|
+| Replit backend answers 404 on /health, /ready, /api/ai/status, CORS | Production Monitor run 42225428764 (3/7 probes) | Root cause on Replit not reachable from sessions |
+| Backend runs as a Vercel Python Function (`backend/vercel.json`, `.python-version` 3.12, `app/platform.py`) | `tests/test_vercel_platform.py` 9/9; local VERCEL=1 run: `/health` ok with build_sha, `/ready` not_ready only on storage | Code ready, **not deployed** |
+| Bundle size | production deps 303 MB + app 14 MB, under Vercel's 500 MB Python limit | Measured locally |
+| Durable state on a read-only host | local storage fails readiness on Vercel; font registration and calibration pin refuse with 409 READ_ONLY_DEPLOYMENT | Tested |
+| Request body cap | uploads capped at 4 MB on Vercel (platform limit 4.5 MB) | Tested |
+| Migrations without a release phase | `.github/workflows/migrate-database.yml` (fails loudly if the secret is missing) | Not run: needs PRODUCTION_DATABASE_URL |
+| Seven-name generation latency, inline | 46 to 49 s locally under contention; real Vercel timing not measured | maxDuration 300 s; smoke step allows 180 s |
+| Cutover | `docs/DEPLOYMENT-VERCEL-BACKEND.md` | Needs owner approval (Supabase + Vercel resources, env vars) |
+
+## UI and docs slice — 2026-10-24 (Style Browser on the design system, README)
+
+Scope: frontend presentation and docs only. No backend, Arabic engine, manufacturing or approval logic changed.
+
+| Change | Evidence (executed) | Caveat |
+|---|---|---|
+| `/styles` rebuilt on `components/ui` (AppHeader nav, labelled Field/Input/Select, Chip filters with `aria-pressed`, design tokens instead of `stone-*`/`brand-*`) | `npx tsc --noEmit` clean; `npm run build` green (11 routes); Playwright at 1440 and 390 px against local backend + PostgreSQL 16: 24 styles, 3 real font previews rendered, no horizontal overflow | `npm run lint` is not configured in this repo (Next prompts interactively); unchanged |
+| Honest catalogue states: loading skeleton, error alert naming `GET /api/fonts/styles` with Retry, "no match" empty state with Clear filters, live "Showing N of M" count | Playwright with `/api/fonts/styles` forced to 503: error alert shown, Retry recovers to 24/24; search with no match shows the empty state; Clear filters restores 24/24 | before this change a failed fetch rendered an empty grid (looked like "no styles") |
+| Per-card preview loading and failure message; previews cleared when the preview text or material changes (stale SVGs no longer shown for different inputs) | manual Playwright run | preview text is sent to the backend exactly as typed; no client-side text change |
+| Material select shows localised labels (`STRINGS.materials`) instead of raw ids; category tags localised in Arabic | screenshot `docs/assets/screenshots/styles-*.png` | proof titles from the backend are still English in Arabic mode (unchanged) |
+| Header wordmark: `dir="ltr"` on the link so it reads "BEYOND STYLE" inside the RTL page (it rendered as "STYLE BEYOND" before) | Playwright: computed direction `ltr` | — |
+| README rewrite, banner `docs/assets/banner.svg`, real screenshots `docs/assets/screenshots/` (home, confirm, 10 proofs, styles; desktop + mobile) | screenshots captured from the local production build; proofs are real engine output for ميثه | screenshots are local, not from the Vercel deployment |
+
+Test ids: every id used by `e2e/*.py` is preserved; new ids are `style-material`, `style-count`, `style-clear-filters`, `style-loading`, `style-error`, `style-retry`, `style-empty`. Targeted backend tests (`test_text_integrity.py`, `test_source_registry.py`, `test_font_capability.py`): 44 passed on PostgreSQL 16. The full backend suite and the Python browser E2E were not re-run in this slice (no backend change).
+
 ## Readiness report — 2026-09-05 (spec "BEYOND STYLE ARABIC JEWELRY DESIGNER")
 
 Rule applied: a percentage is claimed only from executed evidence (tests, browser E2E, CI). 100 %

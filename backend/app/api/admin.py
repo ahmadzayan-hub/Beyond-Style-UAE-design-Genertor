@@ -493,9 +493,18 @@ async def upload_font(
 
     if not re.fullmatch(r"[a-z0-9][a-z0-9-]{1,48}", font_id):
         raise HTTPException(422, "font_id must be lowercase letters, digits and hyphens.")
+    from ..platform import cap_body_bytes, has_durable_local_disk
+
+    limit = cap_body_bytes(12 * 1024 * 1024)
     data = await file.read()
-    if len(data) > 12 * 1024 * 1024:
-        raise HTTPException(413, "Font file larger than 12 MB.")
+    if len(data) > limit:
+        raise HTTPException(413, f"Font file larger than {limit // (1024 * 1024)} MB.")
+    if not dry_run and not has_durable_local_disk():
+        # A font written to this instance's /tmp would vanish and be invisible
+        # to other instances: refuse instead of half-registering it.
+        raise HTTPException(409, {"code": "READ_ONLY_DEPLOYMENT",
+                                  "detail": "This deployment has no durable disk. Inspect with dry_run=true, then add the "
+                                            "font to the repository's font registry and redeploy."})
     suffix = "." + (file.filename or "").rsplit(".", 1)[-1].lower()
     try:
         if dry_run:
@@ -582,6 +591,12 @@ def calibration_apply(req: CalibrationApply):
     out = {"report": outcome["report"], "promoted": outcome["promoted"],
            "calibration_status": outcome["profile"]["calibration_status"], "profile": outcome["profile"], "written": None}
     if req.write:
+        from ..platform import has_durable_local_disk
+
+        if not has_durable_local_disk():
+            raise HTTPException(409, {"code": "READ_ONLY_DEPLOYMENT", "report": outcome["report"],
+                                      "detail": "This deployment cannot change its own profile file. Commit the calibrated "
+                                                "profile to app/data/workshop_profiles.json and redeploy."})
         if not outcome["promoted"]:
             raise HTTPException(422, {"code": "CALIBRATION_INCOMPLETE", "unresolved": outcome["profile"]["calibration"]["unresolved"],
                                       "detail": "Re-cut the unresolved feature classes at larger sizes before pinning the profile."})

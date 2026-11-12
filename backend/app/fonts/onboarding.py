@@ -16,6 +16,8 @@ import json
 import os
 from pathlib import Path
 
+from ..platform import writable_root
+
 GOLDEN_NAMES = ("حامد", "محمد", "سلطان", "ميثه", "حمد", "خالد", "مهرة", "نورة")
 ARABIC_LETTERS = "ءآأؤإئابةتثجحخدذرزسشصضطظعغفقكلمنهوىي"
 REQUIRED_FEATURES = ("init", "medi", "fina")
@@ -29,7 +31,7 @@ ACCEPTED_SUFFIXES = {".ttf", ".otf", ".woff", ".woff2"}
 
 
 def private_fonts_dir() -> Path:
-    return Path(os.environ.get("PRIVATE_FONTS_DIR", Path(__file__).resolve().parents[2] / "var" / "private_fonts"))
+    return Path(os.environ.get("PRIVATE_FONTS_DIR", writable_root() / "private_fonts"))
 
 
 def overlay_file() -> Path:

@@ -1,5 +1,7 @@
 # Deployment — GitHub / Vercel / Replit
 
+> Backend hosting: the Vercel path that replaces Replit is in [DEPLOYMENT-VERCEL-BACKEND.md](DEPLOYMENT-VERCEL-BACKEND.md). Replit below remains the documented rollback.
+
 Topology: **Browser → Vercel (Next.js, static/SSR) → HTTPS → Replit
 (FastAPI) → PostgreSQL → deterministic Arabic/geometry/manufacturing
 engines → Claude/GPT-Image-2 when configured.** Vercel never runs a

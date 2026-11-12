@@ -17,9 +17,10 @@ _SHA = re.compile(r"^[0-9a-f]{7,40}$")
 
 
 def build_sha() -> str:
-    env = os.environ.get("BUILD_SHA", "").strip()
-    if _SHA.match(env):
-        return env
+    for var in ("BUILD_SHA", "VERCEL_GIT_COMMIT_SHA"):  # Vercel sets the deployed commit
+        env = os.environ.get(var, "").strip()
+        if _SHA.match(env):
+            return env
     try:
         value = BUILD_SHA_FILE.read_text(encoding="utf-8").strip()
     except OSError:

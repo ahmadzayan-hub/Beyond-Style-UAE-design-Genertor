@@ -15,13 +15,14 @@ export interface AppHeaderProps {
 }
 
 /** Brand header shared by the customer screens. The wordmark is text, not
- *  an image, so it never breaks RTL/LTR or high-contrast modes. Keeps the
+ *  an image, so it survives high-contrast modes; dir="ltr" keeps the
+ *  English wordmark reading "BEYOND STYLE" inside the RTL page. Keeps the
  *  `me-link` and `lang-toggle` test ids the E2E suite depends on. */
 export default function AppHeader({ lang, onToggleLang, meLabel, stylesLabel, hasCustomer, active = "home", className }: AppHeaderProps) {
   return (
     <header className={cx("sticky top-0 z-40 -mx-4 mb-5 border-b border-cream-300/80 bg-cream-100/90 px-4 backdrop-blur", className)}>
       <div className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between gap-3">
-        <a href="/" className="flex items-baseline gap-2" aria-label="Beyond Style">
+        <a href="/" dir="ltr" className="flex items-baseline gap-2" aria-label="Beyond Style">
           <span className="font-display text-[22px] font-bold leading-none tracking-tight text-gold-600">BEYOND</span>
           <span className="font-display text-[22px] leading-none tracking-[0.18em] text-ink-900">STYLE</span>
         </a>

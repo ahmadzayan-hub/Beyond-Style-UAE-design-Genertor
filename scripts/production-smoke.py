@@ -237,7 +237,7 @@ def main() -> int:
     # a generous timeout here avoids a false FAIL from the smoke test
     # itself; see docs/DEPLOYMENT.md for platform proxy timeout guidance.
     status, _, body = request(
-        "POST", f"{BACKEND_URL}/api/designs/{design_id}/candidates", headers=auth, timeout=60.0
+        "POST", f"{BACKEND_URL}/api/designs/{design_id}/candidates", headers=auth, timeout=180.0
     )
     try:
         gen = json.loads(body)
