@@ -1094,9 +1094,6 @@ export default function GoldenPathPage() {
       {step === "start" && (
         <ActionBar label={t.bar_start} testId="bar-start" disabled={busy || (!text.trim() && !refFile)} onClick={handleStart} />
       )}
-      {step === "confirm" && (
-        <ActionBar label={t.bar_confirm} testId="bar-confirm" disabled={busy || !confirmChecked} onClick={handleConfirm} />
-      )}
       {step === "selected" && selected && (
         <ActionBar
           label={t.bar_approve} testId="bar-approve" disabled={busy || !selected.validation_passed}
