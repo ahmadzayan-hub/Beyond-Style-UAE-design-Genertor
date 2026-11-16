@@ -50,7 +50,10 @@ export default function IntegrityPanel({ t, lang, report }: { t: Strings; lang: 
         </ul>
       )}
       {!pass && <p className="mt-2 text-xs font-medium text-red-700">{t.integrity_hidden}</p>}
-      <p className="mt-2 break-all text-[10px] text-stone-400">SHA-256 {report.sha256_normalized}</p>
+      <details className="mt-3 text-xs text-stone-600">
+        <summary className="cursor-pointer py-2 font-medium">{t.integrity_technical_details}</summary>
+        <p className="break-all" dir="ltr">SHA-256 {report.sha256_normalized}</p>
+      </details>
     </div>
   );
 }

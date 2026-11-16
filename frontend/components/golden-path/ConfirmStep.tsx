@@ -43,7 +43,7 @@ export default function ConfirmStep({
         />
       </Card>
       <Button size="lg" block data-testid="confirm-continue" disabled={!confirmChecked || busy} loading={busy} onClick={onConfirm}>
-        {t.continue}
+        {t.bar_confirm}
       </Button>
       <Button variant="ghost" size="sm" onClick={onBack} className="self-center">
         {t.back}
